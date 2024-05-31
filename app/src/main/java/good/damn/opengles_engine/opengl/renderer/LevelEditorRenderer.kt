@@ -11,6 +11,7 @@ import good.damn.opengles_engine.opengl.Object3D
 import good.damn.opengles_engine.opengl.StaticMesh
 import good.damn.opengles_engine.opengl.camera.RotationCamera
 import good.damn.opengles_engine.opengl.entities.Landscape
+import good.damn.opengles_engine.opengl.entities.SkySphere
 import good.damn.opengles_engine.opengl.light.DirectionalLight
 import good.damn.opengles_engine.opengl.maps.DisplacementMap
 import good.damn.opengles_engine.opengl.ui.GLButton
@@ -56,7 +57,7 @@ class LevelEditorRenderer(
 
     private lateinit var mDirectionalLight: DirectionalLight
     private lateinit var mLandscape: Landscape
-    private lateinit var mSky: StaticMesh
+    private lateinit var mSky: SkySphere
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -94,8 +95,21 @@ class LevelEditorRenderer(
             mProgram
         )
 
+        mCamera.radius = 350f
+
+        mCamera.setRotation(
+            0f,
+            0.01f
+        )
+
         mDirectionalLight = DirectionalLight(
             mProgram
+        )
+
+        mDirectionalLight.setPosition(
+            10f,
+            -100f,
+            0f
         )
 
         mLandscape = Landscape(
@@ -120,32 +134,9 @@ class LevelEditorRenderer(
             5.0f
         )
 
-        mSky = StaticMesh(
-            Object3D.createFromAssets(
-                "objs/sphere.obj"
-            ),
-            "textures/sky/skysphere_light.jpg",
+        mSky = SkySphere(
             mProgram,
             mCamera
-        )
-
-        mCamera.radius = 350f
-
-        mCamera.setRotation(
-            0f,
-            0.01f
-        )
-
-        mDirectionalLight.setPosition(
-            10f,
-            -100f,
-            0f
-        )
-
-        mSky.setScale(
-            100000f,
-            100000f,
-            100000f
         )
 
         glEnable(

@@ -7,7 +7,7 @@ import good.damn.opengles_engine.opengl.entities.Mesh
 import good.damn.opengles_engine.opengl.textures.Texture
 import good.damn.opengles_engine.utils.BufferUtils
 
-class StaticMesh(
+open class StaticMesh(
     obj: Object3D,
     texturePath: String,
     program: Int,
