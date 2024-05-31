@@ -148,9 +148,9 @@ class LevelEditorRenderer(
         )
 
         mSky.setScale(
-            1000000f,
-            1000000f,
-            1000000f
+            100000f,
+            100000f,
+            100000f
         )
 
         val btnLen = mWidth * 0.1f
