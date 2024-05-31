@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
+import android.util.Log
 import good.damn.opengles_engine.activities.LevelEditorActivity
 import good.damn.opengles_engine.opengl.Object3D
 import good.damn.opengles_engine.opengl.StaticMesh
@@ -25,12 +26,25 @@ class LevelEditorRenderer(
         private const val TAG = "LevelEditorRenderer"
     }
 
-    private lateinit var mBtnZoomOut: GLButton
-    private lateinit var mBtnZoomIn: GLButton
-    private lateinit var mBtnRandomizeLand: GLButton
-    private lateinit var mBtnLoadDisplacementMap: GLButton
-
     private val mCamera = RotationCamera()
+
+    private val mBtnZoomOut = GLButton {
+        mCamera.radius += 2
+    }
+
+    private val mBtnZoomIn = GLButton {
+        mCamera.radius -= 2
+    }
+
+    private val mBtnRandomizeLand = GLButton {
+        mLandscape.randomizeY()
+    }
+
+    private val mBtnLoadDisplacementMap = GLButton {
+        context.loadFromUserDisk(
+            "*/*"
+        )
+    }
 
     private var mPrevX = 0f
     private var mPrevY = 0f
@@ -42,7 +56,6 @@ class LevelEditorRenderer(
 
     private lateinit var mDirectionalLight: DirectionalLight
     private lateinit var mLandscape: Landscape
-
     private lateinit var mSky: StaticMesh
 
     override fun onSurfaceCreated(
@@ -50,6 +63,7 @@ class LevelEditorRenderer(
         config: EGLConfig?
     ) {
 
+        Log.d(TAG, "onSurfaceCreated: ")
         mProgram = glCreateProgram()
 
         glAttachShader(
@@ -115,26 +129,7 @@ class LevelEditorRenderer(
             mCamera
         )
 
-        glEnable(
-            GL_DEPTH_TEST
-        )
-
-    }
-
-    override fun onSurfaceChanged(
-        gl: GL10?,
-        width: Int,
-        height: Int
-    ) {
-        mWidth = width
-        mHeight = height
-
-        mCamera.setPerspective(
-            width,
-            height
-        )
-
-        mCamera.radius = 150f
+        mCamera.radius = 350f
 
         mCamera.setRotation(
             0f,
@@ -153,45 +148,55 @@ class LevelEditorRenderer(
             100000f
         )
 
+        glEnable(
+            GL_DEPTH_TEST
+        )
+
+    }
+
+    override fun onSurfaceChanged(
+        gl: GL10?,
+        width: Int,
+        height: Int
+    ) {
+        Log.d(TAG, "onSurfaceChanged: ")
+        mWidth = width
+        mHeight = height
+
+        mCamera.setPerspective(
+            width,
+            height
+        )
+
         val btnLen = mWidth * 0.1f
 
-        mBtnZoomOut = GLButton(
+        mBtnZoomOut.bounds(
             0f,
             0f,
             btnLen,
             btnLen
-        ) {
-            mCamera.radius += 2
-        }
+        )
 
-        mBtnZoomIn = GLButton(
+        mBtnZoomIn.bounds(
             btnLen,
             0f,
             btnLen,
             btnLen
-        ) {
-            mCamera.radius -= 2
-        }
+        )
 
-        mBtnRandomizeLand = GLButton(
+        mBtnRandomizeLand.bounds(
             mWidth - btnLen,
             0f,
             btnLen,
             btnLen
-        ) {
-            mLandscape.randomizeY()
-        }
+        )
 
-        mBtnLoadDisplacementMap = GLButton(
-            mWidth - btnLen*2,
+        mBtnLoadDisplacementMap.bounds(
+            mWidth - btnLen * 2,
             0f,
             btnLen,
             btnLen
-        ) {
-            context.loadFromUserDisk(
-                "*/*"
-            )
-        }
+        )
     }
 
     override fun onDrawFrame(

@@ -3,17 +3,28 @@ package good.damn.opengles_engine.opengl.ui
 import android.util.Log
 
 class GLButton(
-    private val mX: Float,
-    private val mY: Float,
-    private val mWidth: Float,
-    private val mHeight: Float,
+    private var mX: Float = 0f,
+    private var mY: Float = 0f,
+    private var mWidth: Float = 0f,
+    private var mHeight: Float = 0f,
     private val mAction: () -> Unit
 ) {
-
     companion object {
         private const val TAG = "GLButton"
     }
-    
+
+    fun bounds(
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float
+    ) {
+        mX = x
+        mY = y
+        mWidth = width
+        mHeight = height
+    }
+
     fun intercept(
         x: Float,
         y: Float
