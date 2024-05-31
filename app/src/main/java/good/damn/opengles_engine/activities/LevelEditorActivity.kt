@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.opengles_engine.Application
 import good.damn.opengles_engine.launchers.ContentLauncher
+import good.damn.opengles_engine.level_editor.adapters.MeshAdapter
 import good.damn.opengles_engine.views.LevelEditorView
 
 class LevelEditorActivity
@@ -45,6 +47,24 @@ ActivityResultCallback<Uri?>{
 
         layout.orientation = LinearLayout
             .VERTICAL
+
+        recyclerViewMeshes.layoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+
+        recyclerViewMeshes.setHasFixedSize(
+            true
+        )
+
+        recyclerViewMeshes.adapter = Application.ASSETS.list(
+            "objs"
+        )?.let {
+            MeshAdapter(
+                it
+            )
+        }
 
         layout.addView(
             mLevelEditorView,
