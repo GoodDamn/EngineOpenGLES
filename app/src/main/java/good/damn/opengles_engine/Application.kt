@@ -17,6 +17,9 @@ class Application
         lateinit var RESOURCES: Resources
         lateinit var CONTENT_RESOLVER: ContentResolver
 
+        var WIDTH = 1
+        var HEIGHT = 1
+
         val BYTE_ORDER = ByteOrder
             .nativeOrder()
         val BUFFER_MB = ByteArray(1024*1024)
@@ -48,5 +51,11 @@ class Application
         CONTENT_RESOLVER = context
             .contentResolver
 
+
+        val metrics = RESOURCES
+            .displayMetrics
+
+        HEIGHT = metrics.heightPixels
+        WIDTH = metrics.widthPixels
     }
 }

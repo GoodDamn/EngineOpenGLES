@@ -2,8 +2,11 @@ package good.damn.opengles_engine.activities
 
 import android.net.Uri
 import android.os.Bundle
+import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import good.damn.opengles_engine.Application
 import good.damn.opengles_engine.launchers.ContentLauncher
 import good.damn.opengles_engine.views.LevelEditorView
 
@@ -21,20 +24,46 @@ ActivityResultCallback<Uri?>{
             savedInstanceState
         )
 
+        val context = this
+
         mContentLauncher = ContentLauncher(
-            this,
-            this
+            context,
+            context
+        )
+
+        val layout = LinearLayout(
+            context
+        )
+
+        val recyclerViewMeshes = RecyclerView(
+            context
         )
 
         mLevelEditorView = LevelEditorView(
             this
         )
 
+        layout.orientation = LinearLayout
+            .VERTICAL
+
+        layout.addView(
+            mLevelEditorView,
+            -1,
+            (Application.HEIGHT * 0.7f).toInt()
+        )
+
+        layout.addView(
+            recyclerViewMeshes,
+            -1,
+            -2
+        )
+
         setContentView(
-            mLevelEditorView
+            layout
         )
     }
 
+    // External call
     fun loadFromUserDisk(
         mime: String
     ) {

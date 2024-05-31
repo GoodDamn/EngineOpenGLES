@@ -83,6 +83,9 @@ class Level(
                     camera
                 )
 
+                mesh.material.shine = shine.toFloat()
+                mesh.material.specular = specIntensity.toFloat()
+
                 mesh.setPosition(
                     posX,
                     posY,
