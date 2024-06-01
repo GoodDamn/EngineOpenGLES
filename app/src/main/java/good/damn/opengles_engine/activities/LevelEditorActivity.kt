@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import good.damn.opengles_engine.Application
 import good.damn.opengles_engine.launchers.ContentLauncher
 import good.damn.opengles_engine.level_editor.adapters.MeshAdapter
+import good.damn.opengles_engine.level_editor.listeners.OnClickMeshListener
 import good.damn.opengles_engine.views.LevelEditorView
 
 class LevelEditorActivity
 : AppCompatActivity(),
-ActivityResultCallback<Uri?>{
+ActivityResultCallback<Uri?>,
+OnClickMeshListener {
 
     private lateinit var mLevelEditorView: LevelEditorView
     private lateinit var mContentLauncher: ContentLauncher
@@ -62,7 +64,8 @@ ActivityResultCallback<Uri?>{
             "objs"
         )?.let {
             MeshAdapter(
-                it
+                it,
+                this
             )
         }
 
@@ -83,15 +86,6 @@ ActivityResultCallback<Uri?>{
         )
     }
 
-    // External call
-    fun loadFromUserDisk(
-        mime: String
-    ) {
-        mContentLauncher.launch(
-            mime
-        )
-    }
-
     override fun onActivityResult(
         result: Uri?
     ) {
@@ -106,4 +100,18 @@ ActivityResultCallback<Uri?>{
         )
     }
 
+    override fun onClick(
+        objName: String
+    ) {
+
+    }
+
+    // External call
+    fun loadFromUserDisk(
+        mime: String
+    ) {
+        mContentLauncher.launch(
+            mime
+        )
+    }
 }

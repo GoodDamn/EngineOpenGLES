@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.opengles_engine.Application
+import good.damn.opengles_engine.level_editor.listeners.OnClickMeshListener
 
 class ViewHolderMesh(
     layout: View,
@@ -16,6 +17,17 @@ class ViewHolderMesh(
 ): RecyclerView.ViewHolder(
     layout
 ) {
+
+    var onClickMeshListener: OnClickMeshListener? = null
+        set(v) {
+            itemView.setOnClickListener {
+                onClickMeshListener?.onClick(
+                    mObjName.text.toString()
+                )
+            }
+            field = v
+        }
+
     fun setMeshName(
         meshName: String
     ) {
