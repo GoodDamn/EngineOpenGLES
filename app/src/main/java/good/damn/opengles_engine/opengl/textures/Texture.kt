@@ -7,13 +7,18 @@ import good.damn.opengles_engine.Application
 
 class Texture(
     assetPath: String,
-    program: Int
+    program: Int,
+    wrapMode: Int = GL_CLAMP_TO_EDGE
 ) {
 
     private var mId = intArrayOf(
         1
     )
-    private var mUniformTexture = 0
+
+    private val mUniformTexture = glGetUniformLocation(
+        program,
+        "texture"
+    )
 
     init {
 
@@ -51,13 +56,13 @@ class Texture(
         glTexParameteri(
             GL_TEXTURE_2D,
             GL_TEXTURE_WRAP_S,
-            GL_CLAMP_TO_EDGE
+            wrapMode
         )
 
         glTexParameteri(
             GL_TEXTURE_2D,
             GL_TEXTURE_WRAP_T,
-            GL_CLAMP_TO_EDGE
+            wrapMode
         )
 
         GLUtils.texImage2D(
@@ -67,9 +72,20 @@ class Texture(
             0
         )
 
-        mUniformTexture = glGetUniformLocation(
-            program,
-            "texture"
+        glGenerateMipmap(
+            GL_TEXTURE_2D
+        )
+
+        glTexParameteri(
+            GL_TEXTURE_2D,
+            GL_TEXTURE_MIN_FILTER,
+            GL_LINEAR_MIPMAP_LINEAR
+        )
+
+        glTexParameterf(
+            GL_TEXTURE_2D,
+            GL_MAX_TEXTURE_LOD_BIAS,
+            -0.4f
         )
 
     }

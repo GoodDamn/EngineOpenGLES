@@ -1,10 +1,12 @@
 package good.damn.opengles_engine.opengl.renderer
 
 import android.content.Context
+import android.graphics.Shader
 import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
+import android.opengl.GLES32
 import android.util.Log
 import good.damn.opengles_engine.activities.LevelEditorActivity
 import good.damn.opengles_engine.opengl.Object3D
@@ -65,33 +67,12 @@ class LevelEditorRenderer(
     ) {
 
         Log.d(TAG, "onSurfaceCreated: ")
-        mProgram = glCreateProgram()
-
-        glAttachShader(
-            mProgram,
-            ShaderUtils.createShader(
-                GL_VERTEX_SHADER,
-                AssetUtils.loadString(
-                    "shaders/vert.glsl"
-                )
-            )
-        )
-
-        glAttachShader(
-            mProgram,
-            ShaderUtils.createShader(
-                GL_FRAGMENT_SHADER,
-                AssetUtils.loadString(
-                    "shaders/frag.glsl"
-                )
-            )
+        mProgram = ShaderUtils.createProgramFromAssets(
+            "shaders/vert.glsl",
+            "shaders/frag.glsl"
         )
 
         glLinkProgram(
-            mProgram
-        )
-
-        glUseProgram(
             mProgram
         )
 
@@ -139,10 +120,13 @@ class LevelEditorRenderer(
             mCamera
         )
 
+        glUseProgram(
+            mProgram
+        )
+
         glEnable(
             GL_DEPTH_TEST
         )
-
     }
 
     override fun onSurfaceChanged(

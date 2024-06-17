@@ -17,6 +17,8 @@ open class Mesh(
     internal var mAttrTexCoord = 0
     internal var mAttrNormal = 0
 
+    protected var mTextureOffset = 1f
+
     private val mUniformModelView = glGetUniformLocation(
         program,
         "model"
@@ -32,6 +34,11 @@ open class Mesh(
         "camera"
     )
 
+    private val mUniformTextureOffset = glGetUniformLocation(
+        program,
+        "textureOffset"
+    )
+
     init {
         Matrix.setIdentityM(
             model,
@@ -40,6 +47,11 @@ open class Mesh(
     }
 
     open fun draw() {
+        glUniform1f(
+            mUniformTextureOffset,
+            mTextureOffset
+        )
+
         mCamera.draw(
             mUniformProject,
             mUniformModelView,

@@ -26,7 +26,8 @@ class Landscape(
 
     var texture = Texture(
         "textures/grass.jpg",
-        mProgram
+        mProgram,
+        wrapMode = GL_REPEAT
     )
 
     var material = Material(
@@ -43,6 +44,7 @@ class Landscape(
 
     init {
         setResolution(5,5)
+        mTextureOffset = 6.0f
     }
 
     override fun draw() {
@@ -50,6 +52,7 @@ class Landscape(
 
         texture.draw()
         material.draw()
+
 
         mAttrPosition = glGetAttribLocation(
             mProgram,
