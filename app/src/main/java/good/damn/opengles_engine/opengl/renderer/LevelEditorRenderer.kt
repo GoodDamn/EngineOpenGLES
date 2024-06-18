@@ -8,6 +8,9 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
 import android.opengl.GLES32
+import android.os.Handler
+import android.os.Looper
+import android.os.MessageQueue
 import android.util.Log
 import good.damn.opengles_engine.activities.LevelEditorActivity
 import good.damn.opengles_engine.opengl.EditorMesh
@@ -18,6 +21,7 @@ import good.damn.opengles_engine.opengl.entities.Landscape
 import good.damn.opengles_engine.opengl.entities.SkySphere
 import good.damn.opengles_engine.opengl.light.DirectionalLight
 import good.damn.opengles_engine.opengl.maps.DisplacementMap
+import good.damn.opengles_engine.opengl.thread.GLHandler
 import good.damn.opengles_engine.opengl.ui.GLButton
 import good.damn.opengles_engine.utils.AssetUtils
 import good.damn.opengles_engine.utils.ShaderUtils
@@ -31,6 +35,8 @@ class LevelEditorRenderer(
     companion object {
         private const val TAG = "LevelEditorRenderer"
     }
+
+    private val mHandler = GLHandler()
 
     private val meshes = LinkedList<EditorMesh>()
 
@@ -70,7 +76,6 @@ class LevelEditorRenderer(
         gl: GL10?,
         config: EGLConfig?
     ) {
-
         mProgram = ShaderUtils.createProgramFromAssets(
             "shaders/vert.glsl",
             "shaders/frag.glsl"
@@ -199,9 +204,11 @@ class LevelEditorRenderer(
             1.0f
         )
 
+        mHandler.run()
+
         mLandscape.draw()
-        meshes.forEach {
-            it.mesh!!.draw()
+        meshes.forEach { editorMesh ->
+            editorMesh.mesh!!.draw()
         }
         mSky.draw()
         mDirectionalLight.draw()
@@ -249,26 +256,27 @@ class LevelEditorRenderer(
     fun addMesh(
         editorMesh: EditorMesh
     ) {
-        val mesh = StaticMesh(
-            Object3D.createFromAssets(
-                "objs/${editorMesh.objName}"
-            ),
-            "textures/${editorMesh.texName}",
-            mProgram,
-            mCamera
-        )
-        mesh.material.shine = 1f
-        mesh.setPosition(
-            editorMesh.position
-        )
-        mesh.setScale(
-            editorMesh.scale
-        )
-        editorMesh.mesh = mesh
-
-        meshes.add(
-            editorMesh
-        )
+        mHandler.post {
+            val mesh = StaticMesh(
+                Object3D.createFromAssets(
+                    "objs/${editorMesh.objName}"
+                ),
+                "textures/${editorMesh.texName}",
+                mProgram,
+                mCamera
+            )
+            mesh.material.shine = 1f
+            mesh.setPosition(
+                editorMesh.position
+            )
+            mesh.setScale(
+                editorMesh.scale
+            )
+            editorMesh.mesh = mesh
+            meshes.add(
+                editorMesh
+            )
+        }
     }
 
     fun onLoadFromUserDisk(
