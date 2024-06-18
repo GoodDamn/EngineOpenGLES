@@ -1,5 +1,6 @@
 package good.damn.opengles_engine.opengl.renderer
 
+import android.graphics.Shader
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import good.damn.opengles_engine.opengl.Object3D
@@ -38,26 +39,9 @@ class TrafficRenderer
         config: EGLConfig?
     ) {
 
-        mProgram = glCreateProgram()
-
-        glAttachShader(
-            mProgram,
-            ShaderUtils.createShader(
-                GL_VERTEX_SHADER,
-                AssetUtils.loadString(
-                    "shaders/vert.glsl"
-                )
-            )
-        )
-
-        glAttachShader(
-            mProgram,
-            ShaderUtils.createShader(
-                GL_FRAGMENT_SHADER,
-                AssetUtils.loadString(
-                    "shaders/frag.glsl"
-                )
-            )
+        mProgram = ShaderUtils.createProgramFromAssets(
+            "shaders/vert.glsl",
+            "shaders/frag.glsl"
         )
 
         glLinkProgram(

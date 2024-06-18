@@ -3,6 +3,7 @@ package good.damn.opengles_engine.opengl.entities
 import android.opengl.Matrix
 import android.opengl.Matrix.*
 import android.util.Log
+import good.damn.opengles_engine.opengl.Vector
 
 open class DimensionObject {
 
@@ -20,6 +21,16 @@ open class DimensionObject {
     }
 
     open fun setPosition(
+        v: Vector
+    ) {
+        setPosition(
+            v.x,
+            v.y,
+            v.z
+        )
+    }
+
+    open fun setPosition(
         x: Float,
         y: Float,
         z: Float
@@ -27,6 +38,16 @@ open class DimensionObject {
         model[12] = x
         model[13] = y
         model[14] = z
+    }
+
+    open fun setScale(
+        v: Vector
+    ) {
+        setScale(
+            v.x,
+            v.y,
+            v.z
+        )
     }
 
     open fun setScale(

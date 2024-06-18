@@ -2,6 +2,7 @@ package good.damn.opengles_engine.activities
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,8 @@ import good.damn.opengles_engine.Application
 import good.damn.opengles_engine.launchers.ContentLauncher
 import good.damn.opengles_engine.level_editor.adapters.MeshAdapter
 import good.damn.opengles_engine.level_editor.listeners.OnClickMeshListener
+import good.damn.opengles_engine.opengl.EditorMesh
+import good.damn.opengles_engine.opengl.Vector
 import good.damn.opengles_engine.views.LevelEditorView
 
 class LevelEditorActivity
@@ -18,6 +21,10 @@ class LevelEditorActivity
 ActivityResultCallback<Uri?>,
 OnClickMeshListener {
 
+    companion object {
+        private const val TAG = "LevelEditorActivity"
+    }
+    
     private lateinit var mLevelEditorView: LevelEditorView
     private lateinit var mContentLauncher: ContentLauncher
 
@@ -103,7 +110,18 @@ OnClickMeshListener {
     override fun onClick(
         objName: String
     ) {
-
+        Log.d(TAG, "onClick: $objName")
+        mLevelEditorView.addMesh(
+            EditorMesh(
+                objName,
+                "rock.jpg",
+                Vector(0f),
+                Vector(1f),
+                Vector(100f, 100f, 100f),
+                1,
+                1
+            )
+        )
     }
 
     // External call

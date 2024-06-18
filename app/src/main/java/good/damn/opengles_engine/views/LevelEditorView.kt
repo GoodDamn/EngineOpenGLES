@@ -3,6 +3,7 @@ package good.damn.opengles_engine.views
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import good.damn.opengles_engine.activities.LevelEditorActivity
+import good.damn.opengles_engine.opengl.EditorMesh
 import good.damn.opengles_engine.opengl.renderer.LevelEditorRenderer
 import java.io.InputStream
 
@@ -66,6 +67,14 @@ class LevelEditorView(
         }
 
         return true
+    }
+
+    fun addMesh(
+        mesh: EditorMesh
+    ) {
+        mRenderer.addMesh(
+            mesh
+        )
     }
 
     fun onLoadFromUserDisk(

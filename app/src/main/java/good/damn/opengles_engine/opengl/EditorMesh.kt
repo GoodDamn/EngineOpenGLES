@@ -1,11 +1,14 @@
 package good.damn.opengles_engine.opengl
 
+import android.graphics.Mesh
+
 data class EditorMesh(
-    val objName: String,
-    val texName: String,
-    val position: Vector,
-    val rotation: Vector,
-    val scale: Vector,
-    val specIntensity: Byte,
-    val shininess: Byte
+    var objName: String,
+    var texName: String,
+    var position: Vector,
+    var rotation: Vector,
+    var scale: Vector,
+    var specIntensity: Byte,
+    var shininess: Byte,
+    var mesh: StaticMesh? = null
 )

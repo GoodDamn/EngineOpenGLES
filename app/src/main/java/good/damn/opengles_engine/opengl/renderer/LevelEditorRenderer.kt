@@ -1,6 +1,7 @@
 package good.damn.opengles_engine.opengl.renderer
 
 import android.content.Context
+import android.graphics.Mesh
 import android.graphics.Shader
 import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
@@ -9,6 +10,7 @@ import android.opengl.GLES30.*
 import android.opengl.GLES32
 import android.util.Log
 import good.damn.opengles_engine.activities.LevelEditorActivity
+import good.damn.opengles_engine.opengl.EditorMesh
 import good.damn.opengles_engine.opengl.Object3D
 import good.damn.opengles_engine.opengl.StaticMesh
 import good.damn.opengles_engine.opengl.camera.RotationCamera
@@ -20,6 +22,7 @@ import good.damn.opengles_engine.opengl.ui.GLButton
 import good.damn.opengles_engine.utils.AssetUtils
 import good.damn.opengles_engine.utils.ShaderUtils
 import java.io.InputStream
+import java.util.LinkedList
 
 class LevelEditorRenderer(
     var context: LevelEditorActivity
@@ -28,6 +31,8 @@ class LevelEditorRenderer(
     companion object {
         private const val TAG = "LevelEditorRenderer"
     }
+
+    private val meshes = LinkedList<EditorMesh>()
 
     private val mCamera = RotationCamera()
 
@@ -66,7 +71,6 @@ class LevelEditorRenderer(
         config: EGLConfig?
     ) {
 
-        Log.d(TAG, "onSurfaceCreated: ")
         mProgram = ShaderUtils.createProgramFromAssets(
             "shaders/vert.glsl",
             "shaders/frag.glsl"
@@ -134,7 +138,7 @@ class LevelEditorRenderer(
         width: Int,
         height: Int
     ) {
-        Log.d(TAG, "onSurfaceChanged: ")
+        Log.d(TAG, "onSurfaceChanged: ${Thread.currentThread().name}")
         mWidth = width
         mHeight = height
 
@@ -196,6 +200,9 @@ class LevelEditorRenderer(
         )
 
         mLandscape.draw()
+        meshes.forEach {
+            it.mesh!!.draw()
+        }
         mSky.draw()
         mDirectionalLight.draw()
     }
@@ -237,6 +244,31 @@ class LevelEditorRenderer(
         y: Float
     ) {
 
+    }
+
+    fun addMesh(
+        editorMesh: EditorMesh
+    ) {
+        val mesh = StaticMesh(
+            Object3D.createFromAssets(
+                "objs/${editorMesh.objName}"
+            ),
+            "textures/${editorMesh.texName}",
+            mProgram,
+            mCamera
+        )
+        mesh.material.shine = 1f
+        mesh.setPosition(
+            editorMesh.position
+        )
+        mesh.setScale(
+            editorMesh.scale
+        )
+        editorMesh.mesh = mesh
+
+        meshes.add(
+            editorMesh
+        )
     }
 
     fun onLoadFromUserDisk(
