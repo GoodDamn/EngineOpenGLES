@@ -7,8 +7,8 @@ class GLHandler: Runnable {
     private val mQueue = LinkedList<Runnable>()
 
     override fun run() {
-        mQueue.forEach {
-            it.run()
+        while (mQueue.isNotEmpty()) {
+            mQueue.first.run()
             mQueue.removeFirst()
         }
     }
