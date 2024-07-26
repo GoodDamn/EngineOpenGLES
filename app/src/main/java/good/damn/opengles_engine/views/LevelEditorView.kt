@@ -4,7 +4,8 @@ import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import good.damn.opengles_engine.activities.LevelEditorActivity
 import good.damn.opengles_engine.opengl.EditorMesh
-import good.damn.opengles_engine.opengl.interfaces.OnGetUserContentUri
+import good.damn.opengles_engine.interfaces.OnGetUserContentUri
+import good.damn.opengles_engine.opengl.OnMeshPositionListener
 import good.damn.opengles_engine.opengl.models.UserContent
 import good.damn.opengles_engine.opengl.renderer.LevelEditorRenderer
 import java.io.InputStream
@@ -13,7 +14,8 @@ class LevelEditorView(
     context: LevelEditorActivity
 ): GLSurfaceView(
     context
-), OnGetUserContentUri {
+), OnGetUserContentUri,
+OnMeshPositionListener {
 
     companion object {
         private const val TAG = "LevelEditorView"
@@ -77,6 +79,15 @@ class LevelEditorView(
         mRenderer.onGetUserContentUri(
             userContent
         )
+    }
 
+    override fun onChangeMeshPosition(
+        dx: Float,
+        dy: Float,
+        dz: Float
+    ) {
+        mRenderer.onChangeMeshPosition(
+            dx, dy, dz
+        )
     }
 }

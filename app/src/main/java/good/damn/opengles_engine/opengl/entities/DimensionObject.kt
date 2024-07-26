@@ -40,6 +40,16 @@ open class DimensionObject {
         model[14] = z
     }
 
+    fun setPositionBy(
+        dx: Float,
+        dy: Float,
+        dz: Float
+    ) {
+        model[12] += dx
+        model[13] += dy
+        model[14] += dz
+    }
+
     open fun setScale(
         v: Vector
     ) {

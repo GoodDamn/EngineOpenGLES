@@ -16,7 +16,8 @@ import good.damn.opengles_engine.opengl.camera.RotationCamera
 import good.damn.opengles_engine.opengl.entities.Landscape
 import good.damn.opengles_engine.opengl.entities.SkySphere
 import good.damn.opengles_engine.opengl.extensions.writeToFile
-import good.damn.opengles_engine.opengl.interfaces.OnGetUserContentUri
+import good.damn.opengles_engine.interfaces.OnGetUserContentUri
+import good.damn.opengles_engine.opengl.OnMeshPositionListener
 import good.damn.opengles_engine.opengl.light.DirectionalLight
 import good.damn.opengles_engine.opengl.maps.DisplacementMap
 import good.damn.opengles_engine.opengl.models.UserContent
@@ -30,7 +31,8 @@ import java.util.LinkedList
 class LevelEditorRenderer(
     var context: LevelEditorActivity?
 ): GLSurfaceView.Renderer,
-OnGetUserContentUri {
+OnGetUserContentUri,
+OnMeshPositionListener {
 
     companion object {
         private const val TAG = "LevelEditorRenderer"
@@ -71,6 +73,8 @@ OnGetUserContentUri {
     private lateinit var mDirectionalLight: DirectionalLight
     private lateinit var mLandscape: Landscape
     private lateinit var mSky: SkySphere
+
+    private var mSelectedMesh: StaticMesh? = null
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -213,46 +217,6 @@ OnGetUserContentUri {
         mSky.draw()
         mDirectionalLight.draw()
     }
-
-    fun onTouchDown(
-        x: Float,
-        y: Float
-    ) {
-        mPrevX = x
-        mPrevY = y
-        if (mBtnRandomizeLand.intercept(x,y) ||
-            mBtnLoadUserContent.intercept(x,y)
-        ) {
-            return
-        }
-    }
-
-    fun onTouchMove(
-        x: Float,
-        y: Float
-    ) {
-        if (mBtnZoomOut.intercept(x, y) ||
-            mBtnZoomIn.intercept(x,y)
-        ) {
-            return
-        }
-
-        mCamera.rotateBy(
-            (mPrevX - x) * 0.001f,
-            (y - mPrevY) * 0.001f
-        )
-
-        mPrevX = x
-        mPrevY = y
-    }
-
-    fun onTouchUp(
-        x: Float,
-        y: Float
-    ) {
-
-    }
-
     override fun onGetUserContentUri(
         userContent: UserContent
     ) {
@@ -302,6 +266,58 @@ OnGetUserContentUri {
         }
     }
 
+    override fun onChangeMeshPosition(
+        dx: Float,
+        dy: Float,
+        dz: Float
+    ) {
+        mSelectedMesh?.setPositionBy(
+            dx,
+            dy,
+            dz
+        )
+    }
+
+    fun onTouchDown(
+        x: Float,
+        y: Float
+    ) {
+        mPrevX = x
+        mPrevY = y
+        if (mBtnRandomizeLand.intercept(x,y) ||
+            mBtnLoadUserContent.intercept(x,y)
+        ) {
+            return
+        }
+    }
+
+    fun onTouchMove(
+        x: Float,
+        y: Float
+    ) {
+        if (mBtnZoomOut.intercept(x, y) ||
+            mBtnZoomIn.intercept(x,y)
+        ) {
+            return
+        }
+
+        mCamera.rotateBy(
+            (mPrevX - x) * 0.001f,
+            (y - mPrevY) * 0.001f
+        )
+
+        mPrevX = x
+        mPrevY = y
+    }
+
+    fun onTouchUp(
+        x: Float,
+        y: Float
+    ) {
+
+    }
+
+
     private fun addMesh(
         editorMesh: EditorMesh
     ) {
@@ -326,5 +342,7 @@ OnGetUserContentUri {
         meshes.add(
             editorMesh
         )
+
+        mSelectedMesh = mesh
     }
 }

@@ -1,4 +1,4 @@
-package good.damn.opengles_engine.opengl.interfaces
+package good.damn.opengles_engine.interfaces
 
 import android.net.Uri
 import good.damn.opengles_engine.opengl.models.UserContent
