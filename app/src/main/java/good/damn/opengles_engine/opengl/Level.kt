@@ -1,7 +1,7 @@
 package good.damn.opengles_engine.opengl
 
 import android.util.Log
-import good.damn.opengles_engine.Application
+import good.damn.opengles_engine.App
 import good.damn.opengles_engine.opengl.camera.BaseCamera
 import good.damn.opengles_engine.opengl.light.DirectionalLight
 import good.damn.opengles_engine.utils.FileUtils
@@ -27,7 +27,7 @@ class Level(
         ): Level {
 
             val inp = DataInputStream(
-                Application.ASSETS
+                App.ASSETS
                     .open(path)
             )
 
@@ -59,7 +59,7 @@ class Level(
                     buffer,
                     0,
                     len,
-                    Application.CHARSET
+                    App.CHARSET
                 )
 
                 len = inp.readByte().toInt() and 0xff
@@ -68,7 +68,7 @@ class Level(
                     buffer,
                     0,
                     len,
-                    Application.CHARSET
+                    App.CHARSET
                 )
 
                 val specIntensity = inp.readByte().toInt() and 0xff
@@ -141,10 +141,10 @@ class Level(
                     fos
                 )
 
-                writeString(
+                /*writeString(
                     it.objName,
                     fos
-                )
+                )*/
 
                 writeString(
                     it.texName,
@@ -169,7 +169,7 @@ class Level(
             os: OutputStream
         ) {
             val ss = s.toByteArray(
-                Application.CHARSET
+                App.CHARSET
             )
             os.write(ss.size)
             os.write(ss)

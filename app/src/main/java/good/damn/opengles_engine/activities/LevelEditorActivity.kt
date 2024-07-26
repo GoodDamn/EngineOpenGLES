@@ -2,24 +2,17 @@ package good.damn.opengles_engine.activities
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import good.damn.opengles_engine.Application
+import good.damn.opengles_engine.App
 import good.damn.opengles_engine.launchers.ContentLauncher
-import good.damn.opengles_engine.level_editor.adapters.MeshAdapter
-import good.damn.opengles_engine.level_editor.listeners.OnClickMeshListener
-import good.damn.opengles_engine.opengl.EditorMesh
-import good.damn.opengles_engine.opengl.Vector
+import good.damn.opengles_engine.opengl.models.UserContent
 import good.damn.opengles_engine.views.LevelEditorView
 
 class LevelEditorActivity
 : AppCompatActivity(),
-ActivityResultCallback<Uri?>,
-OnClickMeshListener {
+ActivityResultCallback<Uri?> {
 
     companion object {
         private const val TAG = "LevelEditorActivity"
@@ -46,10 +39,6 @@ OnClickMeshListener {
             context
         )
 
-        val recyclerViewMeshes = RecyclerView(
-            context
-        )
-
         mLevelEditorView = LevelEditorView(
             this
         )
@@ -57,35 +46,11 @@ OnClickMeshListener {
         layout.orientation = LinearLayout
             .VERTICAL
 
-        recyclerViewMeshes.layoutManager = LinearLayoutManager(
-            context,
-            LinearLayoutManager.HORIZONTAL,
-            false
-        )
-
-        recyclerViewMeshes.setHasFixedSize(
-            true
-        )
-
-        recyclerViewMeshes.adapter = Application.ASSETS.list(
-            "objs"
-        )?.let {
-            MeshAdapter(
-                it,
-                this
-            )
-        }
 
         layout.addView(
             mLevelEditorView,
             -1,
-            (Application.HEIGHT * 0.7f).toInt()
-        )
-
-        layout.addView(
-            recyclerViewMeshes,
-            -1,
-            -2
+            (App.HEIGHT * 0.7f).toInt()
         )
 
         setContentView(
@@ -100,26 +65,22 @@ OnClickMeshListener {
             return
         }
 
-        mLevelEditorView.onLoadFromUserDisk(
-            contentResolver.openInputStream(
-                result
-            )
-        )
-    }
+        val p = result.toString()
+        val extension = result.toString()
+            .substring(p.length - 4)
 
-    override fun onClick(
-        objName: String
-    ) {
-        Log.d(TAG, "onClick: $objName")
-        mLevelEditorView.addMesh(
-            EditorMesh(
-                objName,
-                "rock.jpg",
-                Vector(0f),
-                Vector(1f),
-                Vector(100f, 100f, 100f),
-                1,
-                1
+        val mimeType = contentResolver.getType(
+            result
+        ) ?: return
+
+        val stream = contentResolver.openInputStream(
+            result
+        ) ?: return
+
+        mLevelEditorView.onGetUserContentUri(
+            UserContent(
+                extension,
+                stream
             )
         )
     }

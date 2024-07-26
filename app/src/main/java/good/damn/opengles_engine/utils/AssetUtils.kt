@@ -1,6 +1,6 @@
 package good.damn.opengles_engine.utils
 
-import good.damn.opengles_engine.Application
+import good.damn.opengles_engine.App
 
 class AssetUtils {
 
@@ -9,7 +9,7 @@ class AssetUtils {
         fun loadString(
             path: String
         ): String {
-            val inp = Application.ASSETS
+            val inp = App.ASSETS
                 .open(path)
 
             val b = FileUtils
@@ -18,7 +18,7 @@ class AssetUtils {
 
             return String(
                 b,
-                Application.CHARSET
+                App.CHARSET
             )
         }
 

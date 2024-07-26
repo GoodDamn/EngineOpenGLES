@@ -1,6 +1,6 @@
 package good.damn.opengles_engine.utils
 
-import good.damn.opengles_engine.Application
+import good.damn.opengles_engine.App
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -15,7 +15,7 @@ class BufferUtils {
                 .allocateDirect(
                     size * 4
                 ).order(
-                     Application.BYTE_ORDER
+                     App.BYTE_ORDER
                 ).asFloatBuffer()
         }
 
@@ -26,7 +26,7 @@ class BufferUtils {
                 .allocateDirect(
                     size * 4
                 ).order(
-                    Application.BYTE_ORDER
+                    App.BYTE_ORDER
                 ).asIntBuffer()
         }
 
@@ -37,7 +37,7 @@ class BufferUtils {
                 .allocateDirect(
                     size * 2
                 ).order(
-                    Application.BYTE_ORDER
+                    App.BYTE_ORDER
                 ).asShortBuffer()
         }
 
@@ -48,7 +48,7 @@ class BufferUtils {
                 .allocateDirect(
                     i.size * 4
                 ).order(
-                    Application.BYTE_ORDER
+                    App.BYTE_ORDER
                 ).asFloatBuffer()
                 .put(i)
             b.position(0)
@@ -62,7 +62,7 @@ class BufferUtils {
                 .allocateDirect(
                     i.size * 2
                 ).order(
-                    Application.BYTE_ORDER
+                    App.BYTE_ORDER
                 ).asShortBuffer()
                 .put(i)
             b.position(0)

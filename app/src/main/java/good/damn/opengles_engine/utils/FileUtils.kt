@@ -4,14 +4,13 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
-import good.damn.opengles_engine.Application
+import good.damn.opengles_engine.App
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.nio.charset.Charset
 
 class FileUtils {
 
@@ -166,7 +165,7 @@ class FileUtils {
             writeFile(
                 file,
                 rsaKey.toByteArray(
-                    Application.CHARSET_ASCII
+                    App.CHARSET_ASCII
                 )
             )
         }
@@ -185,7 +184,7 @@ class FileUtils {
                     )
                     hashSet.add(String(
                         keyData,
-                        Application.CHARSET_ASCII
+                        App.CHARSET_ASCII
                     ))
                 }
             }
@@ -205,7 +204,7 @@ class FileUtils {
 
         fun readBytes(
             inp: InputStream,
-            buffer: ByteArray = Application.BUFFER_MB
+            buffer: ByteArray = App.BUFFER_MB
         ): ByteArray {
 
             val outArr = ByteArrayOutputStream()

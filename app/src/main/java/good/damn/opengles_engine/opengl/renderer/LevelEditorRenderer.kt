@@ -1,36 +1,36 @@
 package good.damn.opengles_engine.opengl.renderer
 
-import android.content.Context
-import android.graphics.Mesh
-import android.graphics.Shader
 import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
-import android.opengl.GLES32
-import android.os.Handler
-import android.os.Looper
-import android.os.MessageQueue
 import android.util.Log
+import good.damn.opengles_engine.App
 import good.damn.opengles_engine.activities.LevelEditorActivity
 import good.damn.opengles_engine.opengl.EditorMesh
 import good.damn.opengles_engine.opengl.Object3D
 import good.damn.opengles_engine.opengl.StaticMesh
+import good.damn.opengles_engine.opengl.Vector
+import good.damn.opengles_engine.opengl.cache.files.CacheObjFile
 import good.damn.opengles_engine.opengl.camera.RotationCamera
 import good.damn.opengles_engine.opengl.entities.Landscape
 import good.damn.opengles_engine.opengl.entities.SkySphere
+import good.damn.opengles_engine.opengl.extensions.writeToFile
+import good.damn.opengles_engine.opengl.interfaces.OnGetUserContentUri
 import good.damn.opengles_engine.opengl.light.DirectionalLight
 import good.damn.opengles_engine.opengl.maps.DisplacementMap
+import good.damn.opengles_engine.opengl.models.UserContent
 import good.damn.opengles_engine.opengl.thread.GLHandler
 import good.damn.opengles_engine.opengl.ui.GLButton
-import good.damn.opengles_engine.utils.AssetUtils
 import good.damn.opengles_engine.utils.ShaderUtils
-import java.io.InputStream
+import java.io.File
+import java.io.FileInputStream
 import java.util.LinkedList
 
 class LevelEditorRenderer(
-    var context: LevelEditorActivity
-): GLSurfaceView.Renderer {
+    var context: LevelEditorActivity?
+): GLSurfaceView.Renderer,
+OnGetUserContentUri {
 
     companion object {
         private const val TAG = "LevelEditorRenderer"
@@ -54,8 +54,8 @@ class LevelEditorRenderer(
         mLandscape.randomizeY()
     }
 
-    private val mBtnLoadDisplacementMap = GLButton {
-        context.loadFromUserDisk(
+    private val mBtnLoadUserContent = GLButton {
+        context?.loadFromUserDisk(
             "*/*"
         )
     }
@@ -175,7 +175,7 @@ class LevelEditorRenderer(
             btnLen
         )
 
-        mBtnLoadDisplacementMap.bounds(
+        mBtnLoadUserContent.bounds(
             mWidth - btnLen * 2,
             0f,
             btnLen,
@@ -221,7 +221,7 @@ class LevelEditorRenderer(
         mPrevX = x
         mPrevY = y
         if (mBtnRandomizeLand.intercept(x,y) ||
-            mBtnLoadDisplacementMap.intercept(x,y)
+            mBtnLoadUserContent.intercept(x,y)
         ) {
             return
         }
@@ -253,40 +253,78 @@ class LevelEditorRenderer(
 
     }
 
-    fun addMesh(
-        editorMesh: EditorMesh
+    override fun onGetUserContentUri(
+        userContent: UserContent
     ) {
-        mHandler.post {
-            val mesh = StaticMesh(
-                Object3D.createFromAssets(
-                    "objs/${editorMesh.objName}"
-                ),
-                "textures/${editorMesh.texName}",
-                mProgram,
-                mCamera
-            )
-            mesh.material.shine = 1f
-            mesh.setPosition(
-                editorMesh.position
-            )
-            mesh.setScale(
-                editorMesh.scale
-            )
-            editorMesh.mesh = mesh
-            meshes.add(
-                editorMesh
-            )
+        userContent.apply {
+            if (extension.contains(
+               "disp"
+            )) {
+                mLandscape.displace(
+                    DisplacementMap.createFromStream(
+                        stream
+                    )
+                )
+                return
+            }
+
+            if (extension.contains("obj")) {
+                // import obj
+                val outFile = CacheObjFile(
+                    System.currentTimeMillis().toString()
+                )
+
+                if (outFile.length() != 0L) {
+                    return
+                }
+
+                stream.writeToFile(
+                    outFile
+                )
+
+                val editorMesh = EditorMesh(
+                    outFile,
+                    "grass.jpg",
+                    Vector(0f),
+                    Vector(0f),
+                    Vector(20f,20f,20f),
+                    1,
+                    1,
+                )
+
+                mHandler.post {
+                    addMesh(
+                        editorMesh
+                    )
+                }
+                return
+            }
         }
     }
 
-    fun onLoadFromUserDisk(
-        inp: InputStream
+    private fun addMesh(
+        editorMesh: EditorMesh
     ) {
-        mLandscape.displace(
-            DisplacementMap.createFromStream(
-                inp
-            )
+        val mesh = StaticMesh(
+            Object3D.createFromStream(
+                FileInputStream(
+                    editorMesh.objFile
+                )
+            ),
+            "textures/${editorMesh.texName}",
+            mProgram,
+            mCamera
+        )
+        mesh.material.shine = 1f
+        mesh.setPosition(
+            editorMesh.position
+        )
+        mesh.setScale(
+            editorMesh.scale
+        )
+        editorMesh.mesh = mesh
+        meshes.add(
+            editorMesh
         )
     }
-
 }

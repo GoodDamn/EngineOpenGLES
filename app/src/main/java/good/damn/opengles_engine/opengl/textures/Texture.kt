@@ -3,7 +3,7 @@ package good.damn.opengles_engine.opengl.textures
 import android.graphics.BitmapFactory
 import android.opengl.GLES30.*
 import android.opengl.GLUtils
-import good.damn.opengles_engine.Application
+import good.damn.opengles_engine.App
 
 class Texture(
     assetPath: String,
@@ -22,7 +22,7 @@ class Texture(
 
     init {
 
-        val inp = Application.ASSETS.open(
+        val inp = App.ASSETS.open(
             assetPath
         )
 

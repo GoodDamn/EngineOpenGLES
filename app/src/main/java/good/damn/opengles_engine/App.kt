@@ -6,16 +6,16 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.content.res.Resources
 import android.widget.Toast
+import java.io.File
 import java.nio.ByteOrder
 import java.nio.charset.Charset
 
-class Application
+class App
 : Application() {
 
     companion object {
         lateinit var ASSETS: AssetManager
-        lateinit var RESOURCES: Resources
-        lateinit var CONTENT_RESOLVER: ContentResolver
+        lateinit var DIR_CACHE: File
 
         var WIDTH = 1
         var HEIGHT = 1
@@ -45,17 +45,13 @@ class Application
         ASSETS = context
             .assets
 
-        RESOURCES = context
-            .resources
-
-        CONTENT_RESOLVER = context
-            .contentResolver
-
-
-        val metrics = RESOURCES
+        val metrics = resources
             .displayMetrics
 
         HEIGHT = metrics.heightPixels
         WIDTH = metrics.widthPixels
+
+        DIR_CACHE = context.cacheDir
+
     }
 }

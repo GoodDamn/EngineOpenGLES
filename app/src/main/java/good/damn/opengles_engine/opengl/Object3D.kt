@@ -1,17 +1,10 @@
 package good.damn.opengles_engine.opengl
 
-import android.content.Context
-import good.damn.opengles_engine.Application
+import good.damn.opengles_engine.App
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.lang.Exception
-import java.nio.Buffer
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.FloatBuffer
-import java.nio.IntBuffer
-import java.nio.ShortBuffer
 import java.util.Vector
 
 class Object3D(
@@ -23,25 +16,14 @@ class Object3D(
         fun createFromAssets(
             path: String
         ): Object3D {
-            return getObject(
-                Application.ASSETS.open(
+            return createFromStream(
+                App.ASSETS.open(
                     path
                 )
             )
         }
 
-        fun createFromResources(
-            resourceId: Int
-        ): Object3D {
-            return getObject(
-                Application.RESOURCES.openRawResource(
-                    resourceId
-                )
-            )
-        }
-
-
-        private fun getObject(
+        fun createFromStream(
             inp: InputStream
         ): Object3D {
             val vertices: Vector<Float> = Vector()
