@@ -5,6 +5,7 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
 import android.util.Log
+import android.view.MotionEvent
 import good.damn.opengles_engine.App
 import good.damn.opengles_engine.activities.LevelEditorActivity
 import good.damn.opengles_engine.opengl.EditorMesh
@@ -27,6 +28,9 @@ import good.damn.opengles_engine.utils.ShaderUtils
 import java.io.File
 import java.io.FileInputStream
 import java.util.LinkedList
+import kotlin.math.abs
+import kotlin.math.hypot
+import kotlin.math.log
 
 class LevelEditorRenderer(
     var context: LevelEditorActivity?
@@ -43,14 +47,6 @@ OnMeshPositionListener {
     private val meshes = LinkedList<EditorMesh>()
 
     private val mCamera = RotationCamera()
-
-    private val mBtnZoomOut = GLButton {
-        mCamera.radius += 2
-    }
-
-    private val mBtnZoomIn = GLButton {
-        mCamera.radius -= 2
-    }
 
     private val mBtnRandomizeLand = GLButton {
         mLandscape.randomizeY()
@@ -157,20 +153,6 @@ OnMeshPositionListener {
         )
 
         val btnLen = mWidth * 0.1f
-
-        mBtnZoomOut.bounds(
-            0f,
-            0f,
-            btnLen,
-            btnLen
-        )
-
-        mBtnZoomIn.bounds(
-            btnLen,
-            0f,
-            btnLen,
-            btnLen
-        )
 
         mBtnRandomizeLand.bounds(
             mWidth - btnLen,
@@ -279,32 +261,39 @@ OnMeshPositionListener {
     }
 
     fun onTouchDown(
-        x: Float,
-        y: Float
+        event: MotionEvent
     ) {
-        mPrevX = x
-        mPrevY = y
-        if (mBtnRandomizeLand.intercept(x,y) ||
-            mBtnLoadUserContent.intercept(x,y)
+        if (event.pointerCount != 1) {
+            return
+        }
+        mPrevX = event.x
+        mPrevY = event.y
+        if (mBtnRandomizeLand.intercept(mPrevX,mPrevY) ||
+            mBtnLoadUserContent.intercept(mPrevX,mPrevY)
         ) {
             return
         }
     }
 
     fun onTouchMove(
-        x: Float,
-        y: Float
+        event: MotionEvent
     ) {
-        if (mBtnZoomOut.intercept(x, y) ||
-            mBtnZoomIn.intercept(x,y)
-        ) {
-            return
-        }
+        val x = event.x
+        val y = event.y
 
-        mCamera.rotateBy(
-            (mPrevX - x) * 0.001f,
-            (y - mPrevY) * 0.001f
-        )
+        val dx = mPrevX - x
+        val dy = y - mPrevY
+
+        Log.d(TAG, "onTouchMove: $dx $dy")
+
+        if (event.pointerCount == 1) {
+            mCamera.rotateBy(
+                dx * 0.001f,
+                dy * 0.001f
+            )
+        } else {
+            mCamera.radius -= dx + dy
+        }
 
         mPrevX = x
         mPrevY = y

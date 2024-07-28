@@ -2,6 +2,7 @@ package good.damn.opengles_engine.opengl.camera
 
 import android.opengl.Matrix
 import android.util.Log
+import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.log
 import kotlin.math.sin
@@ -14,8 +15,11 @@ class RotationCamera
 
     var radius: Float = 6f
         set(v) {
-            setRotation(mHDegrees, mVDegrees)
+            if (v < 0.0f) {
+                return
+            }
             field = v
+            setRotation(mHDegrees, mVDegrees)
         }
 
     private var mHDegrees: Float = 1f
@@ -36,9 +40,13 @@ class RotationCamera
         y: Float
     ) {
 
+        if (y < 0.0f || y > 3.1415f) {
+            return
+        }
+
         mHDegrees = x
         mVDegrees = y
-
+        
         val ysin = sin(mVDegrees)
         
         setPosition(

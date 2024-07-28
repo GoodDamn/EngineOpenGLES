@@ -50,15 +50,13 @@ OnMeshPositionListener {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 mRenderer.onTouchDown(
-                    event.x,
-                    event.y
+                    event
                 )
             }
 
             MotionEvent.ACTION_MOVE -> {
                 mRenderer.onTouchMove(
-                    event.x,
-                    event.y
+                    event
                 )
             }
 
