@@ -3,14 +3,12 @@ package good.damn.opengles_engine.activities
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
-import android.view.MotionEvent
-import android.view.View
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.opengles_engine.App
 import good.damn.opengles_engine.launchers.ContentLauncher
-import good.damn.opengles_engine.opengl.models.UserContent
+import good.damn.engine.opengl.models.UserContent
 import good.damn.opengles_engine.views.LevelEditorView
 import good.damn.opengles_engine.views.touchable.Axis
 import good.damn.opengles_engine.views.touchable.AxisView
@@ -121,7 +119,7 @@ ActivityResultCallback<Uri?> {
         ) ?: return
 
         mLevelEditorView.onGetUserContentUri(
-            UserContent(
+            good.damn.engine.opengl.models.UserContent(
                 extension,
                 stream
             )

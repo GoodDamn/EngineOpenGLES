@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.content.res.Resources
 import android.widget.Toast
+import good.damn.engine.MGEngine
 import java.io.File
 import java.nio.ByteOrder
 import java.nio.charset.Charset
@@ -14,17 +15,8 @@ class App
 : Application() {
 
     companion object {
-        lateinit var ASSETS: AssetManager
-        lateinit var DIR_CACHE: File
-
         var WIDTH = 1
         var HEIGHT = 1
-
-        val BYTE_ORDER = ByteOrder
-            .nativeOrder()
-        val BUFFER_MB = ByteArray(1024*1024)
-        val CHARSET = Charset.forName("UTF-8")
-        val CHARSET_ASCII = Charset.forName("US-ASCII")
 
         fun showMessage(
             msg: String,
@@ -42,16 +34,14 @@ class App
         super.onCreate()
         val context = this
 
-        ASSETS = context
-            .assets
+        MGEngine.init(
+            context
+        )
 
         val metrics = resources
             .displayMetrics
 
         HEIGHT = metrics.heightPixels
         WIDTH = metrics.widthPixels
-
-        DIR_CACHE = context.cacheDir
-
     }
 }

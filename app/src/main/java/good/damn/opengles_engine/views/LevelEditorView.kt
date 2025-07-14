@@ -3,19 +3,15 @@ package good.damn.opengles_engine.views
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import good.damn.opengles_engine.activities.LevelEditorActivity
-import good.damn.opengles_engine.opengl.EditorMesh
-import good.damn.opengles_engine.interfaces.OnGetUserContentUri
-import good.damn.opengles_engine.opengl.OnMeshPositionListener
-import good.damn.opengles_engine.opengl.models.UserContent
-import good.damn.opengles_engine.opengl.renderer.LevelEditorRenderer
-import java.io.InputStream
+import good.damn.engine.OnGetUserContentUri
+import good.damn.engine.opengl.OnMeshPositionListener
+import good.damn.engine.opengl.renderer.LevelEditorRenderer
 
 class LevelEditorView(
     context: LevelEditorActivity
 ): GLSurfaceView(
     context
-), OnGetUserContentUri,
-OnMeshPositionListener {
+), OnGetUserContentUri, OnMeshPositionListener {
 
     companion object {
         private const val TAG = "LevelEditorView"
@@ -28,9 +24,7 @@ OnMeshPositionListener {
             3
         )
 
-        mRenderer = LevelEditorRenderer(
-            context
-        )
+        mRenderer = LevelEditorRenderer()
 
         setRenderer(
             mRenderer
@@ -72,7 +66,7 @@ OnMeshPositionListener {
     }
 
     override fun onGetUserContentUri(
-        userContent: UserContent
+        userContent: good.damn.engine.opengl.models.UserContent
     ) {
         mRenderer.onGetUserContentUri(
             userContent

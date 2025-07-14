@@ -2,8 +2,7 @@ package good.damn.opengles_engine.views
 
 import android.content.Context
 import android.opengl.GLSurfaceView
-import android.view.View
-import good.damn.opengles_engine.opengl.renderer.TrafficRenderer
+import good.damn.engine.opengl.renderer.TrafficRenderer
 
 class TrafficView(
     context: Context
@@ -17,7 +16,7 @@ class TrafficView(
       )
 
       setRenderer(
-         TrafficRenderer()
+          TrafficRenderer()
       )
 
       renderMode = RENDERMODE_CONTINUOUSLY
