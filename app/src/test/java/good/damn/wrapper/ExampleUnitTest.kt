@@ -1,4 +1,4 @@
-package good.damn.opengles_engine
+package good.damn.wrapper
 
 import org.junit.Test
 

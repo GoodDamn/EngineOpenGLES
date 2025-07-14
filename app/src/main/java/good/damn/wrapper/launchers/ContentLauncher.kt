@@ -1,4 +1,4 @@
-package good.damn.opengles_engine.launchers
+package good.damn.wrapper.launchers
 
 import android.net.Uri
 import androidx.activity.result.ActivityResultCallback

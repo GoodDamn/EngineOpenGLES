@@ -1,17 +1,15 @@
-package good.damn.opengles_engine.activities
+package good.damn.wrapper.activities
 
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
-import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.models.UserContent
-import good.damn.opengles_engine.App
-import good.damn.opengles_engine.launchers.ContentLauncher
-import good.damn.opengles_engine.views.LevelEditorView
+import good.damn.wrapper.launchers.ContentLauncher
+import good.damn.wrapper.views.LevelEditorView
 
 class LevelEditorActivity
 : AppCompatActivity(),

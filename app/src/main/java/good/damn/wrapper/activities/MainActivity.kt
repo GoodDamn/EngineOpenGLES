@@ -1,9 +1,9 @@
-package good.damn.opengles_engine.activities
+package good.damn.wrapper.activities
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import good.damn.opengles_engine.views.TrafficView
+import good.damn.wrapper.views.TrafficView
 
 class MainActivity
 : AppCompatActivity() {

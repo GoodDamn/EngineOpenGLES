@@ -1,4 +1,4 @@
-package good.damn.opengles_engine.views
+package good.damn.wrapper.views
 
 import android.content.Context
 import android.opengl.GLSurfaceView

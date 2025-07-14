@@ -1,15 +1,9 @@
-package good.damn.opengles_engine
+package good.damn.wrapper
 
 import android.app.Application
-import android.content.ContentResolver
 import android.content.Context
-import android.content.res.AssetManager
-import android.content.res.Resources
 import android.widget.Toast
 import good.damn.engine.MGEngine
-import java.io.File
-import java.nio.ByteOrder
-import java.nio.charset.Charset
 
 class App
 : Application() {

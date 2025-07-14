@@ -1,10 +1,8 @@
-package good.damn.opengles_engine.views
+package good.damn.wrapper.views
 
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
-import good.damn.opengles_engine.activities.LevelEditorActivity
-import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.OnMeshPositionListener
 import good.damn.engine.opengl.renderer.LevelEditorRenderer
