@@ -45,27 +45,9 @@ class LevelEditorView(
         if (event == null) {
             return false
         }
-
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                mRenderer.onTouchDown(
-                    event
-                )
-            }
-
-            MotionEvent.ACTION_MOVE -> {
-                mRenderer.onTouchMove(
-                    event
-                )
-            }
-
-            MotionEvent.ACTION_UP -> {
-                mRenderer.onTouchUp(
-                    event.x,
-                    event.y
-                )
-            }
-        }
+        mRenderer.onTouchEvent(
+            event
+        )
 
         return true
     }

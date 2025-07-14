@@ -23,6 +23,8 @@ import good.damn.engine.opengl.maps.DisplacementMap
 import good.damn.engine.opengl.models.UserContent
 import good.damn.engine.opengl.thread.GLHandler
 import good.damn.engine.opengl.ui.GLButton
+import good.damn.engine.touch.MGIListenerTransform
+import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.ShaderUtils
 import java.io.FileInputStream
 import java.util.LinkedList
@@ -31,7 +33,7 @@ class LevelEditorRenderer(
     private val requesterUserContent: MGIRequestUserContent
 ): GLSurfaceView.Renderer,
 MGIListenerOnGetUserContent,
-OnMeshPositionListener {
+OnMeshPositionListener, MGIListenerTransform {
 
     companion object {
         private const val TAG = "LevelEditorRenderer"
@@ -43,15 +45,16 @@ OnMeshPositionListener {
 
     private val mCamera = RotationCamera()
 
+    private val mTouchScale = MGTouchScale().apply {
+        listener = this@LevelEditorRenderer
+    }
+
     private val mBtnLoadUserContent = GLButton {
         requesterUserContent.requestUserContent(
             this,
             "*/*"
         )
     }
-
-    private var mPrevX = 0f
-    private var mPrevY = 0f
 
     private var mWidth = 0
     private var mHeight = 0
@@ -246,50 +249,25 @@ OnMeshPositionListener {
         )
     }
 
-    fun onTouchDown(
+    fun onTouchEvent(
         event: MotionEvent
     ) {
-        if (event.pointerCount != 1) {
-            return
-        }
-        mPrevX = event.x
-        mPrevY = event.y
-        if (mBtnLoadUserContent.intercept(mPrevX,mPrevY)) {
-            return
-        }
-    }
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                if (event.pointerCount != 1) {
+                    return
+                }
 
-    fun onTouchMove(
-        event: MotionEvent
-    ) {
-        val x = event.x
-        val y = event.y
-
-        val dx = mPrevX - x
-        val dy = y - mPrevY
-
-        Log.d(TAG, "onTouchMove: $dx $dy")
-
-        if (event.pointerCount == 1) {
-            mCamera.rotateBy(
-                dx * 0.001f,
-                dy * 0.001f
-            )
-        } else {
-            mCamera.radius -= dx + dy
+                if (mBtnLoadUserContent.intercept(event.x, event.y)) {
+                    return
+                }
+            }
         }
 
-        mPrevX = x
-        mPrevY = y
+        mTouchScale.onTouchEvent(
+            event
+        )
     }
-
-    fun onTouchUp(
-        x: Float,
-        y: Float
-    ) {
-
-    }
-
 
     private fun addMesh(
         editorMesh: EditorMesh
@@ -317,5 +295,21 @@ OnMeshPositionListener {
         )
 
         mSelectedMesh = mesh
+    }
+
+    override fun onRotate(
+        dx: Float,
+        dy: Float
+    ) {
+        mCamera.rotateBy(
+            dx * 0.001f,
+            dy * 0.001f
+        )
+    }
+
+    override fun onScale(
+        scale: Float
+    ) {
+        mCamera.radius = scale
     }
 }
