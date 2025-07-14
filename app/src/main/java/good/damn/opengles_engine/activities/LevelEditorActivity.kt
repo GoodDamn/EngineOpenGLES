@@ -6,23 +6,26 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
+import good.damn.engine.interfaces.MGIListenerOnGetUserContent
+import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.opengl.models.UserContent
 import good.damn.opengles_engine.App
 import good.damn.opengles_engine.launchers.ContentLauncher
-import good.damn.engine.opengl.models.UserContent
 import good.damn.opengles_engine.views.LevelEditorView
 import good.damn.opengles_engine.views.touchable.Axis
 import good.damn.opengles_engine.views.touchable.AxisView
 
 class LevelEditorActivity
 : AppCompatActivity(),
-ActivityResultCallback<Uri?> {
+ActivityResultCallback<Uri?>, MGIRequestUserContent {
 
     companion object {
         private const val TAG = "LevelEditorActivity"
     }
 
-    private lateinit var mLevelEditorView: LevelEditorView
     private lateinit var mContentLauncher: ContentLauncher
+
+    private var mCallbackRequestUserContent: MGIListenerOnGetUserContent? = null
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(
@@ -39,7 +42,8 @@ ActivityResultCallback<Uri?> {
             context
         )
 
-        mLevelEditorView = LevelEditorView(
+        val viewLevelEditor = LevelEditorView(
+            this,
             this
         )
 
@@ -50,7 +54,7 @@ ActivityResultCallback<Uri?> {
                 Axis(
                     0xffff0000.toInt()
                 ) {
-                  mLevelEditorView.onChangeMeshPosition(
+                  viewLevelEditor.onChangeMeshPosition(
                       it,
                       0f,
                       0f
@@ -59,7 +63,7 @@ ActivityResultCallback<Uri?> {
                 Axis(
                     0xff00ff00.toInt()
                 ) {
-                    mLevelEditorView.onChangeMeshPosition(
+                    viewLevelEditor.onChangeMeshPosition(
                         0f,
                         it,
                         0f
@@ -68,7 +72,7 @@ ActivityResultCallback<Uri?> {
                 Axis(
                     0xff0000ff.toInt()
                 ) {
-                    mLevelEditorView.onChangeMeshPosition(
+                    viewLevelEditor.onChangeMeshPosition(
                         0f,
                         0f,
                         it
@@ -85,7 +89,7 @@ ActivityResultCallback<Uri?> {
                     .VERTICAL
 
                 addView(
-                    mLevelEditorView,
+                    viewLevelEditor,
                     -1,
                     (App.HEIGHT * 0.7f).toInt()
                 )
@@ -106,9 +110,7 @@ ActivityResultCallback<Uri?> {
             return
         }
 
-        val p = result.toString()
         val extension = result.toString()
-            .substring(p.length - 4)
 
         val mimeType = contentResolver.getType(
             result
@@ -118,20 +120,22 @@ ActivityResultCallback<Uri?> {
             result
         ) ?: return
 
-        mLevelEditorView.onGetUserContentUri(
-            good.damn.engine.opengl.models.UserContent(
+        mCallbackRequestUserContent?.onGetUserContent(
+            UserContent(
                 extension,
                 stream
             )
         )
+        mCallbackRequestUserContent = null
     }
 
-    // External call
-    fun loadFromUserDisk(
-        mime: String
+    override fun requestUserContent(
+        callback: MGIListenerOnGetUserContent,
+        mimeType: String
     ) {
+        mCallbackRequestUserContent = callback
         mContentLauncher.launch(
-            mime
+            mimeType
         )
     }
 }

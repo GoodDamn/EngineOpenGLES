@@ -6,7 +6,8 @@ import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
 import android.util.Log
 import android.view.MotionEvent
-import good.damn.engine.OnGetUserContentUri
+import good.damn.engine.interfaces.MGIListenerOnGetUserContent
+import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.EditorMesh
 import good.damn.engine.opengl.Object3D
 import good.damn.engine.opengl.StaticMesh
@@ -26,9 +27,10 @@ import good.damn.engine.utils.ShaderUtils
 import java.io.FileInputStream
 import java.util.LinkedList
 
-class LevelEditorRenderer
-: GLSurfaceView.Renderer,
-OnGetUserContentUri,
+class LevelEditorRenderer(
+    private val requesterUserContent: MGIRequestUserContent
+): GLSurfaceView.Renderer,
+MGIListenerOnGetUserContent,
 OnMeshPositionListener {
 
     companion object {
@@ -46,9 +48,10 @@ OnMeshPositionListener {
     }
 
     private val mBtnLoadUserContent = GLButton {
-//        context?.loadFromUserDisk(
-//            "*/*"
-//        )
+        requesterUserContent.requestUserContent(
+            this,
+            "*/*"
+        )
     }
 
     private var mPrevX = 0f
@@ -193,7 +196,7 @@ OnMeshPositionListener {
         mDirectionalLight.draw()
     }
 
-    override fun onGetUserContentUri(
+    override fun onGetUserContent(
         userContent: UserContent
     ) {
         userContent.apply {
