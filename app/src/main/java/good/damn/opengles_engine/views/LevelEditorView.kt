@@ -1,17 +1,20 @@
 package good.damn.opengles_engine.views
 
+import android.content.Context
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import good.damn.opengles_engine.activities.LevelEditorActivity
-import good.damn.opengles_engine.opengl.EditorMesh
-import good.damn.opengles_engine.opengl.renderer.LevelEditorRenderer
-import java.io.InputStream
+import good.damn.engine.interfaces.MGIListenerOnGetUserContent
+import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.opengl.OnMeshPositionListener
+import good.damn.engine.opengl.renderer.LevelEditorRenderer
 
 class LevelEditorView(
-    context: LevelEditorActivity
+    context: Context,
+    requesterUserContent: MGIRequestUserContent
 ): GLSurfaceView(
     context
-) {
+), OnMeshPositionListener {
 
     companion object {
         private const val TAG = "LevelEditorView"
@@ -25,7 +28,7 @@ class LevelEditorView(
         )
 
         mRenderer = LevelEditorRenderer(
-            context
+            requesterUserContent
         )
 
         setRenderer(
@@ -42,51 +45,20 @@ class LevelEditorView(
         if (event == null) {
             return false
         }
-
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                mRenderer.onTouchDown(
-                    event.x,
-                    event.y
-                )
-            }
-
-            MotionEvent.ACTION_MOVE -> {
-                mRenderer.onTouchMove(
-                    event.x,
-                    event.y
-                )
-            }
-
-            MotionEvent.ACTION_UP -> {
-                mRenderer.onTouchUp(
-                    event.x,
-                    event.y
-                )
-            }
-        }
+        mRenderer.onTouchEvent(
+            event
+        )
 
         return true
     }
 
-    fun addMesh(
-        mesh: EditorMesh
+    override fun onChangeMeshPosition(
+        dx: Float,
+        dy: Float,
+        dz: Float
     ) {
-        mRenderer.addMesh(
-            mesh
+        mRenderer.onChangeMeshPosition(
+            dx, dy, dz
         )
     }
-
-    fun onLoadFromUserDisk(
-        inp: InputStream?
-    ) {
-        if (inp == null) {
-            return
-        }
-
-        mRenderer.onLoadFromUserDisk(
-            inp
-        )
-    }
-
 }

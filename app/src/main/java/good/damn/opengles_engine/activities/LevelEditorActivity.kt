@@ -1,33 +1,31 @@
 package good.damn.opengles_engine.activities
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import good.damn.opengles_engine.Application
+import good.damn.engine.interfaces.MGIListenerOnGetUserContent
+import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.opengl.models.UserContent
+import good.damn.opengles_engine.App
 import good.damn.opengles_engine.launchers.ContentLauncher
-import good.damn.opengles_engine.level_editor.adapters.MeshAdapter
-import good.damn.opengles_engine.level_editor.listeners.OnClickMeshListener
-import good.damn.opengles_engine.opengl.EditorMesh
-import good.damn.opengles_engine.opengl.Vector
 import good.damn.opengles_engine.views.LevelEditorView
 
 class LevelEditorActivity
 : AppCompatActivity(),
-ActivityResultCallback<Uri?>,
-OnClickMeshListener {
+ActivityResultCallback<Uri?>, MGIRequestUserContent {
 
     companion object {
         private const val TAG = "LevelEditorActivity"
     }
-    
-    private lateinit var mLevelEditorView: LevelEditorView
+
     private lateinit var mContentLauncher: ContentLauncher
 
+    private var mCallbackRequestUserContent: MGIListenerOnGetUserContent? = null
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
@@ -42,54 +40,11 @@ OnClickMeshListener {
             context
         )
 
-        val layout = LinearLayout(
-            context
-        )
-
-        val recyclerViewMeshes = RecyclerView(
-            context
-        )
-
-        mLevelEditorView = LevelEditorView(
-            this
-        )
-
-        layout.orientation = LinearLayout
-            .VERTICAL
-
-        recyclerViewMeshes.layoutManager = LinearLayoutManager(
-            context,
-            LinearLayoutManager.HORIZONTAL,
-            false
-        )
-
-        recyclerViewMeshes.setHasFixedSize(
-            true
-        )
-
-        recyclerViewMeshes.adapter = Application.ASSETS.list(
-            "objs"
-        )?.let {
-            MeshAdapter(
-                it,
+        setContentView(
+            LevelEditorView(
+                this,
                 this
             )
-        }
-
-        layout.addView(
-            mLevelEditorView,
-            -1,
-            (Application.HEIGHT * 0.7f).toInt()
-        )
-
-        layout.addView(
-            recyclerViewMeshes,
-            -1,
-            -2
-        )
-
-        setContentView(
-            layout
         )
     }
 
@@ -100,36 +55,32 @@ OnClickMeshListener {
             return
         }
 
-        mLevelEditorView.onLoadFromUserDisk(
-            contentResolver.openInputStream(
-                result
+        val extension = result.toString()
+
+        val mimeType = contentResolver.getType(
+            result
+        ) ?: return
+
+        val stream = contentResolver.openInputStream(
+            result
+        ) ?: return
+
+        mCallbackRequestUserContent?.onGetUserContent(
+            UserContent(
+                extension,
+                stream
             )
         )
+        mCallbackRequestUserContent = null
     }
 
-    override fun onClick(
-        objName: String
+    override fun requestUserContent(
+        callback: MGIListenerOnGetUserContent,
+        mimeType: String
     ) {
-        Log.d(TAG, "onClick: $objName")
-        mLevelEditorView.addMesh(
-            EditorMesh(
-                objName,
-                "rock.jpg",
-                Vector(0f),
-                Vector(1f),
-                Vector(100f, 100f, 100f),
-                1,
-                1
-            )
-        )
-    }
-
-    // External call
-    fun loadFromUserDisk(
-        mime: String
-    ) {
+        mCallbackRequestUserContent = callback
         mContentLauncher.launch(
-            mime
+            mimeType
         )
     }
 }
