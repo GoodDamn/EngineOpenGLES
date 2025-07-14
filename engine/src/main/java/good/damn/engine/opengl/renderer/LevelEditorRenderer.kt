@@ -43,10 +43,6 @@ OnMeshPositionListener {
 
     private val mCamera = RotationCamera()
 
-    private val mBtnRandomizeLand = GLButton {
-        mLandscape.randomizeY()
-    }
-
     private val mBtnLoadUserContent = GLButton {
         requesterUserContent.requestUserContent(
             this,
@@ -150,15 +146,8 @@ OnMeshPositionListener {
 
         val btnLen = mWidth * 0.1f
 
-        mBtnRandomizeLand.bounds(
-            mWidth - btnLen,
-            0f,
-            btnLen,
-            btnLen
-        )
-
         mBtnLoadUserContent.bounds(
-            mWidth - btnLen * 2,
+            mWidth - btnLen,
             0f,
             btnLen,
             btnLen
@@ -265,9 +254,7 @@ OnMeshPositionListener {
         }
         mPrevX = event.x
         mPrevY = event.y
-        if (mBtnRandomizeLand.intercept(mPrevX,mPrevY) ||
-            mBtnLoadUserContent.intercept(mPrevX,mPrevY)
-        ) {
+        if (mBtnLoadUserContent.intercept(mPrevX,mPrevY)) {
             return
         }
     }

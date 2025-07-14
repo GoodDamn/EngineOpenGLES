@@ -219,19 +219,6 @@ class Landscape(
         }
     }
 
-    fun randomizeY() {
-        val c = mPositionBuffer.capacity()
-
-        var i = 1
-
-        while(i < c) {
-            mPositionBuffer.put(
-                i, mPositionBuffer[i] + Random.nextFloat() * 3.7f
-            )
-            i += 3
-        }
-    }
-
     override fun setScale(
         x: Float,
         y: Float,
