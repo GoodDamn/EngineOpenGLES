@@ -17,9 +17,9 @@ class SkySphere(
 ) {
     init {
         setScale(
-            100000f,
-            100000f,
-            100000f
+            200000f,
+            200000f,
+            200000f
         )
     }
 }

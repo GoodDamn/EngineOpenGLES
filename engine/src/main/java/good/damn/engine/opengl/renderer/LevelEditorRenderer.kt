@@ -103,8 +103,8 @@ OnMeshPositionListener, MGIListenerTransform {
         )
 
         mLandscape.setResolution(
-            200,
-            200
+            256,
+            256
         )
 
         mLandscape.displace(
@@ -114,9 +114,9 @@ OnMeshPositionListener, MGIListenerTransform {
         )
 
         mLandscape.setScale(
-            5.0f,
-            5.0f,
-            5.0f
+            10.0f,
+            10.0f,
+            10.0f
         )
 
         mSky = SkySphere(
