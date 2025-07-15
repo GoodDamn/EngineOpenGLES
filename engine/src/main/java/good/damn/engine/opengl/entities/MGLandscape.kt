@@ -2,6 +2,7 @@ package good.damn.engine.opengl.entities
 
 import android.opengl.GLES30.*
 import android.util.Log
+import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.textures.MGTexture
@@ -204,9 +205,74 @@ class MGLandscape(
         var x: Int
         var z: Int
 
+        val vectorNormal = MGVector(0f, 1f, 0f)
+
         while(i < c) {
             x = mPositionBuffer[i-1].toInt()
             z = mPositionBuffer[i+1].toInt()
+
+            val topVert = map.getHeightNormalRatio(
+                x,
+                z - 1,
+                mWidth,
+                mHeight
+            )
+
+            val leftVert = map.getHeightNormalRatio(
+                x - 1,
+                z,
+                mWidth,
+                mHeight
+            )
+
+            val bottomVert = map.getHeightNormalRatio(
+                x,
+                z + 1,
+                mWidth,
+                mHeight
+            )
+
+            val rightVert = map.getHeightNormalRatio(
+                x + 1,
+                z,
+                mWidth,
+                mHeight
+            )
+
+            vectorNormal.x = rightVert - leftVert
+            vectorNormal.y = 1.0f
+            vectorNormal.z = bottomVert - topVert
+
+            /*vectorVertical.x = 1f
+            vectorVertical.y = bottomVert - topVert
+            vectorVertical.z = 1f
+
+            vectorHorizontal.x = 1f
+            vectorHorizontal.y = leftVert - rightVert
+            vectorHorizontal.z = 1f
+
+            vectorNormal.cross(
+                vectorHorizontal,
+                vectorVertical
+            )*/
+
+            // Normal X
+            mNormalBuffer.put(
+                i - 1,
+                vectorNormal.x
+            )
+
+            // Normal Y
+            mNormalBuffer.put(
+                i,
+                vectorNormal.y
+            )
+
+            // Normal Z
+            mNormalBuffer.put(
+                i+1,
+                vectorNormal.z
+            )
 
             mPositionBuffer.put(
                 i, map.getHeightRatio(
@@ -233,7 +299,7 @@ class MGLandscape(
         )
     }
 
-    private fun createVertex(
+    private inline fun createVertex(
         x: Float,
         y: Float,
         z: Float,
@@ -248,11 +314,6 @@ class MGLandscape(
         // TexCoords
         mTexCoordBuffer.put(tx)
         mTexCoordBuffer.put(ty)
-
-        // Normal
-        mNormalBuffer.put(0.0f)
-        mNormalBuffer.put(1.0f)
-        mNormalBuffer.put(0.0f)
     }
 
     private fun enableVertex(

@@ -23,9 +23,8 @@ void main() {
     lowp vec3 ambColor = vec3(1.0) * light.factorAmbient;
 
     // Diffuse
-    lowp vec3 normal = normalize(outNormal);
     lowp vec3 lightDirection = normalize(light.position - outFragPosition);
-    lowp float diffFactor = max(-dot(normal, lightDirection), 0.0);
+    lowp float diffFactor = max(dot(outNormal, lightDirection), 0.0);
     lowp vec3 diffColor = light.color * light.intensity * diffFactor;
 
     // Specular

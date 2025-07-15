@@ -15,11 +15,13 @@ varying lowp vec2 texCoordOut;
 
 void main() {
 
-    mat4 cameraModel = camera * model;
+    mat4 mv = camera * model;
+    mat4 mvp = projection * mv;
 
-    vec4 coord = cameraModel * position;
+    //outFragPosition = vec3(mv * position);
+    //outNormal = vec3(mv * vec4(normal, 0.0));
 
-    gl_Position = projection * coord;
+    gl_Position = mvp * position;
 
     outFragPosition = vec3(model * position);
     outNormal = normal;

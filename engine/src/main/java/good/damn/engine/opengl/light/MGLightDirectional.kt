@@ -9,7 +9,7 @@ class MGLightDirectional(
     program: Int
 ): MGObjectDimension() {
 
-    var ambient = 0.1f
+    var ambient = 0.05f
 
     private val mUniformColor: Int
     private val mUniformAmbient: Int
@@ -54,7 +54,6 @@ class MGLightDirectional(
         mPosition.x = x
         mPosition.y = y
         mPosition.z = z
-        mPosition.normalize()
     }
 
     fun draw() {
@@ -67,7 +66,7 @@ class MGLightDirectional(
 
         glUniform1f(
             mUniformIntensity,
-            5000.0f
+            2.0f
         )
 
         glUniform1f(

@@ -23,6 +23,7 @@ import good.damn.engine.touch.MGIListenerTransform
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
 import java.util.LinkedList
+import kotlin.math.cos
 import kotlin.math.sin
 
 class MGRendererLevelEditor(
@@ -36,8 +37,6 @@ MGIListenerTransform {
     }
 
     private val mHandler = MGHandlerGL()
-
-    private val meshes = LinkedList<MGMMeshEditor>()
 
     private val mCamera = MGCameraRotation()
 
@@ -60,7 +59,6 @@ MGIListenerTransform {
     private lateinit var mDirectionalLight: MGLightDirectional
     private lateinit var mLandscape: MGLandscape
     private lateinit var mSky: MGSkySphere
-    private lateinit var meshLight: MGMeshStatic
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -106,25 +104,13 @@ MGIListenerTransform {
         )
 
         mLandscape.setScale(
-            1.0f,
-            1.0f,
-            1.0f
+            10.0f,
+            10.0f,
+            10.0f
         )
 
         mSky = MGSkySphere(
             mProgram
-        )
-
-        meshLight = MGMeshStatic(
-            MGObject3D.createFromAssets(
-                "objs/box.obj"
-            ),
-            "textures/rock.jpg",
-            mProgram
-        )
-
-        meshLight.setScale(
-            30f, 30f,30f
         )
 
         glEnable(
@@ -156,21 +142,17 @@ MGIListenerTransform {
         )
     }
 
-    private var mF = 0f
-
     override fun onDrawFrame(
         gl: GL10?
     ) {
-        mF = sin(
-            System.currentTimeMillis() % 100000L * 0.001f
-        ) * 100f
+        val f = System.currentTimeMillis() % 100000L * 0.001f
+        val fx = sin(f) * 440f
+        val fz = cos(f) * 440f
+
         mDirectionalLight.setPosition(
-            mF, mF, mF
+            fx, 800f, fz
         )
-        meshLight.setPosition(
-            mF, mF, mF
-        )
-        Log.d(TAG, "onDrawFrame: $mF")
+        //Log.d(TAG, "onDrawFrame: $mF")
         glViewport(
             0,
             0,
@@ -195,14 +177,6 @@ MGIListenerTransform {
         mLandscape.draw(
             mCamera
         )
-        meshLight.draw(
-            mCamera
-        )
-        /*meshes.forEach { editorMesh ->
-            editorMesh.mesh!!.draw(
-                mCamera
-            )
-        }*/
         mSky.draw(
             mCamera
         )

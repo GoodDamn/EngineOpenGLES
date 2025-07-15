@@ -43,27 +43,41 @@ class MGMapDisplace(
         y: Int,
         width: Int,
         height: Int
-    ): Float {
-        return getHeight(
-            (x / width.toFloat() * mBitmapWidth).toInt(),
-            (y / height.toFloat() * mBitmapHeight).toInt()
-        )
-    }
+    ) = getHeightNormal(
+        (x / width.toFloat() * mBitmapWidth).toInt(),
+        (y / height.toFloat() * mBitmapHeight).toInt()
+    ) * MAX_HEIGHT
 
-    fun getHeight(
+    fun getHeightNormalRatio(
+        x: Int,
+        y: Int,
+        width: Int,
+        height: Int
+    ) = getHeightNormal(
+        (x / width.toFloat() * mBitmapWidth).toInt(),
+        (y / height.toFloat() * mBitmapHeight).toInt()
+    )
+
+    fun getHeightNormal(
         x: Int,
         y: Int
     ): Float {
-        val xx = if (x == mBitmapWidth) x-1
-            else x
-        val yy = if (y == mBitmapHeight) y-1
-            else y
+        val xx = when {
+            x >= mBitmapWidth -> x - 1
+            x < 0 -> 0
+            else -> x
+        }
+
+        val yy = when {
+            y >= mBitmapHeight -> y - 1
+            y < 0 -> 0
+            else -> y
+        }
+
         val color = mBitmap
             .getPixel(xx,yy)
 
         val digitalHeight = color and 0xff
-
-        val height = (digitalHeight / 255f) * MAX_HEIGHT
-        return height
+        return digitalHeight / 255f
     }
 }
