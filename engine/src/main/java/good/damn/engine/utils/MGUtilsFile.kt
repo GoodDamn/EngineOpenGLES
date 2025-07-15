@@ -12,7 +12,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 
-class FileUtils {
+class MGUtilsFile {
 
     companion object {
         private val TAG = "FileUtils"

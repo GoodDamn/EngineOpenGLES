@@ -3,10 +3,9 @@ package good.damn.engine.utils
 import good.damn.engine.MGEngine
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
-import java.nio.IntBuffer
 import java.nio.ShortBuffer
 
-class BufferUtils {
+class MGUtilsBuffer {
     companion object {
         fun allocateFloat(
             size: Int

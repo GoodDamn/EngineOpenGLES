@@ -5,7 +5,7 @@ import good.damn.engine.opengl.camera.BaseCamera
 import good.damn.engine.opengl.entities.Material
 import good.damn.engine.opengl.entities.Mesh
 import good.damn.engine.opengl.textures.Texture
-import good.damn.engine.utils.BufferUtils
+import good.damn.engine.utils.MGUtilsBuffer
 
 open class StaticMesh(
     obj: Object3D,
@@ -60,7 +60,7 @@ open class StaticMesh(
         glBufferData(
             GL_ARRAY_BUFFER,
             obj.vertices.size * 4,
-            BufferUtils.createFloat(
+            MGUtilsBuffer.createFloat(
                 obj.vertices
             ),
             GL_STATIC_DRAW
@@ -101,7 +101,7 @@ open class StaticMesh(
         glBufferData(
             GL_ELEMENT_ARRAY_BUFFER,
             obj.indices.size * 2,
-            BufferUtils.createShort(
+            MGUtilsBuffer.createShort(
                 obj.indices
             ),
             GL_STATIC_DRAW

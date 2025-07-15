@@ -1,6 +1,6 @@
 package good.damn.engine.utils
 
-class ByteUtils {
+class MGUtilsByte {
 
     companion object {
         private const val TAG = "ByteUtils"

@@ -9,14 +9,9 @@ import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.EditorMesh
-import good.damn.engine.opengl.Object3D
-import good.damn.engine.opengl.StaticMesh
-import good.damn.engine.opengl.Vector
-import good.damn.engine.opengl.files.CacheObjFile
 import good.damn.engine.opengl.camera.RotationCamera
 import good.damn.engine.opengl.entities.Landscape
 import good.damn.engine.opengl.entities.SkySphere
-import good.damn.engine.opengl.extensions.writeToFile
 import good.damn.engine.opengl.light.DirectionalLight
 import good.damn.engine.opengl.maps.DisplacementMap
 import good.damn.engine.opengl.models.UserContent
@@ -24,8 +19,7 @@ import good.damn.engine.opengl.thread.GLHandler
 import good.damn.engine.opengl.ui.GLButton
 import good.damn.engine.touch.MGIListenerTransform
 import good.damn.engine.touch.MGTouchScale
-import good.damn.engine.utils.ShaderUtils
-import java.io.FileInputStream
+import good.damn.engine.utils.MGUtilsShader
 import java.util.LinkedList
 
 class LevelEditorRenderer(
@@ -68,7 +62,7 @@ MGIListenerTransform {
         gl: GL10?,
         config: EGLConfig?
     ) {
-        mProgram = ShaderUtils.createProgramFromAssets(
+        mProgram = MGUtilsShader.createProgramFromAssets(
             "shaders/vert.glsl",
             "shaders/frag.glsl"
         )

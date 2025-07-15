@@ -2,7 +2,7 @@ package good.damn.engine.utils
 
 import good.damn.engine.MGEngine
 
-class AssetUtils {
+class MGUtilsAsset {
 
     companion object {
 
@@ -13,7 +13,7 @@ class AssetUtils {
                 path
             )
 
-            val b = FileUtils.readBytes(
+            val b = MGUtilsFile.readBytes(
                 inp
             )
 

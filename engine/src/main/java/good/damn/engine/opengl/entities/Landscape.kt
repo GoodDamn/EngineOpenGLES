@@ -5,11 +5,10 @@ import android.util.Log
 import good.damn.engine.opengl.camera.BaseCamera
 import good.damn.engine.opengl.maps.DisplacementMap
 import good.damn.engine.opengl.textures.Texture
-import good.damn.engine.utils.BufferUtils
+import good.damn.engine.utils.MGUtilsBuffer
 import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
-import kotlin.random.Random
 
 class Landscape(
     private val mProgram: Int
@@ -122,22 +121,22 @@ class Landscape(
 
         val gridLen = (width+1) * (height+1)
 
-        mPositionBuffer = BufferUtils
+        mPositionBuffer = MGUtilsBuffer
             .allocateFloat(
                 gridLen * 3
             )
 
-        mNormalBuffer = BufferUtils
+        mNormalBuffer = MGUtilsBuffer
             .allocateFloat(
                 gridLen * 3
             )
 
-        mTexCoordBuffer = BufferUtils
+        mTexCoordBuffer = MGUtilsBuffer
             .allocateFloat(
                 gridLen * 2
             )
 
-        mIndicesBuffer = BufferUtils
+        mIndicesBuffer = MGUtilsBuffer
             .allocateInt(
                 gridLen * 6
             )

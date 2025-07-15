@@ -2,7 +2,7 @@ package good.damn.engine.utils
 
 import android.opengl.GLES20
 
-class ShaderUtils {
+class MGUtilsShader {
     companion object {
 
         fun createProgramFromAssets(
@@ -10,10 +10,10 @@ class ShaderUtils {
             fragmentPath: String
         ): Int {
             return createProgram(
-                AssetUtils.loadString(
+                MGUtilsAsset.loadString(
                     vertexPath
                 ),
-                AssetUtils.loadString(
+                MGUtilsAsset.loadString(
                     fragmentPath
                 )
             )
