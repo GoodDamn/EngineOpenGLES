@@ -4,7 +4,6 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.OnMeshPositionListener
 import good.damn.engine.opengl.renderer.LevelEditorRenderer
 
 class LevelEditorView(
@@ -12,7 +11,7 @@ class LevelEditorView(
     requesterUserContent: MGIRequestUserContent
 ): GLSurfaceView(
     context
-), OnMeshPositionListener {
+) {
 
     companion object {
         private const val TAG = "LevelEditorView"
@@ -48,15 +47,5 @@ class LevelEditorView(
         )
 
         return true
-    }
-
-    override fun onChangeMeshPosition(
-        dx: Float,
-        dy: Float,
-        dz: Float
-    ) {
-        mRenderer.onChangeMeshPosition(
-            dx, dy, dz
-        )
     }
 }

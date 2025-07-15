@@ -17,7 +17,6 @@ import good.damn.engine.opengl.camera.RotationCamera
 import good.damn.engine.opengl.entities.Landscape
 import good.damn.engine.opengl.entities.SkySphere
 import good.damn.engine.opengl.extensions.writeToFile
-import good.damn.engine.opengl.OnMeshPositionListener
 import good.damn.engine.opengl.light.DirectionalLight
 import good.damn.engine.opengl.maps.DisplacementMap
 import good.damn.engine.opengl.models.UserContent
@@ -33,7 +32,7 @@ class LevelEditorRenderer(
     private val requesterUserContent: MGIRequestUserContent
 ): GLSurfaceView.Renderer,
 MGIListenerOnGetUserContent,
-OnMeshPositionListener, MGIListenerTransform {
+MGIListenerTransform {
 
     companion object {
         private const val TAG = "LevelEditorRenderer"
@@ -64,8 +63,6 @@ OnMeshPositionListener, MGIListenerTransform {
     private lateinit var mDirectionalLight: DirectionalLight
     private lateinit var mLandscape: Landscape
     private lateinit var mSky: SkySphere
-
-    private var mSelectedMesh: StaticMesh? = null
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -191,61 +188,10 @@ OnMeshPositionListener, MGIListenerTransform {
     override fun onGetUserContent(
         userContent: UserContent
     ) {
-        userContent.apply {
-            if (extension.contains(
-               "disp"
-            )) {
-                mLandscape.displace(
-                    DisplacementMap.createFromStream(
-                        stream
-                    )
-                )
-                return
-            }
-
-            if (extension.contains("obj")) {
-                // import obj
-                val outFile = CacheObjFile(
-                    System.currentTimeMillis().toString()
-                )
-
-                if (outFile.length() != 0L) {
-                    return
-                }
-
-                stream.writeToFile(
-                    outFile
-                )
-
-                val editorMesh = EditorMesh(
-                    outFile,
-                    "grass.jpg",
-                    Vector(0f),
-                    Vector(0f),
-                    Vector(20f,20f,20f),
-                    1,
-                    1,
-                )
-
-                mHandler.post {
-                    addMesh(
-                        editorMesh
-                    )
-                }
-                return
-            }
-        }
-    }
-
-    override fun onChangeMeshPosition(
-        dx: Float,
-        dy: Float,
-        dz: Float
-    ) {
-        mSelectedMesh?.setPositionBy(
-            dx,
-            dy,
-            dz
+        mLandscape.displace(
+            DisplacementMap.createFromStream(
+                userContent.stream
+            )
         )
     }
 
@@ -267,34 +213,6 @@ OnMeshPositionListener, MGIListenerTransform {
         mTouchScale.onTouchEvent(
             event
         )
-    }
-
-    private fun addMesh(
-        editorMesh: EditorMesh
-    ) {
-        val mesh = StaticMesh(
-            Object3D.createFromStream(
-                FileInputStream(
-                    editorMesh.objFile
-                )
-            ),
-            "textures/${editorMesh.texName}",
-            mProgram,
-            mCamera
-        )
-        mesh.material.shine = 1f
-        mesh.setPosition(
-            editorMesh.position
-        )
-        mesh.setScale(
-            editorMesh.scale
-        )
-        editorMesh.mesh = mesh
-        meshes.add(
-            editorMesh
-        )
-
-        mSelectedMesh = mesh
     }
 
     override fun onRotate(
