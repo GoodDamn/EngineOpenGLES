@@ -27,14 +27,14 @@ void main() {
     lowp vec3 diffColor = light.color * light.intensity * diffFactor;
 
     // Specular
-    lowp vec3 eye = normalize(posOut);
-    lowp vec3 reflection = reflect(light.direction, normal);
-    lowp float specFactor = pow(max(0.0, -dot(reflection, eye)), shine);
-    lowp vec3 specColor = light.color * specularIntensity * specFactor;
+    //lowp vec3 eye = normalize(posOut);
+    //lowp vec3 reflection = reflect(light.direction, normal);
+    //lowp float specFactor = pow(max(0.0, -dot(reflection, eye)), shine);
+    //lowp vec3 specColor = light.color * specularIntensity * specFactor;
 
     gl_FragColor = texture2D(
         texture,
         texCoordOut
-    ) * vec4(ambColor + diffColor + specColor, 1.0);
+    ) * vec4(ambColor + diffColor, 1.0);
 
 }
