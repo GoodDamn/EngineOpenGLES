@@ -65,6 +65,10 @@ class MGTouchScale {
 
                     mPivotX = event.getX(pivotIndex)
                     mPivotY = event.getY(pivotIndex)
+
+                    mPrevX = mPivotX
+                    mPrevY = mPivotY
+
                     mTranslateX = mTranslate2X
                     mTranslateY = mTranslate2Y
                 }
