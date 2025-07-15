@@ -1,9 +1,9 @@
 package good.damn.engine.opengl.entities
 
 import android.opengl.Matrix.*
-import good.damn.engine.opengl.Vector
+import good.damn.engine.opengl.MGVector
 
-open class DimensionObject {
+open class MGObjectDimension {
 
     companion object {
         private const val TAG = "DimensionObject"
@@ -19,7 +19,7 @@ open class DimensionObject {
     }
 
     open fun setPosition(
-        v: Vector
+        v: MGVector
     ) {
         setPosition(
             v.x,
@@ -49,7 +49,7 @@ open class DimensionObject {
     }
 
     open fun setScale(
-        v: Vector
+        v: MGVector
     ) {
         setScale(
             v.x,

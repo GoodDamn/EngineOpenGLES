@@ -2,7 +2,7 @@ package good.damn.engine.opengl.entities
 
 import android.opengl.GLES30
 
-class Material(
+class MGMaterial(
     program: Int
 ) {
 

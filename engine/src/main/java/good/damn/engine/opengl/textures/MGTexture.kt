@@ -5,7 +5,7 @@ import android.opengl.GLES30.*
 import android.opengl.GLUtils
 import good.damn.engine.MGEngine
 
-class Texture(
+class MGTexture(
     assetPath: String,
     program: Int,
     wrapMode: Int = GL_CLAMP_TO_EDGE

@@ -1,25 +1,25 @@
 package good.damn.engine.opengl
 
 import android.opengl.GLES30.*
-import good.damn.engine.opengl.camera.BaseCamera
-import good.damn.engine.opengl.entities.Material
-import good.damn.engine.opengl.entities.Mesh
-import good.damn.engine.opengl.textures.Texture
+import good.damn.engine.opengl.camera.MGCamera
+import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.entities.MGMesh
+import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.utils.MGUtilsBuffer
 
-open class StaticMesh(
-    obj: Object3D,
+open class MGMeshStatic(
+    obj: MGObject3D,
     texturePath: String,
     program: Int
-): Mesh(
+): MGMesh(
     program
 ) {
 
-    var material = Material(
+    var material = MGMaterial(
         program
     )
 
-    private val mTexture = Texture(
+    private val mTexture = MGTexture(
         texturePath,
         program
     )
@@ -143,7 +143,7 @@ open class StaticMesh(
     }
 
     override fun draw(
-        camera: BaseCamera
+        camera: MGCamera
     ) {
         super.draw(
             camera

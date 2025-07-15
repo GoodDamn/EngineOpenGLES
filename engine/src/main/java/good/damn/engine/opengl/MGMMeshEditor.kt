@@ -2,13 +2,13 @@ package good.damn.engine.opengl
 
 import java.io.File
 
-data class EditorMesh(
+data class MGMMeshEditor(
     var objFile: File,
     var texName: String,
-    var position: Vector,
-    var rotation: Vector,
-    var scale: Vector,
+    var position: MGVector,
+    var rotation: MGVector,
+    var scale: MGVector,
     var specIntensity: Byte,
     var shininess: Byte,
-    var mesh: StaticMesh? = null
+    var mesh: MGMeshStatic? = null
 )

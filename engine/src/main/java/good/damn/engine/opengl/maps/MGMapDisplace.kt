@@ -2,31 +2,31 @@ package good.damn.engine.opengl.maps
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import good.damn.engine.opengl.factories.SKBitmapFactory
+import good.damn.engine.opengl.factories.MGFactoryBitmap
 import java.io.InputStream
 
-class DisplacementMap(
+class MGMapDisplace(
     private val mBitmap: Bitmap
 ) {
     companion object {
         fun createFromStream(
             inp: InputStream
-        ): DisplacementMap {
+        ): MGMapDisplace {
             val b = BitmapFactory
                 .decodeStream(inp)
 
             inp.close()
 
-            return DisplacementMap(
+            return MGMapDisplace(
                 b
             )
         }
 
         fun createFromAssets(
             assetPath: String
-        ): DisplacementMap {
-            return DisplacementMap(
-                SKBitmapFactory
+        ): MGMapDisplace {
+            return MGMapDisplace(
+                MGFactoryBitmap
                     .createFromAssets(assetPath)
             )
         }

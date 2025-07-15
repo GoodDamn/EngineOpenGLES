@@ -4,7 +4,7 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.renderer.LevelEditorRenderer
+import good.damn.engine.opengl.renderer.MGRendererLevelEditor
 
 class LevelEditorView(
     context: Context,
@@ -17,14 +17,14 @@ class LevelEditorView(
         private const val TAG = "LevelEditorView"
     }
 
-    private val mRenderer: LevelEditorRenderer
+    private val mRenderer: MGRendererLevelEditor
 
     init {
         setEGLContextClientVersion(
             3
         )
 
-        mRenderer = LevelEditorRenderer(
+        mRenderer = MGRendererLevelEditor(
             requesterUserContent
         )
 

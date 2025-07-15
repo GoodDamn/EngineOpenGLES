@@ -7,7 +7,7 @@ import java.io.InputStreamReader
 import java.lang.Exception
 import java.util.Vector
 
-class Object3D(
+class MGObject3D(
     val vertices: FloatArray,
     val indices: ShortArray
 ) {
@@ -15,7 +15,7 @@ class Object3D(
 
         fun createFromAssets(
             path: String
-        ): Object3D {
+        ): MGObject3D {
             return createFromStream(
                 MGEngine.ASSETS.open(
                     path
@@ -25,7 +25,7 @@ class Object3D(
 
         fun createFromStream(
             inp: InputStream
-        ): Object3D {
+        ): MGObject3D {
             val vertices: Vector<Float> = Vector()
             val normals: Vector<Float> = Vector()
             val textures: Vector<Float> = Vector()
@@ -110,7 +110,7 @@ class Object3D(
                 mVertices[posIndex++] = normals[i]
             }
 
-            return Object3D(
+            return MGObject3D(
                 mVertices,
                 mIndices
             )

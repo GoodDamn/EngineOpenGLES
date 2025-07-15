@@ -1,12 +1,12 @@
 package good.damn.engine.opengl.light
 
 import android.opengl.GLES30.*
-import good.damn.engine.opengl.Vector
-import good.damn.engine.opengl.entities.DimensionObject
+import good.damn.engine.opengl.MGVector
+import good.damn.engine.opengl.entities.MGObjectDimension
 
-class DirectionalLight(
+class MGLightDirectional(
     program: Int
-): DimensionObject() {
+): MGObjectDimension() {
 
     var ambient = 0.8f
 
@@ -14,7 +14,7 @@ class DirectionalLight(
     private val mUniformAmbient: Int
     private val mUniformDirection: Int
 
-    private val mDirectionVector = Vector(
+    private val mDirectionVector = MGVector(
         1f,
         1f,
         -100f

@@ -1,13 +1,12 @@
 package good.damn.engine.opengl.entities
 
-import good.damn.engine.opengl.Object3D
-import good.damn.engine.opengl.StaticMesh
-import good.damn.engine.opengl.camera.BaseCamera
+import good.damn.engine.opengl.MGObject3D
+import good.damn.engine.opengl.MGMeshStatic
 
-class SkySphere(
+class MGSkySphere(
     program: Int
-): StaticMesh(
-    Object3D.createFromAssets(
+): MGMeshStatic(
+    MGObject3D.createFromAssets(
         "objs/semi_sphere.obj"
     ),
     "textures/sky/skysphere_light.jpg",

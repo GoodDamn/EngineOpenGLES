@@ -2,10 +2,10 @@ package good.damn.engine.opengl.camera
 
 import android.opengl.GLES30.*
 import android.opengl.Matrix
-import good.damn.engine.opengl.entities.DimensionObject
+import good.damn.engine.opengl.entities.MGObjectDimension
 
-open class BaseCamera
-: DimensionObject() {
+open class MGCamera
+: MGObjectDimension() {
 
     private val mProjection = FloatArray(
         16

@@ -4,8 +4,8 @@ import android.opengl.Matrix
 import kotlin.math.cos
 import kotlin.math.sin
 
-class RotationCamera
-: BaseCamera() {
+class MGCameraRotation
+: MGCamera() {
     companion object{
         private const val TAG = "RotationCamera"
     }

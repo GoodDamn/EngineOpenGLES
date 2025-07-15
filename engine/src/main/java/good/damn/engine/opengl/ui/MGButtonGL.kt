@@ -2,7 +2,7 @@ package good.damn.engine.opengl.ui
 
 import android.util.Log
 
-class GLButton(
+class MGButtonGL(
     private var mX: Float = 0f,
     private var mY: Float = 0f,
     private var mWidth: Float = 0f,

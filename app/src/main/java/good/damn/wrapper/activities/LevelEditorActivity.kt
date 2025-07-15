@@ -7,7 +7,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.models.UserContent
+import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.wrapper.launchers.ContentLauncher
 import good.damn.wrapper.views.LevelEditorView
 
@@ -64,7 +64,7 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
         ) ?: return
 
         mCallbackRequestUserContent?.onGetUserContent(
-            UserContent(
+            MGMUserContent(
                 extension,
                 stream
             )

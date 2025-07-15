@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import good.damn.engine.MGEngine
 
-class SKBitmapFactory {
+class MGFactoryBitmap {
     companion object {
         fun createFromAssets(
             assetPath: String

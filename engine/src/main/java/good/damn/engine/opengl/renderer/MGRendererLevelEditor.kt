@@ -8,21 +8,21 @@ import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.EditorMesh
-import good.damn.engine.opengl.camera.RotationCamera
-import good.damn.engine.opengl.entities.Landscape
-import good.damn.engine.opengl.entities.SkySphere
-import good.damn.engine.opengl.light.DirectionalLight
-import good.damn.engine.opengl.maps.DisplacementMap
-import good.damn.engine.opengl.models.UserContent
-import good.damn.engine.opengl.thread.GLHandler
-import good.damn.engine.opengl.ui.GLButton
+import good.damn.engine.opengl.MGMMeshEditor
+import good.damn.engine.opengl.camera.MGCameraRotation
+import good.damn.engine.opengl.entities.MGLandscape
+import good.damn.engine.opengl.entities.MGSkySphere
+import good.damn.engine.opengl.light.MGLightDirectional
+import good.damn.engine.opengl.maps.MGMapDisplace
+import good.damn.engine.opengl.models.MGMUserContent
+import good.damn.engine.opengl.thread.MGHandlerGL
+import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.touch.MGIListenerTransform
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
 import java.util.LinkedList
 
-class LevelEditorRenderer(
+class MGRendererLevelEditor(
     private val requesterUserContent: MGIRequestUserContent
 ): GLSurfaceView.Renderer,
 MGIListenerOnGetUserContent,
@@ -32,17 +32,17 @@ MGIListenerTransform {
         private const val TAG = "LevelEditorRenderer"
     }
 
-    private val mHandler = GLHandler()
+    private val mHandler = MGHandlerGL()
 
-    private val meshes = LinkedList<EditorMesh>()
+    private val meshes = LinkedList<MGMMeshEditor>()
 
-    private val mCamera = RotationCamera()
+    private val mCamera = MGCameraRotation()
 
     private val mTouchScale = MGTouchScale().apply {
-        listener = this@LevelEditorRenderer
+        listener = this@MGRendererLevelEditor
     }
 
-    private val mBtnLoadUserContent = GLButton {
+    private val mBtnLoadUserContent = MGButtonGL {
         requesterUserContent.requestUserContent(
             this,
             "*/*"
@@ -54,9 +54,9 @@ MGIListenerTransform {
 
     private var mProgram = 0
 
-    private lateinit var mDirectionalLight: DirectionalLight
-    private lateinit var mLandscape: Landscape
-    private lateinit var mSky: SkySphere
+    private lateinit var mDirectionalLight: MGLightDirectional
+    private lateinit var mLandscape: MGLandscape
+    private lateinit var mSky: MGSkySphere
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -78,7 +78,7 @@ MGIListenerTransform {
             0.01f
         )
 
-        mDirectionalLight = DirectionalLight(
+        mDirectionalLight = MGLightDirectional(
             mProgram
         )
 
@@ -88,7 +88,7 @@ MGIListenerTransform {
             0f
         )
 
-        mLandscape = Landscape(
+        mLandscape = MGLandscape(
             mProgram
         )
 
@@ -98,7 +98,7 @@ MGIListenerTransform {
         )
 
         mLandscape.displace(
-            DisplacementMap.createFromAssets(
+            MGMapDisplace.createFromAssets(
                 "maps/displace.png"
             )
         )
@@ -109,7 +109,7 @@ MGIListenerTransform {
             10.0f
         )
 
-        mSky = SkySphere(
+        mSky = MGSkySphere(
             mProgram
         )
 
@@ -184,10 +184,10 @@ MGIListenerTransform {
     }
 
     override fun onGetUserContent(
-        userContent: UserContent
+        userContent: MGMUserContent
     ) {
         mLandscape.displace(
-            DisplacementMap.createFromStream(
+            MGMapDisplace.createFromStream(
                 userContent.stream
             )
         )

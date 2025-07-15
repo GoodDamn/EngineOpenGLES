@@ -2,30 +2,30 @@ package good.damn.engine.opengl.entities
 
 import android.opengl.GLES30.*
 import android.util.Log
-import good.damn.engine.opengl.camera.BaseCamera
-import good.damn.engine.opengl.maps.DisplacementMap
-import good.damn.engine.opengl.textures.Texture
+import good.damn.engine.opengl.camera.MGCamera
+import good.damn.engine.opengl.maps.MGMapDisplace
+import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.utils.MGUtilsBuffer
 import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
-class Landscape(
+class MGLandscape(
     private val mProgram: Int
-): Mesh(
+): MGMesh(
     mProgram
 ) {
     companion object {
         private const val TAG = "Landscape"
     }
 
-    var texture = Texture(
+    var texture = MGTexture(
         "textures/grass.jpg",
         mProgram,
         wrapMode = GL_REPEAT
     )
 
-    var material = Material(
+    var material = MGMaterial(
         mProgram
     )
 
@@ -43,7 +43,7 @@ class Landscape(
     }
 
     override fun draw(
-        camera: BaseCamera
+        camera: MGCamera
     ) {
         super.draw(
             camera
@@ -195,7 +195,7 @@ class Landscape(
     }
 
     fun displace(
-        map: DisplacementMap
+        map: MGMapDisplace
     ) {
         val c = mPositionBuffer.capacity()
 

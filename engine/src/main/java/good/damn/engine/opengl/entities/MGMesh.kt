@@ -2,11 +2,11 @@ package good.damn.engine.opengl.entities
 
 import android.opengl.GLES30.*
 import android.opengl.Matrix
-import good.damn.engine.opengl.camera.BaseCamera
+import good.damn.engine.opengl.camera.MGCamera
 
-open class Mesh(
+open class MGMesh(
     program: Int
-): DimensionObject() {
+): MGObjectDimension() {
 
     companion object {
         internal const val mStride = 8 * 4
@@ -46,7 +46,7 @@ open class Mesh(
     }
 
     open fun draw(
-        camera: BaseCamera
+        camera: MGCamera
     ) {
         glUniform1f(
             mUniformTextureOffset,

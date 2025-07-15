@@ -3,7 +3,7 @@ package good.damn.engine.opengl
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-class Vector(
+class MGVector(
     var x: Float,
     var y: Float = 0f,
     var z: Float = 0f

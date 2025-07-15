@@ -2,7 +2,7 @@ package good.damn.engine.opengl.thread
 
 import java.util.LinkedList
 
-class GLHandler: Runnable {
+class MGHandlerGL: Runnable {
 
     private val mQueue = LinkedList<Runnable>()
 

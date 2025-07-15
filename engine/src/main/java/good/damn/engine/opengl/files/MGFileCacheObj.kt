@@ -4,7 +4,7 @@ import android.util.Log
 import good.damn.engine.MGEngine
 import java.io.File
 
-class CacheObjFile(
+class MGFileCacheObj(
     fileName: String
 ): File(
     "${MGEngine.DIR_CACHE}/$DIR/$fileName"
