@@ -12,11 +12,9 @@ import java.nio.IntBuffer
 import kotlin.random.Random
 
 class Landscape(
-    private val mProgram: Int,
-    camera: BaseCamera
+    private val mProgram: Int
 ): Mesh(
-    mProgram,
-    camera
+    mProgram
 ) {
     companion object {
         private const val TAG = "Landscape"
@@ -45,8 +43,12 @@ class Landscape(
         mTextureOffset = 6.0f
     }
 
-    override fun draw() {
-        super.draw()
+    override fun draw(
+        camera: BaseCamera
+    ) {
+        super.draw(
+            camera
+        )
 
         texture.draw()
         material.draw()

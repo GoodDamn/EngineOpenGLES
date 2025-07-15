@@ -5,8 +5,7 @@ import android.opengl.Matrix
 import good.damn.engine.opengl.camera.BaseCamera
 
 open class Mesh(
-    program: Int,
-    private val mCamera: BaseCamera
+    program: Int
 ): DimensionObject() {
 
     companion object {
@@ -46,13 +45,15 @@ open class Mesh(
         )
     }
 
-    open fun draw() {
+    open fun draw(
+        camera: BaseCamera
+    ) {
         glUniform1f(
             mUniformTextureOffset,
             mTextureOffset
         )
 
-        mCamera.draw(
+        camera.draw(
             mUniformProject,
             mUniformModelView,
             mUniformCamera,

@@ -95,8 +95,7 @@ MGIListenerTransform {
         )
 
         mLandscape = Landscape(
-            mProgram,
-            mCamera
+            mProgram
         )
 
         mLandscape.setResolution(
@@ -117,8 +116,7 @@ MGIListenerTransform {
         )
 
         mSky = SkySphere(
-            mProgram,
-            mCamera
+            mProgram
         )
 
         glUseProgram(
@@ -177,11 +175,17 @@ MGIListenerTransform {
 
         mHandler.run()
 
-        mLandscape.draw()
+        mLandscape.draw(
+            mCamera
+        )
         meshes.forEach { editorMesh ->
-            editorMesh.mesh!!.draw()
+            editorMesh.mesh!!.draw(
+                mCamera
+            )
         }
-        mSky.draw()
+        mSky.draw(
+            mCamera
+        )
         mDirectionalLight.draw()
     }
 

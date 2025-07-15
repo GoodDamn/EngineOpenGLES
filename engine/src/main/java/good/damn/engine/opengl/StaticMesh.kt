@@ -10,11 +10,9 @@ import good.damn.engine.utils.BufferUtils
 open class StaticMesh(
     obj: Object3D,
     texturePath: String,
-    program: Int,
-    camera: BaseCamera
+    program: Int
 ): Mesh(
-    program,
-    camera
+    program
 ) {
 
     var material = Material(
@@ -144,8 +142,12 @@ open class StaticMesh(
         )
     }
 
-    override fun draw() {
-        super.draw()
+    override fun draw(
+        camera: BaseCamera
+    ) {
+        super.draw(
+            camera
+        )
 
         mTexture.draw()
         material.draw()

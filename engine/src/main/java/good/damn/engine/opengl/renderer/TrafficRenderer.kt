@@ -60,32 +60,28 @@ class TrafficRenderer
                     "objs/plane.obj"
                 ),
                 "textures/grass.jpg",
-                mProgram,
-                mCamera
+                mProgram
             ),
             StaticMesh(
                 Object3D.createFromAssets(
                     "objs/box.obj"
                 ),
                 "textures/rock.jpg",
-                mProgram,
-                mCamera
+                mProgram
             ),
             StaticMesh(
                 Object3D.createFromAssets(
                     "objs/sphere.obj"
                 ),
                 "textures/rock.jpg",
-                mProgram,
-                mCamera
+                mProgram
             ),
             StaticMesh(
                 Object3D.createFromAssets(
                     "objs/walls.obj"
                 ),
                 "textures/rock.jpg",
-                mProgram,
-                mCamera
+                mProgram
             )
         )
 
@@ -148,7 +144,9 @@ class TrafficRenderer
         mDirectionalLight.draw()
 
         mEntities.forEach {
-            it.draw()
+            it.draw(
+                mCamera
+            )
         }
 
         mTick = (mCurrentMillis - mPrevMillis) / 1000.0f

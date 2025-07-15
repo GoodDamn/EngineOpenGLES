@@ -80,8 +80,7 @@ class Level(
                         "objs/$objName.obj"
                     ),
                     "textures/$textureName",
-                    program,
-                    camera
+                    program
                 )
 
                 mesh.material.shine = shine.toFloat()
@@ -197,9 +196,9 @@ class Level(
 
     fun draw() {
         directionalLight.draw()
-        meshes.forEach {
+        /*meshes.forEach {
             it.draw()
-        }
+        }*/
     }
 
 }
