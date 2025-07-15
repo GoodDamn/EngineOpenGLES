@@ -1,6 +1,7 @@
 package good.damn.engine.opengl.light
 
 import android.opengl.GLES30.*
+import good.damn.engine.opengl.MGMeshStatic
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.entities.MGObjectDimension
 
@@ -8,20 +9,21 @@ class MGLightDirectional(
     program: Int
 ): MGObjectDimension() {
 
-    var ambient = 0.8f
+    var ambient = 0.1f
 
     private val mUniformColor: Int
     private val mUniformAmbient: Int
-    private val mUniformDirection: Int
+    private val mUniformPosition: Int
+    private val mUniformIntensity: Int
 
-    private val mDirectionVector = MGVector(
+    private val mPosition = MGVector(
         1f,
         1f,
         -100f
     )
 
     init {
-        mDirectionVector.normalize()
+        mPosition.normalize()
 
         mUniformColor = glGetUniformLocation(
             program,
@@ -30,12 +32,17 @@ class MGLightDirectional(
 
         mUniformAmbient = glGetUniformLocation(
             program,
-            "light.ambient"
+            "light.factorAmbient"
         )
 
-        mUniformDirection = glGetUniformLocation(
+        mUniformPosition = glGetUniformLocation(
             program,
-            "light.direction"
+            "light.position"
+        )
+
+        mUniformIntensity = glGetUniformLocation(
+            program,
+            "light.intensity"
         )
     }
 
@@ -44,10 +51,10 @@ class MGLightDirectional(
         y: Float,
         z: Float
     ) {
-        mDirectionVector.x = x
-        mDirectionVector.y = y
-        mDirectionVector.z = z
-        mDirectionVector.normalize()
+        mPosition.x = x
+        mPosition.y = y
+        mPosition.z = z
+        mPosition.normalize()
     }
 
     fun draw() {
@@ -59,15 +66,20 @@ class MGLightDirectional(
         )
 
         glUniform1f(
+            mUniformIntensity,
+            5000.0f
+        )
+
+        glUniform1f(
             mUniformAmbient,
             ambient
         )
 
         glUniform3f(
-            mUniformDirection,
-            mDirectionVector.x,
-            mDirectionVector.y,
-            mDirectionVector.z,
+            mUniformPosition,
+            mPosition.x,
+            mPosition.y,
+            mPosition.z,
         )
     }
 

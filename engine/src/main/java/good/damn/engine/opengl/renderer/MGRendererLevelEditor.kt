@@ -9,6 +9,8 @@ import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGMMeshEditor
+import good.damn.engine.opengl.MGMeshStatic
+import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.camera.MGCameraRotation
 import good.damn.engine.opengl.entities.MGLandscape
 import good.damn.engine.opengl.entities.MGSkySphere
@@ -21,6 +23,7 @@ import good.damn.engine.touch.MGIListenerTransform
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
 import java.util.LinkedList
+import kotlin.math.sin
 
 class MGRendererLevelEditor(
     private val requesterUserContent: MGIRequestUserContent
@@ -57,6 +60,7 @@ MGIListenerTransform {
     private lateinit var mDirectionalLight: MGLightDirectional
     private lateinit var mLandscape: MGLandscape
     private lateinit var mSky: MGSkySphere
+    private lateinit var meshLight: MGMeshStatic
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -71,6 +75,10 @@ MGIListenerTransform {
             mProgram
         )
 
+        glUseProgram(
+            mProgram
+        )
+
         mCamera.radius = 350f
 
         mCamera.setRotation(
@@ -80,12 +88,6 @@ MGIListenerTransform {
 
         mDirectionalLight = MGLightDirectional(
             mProgram
-        )
-
-        mDirectionalLight.setPosition(
-            10f,
-            -100f,
-            0f
         )
 
         mLandscape = MGLandscape(
@@ -104,17 +106,25 @@ MGIListenerTransform {
         )
 
         mLandscape.setScale(
-            10.0f,
-            10.0f,
-            10.0f
+            1.0f,
+            1.0f,
+            1.0f
         )
 
         mSky = MGSkySphere(
             mProgram
         )
 
-        glUseProgram(
+        meshLight = MGMeshStatic(
+            MGObject3D.createFromAssets(
+                "objs/box.obj"
+            ),
+            "textures/rock.jpg",
             mProgram
+        )
+
+        meshLight.setScale(
+            30f, 30f,30f
         )
 
         glEnable(
@@ -146,9 +156,21 @@ MGIListenerTransform {
         )
     }
 
+    private var mF = 0f
+
     override fun onDrawFrame(
         gl: GL10?
     ) {
+        mF = sin(
+            System.currentTimeMillis() % 100000L * 0.001f
+        ) * 100f
+        mDirectionalLight.setPosition(
+            mF, mF, mF
+        )
+        meshLight.setPosition(
+            mF, mF, mF
+        )
+        Log.d(TAG, "onDrawFrame: $mF")
         glViewport(
             0,
             0,
@@ -161,26 +183,29 @@ MGIListenerTransform {
         )
 
         glClearColor(
-            0.2f,
-                0.2f,
-            0.2f,
+            0.0f,
+                0.0f,
+            0.0f,
             1.0f
         )
 
         mHandler.run()
 
+        mDirectionalLight.draw()
         mLandscape.draw(
             mCamera
         )
-        meshes.forEach { editorMesh ->
+        meshLight.draw(
+            mCamera
+        )
+        /*meshes.forEach { editorMesh ->
             editorMesh.mesh!!.draw(
                 mCamera
             )
-        }
+        }*/
         mSky.draw(
             mCamera
         )
-        mDirectionalLight.draw()
     }
 
     override fun onGetUserContent(
