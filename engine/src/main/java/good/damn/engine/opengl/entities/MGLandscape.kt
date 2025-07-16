@@ -10,8 +10,6 @@ import good.damn.engine.utils.MGUtilsBuffer
 import java.nio.FloatBuffer
 
 class MGLandscape(
-    width: Int,
-    height: Int,
     program: Int
 ): MGMesh(
     program
@@ -36,11 +34,6 @@ class MGLandscape(
     private val mVertexArray = MGArrayVertex()
 
     init {
-        setResolution(
-            program,
-            width,
-            height
-        )
         mTextureOffset = 6.0f
     }
 

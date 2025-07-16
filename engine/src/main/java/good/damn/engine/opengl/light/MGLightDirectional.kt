@@ -9,7 +9,7 @@ class MGLightDirectional(
     program: Int
 ): MGObjectDimension() {
 
-    var ambient = 0.00f
+    var ambient = 0.9f
 
     private val mUniformColor: Int
     private val mUniformAmbient: Int

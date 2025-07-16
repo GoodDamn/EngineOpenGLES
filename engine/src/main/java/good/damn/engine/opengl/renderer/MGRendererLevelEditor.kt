@@ -19,10 +19,14 @@ import good.damn.engine.opengl.entities.MGSkySphere
 import good.damn.engine.opengl.light.MGLightDirectional
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
+import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.touch.MGIListenerTransform
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.LinkedList
 import kotlin.math.cos
 import kotlin.math.sin
@@ -34,7 +38,7 @@ MGIListenerOnGetUserContent,
 MGIListenerTransform {
 
     companion object {
-        private const val TAG = "LevelEditorRenderer"
+        private const val TAG = "MGRendererLevelEditor"
     }
 
     private val mCamera = MGCameraRotation()
@@ -50,7 +54,7 @@ MGIListenerTransform {
         )
     }
 
-    private var mHandler: Handler? = null
+    private val mHandler = MGHandlerGl()
 
     private var mWidth = 0
     private var mHeight = 0
@@ -65,11 +69,6 @@ MGIListenerTransform {
         gl: GL10?,
         config: EGLConfig?
     ) {
-        Looper.myLooper()?.run {
-            mHandler = Handler(
-                this
-            )
-        }
 
         mProgram = MGUtilsShader.createProgramFromAssets(
             "shaders/vert.glsl",
@@ -96,16 +95,20 @@ MGIListenerTransform {
         )
 
         mLandscape = MGLandscape(
-            256,
-            256,
             mProgram
-        )
-
-        mLandscape.displace(
-            MGMapDisplace.createFromAssets(
-                "maps/displace.png"
+        ).apply {
+            setResolution(
+                mProgram,
+                256,
+                256
             )
-        )
+
+            displace(
+                MGMapDisplace.createFromAssets(
+                    "maps/displace.png"
+                )
+            )
+        }
 
         mLandscape.setScale(
             10.0f,
@@ -156,6 +159,8 @@ MGIListenerTransform {
         mDirectionalLight.setPosition(
             fx, 800f, fz
         )
+
+        mHandler.run()
         //Log.d(TAG, "onDrawFrame: $mF")
         glViewport(
             0,
@@ -187,11 +192,13 @@ MGIListenerTransform {
     override fun onGetUserContent(
         userContent: MGMUserContent
     ) {
-        mHandler?.post {
+        val mapDisplace = MGMapDisplace.createFromStream(
+            userContent.stream
+        )
+
+        mHandler.post {
             mLandscape.displace(
-                MGMapDisplace.createFromStream(
-                    userContent.stream
-                )
+                mapDisplace
             )
         }
     }
