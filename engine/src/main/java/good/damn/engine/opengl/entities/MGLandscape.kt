@@ -7,9 +7,7 @@ import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.utils.MGUtilsBuffer
-import java.nio.Buffer
 import java.nio.FloatBuffer
-import java.nio.IntBuffer
 
 class MGLandscape(
     width: Int,
@@ -34,9 +32,6 @@ class MGLandscape(
 
     private var mWidth = 1
     private var mHeight = 1
-
-    private lateinit var mVertexBuffer: FloatBuffer
-    private lateinit var mIndicesBuffer: IntBuffer
 
     private val mVertexArray = MGArrayVertex()
 
@@ -77,11 +72,11 @@ class MGLandscape(
 
         val gridLen = (width+1) * (height+1)
 
-        mVertexBuffer = MGUtilsBuffer.allocateFloat(
+        val bufferVertex = MGUtilsBuffer.allocateFloat(
             gridLen * 8
         ) // position(3), texCoord(2), normal(3)
 
-        mIndicesBuffer = MGUtilsBuffer.allocateInt(
+        val bufferIndices = MGUtilsBuffer.allocateInt(
             gridLen * 6
         )
 
@@ -93,13 +88,19 @@ class MGLandscape(
             for (x in 0..mWidth) {
                 val fx = x.toFloat()
 
-                createVertex(
-                    fz,
-                    0.0f,
-                    fx,
-                    textureX,
-                    textureY
-                )
+                // Position
+                bufferVertex.put(fz)
+                bufferVertex.put(0.0f)
+                bufferVertex.put(fx)
+
+                // TexCoords
+                bufferVertex.put(textureX)
+                bufferVertex.put(textureY)
+
+                // Normals
+                bufferVertex.put(0.0f)
+                bufferVertex.put(1.0f)
+                bufferVertex.put(0.0f)
 
                 textureX += dgx
             }
@@ -122,95 +123,45 @@ class MGLandscape(
                 rightTop = leftTop + 1
                 rightBottom = leftBottom + 1
 
-                mIndicesBuffer.put(leftTop)
-                mIndicesBuffer.put(leftBottom)
-                mIndicesBuffer.put(rightBottom)
-                mIndicesBuffer.put(leftTop)
-                mIndicesBuffer.put(rightTop)
-                mIndicesBuffer.put(rightBottom)
+                bufferIndices.put(leftTop)
+                bufferIndices.put(leftBottom)
+                bufferIndices.put(rightBottom)
+                bufferIndices.put(leftTop)
+                bufferIndices.put(rightTop)
+                bufferIndices.put(rightBottom)
             }
         }
 
-        mVertexBuffer.position(0)
-        mIndicesBuffer.position(0)
+        bufferVertex.position(0)
+        bufferIndices.position(0)
         
         mVertexArray.configure(
             program,
-            mVertexBuffer,
-            mIndicesBuffer
+            bufferVertex,
+            bufferIndices
         )
     }
 
     fun displace(
         map: MGMapDisplace
     ) {
-        val c = mVertexBuffer.capacity()
+        val c = mVertexArray.sizeVertexArray
 
         var index = 0
 
-        var x: Int
-        var z: Int
-
+        val data = MGUtilsBuffer.allocateFloat(8)
+        mVertexArray.bindVertexBuffer()
         while(index < c) {
-            x = mVertexBuffer[index].toInt()
-            z = mVertexBuffer[index + 2].toInt()
-
-            val topVert = map.getHeightNormalRatio(
-                x,
-                z - 1,
-                mWidth,
-                mHeight
+            changeVertexData(
+                map,
+                index,
+                data
             )
 
-            val leftVert = map.getHeightNormalRatio(
-                x - 1,
-                z,
-                mWidth,
-                mHeight
-            )
-
-            val bottomVert = map.getHeightNormalRatio(
-                x,
-                z + 1,
-                mWidth,
-                mHeight
-            )
-
-            val rightVert = map.getHeightNormalRatio(
-                x + 1,
-                z,
-                mWidth,
-                mHeight
-            )
-
-            // Normal X
-            mVertexBuffer.put(
-                index + 5,
-                rightVert - leftVert
-            )
-
-            // Normal Y
-            mVertexBuffer.put(
-                index + 6,
-                1.0f
-            )
-
-            // Normal Z
-            mVertexBuffer.put(
-                index + 7,
-                bottomVert - topVert
-            )
-
-            mVertexBuffer.put(
-                index + 1, map.getHeightRatio(
-                    x,
-                    z,
-                    mWidth,
-                    mHeight
-                )
-            )
             index += 8
         }
+
+        mVertexArray.unbindVertexBuffer()
     }
 
     override fun setScale(
@@ -226,25 +177,88 @@ class MGLandscape(
         )
     }
 
-    private inline fun createVertex(
-        x: Float,
-        y: Float,
-        z: Float,
-        tx: Float, // Texture coords
-        ty: Float
+    private fun changeVertexData(
+        map: MGMapDisplace,
+        index: Int,
+        data: FloatBuffer
     ) {
+        val x = mVertexArray[index].toInt()
+        val z = mVertexArray[index + 2].toInt()
+
+        val topVert = map.getHeightNormalRatio(
+            x,
+            z - 1,
+            mWidth,
+            mHeight
+        )
+
+        val leftVert = map.getHeightNormalRatio(
+            x - 1,
+            z,
+            mWidth,
+            mHeight
+        )
+
+        val bottomVert = map.getHeightNormalRatio(
+            x,
+            z + 1,
+            mWidth,
+            mHeight
+        )
+
+        val rightVert = map.getHeightNormalRatio(
+            x + 1,
+            z,
+            mWidth,
+            mHeight
+        )
+
         // Position
-        mVertexBuffer.put(x)
-        mVertexBuffer.put(y)
-        mVertexBuffer.put(z)
+        data.put(
+            0, mVertexArray[index]
+        )
+        data.put(
+            1, map.getHeightRatio(
+                x,
+                z,
+                mWidth,
+                mHeight
+            )
+        )
 
-        // TexCoords
-        mVertexBuffer.put(tx)
-        mVertexBuffer.put(ty)
+        data.put(
+            2,
+            mVertexArray[index + 2]
+        )
 
-        // Normals
-        mVertexBuffer.put(0.0f)
-        mVertexBuffer.put(1.0f)
-        mVertexBuffer.put(0.0f)
+        // Texture coords
+        data.put(
+            3,
+            mVertexArray[index + 3]
+        )
+        data.put(
+            4,
+            mVertexArray[index + 4]
+        )
+        // Normal X
+        data.put(
+            5,
+            rightVert - leftVert
+        )
+        // Normal Y
+        data.put(
+            6,
+            1.0f
+        )
+        // Normal Z
+        data.put(
+            7,
+            bottomVert - topVert
+        )
+        data.position(0)
+        mVertexArray.changeVertexBufferData(
+            index,
+            data
+        )
     }
 }

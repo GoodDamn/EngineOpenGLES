@@ -1,22 +1,36 @@
 package good.damn.engine.opengl
 
 import android.opengl.GLES30.*
+import android.util.Log
 import good.damn.engine.opengl.entities.MGMesh.Companion.mStride
-import good.damn.engine.utils.MGUtilsBuffer
+import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
 class MGArrayVertex {
 
     private val mVertexArray = intArrayOf(1)
+    private val mVertexArrayBuffer = intArrayOf(1)
+
+    private lateinit var mBufferVertex: FloatBuffer
+    private lateinit var mBufferIndices: IntBuffer
 
     private var mIndicesSize = 0
+
+    val sizeVertexArray: Int
+        get() = mBufferVertex.capacity()
+
+    operator fun get(
+        i: Int
+    ) = mBufferVertex[i]
 
     fun configure(
         program: Int,
         vertices: FloatBuffer,
         indices: IntBuffer
     ) {
+        mBufferVertex = vertices
+        mBufferIndices = indices
         mIndicesSize = indices.capacity()
         glGenVertexArrays(
             mVertexArray.size,
@@ -55,6 +69,42 @@ class MGArrayVertex {
         )
     }
 
+    fun getVertexBufferData(
+        i: Int
+    ) = mBufferVertex[i]
+
+    fun bindVertexBuffer() {
+        glBindVertexArray(
+            mVertexArray[0]
+        )
+
+        glBindBuffer(
+            GL_ARRAY_BUFFER,
+            mVertexArrayBuffer[0]
+        )
+    }
+
+    fun unbindVertexBuffer() {
+        glBindVertexArray(0)
+
+        glBindBuffer(
+            GL_ARRAY_BUFFER,
+            0
+        )
+    }
+
+    fun changeVertexBufferData(
+        at: Int,
+        data: Buffer
+    ) {
+        glBufferSubData(
+            GL_ARRAY_BUFFER,
+            at * 4,
+            data.capacity() * 4,
+            data
+        )
+    }
+
     fun draw() {
         glBindVertexArray(
             mVertexArray[0]
@@ -73,17 +123,15 @@ class MGArrayVertex {
     private inline fun generateVertexBuffer(
         vertices: FloatBuffer
     ) {
-        val vbo = intArrayOf(1)
-
         glGenBuffers(
-            vbo.size,
-            vbo,
+            mVertexArrayBuffer.size,
+            mVertexArrayBuffer,
             0
         )
 
         glBindBuffer(
             GL_ARRAY_BUFFER,
-            vbo[0]
+            mVertexArrayBuffer[0]
         )
 
         glBufferData(

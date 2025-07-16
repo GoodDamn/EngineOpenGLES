@@ -4,6 +4,8 @@ import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
@@ -17,7 +19,6 @@ import good.damn.engine.opengl.entities.MGSkySphere
 import good.damn.engine.opengl.light.MGLightDirectional
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
-import good.damn.engine.opengl.thread.MGHandlerGL
 import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.touch.MGIListenerTransform
 import good.damn.engine.touch.MGTouchScale
@@ -36,8 +37,6 @@ MGIListenerTransform {
         private const val TAG = "LevelEditorRenderer"
     }
 
-    private val mHandler = MGHandlerGL()
-
     private val mCamera = MGCameraRotation()
 
     private val mTouchScale = MGTouchScale().apply {
@@ -50,6 +49,8 @@ MGIListenerTransform {
             "*/*"
         )
     }
+
+    private var mHandler: Handler? = null
 
     private var mWidth = 0
     private var mHeight = 0
@@ -64,6 +65,12 @@ MGIListenerTransform {
         gl: GL10?,
         config: EGLConfig?
     ) {
+        Looper.myLooper()?.run {
+            mHandler = Handler(
+                this
+            )
+        }
+
         mProgram = MGUtilsShader.createProgramFromAssets(
             "shaders/vert.glsl",
             "shaders/frag.glsl"
@@ -168,8 +175,6 @@ MGIListenerTransform {
             1.0f
         )
 
-        mHandler.run()
-
         mDirectionalLight.draw()
         mLandscape.draw(
             mCamera
@@ -182,11 +187,13 @@ MGIListenerTransform {
     override fun onGetUserContent(
         userContent: MGMUserContent
     ) {
-        mLandscape.displace(
-            MGMapDisplace.createFromStream(
-                userContent.stream
+        mHandler?.post {
+            mLandscape.displace(
+                MGMapDisplace.createFromStream(
+                    userContent.stream
+                )
             )
-        )
+        }
     }
 
     fun onTouchEvent(
