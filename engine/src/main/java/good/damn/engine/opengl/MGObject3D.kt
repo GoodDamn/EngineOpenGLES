@@ -1,15 +1,18 @@
 package good.damn.engine.opengl
 
 import good.damn.engine.MGEngine
+import good.damn.engine.utils.MGUtilsBuffer
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.lang.Exception
+import java.nio.FloatBuffer
+import java.nio.IntBuffer
 import java.util.Vector
 
 class MGObject3D(
-    val vertices: FloatArray,
-    val indices: ShortArray
+    val vertices: FloatBuffer,
+    val indices: IntBuffer
 ) {
     companion object {
 
@@ -85,34 +88,71 @@ class MGObject3D(
             // 3 - position
             // 2 - texture coords
             // 3 - normals
-            val mVertices = FloatArray(faces.size * 8)
-            val mIndices = ShortArray(faces.size)
+            val bufferVertices = MGUtilsBuffer.allocateFloat(
+                faces.size * 8
+            )
+            val bufferIndices = MGUtilsBuffer.allocateInt(
+                faces.size
+            )
 
             var posIndex = 0
 
             for ((index, face) in faces.withIndex()) {
                 val parts = face.split("/")
                 val vertexIndex = (parts[0].toShort() - 1).toShort()
-                mIndices[index] = index.toShort()
+                bufferIndices.put(
+                    index,
+                    index
+                )
 
                 var i = 3 * vertexIndex
-                mVertices[posIndex++] = vertices[i++]
-                mVertices[posIndex++] = vertices[i++]
-                mVertices[posIndex++] = vertices[i]
+
+                bufferVertices.put(
+                    posIndex++,
+                    vertices[i++]
+                )
+
+                bufferVertices.put(
+                    posIndex++,
+                    vertices[i++]
+                )
+
+                bufferVertices.put(
+                    posIndex++,
+                    vertices[i]
+                )
 
                 i = 2 * (parts[1].toInt() - 1)
-                mVertices[posIndex++] = textures[i++]
-                mVertices[posIndex++] = 1 - textures[i]
+                bufferVertices.put(
+                    posIndex++,
+                    textures[i++]
+                )
+                bufferVertices.put(
+                    posIndex++,
+                    1f - textures[i]
+                )
 
                 i = 3 * (parts[2].toInt() - 1)
-                mVertices[posIndex++] = normals[i++]
-                mVertices[posIndex++] = normals[i++]
-                mVertices[posIndex++] = normals[i]
+                bufferVertices.put(
+                    posIndex++,
+                    normals[i++]
+                )
+                bufferVertices.put(
+                    posIndex++,
+                    normals[i++]
+                )
+                bufferVertices.put(
+                    posIndex++,
+                    normals[i]
+                )
             }
 
+            bufferVertices.position(0)
+            bufferIndices.position(0)
+
             return MGObject3D(
-                mVertices,
-                mIndices
+                bufferVertices,
+                bufferIndices
             )
         }
 

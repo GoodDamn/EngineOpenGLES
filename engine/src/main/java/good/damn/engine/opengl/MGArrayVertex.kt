@@ -3,6 +3,8 @@ package good.damn.engine.opengl
 import android.opengl.GLES30.*
 import good.damn.engine.opengl.entities.MGMesh.Companion.mStride
 import good.damn.engine.utils.MGUtilsBuffer
+import java.nio.FloatBuffer
+import java.nio.IntBuffer
 
 class MGArrayVertex {
 
@@ -12,10 +14,10 @@ class MGArrayVertex {
 
     fun configure(
         program: Int,
-        vertices: FloatArray,
-        indices: ShortArray
+        vertices: FloatBuffer,
+        indices: IntBuffer
     ) {
-        mIndicesSize = indices.size
+        mIndicesSize = indices.capacity()
         glGenVertexArrays(
             mVertexArray.size,
             mVertexArray,
@@ -61,7 +63,7 @@ class MGArrayVertex {
         glDrawElements(
             GL_TRIANGLES,
             mIndicesSize,
-            GL_UNSIGNED_SHORT,
+            GL_UNSIGNED_INT,
             0
         )
 
@@ -69,7 +71,7 @@ class MGArrayVertex {
     }
 
     private inline fun generateVertexBuffer(
-        vertices: FloatArray
+        vertices: FloatBuffer
     ) {
         val vbo = intArrayOf(1)
 
@@ -86,16 +88,14 @@ class MGArrayVertex {
 
         glBufferData(
             GL_ARRAY_BUFFER,
-            vertices.size * 4,
-            MGUtilsBuffer.createFloat(
-                vertices
-            ),
+            vertices.capacity() * 4,
+            vertices,
             GL_STATIC_DRAW
         )
     }
 
     private inline fun generateIndexBuffer(
-        indices: ShortArray
+        indices: IntBuffer
     ) {
         val ido = intArrayOf(1)
 
@@ -112,10 +112,8 @@ class MGArrayVertex {
 
         glBufferData(
             GL_ELEMENT_ARRAY_BUFFER,
-            indices.size * 2,
-            MGUtilsBuffer.createShort(
-                indices
-            ),
+            indices.capacity() * 4,
+            indices,
             GL_STATIC_DRAW
         )
     }
