@@ -89,12 +89,9 @@ MGIListenerTransform {
         )
 
         mLandscape = MGLandscape(
-            mProgram
-        )
-
-        mLandscape.setResolution(
             256,
-            256
+            256,
+            mProgram
         )
 
         mLandscape.displace(

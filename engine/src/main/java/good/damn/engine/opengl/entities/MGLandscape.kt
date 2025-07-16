@@ -2,7 +2,7 @@ package good.damn.engine.opengl.entities
 
 import android.opengl.GLES30.*
 import android.util.Log
-import good.damn.engine.opengl.MGVector
+import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.textures.MGTexture
@@ -12,9 +12,11 @@ import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
 class MGLandscape(
-    private val mProgram: Int
+    width: Int,
+    height: Int,
+    program: Int
 ): MGMesh(
-    mProgram
+    program
 ) {
     companion object {
         private const val TAG = "Landscape"
@@ -22,24 +24,28 @@ class MGLandscape(
 
     var texture = MGTexture(
         "textures/grass.jpg",
-        mProgram,
+        program,
         wrapMode = GL_REPEAT
     )
 
     var material = MGMaterial(
-        mProgram
+        program
     )
 
     private var mWidth = 1
     private var mHeight = 1
 
-    private lateinit var mNormalBuffer: FloatBuffer
-    private lateinit var mTexCoordBuffer: FloatBuffer
-    private lateinit var mPositionBuffer: FloatBuffer
+    private lateinit var mVertexBuffer: FloatBuffer
     private lateinit var mIndicesBuffer: IntBuffer
 
+    private val mVertexArray = MGArrayVertex()
+
     init {
-        setResolution(5,5)
+        setResolution(
+            program,
+            width,
+            height
+        )
         mTextureOffset = 6.0f
     }
 
@@ -52,62 +58,11 @@ class MGLandscape(
 
         texture.draw()
         material.draw()
-
-
-        mAttrPosition = glGetAttribLocation(
-            mProgram,
-            "position"
-        )
-
-        mAttrTexCoord = glGetAttribLocation(
-            mProgram,
-            "texCoord"
-        )
-
-        mAttrNormal = glGetAttribLocation(
-            mProgram,
-            "normal"
-        )
-
-        enableVertex(
-            mAttrPosition,
-            3,
-            mPositionBuffer
-        )
-
-        enableVertex(
-            mAttrTexCoord,
-            2,
-            mTexCoordBuffer
-        )
-
-        enableVertex(
-            mAttrNormal,
-            3,
-            mNormalBuffer
-        )
-
-        glDrawElements(
-            GL_TRIANGLES,
-            mIndicesBuffer.capacity(),
-            GL_UNSIGNED_INT,
-            mIndicesBuffer
-        )
-
-        glDisableVertexAttribArray(
-            mAttrPosition
-        )
-
-        glDisableVertexAttribArray(
-            mAttrTexCoord
-        )
-
-        glDisableVertexAttribArray(
-            mAttrNormal
-        )
+        mVertexArray.draw()
     }
 
     fun setResolution(
+        program: Int,
         width: Int,
         height: Int
     ) {
@@ -122,25 +77,13 @@ class MGLandscape(
 
         val gridLen = (width+1) * (height+1)
 
-        mPositionBuffer = MGUtilsBuffer
-            .allocateFloat(
-                gridLen * 3
-            )
+        mVertexBuffer = MGUtilsBuffer.allocateFloat(
+            gridLen * 8
+        ) // position(3), texCoord(2), normal(3)
 
-        mNormalBuffer = MGUtilsBuffer
-            .allocateFloat(
-                gridLen * 3
-            )
-
-        mTexCoordBuffer = MGUtilsBuffer
-            .allocateFloat(
-                gridLen * 2
-            )
-
-        mIndicesBuffer = MGUtilsBuffer
-            .allocateInt(
-                gridLen * 6
-            )
+        mIndicesBuffer = MGUtilsBuffer.allocateInt(
+            gridLen * 6
+        )
 
         val time = System.currentTimeMillis()
         Log.d(TAG, "init: $time")
@@ -163,7 +106,6 @@ class MGLandscape(
 
             textureY += dgy
         }
-        Log.d(TAG, "init: DELTA_TIME: ${System.currentTimeMillis() - time}")
 
         var leftTop: Int
         var leftBottom: Int
@@ -189,25 +131,29 @@ class MGLandscape(
             }
         }
 
-        mPositionBuffer.position(0)
-        mNormalBuffer.position(0)
-        mTexCoordBuffer.position(0)
+        mVertexBuffer.position(0)
         mIndicesBuffer.position(0)
+        
+        mVertexArray.configure(
+            program,
+            mVertexBuffer,
+            mIndicesBuffer
+        )
     }
 
     fun displace(
         map: MGMapDisplace
     ) {
-        val c = mPositionBuffer.capacity()
+        val c = mVertexBuffer.capacity()
 
-        var i = 1
+        var index = 0
 
         var x: Int
         var z: Int
 
-        while(i < c) {
-            x = mPositionBuffer[i-1].toInt()
-            z = mPositionBuffer[i+1].toInt()
+        while(index < c) {
+            x = mVertexBuffer[index].toInt()
+            z = mVertexBuffer[index + 2].toInt()
 
             val topVert = map.getHeightNormalRatio(
                 x,
@@ -238,32 +184,32 @@ class MGLandscape(
             )
 
             // Normal X
-            mNormalBuffer.put(
-                i - 1,
+            mVertexBuffer.put(
+                index + 5,
                 rightVert - leftVert
             )
 
             // Normal Y
-            mNormalBuffer.put(
-                i,
+            mVertexBuffer.put(
+                index + 6,
                 1.0f
             )
 
             // Normal Z
-            mNormalBuffer.put(
-                i+1,
+            mVertexBuffer.put(
+                index + 7,
                 bottomVert - topVert
             )
 
-            mPositionBuffer.put(
-                i, map.getHeightRatio(
+            mVertexBuffer.put(
+                index + 1, map.getHeightRatio(
                     x,
                     z,
                     mWidth,
                     mHeight
                 )
             )
-            i += 3
+            index += 8
         }
     }
 
@@ -288,32 +234,17 @@ class MGLandscape(
         ty: Float
     ) {
         // Position
-        mPositionBuffer.put(x)
-        mPositionBuffer.put(y)
-        mPositionBuffer.put(z)
+        mVertexBuffer.put(x)
+        mVertexBuffer.put(y)
+        mVertexBuffer.put(z)
 
         // TexCoords
-        mTexCoordBuffer.put(tx)
-        mTexCoordBuffer.put(ty)
+        mVertexBuffer.put(tx)
+        mVertexBuffer.put(ty)
+
+        // Normals
+        mVertexBuffer.put(0.0f)
+        mVertexBuffer.put(1.0f)
+        mVertexBuffer.put(0.0f)
     }
-
-    private fun enableVertex(
-        attr: Int,
-        size: Int,
-        buffer: Buffer
-    ) {
-        glEnableVertexAttribArray(
-            attr
-        )
-
-        glVertexAttribPointer(
-            attr,
-            size,
-            GL_FLOAT,
-            false,
-            size * 4,
-            buffer
-        )
-    }
-
 }

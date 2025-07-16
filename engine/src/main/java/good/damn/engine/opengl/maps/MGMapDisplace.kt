@@ -63,13 +63,13 @@ class MGMapDisplace(
         y: Int
     ): Float {
         val xx = when {
-            x >= mBitmapWidth -> x - 1
+            x >= mBitmapWidth -> mBitmapWidth - 1
             x < 0 -> 0
             else -> x
         }
 
         val yy = when {
-            y >= mBitmapHeight -> y - 1
+            y >= mBitmapHeight -> mBitmapHeight - 1
             y < 0 -> 0
             else -> y
         }
