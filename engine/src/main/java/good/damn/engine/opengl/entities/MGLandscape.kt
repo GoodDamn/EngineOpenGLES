@@ -205,8 +205,6 @@ class MGLandscape(
         var x: Int
         var z: Int
 
-        val vectorNormal = MGVector(0f, 1f, 0f)
-
         while(i < c) {
             x = mPositionBuffer[i-1].toInt()
             z = mPositionBuffer[i+1].toInt()
@@ -239,39 +237,22 @@ class MGLandscape(
                 mHeight
             )
 
-            vectorNormal.x = rightVert - leftVert
-            vectorNormal.y = 1.0f
-            vectorNormal.z = bottomVert - topVert
-
-            /*vectorVertical.x = 1f
-            vectorVertical.y = bottomVert - topVert
-            vectorVertical.z = 1f
-
-            vectorHorizontal.x = 1f
-            vectorHorizontal.y = leftVert - rightVert
-            vectorHorizontal.z = 1f
-
-            vectorNormal.cross(
-                vectorHorizontal,
-                vectorVertical
-            )*/
-
             // Normal X
             mNormalBuffer.put(
                 i - 1,
-                vectorNormal.x
+                rightVert - leftVert
             )
 
             // Normal Y
             mNormalBuffer.put(
                 i,
-                vectorNormal.y
+                1.0f
             )
 
             // Normal Z
             mNormalBuffer.put(
                 i+1,
-                vectorNormal.z
+                bottomVert - topVert
             )
 
             mPositionBuffer.put(
