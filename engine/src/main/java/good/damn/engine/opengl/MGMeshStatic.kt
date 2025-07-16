@@ -24,121 +24,11 @@ open class MGMeshStatic(
         program
     )
 
-    private val mIndicesCount = obj.indices.size
-    private val mVertexArray = intArrayOf(
-        1
-    )
-
-    init {
-        glGenVertexArrays(
-            1,
-            mVertexArray,
-            0
-        )
-
-        glBindVertexArray(
-            mVertexArray[0]
-        )
-
-        // Generate vertex buffer
-
-        val idVertex = intArrayOf(
-            1
-        )
-
-        glGenBuffers(
-            1,
-            idVertex,
-            0
-        )
-
-        glBindBuffer(
-            GL_ARRAY_BUFFER,
-            idVertex[0]
-        )
-
-        glBufferData(
-            GL_ARRAY_BUFFER,
-            obj.vertices.size * 4,
-            MGUtilsBuffer.createFloat(
-                obj.vertices
-            ),
-            GL_STATIC_DRAW
-        )
-
-        mAttrTexCoord = glGetAttribLocation(
+    private val mVertexArray = MGArrayVertex().apply {
+        configure(
             program,
-            "texCoord"
-        )
-
-        mAttrNormal = glGetAttribLocation(
-            program,
-            "normal"
-        )
-
-        mAttrPosition = glGetAttribLocation(
-            program,
-            "position"
-        )
-
-        // Generate index buffer
-
-        val idIndex = intArrayOf(
-            1
-        )
-
-        glGenBuffers(
-            1,
-            idIndex,
-            0
-        )
-
-        glBindBuffer(
-            GL_ELEMENT_ARRAY_BUFFER,
-            idIndex[0]
-        )
-
-        glBufferData(
-            GL_ELEMENT_ARRAY_BUFFER,
-            obj.indices.size * 2,
-            MGUtilsBuffer.createShort(
-                obj.indices
-            ),
-            GL_STATIC_DRAW
-        )
-
-        // Enable vertex attrib
-
-        enableVertex(
-            mAttrPosition,
-            0,
-            3
-        )
-
-        enableVertex(
-            mAttrTexCoord,
-            3 * 4,
-            2
-        )
-
-        enableVertex(
-            mAttrNormal,
-            5 * 4,
-            3
-        )
-
-        glBindVertexArray(
-            0
-        )
-
-        glBindBuffer(
-            GL_ARRAY_BUFFER,
-            0
-        )
-
-        glBindBuffer(
-            GL_ELEMENT_ARRAY_BUFFER,
-            0
+            obj.vertices,
+            obj.indices
         )
     }
 
@@ -151,42 +41,6 @@ open class MGMeshStatic(
 
         mTexture.draw()
         material.draw()
-
-        glBindVertexArray(
-            mVertexArray[0]
-        )
-
-        glDrawElements(
-            GL_TRIANGLES,
-            mIndicesCount,
-            GL_UNSIGNED_SHORT,
-            0
-        )
-
-        glBindVertexArray(
-            0
-        )
+        mVertexArray.draw()
     }
-
-    private fun enableVertex(
-        attrib: Int,
-        offset: Int,
-        size: Int
-    ) {
-
-        glEnableVertexAttribArray(
-            attrib
-        )
-
-        glVertexAttribPointer(
-            attrib,
-            size,
-            GL_FLOAT,
-            false,
-            mStride,
-            offset
-        )
-
-    }
-
 }
