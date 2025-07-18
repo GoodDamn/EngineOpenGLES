@@ -115,13 +115,15 @@ class MGArrayVertex {
         )*/
     }
 
-    fun draw() {
+    fun draw(
+        mode: Int = GL_TRIANGLES
+    ) {
         glBindVertexArray(
             mVertexArray[0]
         )
 
         glDrawElements(
-            GL_TRIANGLES,
+            mode,
             mIndicesSize,
             GL_UNSIGNED_INT,
             0

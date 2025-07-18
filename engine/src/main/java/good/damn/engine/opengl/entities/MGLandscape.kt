@@ -45,6 +45,12 @@ class MGLandscape(
             camera
         )
 
+        if (isWireframe) {
+            mVertexArray.draw(
+                GL_LINES
+            )
+            return
+        }
         texture.draw()
         material.draw()
         mVertexArray.draw()

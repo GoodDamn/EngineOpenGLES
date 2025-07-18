@@ -39,6 +39,13 @@ open class MGMeshStatic(
             camera
         )
 
+        if (isWireframe) {
+            mVertexArray.draw(
+                GL_LINES
+            )
+            return
+        }
+
         mTexture.draw()
         material.draw()
         mVertexArray.draw()
