@@ -33,21 +33,10 @@ class MGMapDisplace(
         }
 
         private const val TAG = "DisplacementMap"
-        private const val MAX_HEIGHT = 255.0f
     }
 
     private val mBitmapWidth = mBitmap.width
     private val mBitmapHeight = mBitmap.height
-
-    fun getHeightRatio(
-        x: Int,
-        y: Int,
-        width: Int,
-        height: Int
-    ) = getHeightNormal(
-        (x / width.toFloat() * mBitmapWidth).roundToInt(),
-        (y / height.toFloat() * mBitmapHeight).roundToInt()
-    ) * MAX_HEIGHT
 
     fun getHeightNormalRatio(
         x: Int,

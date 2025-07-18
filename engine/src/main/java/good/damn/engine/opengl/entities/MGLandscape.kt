@@ -16,6 +16,7 @@ class MGLandscape(
 ) {
     companion object {
         private const val TAG = "Landscape"
+        private const val MAX_HEIGHT = 255f
     }
 
     var texture = MGTexture(
@@ -186,42 +187,37 @@ class MGLandscape(
         val x = mVertexArray[index].toInt()
         val z = mVertexArray[index + 2].toInt()
         val topVert = map.getHeightNormalRatio(
-            x,
-            z - 1,
-            mWidth,
-            mHeight
+            x, z - 1,
+            mWidth, mHeight
         )
 
         val leftVert = map.getHeightNormalRatio(
-            x - 1,
-            z,
-            mWidth,
-            mHeight
+            x - 1, z,
+            mWidth, mHeight
         )
 
         val bottomVert = map.getHeightNormalRatio(
-            x,
-            z + 1,
-            mWidth,
-            mHeight
+            x, z + 1,
+            mWidth, mHeight
         )
 
         val rightVert = map.getHeightNormalRatio(
-            x + 1,
-            z,
-            mWidth,
-            mHeight
+            x + 1, z,
+            mWidth, mHeight
         )
 
+        val middleVert = map.getHeightNormalRatio(
+            x, z,
+            mWidth, mHeight
+        )
+
+        val smooth = (
+            middleVert + topVert + rightVert + leftVert + bottomVert
+        ) / 5f
         // Position Y
         mVertexArray.writeVertexBufferData(
             index + 1,
-            map.getHeightRatio(
-                x,
-                z,
-                mWidth,
-                mHeight
-            )
+            smooth * MAX_HEIGHT
         )
 
         // Normal X
