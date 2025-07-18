@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.MotionEvent
+import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGMMeshEditor
@@ -53,6 +54,10 @@ MGIListenerTransform {
             this,
             "*/*"
         )
+    }
+
+    private val mBtnSwitchWireframe = MGButtonGL {
+        MGEngine.isWireframe = !MGEngine.isWireframe
     }
 
     private val mBarSeekAmbient = MGSeekBarGl {
@@ -153,6 +158,13 @@ MGIListenerTransform {
             height.toFloat()
         )
 
+        mBtnSwitchWireframe.bounds(
+            width - btnLen,
+            height - btnLen,
+            btnLen,
+            btnLen
+        )
+
         mBtnLoadUserContent.bounds(
             mWidth - btnLen,
             0f,
@@ -232,6 +244,12 @@ MGIListenerTransform {
                     return
                 }
 
+                if (mBtnSwitchWireframe.intercept(event.x, event.y)) {
+                    return
+                }
+            }
+
+            MotionEvent.ACTION_UP -> {
                 if (mBarSeekAmbient.intercept(event.x, event.y)) {
                     return
                 }
