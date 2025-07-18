@@ -11,9 +11,6 @@ import android.view.MotionEvent
 import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.MGMMeshEditor
-import good.damn.engine.opengl.MGMeshStatic
-import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.camera.MGCameraRotation
 import good.damn.engine.opengl.entities.MGLandscape
 import good.damn.engine.opengl.entities.MGSkySphere
@@ -26,10 +23,6 @@ import good.damn.engine.opengl.ui.MGSeekBarGl
 import good.damn.engine.touch.MGIListenerTransform
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.LinkedList
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -58,6 +51,12 @@ MGIListenerTransform {
 
     private val mBtnSwitchWireframe = MGButtonGL {
         MGEngine.isWireframe = !MGEngine.isWireframe
+        mHandler.post {
+            glUseProgram(
+                if (MGEngine.isWireframe) mProgramWireframe
+                else mProgramDefault
+            )
+        }
     }
 
     private val mBarSeekAmbient = MGSeekBarGl {
@@ -69,7 +68,8 @@ MGIListenerTransform {
     private var mWidth = 0
     private var mHeight = 0
 
-    private var mProgram = 0
+    private var mProgramWireframe = 0
+    private var mProgramDefault = 0
 
     private lateinit var mDirectionalLight: MGLightDirectional
     private lateinit var mLandscape: MGLandscape
@@ -80,17 +80,26 @@ MGIListenerTransform {
         config: EGLConfig?
     ) {
 
-        mProgram = MGUtilsShader.createProgramFromAssets(
+        mProgramDefault = MGUtilsShader.createProgramFromAssets(
             "shaders/vert.glsl",
             "shaders/frag.glsl"
         )
 
+        mProgramWireframe = MGUtilsShader.createProgramFromAssets(
+            "shaders/vert.glsl",
+            "shaders/frag_wireframe.glsl"
+        )
+
         glLinkProgram(
-            mProgram
+            mProgramWireframe
+        )
+
+        glLinkProgram(
+            mProgramDefault
         )
 
         glUseProgram(
-            mProgram
+            mProgramDefault
         )
 
         mCamera.radius = 350f
@@ -101,14 +110,14 @@ MGIListenerTransform {
         )
 
         mDirectionalLight = MGLightDirectional(
-            mProgram
+            mProgramDefault
         )
 
         mLandscape = MGLandscape(
-            mProgram
+            mProgramDefault
         ).apply {
             setResolution(
-                mProgram,
+                mProgramDefault,
                 1024,
                 1024
             )
@@ -127,7 +136,7 @@ MGIListenerTransform {
         )
 
         mSky = MGSkySphere(
-            mProgram
+            mProgramDefault
         )
 
         glEnable(
