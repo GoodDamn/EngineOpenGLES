@@ -99,21 +99,21 @@ MGIListenerTransform {
         ).apply {
             setResolution(
                 mProgram,
-                256,
-                256
+                1024,
+                1024
             )
 
             displace(
                 MGMapDisplace.createFromAssets(
-                    "maps/displace.png"
+                    "maps/terrain_height.png"
                 )
             )
         }
 
         mLandscape.setScale(
-            10.0f,
-            10.0f,
-            10.0f
+            1.0f,
+            1.0f,
+            1.0f
         )
 
         mSky = MGSkySphere(
@@ -157,7 +157,7 @@ MGIListenerTransform {
         val fz = cos(f) * 440f
 
         mDirectionalLight.setPosition(
-            fx, 800f, fz
+            fx, 200f, fz
         )
 
         mHandler.run()

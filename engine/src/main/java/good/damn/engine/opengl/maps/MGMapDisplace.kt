@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import good.damn.engine.opengl.factories.MGFactoryBitmap
 import java.io.InputStream
+import kotlin.math.roundToInt
 
 class MGMapDisplace(
     private val mBitmap: Bitmap
@@ -32,7 +33,7 @@ class MGMapDisplace(
         }
 
         private const val TAG = "DisplacementMap"
-        private const val MAX_HEIGHT = 30.0f
+        private const val MAX_HEIGHT = 255.0f
     }
 
     private val mBitmapWidth = mBitmap.width
@@ -44,8 +45,8 @@ class MGMapDisplace(
         width: Int,
         height: Int
     ) = getHeightNormal(
-        (x / width.toFloat() * mBitmapWidth).toInt(),
-        (y / height.toFloat() * mBitmapHeight).toInt()
+        (x / width.toFloat() * mBitmapWidth).roundToInt(),
+        (y / height.toFloat() * mBitmapHeight).roundToInt()
     ) * MAX_HEIGHT
 
     fun getHeightNormalRatio(

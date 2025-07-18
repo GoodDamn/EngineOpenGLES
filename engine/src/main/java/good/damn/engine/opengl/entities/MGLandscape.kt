@@ -19,7 +19,7 @@ class MGLandscape(
     }
 
     var texture = MGTexture(
-        "textures/grass.jpg",
+        "textures/terrain.png",
         program,
         wrapMode = GL_REPEAT
     )
@@ -34,7 +34,7 @@ class MGLandscape(
     private val mVertexArray = MGArrayVertex()
 
     init {
-        mTextureOffset = 6.0f
+        mTextureOffset = 1.0f
     }
 
     override fun draw(
@@ -73,8 +73,7 @@ class MGLandscape(
             gridLen * 6
         )
 
-        val time = System.currentTimeMillis()
-        Log.d(TAG, "init: $time")
+        var time = System.currentTimeMillis()
         for (z in 0..mHeight) {
             textureX = 0f
             val fz = z.toFloat()
@@ -100,6 +99,8 @@ class MGLandscape(
 
             textureY += dgy
         }
+        Log.d(TAG, "setResolution: BUFFER_VERTEX: ${System.currentTimeMillis() - time}")
+        time = System.currentTimeMillis()
 
         var leftTop: Int
         var leftBottom: Int
@@ -125,14 +126,18 @@ class MGLandscape(
             }
         }
 
+        Log.d(TAG, "setResolution: BUFFER_INDICES: ${System.currentTimeMillis() - time}")
+
         bufferVertex.position(0)
         bufferIndices.position(0)
-        
+
+        time = System.currentTimeMillis()
         mVertexArray.configure(
             program,
             bufferVertex,
             bufferIndices
         )
+        Log.d(TAG, "setResolution: CONFIGURE: ${System.currentTimeMillis() - time}")
     }
 
     fun displace(
@@ -142,6 +147,7 @@ class MGLandscape(
 
         var index = 0
 
+        var time = System.currentTimeMillis()
         val data = MGUtilsBuffer.allocateFloat(8)
         mVertexArray.bindVertexBuffer()
         while(index < c) {
@@ -153,6 +159,8 @@ class MGLandscape(
 
             index += 8
         }
+
+        Log.d(TAG, "displace: changeVertexData: ${System.currentTimeMillis() - time}")
 
         mVertexArray.unbindVertexBuffer()
     }
