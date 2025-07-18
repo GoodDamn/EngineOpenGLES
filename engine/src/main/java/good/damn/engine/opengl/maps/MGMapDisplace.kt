@@ -2,6 +2,7 @@ package good.damn.engine.opengl.maps
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import good.damn.engine.opengl.factories.MGFactoryBitmap
 import java.io.InputStream
 import kotlin.math.roundToInt
@@ -33,6 +34,8 @@ class MGMapDisplace(
         }
 
         private const val TAG = "DisplacementMap"
+        private const val iDIGITAL_HEIGHT_MAX = 0x00ffffff
+        private const val fDIGITAL_HEIGHT_MAX = iDIGITAL_HEIGHT_MAX.toFloat()
     }
 
     private val mBitmapWidth = mBitmap.width
@@ -67,7 +70,7 @@ class MGMapDisplace(
         val color = mBitmap
             .getPixel(xx,yy)
 
-        val digitalHeight = color and 0xff
-        return digitalHeight / 255f
+        val digitalHeight = color and iDIGITAL_HEIGHT_MAX
+        return digitalHeight / fDIGITAL_HEIGHT_MAX
     }
 }
