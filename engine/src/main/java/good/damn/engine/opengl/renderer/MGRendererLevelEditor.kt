@@ -236,14 +236,6 @@ MGIListenerTransform {
                     return
                 }
             }
-
-            MotionEvent.ACTION_MOVE -> {
-                if (event.pointerCount == 1) {
-                    if (mBarSeekAmbient.intercept(event.x, event.y)) {
-                        return
-                    }
-                }
-            }
         }
 
         mTouchScale.onTouchEvent(
