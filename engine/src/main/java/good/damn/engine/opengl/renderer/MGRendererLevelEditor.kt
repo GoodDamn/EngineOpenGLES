@@ -21,6 +21,7 @@ import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
+import good.damn.engine.opengl.ui.MGSeekBarGl
 import good.damn.engine.touch.MGIListenerTransform
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
@@ -52,6 +53,10 @@ MGIListenerTransform {
             this,
             "*/*"
         )
+    }
+
+    private val mBarSeekAmbient = MGSeekBarGl {
+        mDirectionalLight.ambient = it
     }
 
     private val mHandler = MGHandlerGl()
@@ -141,6 +146,13 @@ MGIListenerTransform {
 
         val btnLen = mWidth * 0.1f
 
+        mBarSeekAmbient.bounds(
+            0f,
+            0f,
+            btnLen,
+            height.toFloat()
+        )
+
         mBtnLoadUserContent.bounds(
             mWidth - btnLen,
             0f,
@@ -218,6 +230,18 @@ MGIListenerTransform {
 
                 if (mBtnLoadUserContent.intercept(event.x, event.y)) {
                     return
+                }
+
+                if (mBarSeekAmbient.intercept(event.x, event.y)) {
+                    return
+                }
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                if (event.pointerCount == 1) {
+                    if (mBarSeekAmbient.intercept(event.x, event.y)) {
+                        return
+                    }
                 }
             }
         }
