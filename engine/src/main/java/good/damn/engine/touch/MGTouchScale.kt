@@ -26,7 +26,7 @@ class MGTouchScale {
     private var mTranslate2X = 0f
     private var mTranslate2Y = 0f
 
-    private var mScale = 1.0f
+    var scale = 1.0f
     private var mScaleDt = 0f
 
     fun onTouchEvent(
@@ -118,7 +118,7 @@ class MGTouchScale {
             )
 
             mScaleDt = (mPrevDistance - mCurrentDistance) * SCALE_FACTOR
-            mScale += mScaleDt
+            scale += mScaleDt
             /*if (mScale > 7f) {
                 mScale = 7f
             }
@@ -127,7 +127,7 @@ class MGTouchScale {
             }*/
 
             listener?.onScale(
-                mScale
+                scale
             )
 
             mPrevDistance = mCurrentDistance

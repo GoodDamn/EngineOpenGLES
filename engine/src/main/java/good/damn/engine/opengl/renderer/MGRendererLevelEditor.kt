@@ -51,12 +51,12 @@ MGIListenerTransform {
 
     private val mBtnSwitchWireframe = MGButtonGL {
         MGEngine.isWireframe = !MGEngine.isWireframe
-        mHandler.post {
+        /*mHandler.post {
             glUseProgram(
                 if (MGEngine.isWireframe) mProgramWireframe
                 else mProgramDefault
             )
-        }
+        }*/
     }
 
     private val mBarSeekAmbient = MGSeekBarGl {
@@ -102,7 +102,8 @@ MGIListenerTransform {
             mProgramDefault
         )
 
-        mCamera.radius = 950f
+        mCamera.radius = 1250f
+        mTouchScale.scale = mCamera.radius
 
         mCamera.setRotation(
             0f,
@@ -130,9 +131,9 @@ MGIListenerTransform {
         }
 
         mLandscape.setScale(
-            10.0f,
-            10.0f,
-            10.0f
+            3.0f,
+            3.0f,
+            3.0f
         )
 
         mSky = MGSkySphere(
@@ -190,7 +191,7 @@ MGIListenerTransform {
         val fz = cos(f) * 440f
 
         mDirectionalLight.setPosition(
-            fx, 200f, fz
+            fx, 400f, fz
         )
 
         mHandler.run()
