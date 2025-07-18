@@ -11,6 +11,8 @@ class MGEngine {
         internal lateinit var ASSETS: AssetManager
         internal lateinit var DIR_CACHE: File
 
+        internal var isWireframe = false
+
         internal val BYTE_ORDER = ByteOrder.nativeOrder()
         internal val BUFFER_MB = ByteArray(1024*1024)
         internal val CHARSET = Charset.forName("UTF-8")

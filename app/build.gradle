@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'good.damn.opengles_engine'
+    namespace 'good.damn.wrapper'
     compileSdk 34
 
     defaultConfig {
-        applicationId "good.damn.opengles_engine"
+        applicationId "good.damn.wrapper"
         minSdk 21
         targetSdk 34
         versionCode 1

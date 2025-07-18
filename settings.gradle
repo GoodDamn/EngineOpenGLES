@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "OpenGLES_Engine"
+rootProject.name = "EngineOpenGLES"
 include ':app'
 include ':engine'
