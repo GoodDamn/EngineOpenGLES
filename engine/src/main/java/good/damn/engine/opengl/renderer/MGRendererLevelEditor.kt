@@ -102,7 +102,7 @@ MGIListenerTransform {
             mProgramDefault
         )
 
-        mCamera.radius = 350f
+        mCamera.radius = 950f
 
         mCamera.setRotation(
             0f,
@@ -130,9 +130,9 @@ MGIListenerTransform {
         }
 
         mLandscape.setScale(
-            1.0f,
-            1.0f,
-            1.0f
+            10.0f,
+            10.0f,
+            10.0f
         )
 
         mSky = MGSkySphere(
