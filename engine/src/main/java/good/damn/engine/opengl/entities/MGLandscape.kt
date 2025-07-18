@@ -148,19 +148,20 @@ class MGLandscape(
         var index = 0
 
         var time = System.currentTimeMillis()
-        val data = MGUtilsBuffer.allocateFloat(8)
         mVertexArray.bindVertexBuffer()
         while(index < c) {
             changeVertexData(
                 map,
-                index,
-                data
+                index
             )
 
             index += 8
         }
 
         Log.d(TAG, "displace: changeVertexData: ${System.currentTimeMillis() - time}")
+        time = System.currentTimeMillis()
+        mVertexArray.sendVertexBufferData()
+        Log.d(TAG, "displace: changeVertexData: send to GPU ${System.currentTimeMillis() - time}")
 
         mVertexArray.unbindVertexBuffer()
     }
@@ -178,14 +179,12 @@ class MGLandscape(
         )
     }
 
-    private fun changeVertexData(
+    private inline fun changeVertexData(
         map: MGMapDisplace,
-        index: Int,
-        data: FloatBuffer
+        index: Int
     ) {
         val x = mVertexArray[index].toInt()
         val z = mVertexArray[index + 2].toInt()
-
         val topVert = map.getHeightNormalRatio(
             x,
             z - 1,
@@ -214,12 +213,10 @@ class MGLandscape(
             mHeight
         )
 
-        // Position
-        data.put(
-            0, mVertexArray[index]
-        )
-        data.put(
-            1, map.getHeightRatio(
+        // Position Y
+        mVertexArray.writeVertexBufferData(
+            index + 1,
+            map.getHeightRatio(
                 x,
                 z,
                 mWidth,
@@ -227,39 +224,21 @@ class MGLandscape(
             )
         )
 
-        data.put(
-            2,
-            mVertexArray[index + 2]
-        )
-
-        // Texture coords
-        data.put(
-            3,
-            mVertexArray[index + 3]
-        )
-        data.put(
-            4,
-            mVertexArray[index + 4]
-        )
         // Normal X
-        data.put(
-            5,
+        mVertexArray.writeVertexBufferData(
+            index + 5,
             rightVert - leftVert
         )
+
         // Normal Y
-        data.put(
-            6,
+        mVertexArray.writeVertexBufferData(
+            index+6,
             1.0f
         )
         // Normal Z
-        data.put(
-            7,
+        mVertexArray.writeVertexBufferData(
+            index+7,
             bottomVert - topVert
-        )
-        data.position(0)
-        mVertexArray.changeVertexBufferData(
-            index,
-            data
         )
     }
 }

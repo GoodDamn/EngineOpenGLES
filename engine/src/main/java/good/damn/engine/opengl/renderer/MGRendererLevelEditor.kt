@@ -196,10 +196,14 @@ MGIListenerTransform {
             userContent.stream
         )
 
-        mHandler.post {
-            mLandscape.displace(
-                mapDisplace
-            )
+        Handler(
+            Looper.getMainLooper()
+        ).post {
+            mHandler.post {
+                mLandscape.displace(
+                    mapDisplace
+                )
+            }
         }
     }
 

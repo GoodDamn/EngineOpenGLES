@@ -1,7 +1,6 @@
 package good.damn.engine.opengl
 
 import android.opengl.GLES30.*
-import android.util.Log
 import good.damn.engine.opengl.entities.MGMesh.Companion.mStride
 import java.nio.Buffer
 import java.nio.FloatBuffer
@@ -42,9 +41,7 @@ class MGArrayVertex {
             mVertexArray[0]
         )
 
-        generateVertexBuffer(
-            vertices
-        )
+        generateVertexBuffer()
 
         generateIndexBuffer(
             indices
@@ -93,16 +90,29 @@ class MGArrayVertex {
         )
     }
 
-    fun changeVertexBufferData(
+    fun sendVertexBufferData() {
+        glBufferData(
+            GL_ARRAY_BUFFER,
+            mBufferVertex.capacity() * 4,
+            mBufferVertex,
+            GL_DYNAMIC_DRAW
+        )
+    }
+
+    fun writeVertexBufferData(
         at: Int,
-        data: Buffer
+        data: Float
     ) {
-        glBufferSubData(
+        mBufferVertex.put(
+            at,
+            data
+        )
+        /*glBufferSubData(
             GL_ARRAY_BUFFER,
             at * 4,
             data.capacity() * 4,
             data
-        )
+        )*/
     }
 
     fun draw() {
@@ -120,9 +130,7 @@ class MGArrayVertex {
         glBindVertexArray(0)
     }
 
-    private inline fun generateVertexBuffer(
-        vertices: FloatBuffer
-    ) {
+    private inline fun generateVertexBuffer() {
         glGenBuffers(
             mVertexArrayBuffer.size,
             mVertexArrayBuffer,
@@ -134,12 +142,7 @@ class MGArrayVertex {
             mVertexArrayBuffer[0]
         )
 
-        glBufferData(
-            GL_ARRAY_BUFFER,
-            vertices.capacity() * 4,
-            vertices,
-            GL_STATIC_DRAW
-        )
+        sendVertexBufferData()
     }
 
     private inline fun generateIndexBuffer(
