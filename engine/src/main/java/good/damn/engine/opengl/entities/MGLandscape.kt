@@ -2,6 +2,7 @@ package good.damn.engine.opengl.entities
 
 import android.opengl.GLES30.*
 import android.util.Log
+import good.damn.engine.MGEngine
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.maps.MGMapDisplace
@@ -45,7 +46,7 @@ class MGLandscape(
             camera
         )
 
-        if (isWireframe) {
+        if (MGEngine.isWireframe) {
             mVertexArray.draw(
                 GL_LINES
             )

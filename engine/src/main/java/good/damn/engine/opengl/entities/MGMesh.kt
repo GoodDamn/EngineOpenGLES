@@ -12,8 +12,6 @@ open class MGMesh(
         internal const val mStride = 8 * 4
     }
 
-    var isWireframe = true
-
     internal var mAttrPosition = 0
     internal var mAttrTexCoord = 0
     internal var mAttrNormal = 0

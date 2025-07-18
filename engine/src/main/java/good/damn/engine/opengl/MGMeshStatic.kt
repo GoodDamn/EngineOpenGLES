@@ -1,6 +1,7 @@
 package good.damn.engine.opengl
 
 import android.opengl.GLES30.*
+import good.damn.engine.MGEngine
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.entities.MGMesh
@@ -39,7 +40,7 @@ open class MGMeshStatic(
             camera
         )
 
-        if (isWireframe) {
+        if (MGEngine.isWireframe) {
             mVertexArray.draw(
                 GL_LINES
             )
