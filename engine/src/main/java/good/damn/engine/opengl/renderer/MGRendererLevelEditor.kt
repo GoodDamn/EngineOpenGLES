@@ -187,11 +187,11 @@ MGIListenerTransform {
         gl: GL10?
     ) {
         val f = System.currentTimeMillis() % 100000L * 0.001f
-        val fx = sin(f) * 440f
-        val fz = cos(f) * 440f
+        val fx = sin(f) * 840f
+        val fz = cos(f) * 840f
 
         mDirectionalLight.setPosition(
-            fx, 400f, fz
+            fx, 600f, fz
         )
 
         mHandler.run()
@@ -244,25 +244,17 @@ MGIListenerTransform {
     fun onTouchEvent(
         event: MotionEvent
     ) {
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                if (event.pointerCount != 1) {
-                    return
-                }
-
-                if (mBtnLoadUserContent.intercept(event.x, event.y)) {
-                    return
-                }
-
-                if (mBtnSwitchWireframe.intercept(event.x, event.y)) {
-                    return
-                }
+        if (event.pointerCount == 1 && event.action == MotionEvent.ACTION_UP) {
+            if (mBarSeekAmbient.intercept(event.x, event.y)) {
+                return
             }
 
-            MotionEvent.ACTION_UP -> {
-                if (mBarSeekAmbient.intercept(event.x, event.y)) {
-                    return
-                }
+            if (mBtnLoadUserContent.intercept(event.x, event.y)) {
+                return
+            }
+
+            if (mBtnSwitchWireframe.intercept(event.x, event.y)) {
+                return
             }
         }
 

@@ -24,8 +24,8 @@ void main() {
 
     // Diffuse
     vec3 lightDirection = normalize(light.position - outFragPosition);
-    float diffFactor = max(dot(outNormal, lightDirection), 0.1);
-    vec3 diffColor = light.color * light.intensity * diffFactor;
+    float diffFactor = max(dot(outNormal, lightDirection), 0.01);
+    vec3 diffColor = light.color * diffFactor;
 
     // Specular
     //lowp vec3 eye = normalize(posOut);
