@@ -48,14 +48,14 @@ class MGTouchMove
         when (event.action) {
             MotionEvent.ACTION_MOVE -> {
                 val x = (when {
-                    mLeft < event.x -> mLeft
-                    mRight > event.x -> mRight
+                    event.x < mLeft -> mLeft
+                    event.x > mRight -> mRight
                     else -> event.x
                 } - mHalfX) / mHalfBound
 
                 val y = (when {
-                    mTop < event.y -> mTop
-                    mBottom > event.y -> mBottom
+                    event.y < mTop -> mTop
+                    event.y > mBottom -> mBottom
                     else -> event.y
                 } - mHalfY) / mHalfBound
 

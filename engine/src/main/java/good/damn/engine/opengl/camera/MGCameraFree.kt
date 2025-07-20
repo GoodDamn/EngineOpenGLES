@@ -1,6 +1,6 @@
 package good.damn.engine.opengl.camera
 
-import android.opengl.Matrix
+import android.util.Log
 import good.damn.engine.opengl.MGVector
 import kotlin.math.cos
 import kotlin.math.sin
@@ -8,48 +8,58 @@ import kotlin.math.sin
 class MGCameraFree
 : MGCamera() {
 
-    private val mDirection = MGVector(0.0f)
-    private val mUp = MGVector(0.0f, 1.0f, 1.0f)
+    companion object {
+        private const val SPEED = 1.0f
+    }
+
+    private val mDirection = MGVector(
+        0.0f, 0.0f, -1.0f
+    )
+    private val mUp = MGVector(
+        0.0f, 1.0f, 0.0f
+    )
+
     private val mPositionDirection = MGVector(0.0f)
 
     private var mYaw = 0.0f
-    private var mPitch = 0f
+    private var mPitch = 0.0f
 
     init {
-        mDirection.apply {
-            x = 0f
-            y = 0f
-            z = -1.0f
-        }
         setPosition(
             0f,
             0f,
-            0f
+            3.0f
         )
+        addRotation(0.0f,0.0f)
+        invalidatePosition()
     }
 
     fun invalidatePosition() {
+        Log.d("TAG", "invalidatePosition: ${mDirection.x} ${mDirection.y} ${mDirection.z};;;;$x $y $z")
         super.invalidatePosition(
-            mDirection.x + model[INDEX_X],
-            mDirection.y + model[INDEX_Y],
-            mDirection.z + model[INDEX_Z]
+            mDirection.x + x,
+            mDirection.y + y,
+            mDirection.z + z
         )
     }
 
     fun addPosition(
-        v: MGVector
+        x: Float,
+        y: Float
     ) {
-        mPositionDirection.cross(
-            v,
-            mUp
-        )
-        mPositionDirection.normalize()
+        //addPosition(0f,1f,0f)
+        if (y > 0.0f) {
+            addPositionNegative(mDirection)
+        } else {
+            addPositionPositive(mDirection)
+        }
 
-        super.addPosition(
-            mPositionDirection.x,
-            mPositionDirection.y,
-            mPositionDirection.z
-        )
+        crossDirection()
+        if (x < 0.0f) {
+            addPositionNegative(mPositionDirection)
+        } else {
+            addPositionPositive(mPositionDirection)
+        }
     }
 
     fun addRotation(
@@ -73,4 +83,31 @@ class MGCameraFree
         mDirection.normalize()
     }
 
+    private inline fun crossDirection() {
+        mPositionDirection.cross(
+            mDirection,
+            mUp
+        )
+        mPositionDirection.normalize()
+    }
+
+    private inline fun addPositionPositive(
+        v: MGVector
+    ) {
+        super.addPosition(
+            v.x * SPEED,
+            v.y * SPEED,
+            v.z * SPEED
+        )
+    }
+
+    private inline fun addPositionNegative(
+        v: MGVector
+    ) {
+        super.addPosition(
+            v.x * -SPEED,
+            v.y * -SPEED,
+            v.z * -SPEED
+        )
+    }
 }

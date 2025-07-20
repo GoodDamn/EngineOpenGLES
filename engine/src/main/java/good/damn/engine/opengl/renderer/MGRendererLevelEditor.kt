@@ -21,8 +21,10 @@ import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.opengl.ui.MGSeekBarGl
+import good.damn.engine.touch.MGIListenerMove
 import good.damn.engine.touch.MGIListenerRotate
 import good.damn.engine.touch.MGIListenerScale
+import good.damn.engine.touch.MGTouchMove
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
 import kotlin.math.cos
@@ -33,19 +35,24 @@ class MGRendererLevelEditor(
 ): GLSurfaceView.Renderer,
 MGIListenerOnGetUserContent,
 MGIListenerScale,
-MGIListenerRotate {
+MGIListenerRotate,
+MGIListenerMove {
 
     companion object {
         private const val TAG = "MGRendererLevelEditor"
     }
 
-    private val mCameraRotation = MGCameraRotation()
     private val mCameraFree = MGCameraFree()
-    private var mCameraCurrent = mCameraFree
 
     private val mTouchScale = MGTouchScale().apply {
         onScale = this@MGRendererLevelEditor
         onRotate = this@MGRendererLevelEditor
+    }
+
+    private val mTouchMove = MGTouchMove().apply {
+        setListenerMove(
+            this@MGRendererLevelEditor
+        )
     }
 
     private val mBtnLoadUserContent = MGButtonGL {
@@ -108,13 +115,13 @@ MGIListenerRotate {
             mProgramDefault
         )
 
-        mCameraRotation.radius = 1250f
+        /*mCameraRotation.radius = 1250f
         mTouchScale.scale = mCameraRotation.radius
 
         mCameraRotation.setRotation(
             0f,
             0.01f
-        )
+        )*/
 
         mDirectionalLight = MGLightDirectional(
             mProgramDefault
@@ -160,9 +167,16 @@ MGIListenerRotate {
         mWidth = width
         mHeight = height
 
-        mCameraCurrent.setPerspective(
+        mCameraFree.setPerspective(
             width,
             height
+        )
+
+        val s = height * 0.25f
+        mTouchMove.setBounds(
+            0f,
+            height - s,
+            s
         )
 
         val btnLen = mWidth * 0.1f
@@ -222,10 +236,10 @@ MGIListenerRotate {
 
         mDirectionalLight.draw()
         mLandscape.draw(
-            mCameraCurrent
+            mCameraFree
         )
         mSky.draw(
-            mCameraCurrent
+            mCameraFree
         )
     }
 
@@ -251,9 +265,9 @@ MGIListenerRotate {
         event: MotionEvent
     ) {
         if (event.pointerCount == 1 && event.action == MotionEvent.ACTION_UP) {
-            if (mBarSeekAmbient.intercept(event.x, event.y)) {
+            /*if (mBarSeekAmbient.intercept(event.x, event.y)) {
                 return
-            }
+            }*/
 
             if (mBtnLoadUserContent.intercept(event.x, event.y)) {
                 return
@@ -264,7 +278,7 @@ MGIListenerRotate {
             }
         }
 
-        mTouchScale.onTouchEvent(
+        mTouchMove.onTouchEvent(
             event
         )
     }
@@ -287,6 +301,16 @@ MGIListenerRotate {
     override fun onScale(
         scale: Float
     ) {
-        mCameraRotation.radius = scale
+        //mCameraRotation.radius = scale
+    }
+
+    override fun onMove(
+        x: Float,
+        y: Float
+    ) {
+        mCameraFree.addPosition(
+            x, y
+        )
+        mCameraFree.invalidatePosition()
     }
 }

@@ -13,6 +13,10 @@ open class MGObjectDimension {
         const val INDEX_Z = 14
     }
 
+    var x = 0f
+    var y = 0f
+    var z = 0f
+
     internal var model = FloatArray(16)
 
     init {
@@ -30,7 +34,7 @@ open class MGObjectDimension {
         setLookAtM(
             model,
             0,
-            model[INDEX_X], model[INDEX_Y], model[INDEX_Z],
+            x, y, z,
             centerX, centerY, centerZ,
             0.0f, 1.0f, 0.0f
         )
@@ -51,9 +55,9 @@ open class MGObjectDimension {
         y: Float,
         z: Float
     ) {
-        model[INDEX_X] = x
-        model[INDEX_Y] = y
-        model[INDEX_Z] = z
+        this.x = x
+        this.y = y
+        this.z = z
     }
 
     open fun addPosition(
@@ -61,9 +65,9 @@ open class MGObjectDimension {
         dy: Float,
         dz: Float
     ) {
-        model[INDEX_X] += dx
-        model[INDEX_Y] += dy
-        model[INDEX_Z] += dz
+        x += dx
+        y += dy
+        z += dz
     }
 
     open fun setScale(
