@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGCameraRotation
 import good.damn.engine.opengl.entities.MGLandscape
 import good.damn.engine.opengl.entities.MGSkySphere
@@ -36,7 +37,9 @@ MGIListenerTransform {
         private const val TAG = "MGRendererLevelEditor"
     }
 
-    private val mCamera = MGCameraRotation()
+    private val mCameraRotation = MGCameraRotation()
+    private val mCameraFree = MGCameraFree()
+    private var mCameraCurrent = mCameraFree
 
     private val mTouchScale = MGTouchScale().apply {
         listener = this@MGRendererLevelEditor
@@ -102,10 +105,10 @@ MGIListenerTransform {
             mProgramDefault
         )
 
-        mCamera.radius = 1250f
-        mTouchScale.scale = mCamera.radius
+        mCameraRotation.radius = 1250f
+        mTouchScale.scale = mCameraRotation.radius
 
-        mCamera.setRotation(
+        mCameraRotation.setRotation(
             0f,
             0.01f
         )
@@ -154,7 +157,7 @@ MGIListenerTransform {
         mWidth = width
         mHeight = height
 
-        mCamera.setPerspective(
+        mCameraCurrent.setPerspective(
             width,
             height
         )
@@ -216,10 +219,10 @@ MGIListenerTransform {
 
         mDirectionalLight.draw()
         mLandscape.draw(
-            mCamera
+            mCameraCurrent
         )
         mSky.draw(
-            mCamera
+            mCameraCurrent
         )
     }
 
@@ -267,15 +270,20 @@ MGIListenerTransform {
         dx: Float,
         dy: Float
     ) {
-        mCamera.rotateBy(
+        mCameraFree.addRotation(
             dx * 0.001f,
             dy * 0.001f
         )
+        mCameraFree.invalidatePosition()
+        /*mCameraRotation.rotateBy(
+            dx * 0.001f,
+            dy * 0.001f
+        )*/
     }
 
     override fun onScale(
         scale: Float
     ) {
-        mCamera.radius = scale
+        mCameraRotation.radius = scale
     }
 }
