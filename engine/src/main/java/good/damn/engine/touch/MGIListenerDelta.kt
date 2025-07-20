@@ -1,7 +1,7 @@
 package good.damn.engine.touch
 
-interface MGIListenerRotate {
-    fun onRotate(
+interface MGIListenerDelta {
+    fun onDelta(
         dx: Float,
         dy: Float
     )

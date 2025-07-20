@@ -12,7 +12,6 @@ import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.camera.MGCameraFree
-import good.damn.engine.opengl.camera.MGCameraRotation
 import good.damn.engine.opengl.entities.MGLandscape
 import good.damn.engine.opengl.entities.MGSkySphere
 import good.damn.engine.opengl.light.MGLightDirectional
@@ -22,7 +21,7 @@ import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.opengl.ui.MGSeekBarGl
 import good.damn.engine.touch.MGIListenerMove
-import good.damn.engine.touch.MGIListenerRotate
+import good.damn.engine.touch.MGIListenerDelta
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.touch.MGTouchMove
 import good.damn.engine.touch.MGTouchScale
@@ -35,7 +34,7 @@ class MGRendererLevelEditor(
 ): GLSurfaceView.Renderer,
 MGIListenerOnGetUserContent,
 MGIListenerScale,
-MGIListenerRotate,
+MGIListenerDelta,
 MGIListenerMove {
 
     companion object {
@@ -46,7 +45,7 @@ MGIListenerMove {
 
     private val mTouchScale = MGTouchScale().apply {
         onScale = this@MGRendererLevelEditor
-        onRotate = this@MGRendererLevelEditor
+        onDelta = this@MGRendererLevelEditor
     }
 
     private val mTouchMove = MGTouchMove().apply {
@@ -283,7 +282,7 @@ MGIListenerMove {
         )
     }
 
-    override fun onRotate(
+    override fun onDelta(
         dx: Float,
         dy: Float
     ) {

@@ -10,7 +10,7 @@ class MGTouchScale {
     }
 
     var onScale: MGIListenerScale? = null
-    var onRotate: MGIListenerRotate? = null
+    var onDelta: MGIListenerDelta? = null
 
     private var mPivotX = 0f
     private var mPivotY = 0f
@@ -98,7 +98,7 @@ class MGTouchScale {
 
             val dx = mPrevX - event.x
             val dy = event.y - mPrevY
-            onRotate?.onRotate(
+            onDelta?.onDelta(
                 dx, dy
             )
 
