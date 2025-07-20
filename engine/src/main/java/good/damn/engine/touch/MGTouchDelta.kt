@@ -5,6 +5,8 @@ import android.view.MotionEvent
 class MGTouchDelta
 : MGITouchable {
 
+    var onDelta: MGIListenerDelta? = null
+
     private var mHasTouch = false
 
     private var mPrevX = 0f
@@ -28,6 +30,10 @@ class MGTouchDelta
 
                 val dx = mPrevX - event.x
                 val dy = event.y - mPrevY
+
+                onDelta?.onDelta(
+                    dx, dy
+                )
 
                 mPrevX = event.x
                 mPrevY = event.y
