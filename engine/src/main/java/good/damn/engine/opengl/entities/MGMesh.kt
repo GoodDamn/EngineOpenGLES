@@ -30,7 +30,7 @@ open class MGMesh(
 
     private val mUniformCamera = glGetUniformLocation(
         program,
-        "camera"
+        "view"
     )
 
     private val mUniformTextureOffset = glGetUniformLocation(

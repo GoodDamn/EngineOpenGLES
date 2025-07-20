@@ -4,24 +4,24 @@ attribute vec2 texCoord;
 
 uniform mat4 projection;
 uniform mat4 model;
-uniform mat4 camera;
+uniform mat4 view;
 
 uniform float textureOffset;
 
 varying lowp vec3 outFragPosition;
 varying lowp vec3 outNormal;
-varying lowp vec2 texCoordOut;
+varying lowp vec2 outTexCoord;
 
 void main() {
 
-    mat4 mv = camera * model;
-    mat4 mvp = projection * mv;
+    vec3 spaceWorld = vec3(model * position);
+    mat4 spaceView = view * model;
+    mat4 spaceClip = projection * spaceView;
 
-    gl_Position = mvp * position;
+    gl_Position = spaceClip * position;
 
-    outFragPosition = vec3(model * position);
+    outFragPosition = spaceWorld;
     outNormal = normal;
 
-    //posOut = coord.xyz;
-    texCoordOut = texCoord * vec2(textureOffset);
+    outTexCoord = texCoord * vec2(textureOffset);
 }

@@ -9,10 +9,9 @@ struct Light {
 
 uniform Light light;
 
-//varying lowp vec3 posOut;
 varying lowp vec3 outFragPosition;
 varying lowp vec3 outNormal;
-varying lowp vec2 texCoordOut;
+varying lowp vec2 outTexCoord;
 
 void main() {
     gl_FragColor = vec4(0.9);
