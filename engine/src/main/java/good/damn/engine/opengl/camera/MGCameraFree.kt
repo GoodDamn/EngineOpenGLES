@@ -9,7 +9,7 @@ class MGCameraFree
 : MGCamera() {
 
     companion object {
-        private const val SPEED = 1.0f
+        private const val SPEED = 2.0f
     }
 
     private val mDirection = MGVector(
