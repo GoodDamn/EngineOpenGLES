@@ -59,11 +59,11 @@ class MGCameraFree
         mYaw += yaw
         mPitch += pitch
 
-        if (mPitch > 89.0f)
-            mPitch = 89.0f
+        if (mPitch > 1.57f)
+            mPitch = 1.57f
 
-        if (mPitch < -89.0f)
-            mPitch = -89.0f
+        if (mPitch < -1.57f)
+            mPitch = -1.57f
 
         val cosPitch = cos(mPitch)
 
