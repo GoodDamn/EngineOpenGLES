@@ -8,6 +8,15 @@ class MGTouchFreeMove
     private val mTouchMove = MGTouchMove()
     private val mTouchDelta = MGTouchDelta()
 
+    fun setBoundsMove(
+        left: Float,
+        top: Float,
+        s: Float
+    ) = mTouchMove.setBounds(
+        left,
+        top, s
+    )
+
     fun setListenerDelta(
         l: MGIListenerDelta?
     ) {

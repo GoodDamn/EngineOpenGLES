@@ -23,6 +23,7 @@ import good.damn.engine.opengl.ui.MGSeekBarGl
 import good.damn.engine.touch.MGIListenerMove
 import good.damn.engine.touch.MGIListenerDelta
 import good.damn.engine.touch.MGIListenerScale
+import good.damn.engine.touch.MGTouchFreeMove
 import good.damn.engine.touch.MGTouchMove
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
@@ -48,8 +49,11 @@ MGIListenerMove {
         onDelta = this@MGRendererLevelEditor
     }
 
-    private val mTouchMove = MGTouchMove().apply {
+    private val mTouchMove = MGTouchFreeMove().apply {
         setListenerMove(
+            this@MGRendererLevelEditor
+        )
+        setListenerDelta(
             this@MGRendererLevelEditor
         )
     }
@@ -172,7 +176,7 @@ MGIListenerMove {
         )
 
         val s = height * 0.25f
-        mTouchMove.setBounds(
+        mTouchMove.setBoundsMove(
             0f,
             height - s,
             s
