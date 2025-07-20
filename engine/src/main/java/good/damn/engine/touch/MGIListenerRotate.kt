@@ -1,13 +1,8 @@
 package good.damn.engine.touch
 
-interface MGIListenerTransform {
-
+interface MGIListenerRotate {
     fun onRotate(
         dx: Float,
         dy: Float
-    )
-
-    fun onScale(
-        scale: Float
     )
 }

@@ -21,7 +21,8 @@ import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.opengl.ui.MGSeekBarGl
-import good.damn.engine.touch.MGIListenerTransform
+import good.damn.engine.touch.MGIListenerRotate
+import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
 import kotlin.math.cos
@@ -31,7 +32,8 @@ class MGRendererLevelEditor(
     private val requesterUserContent: MGIRequestUserContent
 ): GLSurfaceView.Renderer,
 MGIListenerOnGetUserContent,
-MGIListenerTransform {
+MGIListenerScale,
+MGIListenerRotate {
 
     companion object {
         private const val TAG = "MGRendererLevelEditor"
@@ -42,7 +44,8 @@ MGIListenerTransform {
     private var mCameraCurrent = mCameraFree
 
     private val mTouchScale = MGTouchScale().apply {
-        listener = this@MGRendererLevelEditor
+        onScale = this@MGRendererLevelEditor
+        onRotate = this@MGRendererLevelEditor
     }
 
     private val mBtnLoadUserContent = MGButtonGL {

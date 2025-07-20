@@ -9,7 +9,8 @@ class MGTouchScale {
         private const val SCALE_FACTOR = 0.25f
     }
 
-    var listener: MGIListenerTransform? = null
+    var onScale: MGIListenerScale? = null
+    var onRotate: MGIListenerRotate? = null
 
     private var mPivotX = 0f
     private var mPivotY = 0f
@@ -97,7 +98,7 @@ class MGTouchScale {
 
             val dx = mPrevX - event.x
             val dy = event.y - mPrevY
-            listener?.onRotate(
+            onRotate?.onRotate(
                 dx, dy
             )
 
@@ -126,7 +127,7 @@ class MGTouchScale {
                 mScale = 0.4f
             }*/
 
-            listener?.onScale(
+            onScale?.onScale(
                 scale
             )
 
