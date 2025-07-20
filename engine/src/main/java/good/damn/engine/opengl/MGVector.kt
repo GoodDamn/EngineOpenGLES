@@ -33,6 +33,14 @@ class MGVector(
         x * vect2.y - vect2.x * y
     )
 
+    operator fun plusAssign(
+        v: MGVector
+    ) {
+        x += v.x
+        y += v.y
+        z += v.z
+    }
+
     fun length(): Float {
         return abs(sqrt(
             x * x + y * y + z * z
