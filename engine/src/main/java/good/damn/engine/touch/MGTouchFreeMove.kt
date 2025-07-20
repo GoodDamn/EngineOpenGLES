@@ -2,18 +2,30 @@ package good.damn.engine.touch
 
 import android.view.MotionEvent
 
-class MGTouchFreeMove {
+class MGTouchFreeMove
+: MGITouchable {
 
     private val mTouchMove = MGTouchMove()
+    private val mTouchDelta = MGTouchDelta()
+
+    fun setListenerDelta(
+        l: MGIListenerDelta?
+    ) {
+        mTouchDelta.onDelta = l
+    }
 
     fun setListenerMove(
         l: MGIListenerMove?
     ) = mTouchMove.setListenerMove(l)
 
-    fun touchEvent(
+    override fun onTouchEvent(
         event: MotionEvent
     ) {
         mTouchMove.onTouchEvent(
+            event
+        )
+
+        mTouchDelta.onTouchEvent(
             event
         )
     }
