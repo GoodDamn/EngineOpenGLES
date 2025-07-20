@@ -184,6 +184,12 @@ MGIListenerMove {
 
         val btnLen = mWidth * 0.1f
 
+        mTouchMove.setBoundsDelta(
+            s,
+            btnLen,
+            height - btnLen*2
+        )
+
         mBarSeekAmbient.bounds(
             0f,
             0f,
