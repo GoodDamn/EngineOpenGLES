@@ -1,13 +1,12 @@
 package good.damn.engine.touch
 
+import android.view.InputDevice.MotionRange
 import android.view.MotionEvent
 
 class MGTouchDelta
 : MGITouchable {
 
     var onDelta: MGIListenerDelta? = null
-
-    private var mHasTouch = false
 
     private var mHalfBound = 0f
 
@@ -18,6 +17,11 @@ class MGTouchDelta
     private var mTop = 0f
     private var mRight = 0f
     private var mBottom = 0f
+
+    private var mIndexTouch = -1
+
+    private var mPrevX = 0f
+    private var mPrevY = 0f
 
     fun setBounds(
         left: Float,
@@ -33,52 +37,69 @@ class MGTouchDelta
         mHalfY = (mBottom + mTop) * 0.5f
     }
 
-    private var mPrevX = 0f
-    private var mPrevY = 0f
-
     override fun onTouchEvent(
         event: MotionEvent
     ) {
-        if (event.isNotInsideBounds(
-            mLeft, mTop,
-            mRight, mBottom
-        )) {
+        if (event.pointerCount > 2) {
             return
         }
 
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                mPrevX = event.x
-                mPrevY = event.y
+                processDown(
+                    0,
+                    event
+                )
+            }
 
-                mHasTouch = true
+            MotionEvent.ACTION_POINTER_DOWN -> {
+                processDown(
+                    1,
+                    event
+                )
             }
 
             MotionEvent.ACTION_MOVE -> {
-                if (!mHasTouch) {
+                if (mIndexTouch == -1) {
                     return
                 }
 
-                val dx = event.x - mPrevX
-                val dy = mPrevY - event.y
+                val x = event.getX(mIndexTouch)
+                val y = event.getY(mIndexTouch)
+
+                val dx = x - mPrevX
+                val dy = mPrevY - y
 
                 onDelta?.onDelta(
                     dx, dy
                 )
 
-                mPrevX = event.x
-                mPrevY = event.y
+                mPrevX = x
+                mPrevY = y
             }
 
+            MotionEvent.ACTION_POINTER_UP,
             MotionEvent.ACTION_UP -> {
-                mHasTouch = false
+                mIndexTouch = -1
             }
         }
     }
 
-    private fun processDown(
+    private inline fun processDown(
+        index: Int,
         event: MotionEvent
     ) {
+        mPrevX = event.getX(index)
+        mPrevY = event.getY(index)
+        mIndexTouch = index
 
+        if (event.isNotInsideBounds(
+            mLeft, mTop,
+            mRight, mBottom,
+            mIndexTouch
+        )) {
+            mIndexTouch = -1
+            return
+        }
     }
 }

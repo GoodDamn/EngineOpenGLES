@@ -45,7 +45,7 @@ class MGTouchMove
             return
         }
 
-        when (event.action) {
+        when (event.actionMasked) {
             MotionEvent.ACTION_MOVE -> {
                 val x = (when {
                     event.x < mLeft -> mLeft
