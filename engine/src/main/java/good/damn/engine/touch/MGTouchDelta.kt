@@ -59,8 +59,8 @@ class MGTouchDelta
                     return
                 }
 
-                val dx = mPrevX - event.x
-                val dy = event.y - mPrevY
+                val dx = event.x - mPrevX
+                val dy = mPrevY - event.y
 
                 onDelta?.onDelta(
                     dx, dy
