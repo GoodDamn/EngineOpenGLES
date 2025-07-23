@@ -3,7 +3,8 @@ package good.damn.engine.touch
 import android.view.MotionEvent
 import kotlin.math.hypot
 
-class MGTouchScale {
+class MGTouchScale
+: MGITouchable {
 
     companion object {
         private const val SCALE_FACTOR = 0.25f
@@ -30,9 +31,9 @@ class MGTouchScale {
     var scale = 1.0f
     private var mScaleDt = 0f
 
-    fun onTouchEvent(
+    override fun onTouchEvent(
         event: MotionEvent
-    ): Boolean {
+    ) {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 mPivotX = event.x
@@ -81,8 +82,6 @@ class MGTouchScale {
                 mTranslateY = mTranslate2Y
             }
         }
-
-        return true
     }
 
     private inline fun actionMove(
