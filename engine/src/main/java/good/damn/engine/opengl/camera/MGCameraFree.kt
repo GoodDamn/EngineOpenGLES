@@ -3,14 +3,11 @@ package good.damn.engine.opengl.camera
 import android.util.Log
 import good.damn.engine.opengl.MGVector
 import kotlin.math.cos
+import kotlin.math.hypot
 import kotlin.math.sin
 
 class MGCameraFree
 : MGCamera() {
-
-    companion object {
-        private const val SPEED = 2.0f
-    }
 
     private val mDirection = MGVector(
         0.0f, 0.0f, -1.0f
@@ -20,6 +17,8 @@ class MGCameraFree
     )
 
     private val mPositionDirection = MGVector(0.0f)
+
+    private var mSpeed = 2.0f
 
     private var mYaw = 0.0f
     private var mPitch = 0.0f
@@ -47,7 +46,9 @@ class MGCameraFree
         x: Float,
         y: Float
     ) {
-        //addPosition(0f,1f,0f)
+        mSpeed = hypot(
+            x, y
+        ) * 0.01f
         if (y > 0.0f) {
             addPositionNegative(mDirection)
         } else {
@@ -95,9 +96,9 @@ class MGCameraFree
         v: MGVector
     ) {
         super.addPosition(
-            v.x * SPEED,
-            v.y * SPEED,
-            v.z * SPEED
+            v.x * mSpeed,
+            v.y * mSpeed,
+            v.z * mSpeed
         )
     }
 
@@ -105,9 +106,9 @@ class MGCameraFree
         v: MGVector
     ) {
         super.addPosition(
-            v.x * -SPEED,
-            v.y * -SPEED,
-            v.z * -SPEED
+            v.x * -mSpeed,
+            v.y * -mSpeed,
+            v.z * -mSpeed
         )
     }
 }
