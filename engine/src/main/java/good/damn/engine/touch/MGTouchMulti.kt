@@ -48,11 +48,11 @@ open class MGTouchMulti
                 val index = event.actionIndex
                 if (event.findPointerIndex(mTouchId) == index) {
                     mTouchId = -1
+                    onTouchUp(
+                        event,
+                        index
+                    )
                 }
-                onTouchUp(
-                    event,
-                    index
-                )
             }
 
             MotionEvent.ACTION_UP -> {
