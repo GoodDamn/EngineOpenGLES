@@ -19,7 +19,7 @@ open class MGTouchMulti
                     return
                 }
 
-                if (onTouchDown(
+                if (!onTouchDown(
                     event,
                     index
                 )) {

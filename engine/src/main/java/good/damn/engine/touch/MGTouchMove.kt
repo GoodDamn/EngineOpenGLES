@@ -18,7 +18,7 @@ class MGTouchMove
     override fun onTouchDown(
         event: MotionEvent,
         touchIndex: Int
-    ) = event.isNotInsideBounds(
+    ) = !event.isNotInsideBounds(
         mLeft, mTop,
         mRight, mBottom,
         touchIndex

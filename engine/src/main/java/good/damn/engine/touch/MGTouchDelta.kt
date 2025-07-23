@@ -25,12 +25,12 @@ class MGTouchDelta
             mRight, mBottom,
             touchIndex
         )) {
-            return true
+            return false
         }
         val index = event.actionIndex
         mPrevX = event.getX(index)
         mPrevY = event.getY(index)
-        return false
+        return true
     }
 
     override fun onTouchMove(
