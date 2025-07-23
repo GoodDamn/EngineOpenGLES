@@ -189,11 +189,11 @@ MGIListenerMove {
             h = fWidth
         }
 
-        val s = h * 0.25f
         mTouchMove.setBoundsMove(
             0f,
-            fHeight - s - fHeight * 0.1f,
-            s
+            0f,
+            fWidth * 0.5f,
+            fHeight
         )
 
         val btnLen = w * 0.1f
@@ -333,7 +333,8 @@ MGIListenerMove {
         y: Float
     ) {
         mCameraFree.addPosition(
-            x, y
+            x,
+            y
         )
         mCameraFree.invalidatePosition()
     }

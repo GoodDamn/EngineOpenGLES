@@ -1,5 +1,6 @@
 package good.damn.engine.touch
 
+import android.text.BoringLayout
 import android.view.MotionEvent
 
 class MGTouchMove
@@ -11,33 +12,35 @@ class MGTouchMove
 
     private var onMove: MGIListenerMove? = null
 
-    private var mHalfBound = 0f
+    private var mAnchorX = 0f
+    private var mAnchorY = 0f
 
     fun setListenerMove(
         l: MGIListenerMove?
     ) { onMove = l }
 
-    override fun setBounds(
-        left: Float,
-        top: Float,
-        s: Float
-    ) {
-        super.setBounds(
-            left,
-            top,
-            s
-        )
-        mHalfBound = s * 0.5f
-    }
-
     override fun onTouchDown(
         event: MotionEvent,
         touchIndex: Int
-    ) = !event.isNotInsideBounds(
-        mLeft, mTop,
-        mRight, mBottom,
-        touchIndex
-    )
+    ): Boolean {
+        if (event.isNotInsideBounds(
+            mLeft, mTop,
+            mRight, mBottom,
+            touchIndex
+        )) {
+            return false
+        }
+
+        mAnchorX = event.getX(
+            touchIndex
+        )
+
+        mAnchorY = event.getY(
+            touchIndex
+        )
+
+        return true
+    }
 
     override fun onTouchMove(
         event: MotionEvent,
@@ -51,17 +54,17 @@ class MGTouchMove
             touchIndex
         )
 
-        val x = (when {
+        val x = when {
             xx < mLeft -> mLeft
             xx > mRight -> mRight
             else -> xx
-        } - mHalfX) / mHalfBound
+        } - mAnchorX
 
-        val y = (when {
+        val y = when {
             yy < mTop -> mTop
             yy > mBottom -> mBottom
             else -> yy
-        } - mHalfY) / mHalfBound
+        } - mAnchorY
 
         onMove?.onMove(
             x, y

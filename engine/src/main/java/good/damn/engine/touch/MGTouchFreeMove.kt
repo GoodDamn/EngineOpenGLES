@@ -11,10 +11,11 @@ class MGTouchFreeMove
     fun setBoundsMove(
         left: Float,
         top: Float,
-        s: Float
+        right: Float,
+        bottom: Float
     ) = mTouchMove.setBounds(
-        left,
-        top, s
+        left, top,
+        right, bottom
     )
 
     fun setBoundsDelta(
