@@ -1,10 +1,15 @@
 package good.damn.engine.touch
 
+import android.util.Log
 import android.view.InputDevice.MotionRange
 import android.view.MotionEvent
 
 class MGTouchDelta
 : MGITouchable {
+
+    companion object {
+        private const val TAG = "MGTouchDelta"
+    }
 
     var onDelta: MGIListenerDelta? = null
 
@@ -18,7 +23,7 @@ class MGTouchDelta
     private var mRight = 0f
     private var mBottom = 0f
 
-    private var mIndexTouch = -1
+    private var mTouchId = -1
 
     private var mPrevX = 0f
     private var mPrevY = 0f
@@ -40,29 +45,39 @@ class MGTouchDelta
     override fun onTouchEvent(
         event: MotionEvent
     ) {
-        if (event.pointerCount > 2) {
-            return
-        }
-
         when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                processDown(
-                    0,
-                    event
-                )
-            }
-
+            MotionEvent.ACTION_DOWN,
             MotionEvent.ACTION_POINTER_DOWN -> {
-                processDown(
-                    1,
-                    event
+
+                val index = event.actionIndex
+                Log.d(TAG, "onTouchEvent: DOWN: $mTouchId:: ${event.actionIndex}")
+                if (mTouchId != -1) {
+                    return
+                }
+                mPrevX = event.getX(index)
+                mPrevY = event.getY(index)
+                mTouchId = event.getPointerId(
+                    index
                 )
+
+                if (event.isNotInsideBounds(
+                        mLeft, mTop,
+                        mRight, mBottom,
+                        index
+                    )) {
+                    mTouchId = -1
+                    return
+                }
             }
 
             MotionEvent.ACTION_MOVE -> {
-                if (mIndexTouch == -1) {
+                if (mTouchId == -1) {
                     return
                 }
+
+                val mIndexTouch = event.findPointerIndex(
+                    mTouchId
+                )
 
                 val x = event.getX(mIndexTouch)
                 val y = event.getY(mIndexTouch)
@@ -78,28 +93,17 @@ class MGTouchDelta
                 mPrevY = y
             }
 
-            MotionEvent.ACTION_POINTER_UP,
-            MotionEvent.ACTION_UP -> {
-                mIndexTouch = -1
+            MotionEvent.ACTION_CANCEL,
+            MotionEvent.ACTION_POINTER_UP -> {
+                Log.d(TAG, "onTouchEvent: UP: ${event.findPointerIndex(mTouchId)}:::${event.actionIndex}")
+                if (event.findPointerIndex(mTouchId) == event.actionIndex) {
+                    mTouchId = -1
+                }
             }
-        }
-    }
 
-    private inline fun processDown(
-        index: Int,
-        event: MotionEvent
-    ) {
-        mPrevX = event.getX(index)
-        mPrevY = event.getY(index)
-        mIndexTouch = index
-
-        if (event.isNotInsideBounds(
-            mLeft, mTop,
-            mRight, mBottom,
-            mIndexTouch
-        )) {
-            mIndexTouch = -1
-            return
+            MotionEvent.ACTION_UP -> {
+                mTouchId = -1
+            }
         }
     }
 }

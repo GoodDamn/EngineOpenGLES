@@ -1,9 +1,14 @@
 package good.damn.engine.touch
 
+import android.util.Log
 import android.view.MotionEvent
 
 class MGTouchMove
 : MGITouchable {
+
+    companion object {
+        private const val TAG = "MGTouchMove"
+    }
 
     private var onMove: MGIListenerMove? = null
 
@@ -16,6 +21,8 @@ class MGTouchMove
     private var mTop = 0f
     private var mRight = 0f
     private var mBottom = 0f
+
+    private var mTouchId = -1
 
     fun setListenerMove(
         l: MGIListenerMove?
@@ -38,34 +45,74 @@ class MGTouchMove
     override fun onTouchEvent(
         event: MotionEvent
     ) {
-        if (event.isNotInsideBounds(
-            mLeft, mTop,
-            mRight, mBottom
-        )) {
-            return
-        }
-
         when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN,
+            MotionEvent.ACTION_POINTER_DOWN -> {
+                val index = event.actionIndex
+                Log.d(TAG, "onTouchEvent: DOWN: $mTouchId::$index")
+                if (mTouchId != -1) {
+                    return
+                }
+                mTouchId = event.getPointerId(
+                    index
+                )
+
+                if (event.isNotInsideBounds(
+                        mLeft, mTop,
+                        mRight, mBottom,
+                        index
+                    )) {
+                    mTouchId = -1
+                    return
+                }
+            }
+
             MotionEvent.ACTION_MOVE -> {
+                if (mTouchId == -1) {
+                    return
+                }
+
+                val mTouchIndex = event.findPointerIndex(
+                    mTouchId
+                )
+
+                val xx = event.getX(
+                    mTouchIndex
+                )
+
+                val yy = event.getY(
+                    mTouchIndex
+                )
+
                 val x = (when {
-                    event.x < mLeft -> mLeft
-                    event.x > mRight -> mRight
-                    else -> event.x
+                    xx < mLeft -> mLeft
+                    xx > mRight -> mRight
+                    else -> xx
                 } - mHalfX) / mHalfBound
 
                 val y = (when {
-                    event.y < mTop -> mTop
-                    event.y > mBottom -> mBottom
-                    else -> event.y
+                    yy < mTop -> mTop
+                    yy > mBottom -> mBottom
+                    else -> yy
                 } - mHalfY) / mHalfBound
 
                 onMove?.onMove(
                     x, y
                 )
+            }
 
+            MotionEvent.ACTION_CANCEL,
+            MotionEvent.ACTION_POINTER_UP -> {
+                Log.d(TAG, "onTouchEvent: UP: ${event.findPointerIndex(mTouchId)}:::${event.actionIndex}")
+                if (event.findPointerIndex(mTouchId) == event.actionIndex) {
+                    mTouchId = -1
+                }
+            }
+
+            MotionEvent.ACTION_UP -> {
+                mTouchId = -1
             }
         }
         
     }
-    
 }
