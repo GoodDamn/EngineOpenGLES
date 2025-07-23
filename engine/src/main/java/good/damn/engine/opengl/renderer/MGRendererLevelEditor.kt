@@ -170,42 +170,57 @@ MGIListenerMove {
         mWidth = width
         mHeight = height
 
+        val fWidth = width.toFloat()
+        val fHeight = height.toFloat()
+
         mCameraFree.setPerspective(
             width,
             height
         )
 
-        val s = height * 0.25f
+        val w: Float
+        val h: Float
+
+        if (width < height) {
+            w = fWidth
+            h = fHeight
+        } else {
+            w = fHeight
+            h = fWidth
+        }
+
+        val s = h * 0.25f
         mTouchMove.setBoundsMove(
             0f,
-            height - s,
+            fHeight - s - fHeight * 0.1f,
             s
         )
 
-        val btnLen = mWidth * 0.1f
+        val btnLen = w * 0.1f
 
         mTouchMove.setBoundsDelta(
-            s,
-            btnLen,
-            height - btnLen*2
+            fWidth * 0.5f,
+            0f,
+            fWidth,
+            fHeight
         )
 
         mBarSeekAmbient.bounds(
             0f,
             0f,
             btnLen,
-            height.toFloat()
+            fHeight
         )
 
         mBtnSwitchWireframe.bounds(
-            width - btnLen,
-            height - btnLen,
+            fWidth - btnLen,
+            fHeight - btnLen,
             btnLen,
             btnLen
         )
 
         mBtnLoadUserContent.bounds(
-            mWidth - btnLen,
+            fWidth - btnLen,
             0f,
             btnLen,
             btnLen

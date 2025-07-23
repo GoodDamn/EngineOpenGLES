@@ -20,9 +20,11 @@ class MGTouchFreeMove
     fun setBoundsDelta(
         left: Float,
         top: Float,
-        s: Float
+        right: Float,
+        bottom: Float
     ) = mTouchDelta.setBounds(
-        left, top, s
+        left, top,
+        right, bottom
     )
 
     fun setListenerDelta(
