@@ -239,7 +239,6 @@ MGIListenerMove {
         )
 
         mHandler.run()
-        //Log.d(TAG, "onDrawFrame: $mF")
         glViewport(
             0,
             0,
@@ -288,10 +287,10 @@ MGIListenerMove {
     fun onTouchEvent(
         event: MotionEvent
     ) {
-        if (event.pointerCount == 1 && event.action == MotionEvent.ACTION_UP) {
-            /*if (mBarSeekAmbient.intercept(event.x, event.y)) {
+        if (event.pointerCount == 1 && event.action == MotionEvent.ACTION_DOWN) {
+            if (mBarSeekAmbient.intercept(event.x, event.y)) {
                 return
-            }*/
+            }
 
             if (mBtnLoadUserContent.intercept(event.x, event.y)) {
                 return
@@ -316,10 +315,6 @@ MGIListenerMove {
             dy * 0.001f
         )
         mCameraFree.invalidatePosition()
-        /*mCameraRotation.rotateBy(
-            dx * 0.001f,
-            dy * 0.001f
-        )*/
     }
 
     override fun onScale(
@@ -333,8 +328,7 @@ MGIListenerMove {
         y: Float
     ) {
         mCameraFree.addPosition(
-            x,
-            y
+            x, y
         )
         mCameraFree.invalidatePosition()
     }
