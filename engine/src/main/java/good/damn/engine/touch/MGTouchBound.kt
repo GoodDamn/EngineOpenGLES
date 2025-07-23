@@ -3,9 +3,6 @@ package good.damn.engine.touch
 open class MGTouchBound
 : MGTouchMulti() {
 
-    protected var mHalfBound = 0f
-        private set
-
     protected var mHalfX = 0f
         private set
 
@@ -24,17 +21,28 @@ open class MGTouchBound
     protected var mBottom = 0f
         private set
 
-    fun setBounds(
+    open fun setBounds(
         left: Float,
         top: Float,
-        s: Float
+        right: Float,
+        bottom: Float
     ) {
         mLeft = left
         mTop = top
-        mRight = left + s
-        mBottom = top + s
-        mHalfBound = s * 0.5f
+        mRight = right
+        mBottom = bottom
         mHalfX = (mRight + mLeft) * 0.5f
         mHalfY = (mBottom + mTop) * 0.5f
     }
+
+    open fun setBounds(
+        left: Float,
+        top: Float,
+        s: Float
+    ) = setBounds(
+        left,
+        top,
+        left + s,
+        top + s
+    )
 }

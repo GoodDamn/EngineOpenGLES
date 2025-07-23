@@ -11,9 +11,24 @@ class MGTouchMove
 
     private var onMove: MGIListenerMove? = null
 
+    private var mHalfBound = 0f
+
     fun setListenerMove(
         l: MGIListenerMove?
     ) { onMove = l }
+
+    override fun setBounds(
+        left: Float,
+        top: Float,
+        s: Float
+    ) {
+        super.setBounds(
+            left,
+            top,
+            s
+        )
+        mHalfBound = s * 0.5f
+    }
 
     override fun onTouchDown(
         event: MotionEvent,
