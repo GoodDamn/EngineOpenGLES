@@ -36,6 +36,9 @@ open class MGMeshStatic(
     override fun draw(
         camera: MGCamera
     ) {
+        glFrontFace(
+            GL_CW
+        )
         super.draw(
             camera
         )

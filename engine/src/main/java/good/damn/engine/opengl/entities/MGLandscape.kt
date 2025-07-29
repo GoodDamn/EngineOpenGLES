@@ -42,6 +42,10 @@ class MGLandscape(
     override fun draw(
         camera: MGCamera
     ) {
+        glFrontFace(
+            GL_CW
+        )
+
         super.draw(
             camera
         )

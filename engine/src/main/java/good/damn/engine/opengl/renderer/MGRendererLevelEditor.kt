@@ -167,10 +167,6 @@ MGIListenerMove {
         glCullFace(
             GL_FRONT
         )
-
-        glFrontFace(
-            GL_CW
-        )
     }
 
     override fun onSurfaceChanged(
