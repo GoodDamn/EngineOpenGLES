@@ -22,6 +22,9 @@ Runnable {
     private var mTouchX = 0f
     private var mTouchY = 0f
 
+    private var mDtAnchorX = 0f
+    private var mDtAnchorY = 0f
+
     private val mHandler = Handler(
         Looper.getMainLooper()
     )
@@ -49,6 +52,9 @@ Runnable {
         mAnchorY = event.getY(
             touchIndex
         )
+
+        mDtAnchorX = mRight - mAnchorX
+        mDtAnchorY = mBottom - mAnchorY
 
         mTouchX = mAnchorX
         mTouchY = mAnchorY
@@ -95,7 +101,7 @@ Runnable {
         } - mAnchorY
 
         onMove?.onMove(
-            x, y
+            x / mDtAnchorX, y / mDtAnchorY
         )
 
         mHandler.postDelayed(

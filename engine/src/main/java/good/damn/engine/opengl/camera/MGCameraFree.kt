@@ -46,21 +46,36 @@ class MGCameraFree
         x: Float,
         y: Float
     ) {
+        Log.d("MGCameraFree", "addPosition: $x::$y")
         mSpeed = hypot(
             x, y
-        ) * 0.01f
-        if (y > 0.0f) {
+        ) * 0.5f
+
+        super.addPosition(
+            mDirection.x * mSpeed * -y,
+            mDirection.y * mSpeed * -y,
+            mDirection.z * mSpeed * -y
+        )
+
+        /*if (y > 0.0f) {
             addPositionNegative(mDirection)
         } else {
             addPositionPositive(mDirection)
-        }
+        }*/
 
         crossDirection()
-        if (x < 0.0f) {
+
+        super.addPosition(
+            mPositionDirection.x * mSpeed * x,
+            mPositionDirection.y * mSpeed * x,
+            mPositionDirection.z * mSpeed * x
+        )
+
+        /*if (x < 0.0f) {
             addPositionNegative(mPositionDirection)
         } else {
             addPositionPositive(mPositionDirection)
-        }
+        }*/
     }
 
     fun addRotation(
@@ -70,11 +85,11 @@ class MGCameraFree
         mYaw += yaw
         mPitch += pitch
 
-        if (mPitch > 1.57f)
-            mPitch = 1.57f
+        if (mPitch > 1.56f)
+            mPitch = 1.56f
 
-        if (mPitch < -1.57f)
-            mPitch = -1.57f
+        if (mPitch < -1.56f)
+            mPitch = -1.56f
 
         val cosPitch = cos(mPitch)
 
