@@ -2,8 +2,8 @@ package good.damn.engine.touch
 
 import android.os.Handler
 import android.os.Looper
-import android.text.BoringLayout
 import android.view.MotionEvent
+import kotlin.math.min
 
 class MGTouchMove
 : MGTouchBound(),
@@ -22,12 +22,29 @@ Runnable {
     private var mTouchX = 0f
     private var mTouchY = 0f
 
-    private var mDtAnchorX = 0f
-    private var mDtAnchorY = 0f
+    private var mLimitDirection = 0f
 
     private val mHandler = Handler(
         Looper.getMainLooper()
     )
+
+    override fun setBounds(
+        left: Float, top: Float,
+        right: Float, bottom: Float
+    ) {
+        super.setBounds(
+            left, top,
+            right, bottom
+        )
+
+        val fWidth = right - left
+        val fHeight = bottom - top
+
+        mLimitDirection = min(
+            fWidth,
+            fHeight
+        ) * 0.5f
+    }
 
     fun setListenerMove(
         l: MGIListenerMove?
@@ -52,9 +69,6 @@ Runnable {
         mAnchorY = event.getY(
             touchIndex
         )
-
-        mDtAnchorX = mRight - mAnchorX
-        mDtAnchorY = mBottom - mAnchorY
 
         mTouchX = mAnchorX
         mTouchY = mAnchorY
@@ -100,8 +114,25 @@ Runnable {
             else -> mTouchY
         } - mAnchorY
 
+        var directionX = x / mLimitDirection
+        var directionY = y / mLimitDirection
+
+        if (directionX > 1.0f) {
+            directionX = 1.0f
+        } else if (directionX < -1.0f) {
+            directionX = -1.0f
+        }
+
+        if (directionY > 1.0f) {
+            directionY = 1.0f
+        } else if (directionY < -1.0f) {
+            directionY = -1.0f
+        }
+
         onMove?.onMove(
-            x / mDtAnchorX, y / mDtAnchorY
+            x, y,
+            directionX,
+            directionY
         )
 
         mHandler.postDelayed(

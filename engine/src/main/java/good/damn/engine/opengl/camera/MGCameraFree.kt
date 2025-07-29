@@ -44,17 +44,19 @@ class MGCameraFree
 
     fun addPosition(
         x: Float,
-        y: Float
+        y: Float,
+        directionX: Float,
+        directionY: Float
     ) {
         Log.d("MGCameraFree", "addPosition: $x::$y")
         mSpeed = hypot(
             x, y
-        ) * 0.5f
+        ) * 0.03f
 
         super.addPosition(
-            mDirection.x * mSpeed * -y,
-            mDirection.y * mSpeed * -y,
-            mDirection.z * mSpeed * -y
+            mDirection.x * mSpeed * -directionY,
+            mDirection.y * mSpeed * -directionY,
+            mDirection.z * mSpeed * -directionY
         )
 
         /*if (y > 0.0f) {
@@ -66,9 +68,9 @@ class MGCameraFree
         crossDirection()
 
         super.addPosition(
-            mPositionDirection.x * mSpeed * x,
-            mPositionDirection.y * mSpeed * x,
-            mPositionDirection.z * mSpeed * x
+            mPositionDirection.x * mSpeed * directionX,
+            mPositionDirection.y * mSpeed * directionX,
+            mPositionDirection.z * mSpeed * directionX
         )
 
         /*if (x < 0.0f) {

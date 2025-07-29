@@ -333,10 +333,14 @@ MGIListenerMove {
 
     override fun onMove(
         x: Float,
-        y: Float
+        y: Float,
+        directionX: Float,
+        directionY: Float
     ) {
         mCameraFree.addPosition(
-            x, y
+            x, y,
+            directionX,
+            directionY
         )
         mCameraFree.invalidatePosition()
     }
