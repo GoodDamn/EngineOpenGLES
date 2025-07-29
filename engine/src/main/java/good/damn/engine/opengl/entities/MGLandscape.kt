@@ -126,11 +126,11 @@ class MGLandscape(
                 rightBottom = leftBottom + 1
 
                 bufferIndices.put(leftTop)
-                bufferIndices.put(leftBottom)
-                bufferIndices.put(rightBottom)
-                bufferIndices.put(leftTop)
                 bufferIndices.put(rightTop)
                 bufferIndices.put(rightBottom)
+                bufferIndices.put(rightBottom)
+                bufferIndices.put(leftBottom)
+                bufferIndices.put(leftTop)
             }
         }
 
