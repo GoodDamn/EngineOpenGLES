@@ -34,7 +34,6 @@ class MGCameraFree
     }
 
     fun invalidatePosition() {
-        Log.d("TAG", "invalidatePosition: ${mDirection.x} ${mDirection.y} ${mDirection.z};;;;$x $y $z")
         super.invalidatePosition(
             mDirection.x + x,
             mDirection.y + y,
@@ -48,7 +47,6 @@ class MGCameraFree
         directionX: Float,
         directionY: Float
     ) {
-        Log.d("MGCameraFree", "addPosition: $x::$y")
         mSpeed = hypot(
             x, y
         ) * 0.03f
@@ -59,12 +57,6 @@ class MGCameraFree
             mDirection.z * mSpeed * -directionY
         )
 
-        /*if (y > 0.0f) {
-            addPositionNegative(mDirection)
-        } else {
-            addPositionPositive(mDirection)
-        }*/
-
         crossDirection()
 
         super.addPosition(
@@ -72,12 +64,6 @@ class MGCameraFree
             mPositionDirection.y * mSpeed * directionX,
             mPositionDirection.z * mSpeed * directionX
         )
-
-        /*if (x < 0.0f) {
-            addPositionNegative(mPositionDirection)
-        } else {
-            addPositionPositive(mPositionDirection)
-        }*/
     }
 
     fun addRotation(
