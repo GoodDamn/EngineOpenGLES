@@ -1,6 +1,5 @@
 package good.damn.engine.opengl.camera
 
-import android.util.Log
 import good.damn.engine.opengl.MGVector
 import kotlin.math.cos
 import kotlin.math.hypot
@@ -9,9 +8,10 @@ import kotlin.math.sin
 class MGCameraFree
 : MGCamera() {
 
-    private val mDirection = MGVector(
+    val direction = MGVector(
         0.0f, 0.0f, -1.0f
     )
+
     private val mUp = MGVector(
         0.0f, 1.0f, 0.0f
     )
@@ -35,9 +35,9 @@ class MGCameraFree
 
     fun invalidatePosition() {
         super.invalidatePosition(
-            mDirection.x + x,
-            mDirection.y + y,
-            mDirection.z + z
+            direction.x + x,
+            direction.y + y,
+            direction.z + z
         )
     }
 
@@ -52,12 +52,16 @@ class MGCameraFree
         ) * 0.03f
 
         super.addPosition(
-            mDirection.x * mSpeed * -directionY,
-            mDirection.y * mSpeed * -directionY,
-            mDirection.z * mSpeed * -directionY
+            direction.x * mSpeed * -directionY,
+            direction.y * mSpeed * -directionY,
+            direction.z * mSpeed * -directionY
         )
 
-        crossDirection()
+        mPositionDirection.cross(
+            direction,
+            mUp
+        )
+        mPositionDirection.normalize()
 
         super.addPosition(
             mPositionDirection.x * mSpeed * directionX,
@@ -81,37 +85,9 @@ class MGCameraFree
 
         val cosPitch = cos(mPitch)
 
-        mDirection.x = cos(mYaw) * cosPitch
-        mDirection.y = sin(mPitch)
-        mDirection.z = sin(mYaw) * cosPitch
-        mDirection.normalize()
-    }
-
-    private inline fun crossDirection() {
-        mPositionDirection.cross(
-            mDirection,
-            mUp
-        )
-        mPositionDirection.normalize()
-    }
-
-    private inline fun addPositionPositive(
-        v: MGVector
-    ) {
-        super.addPosition(
-            v.x * mSpeed,
-            v.y * mSpeed,
-            v.z * mSpeed
-        )
-    }
-
-    private inline fun addPositionNegative(
-        v: MGVector
-    ) {
-        super.addPosition(
-            v.x * -mSpeed,
-            v.y * -mSpeed,
-            v.z * -mSpeed
-        )
+        direction.x = cos(mYaw) * cosPitch
+        direction.y = sin(mPitch)
+        direction.z = sin(mYaw) * cosPitch
+        direction.normalize()
     }
 }
