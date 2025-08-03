@@ -33,6 +33,12 @@ open class MGMeshStatic(
         )
     }
 
+    fun invalidatePosition() {
+        model[12] = x
+        model[13] = y
+        model[14] = z
+    }
+
     override fun draw(
         camera: MGCamera
     ) {

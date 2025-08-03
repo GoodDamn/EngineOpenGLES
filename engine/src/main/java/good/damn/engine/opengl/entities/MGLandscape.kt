@@ -4,6 +4,7 @@ import android.opengl.GLES30.*
 import android.util.Log
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.MGArrayVertex
+import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.textures.MGTexture
@@ -59,6 +60,43 @@ class MGLandscape(
         texture.draw()
         material.draw()
         mVertexArray.draw()
+    }
+
+    fun intersect(
+        position: MGVector,
+        direction: MGVector,
+        outResult: MGVector
+    ) {
+        val startRay = MGVector(
+            position.x,
+            position.y,
+            position.z
+        )
+
+        val endRay = MGVector(
+            position.x + direction.x * 10f,
+            position.y + direction.y * 10f,
+            position.z + direction.z * 10f
+        )
+
+        outResult.x = endRay.x
+        outResult.y = endRay.y
+        outResult.z = endRay.z
+
+    }
+
+    private fun searchIntersection(
+        start: Int,
+        end: Int,
+    ) {
+        if (start > end) {
+            return
+        }
+
+        searchIntersection(
+            start + 1,
+            end
+        )
     }
 
     fun setResolution(

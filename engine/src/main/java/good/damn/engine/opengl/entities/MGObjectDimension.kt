@@ -26,20 +26,6 @@ open class MGObjectDimension {
         )
     }
 
-    protected fun invalidatePosition(
-        centerX: Float,
-        centerY: Float,
-        centerZ: Float
-    ) {
-        setLookAtM(
-            model,
-            0,
-            x, y, z,
-            centerX, centerY, centerZ,
-            0.0f, 1.0f, 0.0f
-        )
-    }
-
     open fun setPosition(
         v: MGVector
     ) {

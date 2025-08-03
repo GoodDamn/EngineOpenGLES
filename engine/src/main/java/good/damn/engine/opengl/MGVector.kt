@@ -9,6 +9,14 @@ class MGVector(
     var z: Float = 0f
 ) {
 
+    fun copy(
+        v: MGVector
+    ) {
+        x = v.x
+        y = v.y
+        z = v.z
+    }
+
     fun normalize() {
         val len = length()
         x /= len
@@ -33,6 +41,14 @@ class MGVector(
         x * vect2.y - vect2.x * y
     )
 
+    operator fun minusAssign(
+        v: MGVector
+    ) {
+        x -= v.x
+        y -= v.y
+        z -= v.z
+    }
+
     operator fun plusAssign(
         v: MGVector
     ) {
@@ -46,5 +62,7 @@ class MGVector(
             x * x + y * y + z * z
         ))
     }
+
+    override fun toString() = "X=$x Y=$y Z=$z"
 
 }

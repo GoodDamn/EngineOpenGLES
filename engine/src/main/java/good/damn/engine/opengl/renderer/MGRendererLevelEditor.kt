@@ -11,12 +11,16 @@ import android.view.MotionEvent
 import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.opengl.MGMeshStatic
+import good.damn.engine.opengl.MGObject3D
+import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.entities.MGLandscape
 import good.damn.engine.opengl.entities.MGSkySphere
 import good.damn.engine.opengl.light.MGLightDirectional
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
+import good.damn.engine.opengl.rays.MGRayIntersection
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.opengl.ui.MGSeekBarGl
@@ -27,6 +31,7 @@ import good.damn.engine.touch.MGTouchFreeMove
 import good.damn.engine.touch.MGTouchMove
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
+import org.intellij.lang.annotations.JdkConstants.BoxLayoutAxis
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -90,6 +95,9 @@ MGIListenerMove {
     private lateinit var mDirectionalLight: MGLightDirectional
     private lateinit var mLandscape: MGLandscape
     private lateinit var mSky: MGSkySphere
+    private lateinit var mBoxIntersect: MGMeshStatic
+
+    private lateinit var mRayIntersection: MGRayIntersection
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -146,10 +154,26 @@ MGIListenerMove {
             )
         }
 
+        mRayIntersection = MGRayIntersection(
+            mLandscape
+        )
+
+        mBoxIntersect = MGMeshStatic(
+            MGObject3D.createFromAssets(
+                "objs/box.obj"
+            ),
+            "textures/rock.jpg",
+            mProgramDefault
+        )
+
         mLandscape.setScale(
-            3.0f,
-            3.0f,
-            3.0f
+            1.0f,
+            1.0f,
+            1.0f
+        )
+
+        mBoxIntersect.setPosition(
+            0.0f, 0.0f, 0.0f
         )
 
         mSky = MGSkySphere(
@@ -272,6 +296,10 @@ MGIListenerMove {
         mSky.draw(
             mCameraFree
         )
+
+        mBoxIntersect.draw(
+            mCameraFree
+        )
     }
 
     override fun onGetUserContent(
@@ -323,6 +351,7 @@ MGIListenerMove {
             dy * 0.001f
         )
         mCameraFree.invalidatePosition()
+        updateIntersection()
     }
 
     override fun onScale(
@@ -343,5 +372,28 @@ MGIListenerMove {
             directionY
         )
         mCameraFree.invalidatePosition()
+        updateIntersection()
+    }
+
+    private inline fun updateIntersection() {
+        val out = MGVector(0f)
+        mRayIntersection.intersect(
+            MGVector(
+                mCameraFree.x,
+                mCameraFree.y,
+                mCameraFree.z
+            ),
+            mCameraFree.direction,
+            out
+        )
+
+        Log.d(TAG, "onTouchEvent: BOX: $out;;; CAMERA: X=${mCameraFree.x} Y=${mCameraFree.y} Z=${mCameraFree.z}")
+        mBoxIntersect.setPosition(
+            out.x,
+            out.y,
+            out.z
+        )
+
+        mBoxIntersect.invalidatePosition()
     }
 }

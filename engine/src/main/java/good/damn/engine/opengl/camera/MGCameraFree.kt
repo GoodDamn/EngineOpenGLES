@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.camera
 
+import android.opengl.Matrix.setLookAtM
 import good.damn.engine.opengl.MGVector
 import kotlin.math.cos
 import kotlin.math.hypot
@@ -34,10 +35,14 @@ class MGCameraFree
     }
 
     fun invalidatePosition() {
-        super.invalidatePosition(
+        setLookAtM(
+            model,
+            0,
+            x, y, z,
             direction.x + x,
             direction.y + y,
-            direction.z + z
+            direction.z + z,
+            0.0f, 1.0f, 0.0f
         )
     }
 
