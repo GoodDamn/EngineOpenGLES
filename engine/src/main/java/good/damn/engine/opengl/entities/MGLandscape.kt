@@ -4,6 +4,7 @@ import android.opengl.GLES30.*
 import android.util.Log
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.MGArrayVertex
+import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.textures.MGTexture
@@ -42,6 +43,10 @@ class MGLandscape(
     override fun draw(
         camera: MGCamera
     ) {
+        glFrontFace(
+            GL_CW
+        )
+
         super.draw(
             camera
         )
@@ -55,6 +60,16 @@ class MGLandscape(
         texture.draw()
         material.draw()
         mVertexArray.draw()
+    }
+
+    fun intersect(
+        position: MGVector,
+        direction: MGVector,
+        outResult: MGVector
+    ) {
+        outResult.x = position.x + direction.x * 10f
+        outResult.y = position.y + direction.y * 10f
+        outResult.z = position.z + direction.z * 10f
     }
 
     fun setResolution(
@@ -126,11 +141,11 @@ class MGLandscape(
                 rightBottom = leftBottom + 1
 
                 bufferIndices.put(leftTop)
-                bufferIndices.put(leftBottom)
-                bufferIndices.put(rightBottom)
-                bufferIndices.put(leftTop)
                 bufferIndices.put(rightTop)
                 bufferIndices.put(rightBottom)
+                bufferIndices.put(rightBottom)
+                bufferIndices.put(leftBottom)
+                bufferIndices.put(leftTop)
             }
         }
 

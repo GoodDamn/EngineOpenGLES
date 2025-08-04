@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.entities
 
+import android.opengl.Matrix
 import android.opengl.Matrix.*
 import good.damn.engine.opengl.MGVector
 
@@ -7,7 +8,14 @@ open class MGObjectDimension {
 
     companion object {
         private const val TAG = "DimensionObject"
+        const val INDEX_X = 12
+        const val INDEX_Y = 13
+        const val INDEX_Z = 14
     }
+
+    var x = 0f
+    var y = 0f
+    var z = 0f
 
     internal var model = FloatArray(16)
 
@@ -33,19 +41,19 @@ open class MGObjectDimension {
         y: Float,
         z: Float
     ) {
-        model[12] = x
-        model[13] = y
-        model[14] = z
+        this.x = x
+        this.y = y
+        this.z = z
     }
 
-    fun setPositionBy(
+    open fun addPosition(
         dx: Float,
         dy: Float,
         dz: Float
     ) {
-        model[12] += dx
-        model[13] += dy
-        model[14] += dz
+        x += dx
+        y += dy
+        z += dz
     }
 
     open fun setScale(

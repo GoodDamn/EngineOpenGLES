@@ -12,10 +12,6 @@ open class MGMesh(
         internal const val mStride = 8 * 4
     }
 
-    internal var mAttrPosition = 0
-    internal var mAttrTexCoord = 0
-    internal var mAttrNormal = 0
-
     protected var mTextureOffset = 1f
 
     private val mUniformModelView = glGetUniformLocation(
@@ -30,7 +26,7 @@ open class MGMesh(
 
     private val mUniformCamera = glGetUniformLocation(
         program,
-        "camera"
+        "view"
     )
 
     private val mUniformTextureOffset = glGetUniformLocation(

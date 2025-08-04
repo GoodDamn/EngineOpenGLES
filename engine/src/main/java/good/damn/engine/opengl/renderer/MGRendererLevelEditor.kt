@@ -11,18 +11,27 @@ import android.view.MotionEvent
 import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.camera.MGCameraRotation
+import good.damn.engine.opengl.MGMeshStatic
+import good.damn.engine.opengl.MGObject3D
+import good.damn.engine.opengl.MGVector
+import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.entities.MGLandscape
 import good.damn.engine.opengl.entities.MGSkySphere
 import good.damn.engine.opengl.light.MGLightDirectional
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
+import good.damn.engine.opengl.rays.MGRayIntersection
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.opengl.ui.MGSeekBarGl
-import good.damn.engine.touch.MGIListenerTransform
+import good.damn.engine.touch.MGIListenerMove
+import good.damn.engine.touch.MGIListenerDelta
+import good.damn.engine.touch.MGIListenerScale
+import good.damn.engine.touch.MGTouchFreeMove
+import good.damn.engine.touch.MGTouchMove
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
+import org.intellij.lang.annotations.JdkConstants.BoxLayoutAxis
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -30,16 +39,28 @@ class MGRendererLevelEditor(
     private val requesterUserContent: MGIRequestUserContent
 ): GLSurfaceView.Renderer,
 MGIListenerOnGetUserContent,
-MGIListenerTransform {
+MGIListenerScale,
+MGIListenerDelta,
+MGIListenerMove {
 
     companion object {
         private const val TAG = "MGRendererLevelEditor"
     }
 
-    private val mCamera = MGCameraRotation()
+    private val mCameraFree = MGCameraFree()
 
     private val mTouchScale = MGTouchScale().apply {
-        listener = this@MGRendererLevelEditor
+        onScale = this@MGRendererLevelEditor
+        onDelta = this@MGRendererLevelEditor
+    }
+
+    private val mTouchMove = MGTouchFreeMove().apply {
+        setListenerMove(
+            this@MGRendererLevelEditor
+        )
+        setListenerDelta(
+            this@MGRendererLevelEditor
+        )
     }
 
     private val mBtnLoadUserContent = MGButtonGL {
@@ -51,12 +72,12 @@ MGIListenerTransform {
 
     private val mBtnSwitchWireframe = MGButtonGL {
         MGEngine.isWireframe = !MGEngine.isWireframe
-        mHandler.post {
+        /*mHandler.post {
             glUseProgram(
                 if (MGEngine.isWireframe) mProgramWireframe
                 else mProgramDefault
             )
-        }
+        }*/
     }
 
     private val mBarSeekAmbient = MGSeekBarGl {
@@ -74,6 +95,9 @@ MGIListenerTransform {
     private lateinit var mDirectionalLight: MGLightDirectional
     private lateinit var mLandscape: MGLandscape
     private lateinit var mSky: MGSkySphere
+    private lateinit var mBoxIntersect: MGMeshStatic
+
+    private lateinit var mRayIntersection: MGRayIntersection
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -102,12 +126,13 @@ MGIListenerTransform {
             mProgramDefault
         )
 
-        mCamera.radius = 950f
+        /*mCameraRotation.radius = 1250f
+        mTouchScale.scale = mCameraRotation.radius
 
-        mCamera.setRotation(
+        mCameraRotation.setRotation(
             0f,
             0.01f
-        )
+        )*/
 
         mDirectionalLight = MGLightDirectional(
             mProgramDefault
@@ -129,10 +154,26 @@ MGIListenerTransform {
             )
         }
 
+        mRayIntersection = MGRayIntersection(
+            mLandscape
+        )
+
+        mBoxIntersect = MGMeshStatic(
+            MGObject3D.createFromAssets(
+                "objs/box.obj"
+            ),
+            "textures/rock.jpg",
+            mProgramDefault
+        )
+
         mLandscape.setScale(
-            10.0f,
-            10.0f,
-            10.0f
+            1.0f,
+            1.0f,
+            1.0f
+        )
+
+        mBoxIntersect.setPosition(
+            0.0f, 0.0f, 0.0f
         )
 
         mSky = MGSkySphere(
@@ -141,6 +182,14 @@ MGIListenerTransform {
 
         glEnable(
             GL_DEPTH_TEST
+        )
+
+        glEnable(
+            GL_CULL_FACE
+        )
+
+        glCullFace(
+            GL_FRONT
         )
     }
 
@@ -153,29 +202,57 @@ MGIListenerTransform {
         mWidth = width
         mHeight = height
 
-        mCamera.setPerspective(
+        val fWidth = width.toFloat()
+        val fHeight = height.toFloat()
+
+        mCameraFree.setPerspective(
             width,
             height
         )
 
-        val btnLen = mWidth * 0.1f
+        val w: Float
+        val h: Float
+
+        if (width < height) {
+            w = fWidth
+            h = fHeight
+        } else {
+            w = fHeight
+            h = fWidth
+        }
+
+        mTouchMove.setBoundsMove(
+            0f,
+            0f,
+            fWidth * 0.5f,
+            fHeight
+        )
+
+        val btnLen = w * 0.1f
+
+        mTouchMove.setBoundsDelta(
+            fWidth * 0.5f,
+            0f,
+            fWidth,
+            fHeight
+        )
 
         mBarSeekAmbient.bounds(
             0f,
             0f,
             btnLen,
-            height.toFloat()
+            fHeight
         )
 
         mBtnSwitchWireframe.bounds(
-            width - btnLen,
-            height - btnLen,
+            fWidth - btnLen,
+            fHeight - btnLen,
             btnLen,
             btnLen
         )
 
         mBtnLoadUserContent.bounds(
-            mWidth - btnLen,
+            fWidth - btnLen,
             0f,
             btnLen,
             btnLen
@@ -186,15 +263,14 @@ MGIListenerTransform {
         gl: GL10?
     ) {
         val f = System.currentTimeMillis() % 100000L * 0.001f
-        val fx = sin(f) * 440f
-        val fz = cos(f) * 440f
+        val fx = sin(f) * 840f
+        val fz = cos(f) * 840f
 
         mDirectionalLight.setPosition(
-            fx, 200f, fz
+            fx, 600f, fz
         )
 
         mHandler.run()
-        //Log.d(TAG, "onDrawFrame: $mF")
         glViewport(
             0,
             0,
@@ -215,10 +291,14 @@ MGIListenerTransform {
 
         mDirectionalLight.draw()
         mLandscape.draw(
-            mCamera
+            mCameraFree
         )
         mSky.draw(
-            mCamera
+            mCameraFree
+        )
+
+        mBoxIntersect.draw(
+            mCameraFree
         )
     }
 
@@ -243,46 +323,77 @@ MGIListenerTransform {
     fun onTouchEvent(
         event: MotionEvent
     ) {
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                if (event.pointerCount != 1) {
-                    return
-                }
-
-                if (mBtnLoadUserContent.intercept(event.x, event.y)) {
-                    return
-                }
-
-                if (mBtnSwitchWireframe.intercept(event.x, event.y)) {
-                    return
-                }
+        if (event.pointerCount == 1 && event.action == MotionEvent.ACTION_DOWN) {
+            if (mBarSeekAmbient.intercept(event.x, event.y)) {
+                return
             }
 
-            MotionEvent.ACTION_UP -> {
-                if (mBarSeekAmbient.intercept(event.x, event.y)) {
-                    return
-                }
+            if (mBtnLoadUserContent.intercept(event.x, event.y)) {
+                return
+            }
+
+            if (mBtnSwitchWireframe.intercept(event.x, event.y)) {
+                return
             }
         }
 
-        mTouchScale.onTouchEvent(
+        mTouchMove.onTouchEvent(
             event
         )
     }
 
-    override fun onRotate(
+    override fun onDelta(
         dx: Float,
         dy: Float
     ) {
-        mCamera.rotateBy(
+        mCameraFree.addRotation(
             dx * 0.001f,
             dy * 0.001f
         )
+        mCameraFree.invalidatePosition()
+        updateIntersection()
     }
 
     override fun onScale(
         scale: Float
     ) {
-        mCamera.radius = scale
+        //mCameraRotation.radius = scale
+    }
+
+    override fun onMove(
+        x: Float,
+        y: Float,
+        directionX: Float,
+        directionY: Float
+    ) {
+        mCameraFree.addPosition(
+            x, y,
+            directionX,
+            directionY
+        )
+        mCameraFree.invalidatePosition()
+        updateIntersection()
+    }
+
+    private inline fun updateIntersection() {
+        val out = MGVector(0f)
+        mRayIntersection.intersect(
+            MGVector(
+                mCameraFree.x,
+                mCameraFree.y,
+                mCameraFree.z
+            ),
+            mCameraFree.direction,
+            out
+        )
+
+        Log.d(TAG, "onTouchEvent: BOX: $out;;; CAMERA: X=${mCameraFree.x} Y=${mCameraFree.y} Z=${mCameraFree.z}")
+        mBoxIntersect.setPosition(
+            out.x,
+            out.y,
+            out.z
+        )
+
+        mBoxIntersect.invalidatePosition()
     }
 }

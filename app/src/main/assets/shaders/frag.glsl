@@ -13,10 +13,9 @@ uniform Light light;
 uniform lowp float shine;
 uniform lowp float specularIntensity;
 
-//varying lowp vec3 posOut;
 varying lowp vec3 outFragPosition;
 varying lowp vec3 outNormal;
-varying lowp vec2 texCoordOut;
+varying lowp vec2 outTexCoord;
 
 void main() {
 
@@ -24,8 +23,8 @@ void main() {
 
     // Diffuse
     vec3 lightDirection = normalize(light.position - outFragPosition);
-    float diffFactor = max(dot(outNormal, lightDirection), 0.1);
-    vec3 diffColor = light.color * light.intensity * diffFactor;
+    float diffFactor = max(dot(outNormal, lightDirection), 0.01);
+    vec3 diffColor = light.color * diffFactor;
 
     // Specular
     //lowp vec3 eye = normalize(posOut);
@@ -35,7 +34,7 @@ void main() {
 
     gl_FragColor = texture2D(
         texture,
-        texCoordOut
+        outTexCoord
     ) * vec4(ambColor + diffColor, 1.0);
 
 }

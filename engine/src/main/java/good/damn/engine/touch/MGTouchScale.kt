@@ -3,13 +3,15 @@ package good.damn.engine.touch
 import android.view.MotionEvent
 import kotlin.math.hypot
 
-class MGTouchScale {
+class MGTouchScale
+: MGITouchable {
 
     companion object {
         private const val SCALE_FACTOR = 0.25f
     }
 
-    var listener: MGIListenerTransform? = null
+    var onScale: MGIListenerScale? = null
+    var onDelta: MGIListenerDelta? = null
 
     private var mPivotX = 0f
     private var mPivotY = 0f
@@ -26,12 +28,12 @@ class MGTouchScale {
     private var mTranslate2X = 0f
     private var mTranslate2Y = 0f
 
-    private var mScale = 1.0f
+    var scale = 1.0f
     private var mScaleDt = 0f
 
-    fun onTouchEvent(
+    override fun onTouchEvent(
         event: MotionEvent
-    ): Boolean {
+    ) {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 mPivotX = event.x
@@ -80,8 +82,6 @@ class MGTouchScale {
                 mTranslateY = mTranslate2Y
             }
         }
-
-        return true
     }
 
     private inline fun actionMove(
@@ -97,7 +97,7 @@ class MGTouchScale {
 
             val dx = mPrevX - event.x
             val dy = event.y - mPrevY
-            listener?.onRotate(
+            onDelta?.onDelta(
                 dx, dy
             )
 
@@ -118,7 +118,7 @@ class MGTouchScale {
             )
 
             mScaleDt = (mPrevDistance - mCurrentDistance) * SCALE_FACTOR
-            mScale += mScaleDt
+            scale += mScaleDt
             /*if (mScale > 7f) {
                 mScale = 7f
             }
@@ -126,8 +126,8 @@ class MGTouchScale {
                 mScale = 0.4f
             }*/
 
-            listener?.onScale(
-                mScale
+            onScale?.onScale(
+                scale
             )
 
             mPrevDistance = mCurrentDistance
