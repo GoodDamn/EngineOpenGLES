@@ -32,6 +32,7 @@ import good.damn.engine.touch.MGTouchMove
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
 import org.intellij.lang.annotations.JdkConstants.BoxLayoutAxis
+import java.util.LinkedList
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -80,11 +81,19 @@ MGIListenerMove {
         }*/
     }
 
+    private val mBtnPlaceMesh = MGButtonGL {
+        placeMesh()
+    }
+
     private val mBarSeekAmbient = MGSeekBarGl {
         mDirectionalLight.ambient = it
     }
 
     private val mHandler = MGHandlerGl()
+
+    private val mOutPointLead = MGVector(0f)
+    private val mPointCamera = MGVector(0f)
+    private val meshes = LinkedList<MGMeshStatic>()
 
     private var mWidth = 0
     private var mHeight = 0
@@ -95,9 +104,10 @@ MGIListenerMove {
     private lateinit var mDirectionalLight: MGLightDirectional
     private lateinit var mLandscape: MGLandscape
     private lateinit var mSky: MGSkySphere
-    private lateinit var mBoxIntersect: MGMeshStatic
 
     private lateinit var mRayIntersection: MGRayIntersection
+
+    private var mCurrentMeshInteract: MGMeshStatic? = null
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -158,22 +168,10 @@ MGIListenerMove {
             mLandscape
         )
 
-        mBoxIntersect = MGMeshStatic(
-            MGObject3D.createFromAssets(
-                "objs/box.obj"
-            ),
-            "textures/rock.jpg",
-            mProgramDefault
-        )
-
         mLandscape.setScale(
-            1.0f,
-            1.0f,
-            1.0f
-        )
-
-        mBoxIntersect.setPosition(
-            0.0f, 0.0f, 0.0f
+            3.0f,
+            3.0f,
+            3.0f
         )
 
         mSky = MGSkySphere(
@@ -257,6 +255,13 @@ MGIListenerMove {
             btnLen,
             btnLen
         )
+
+        mBtnPlaceMesh.bounds(
+            fWidth - btnLen,
+            btnLen,
+            btnLen,
+            btnLen
+        )
     }
 
     override fun onDrawFrame(
@@ -284,7 +289,7 @@ MGIListenerMove {
 
         glClearColor(
             0.0f,
-                0.0f,
+            0.0f,
             0.0f,
             1.0f
         )
@@ -297,9 +302,11 @@ MGIListenerMove {
             mCameraFree
         )
 
-        mBoxIntersect.draw(
-            mCameraFree
-        )
+        meshes.forEach {
+            it.draw(
+                mCameraFree
+            )
+        }
     }
 
     override fun onGetUserContent(
@@ -333,6 +340,10 @@ MGIListenerMove {
             }
 
             if (mBtnSwitchWireframe.intercept(event.x, event.y)) {
+                return
+            }
+
+            if (mBtnPlaceMesh.intercept(event.x, event.y)) {
                 return
             }
         }
@@ -376,24 +387,40 @@ MGIListenerMove {
     }
 
     private inline fun updateIntersection() {
-        val out = MGVector(0f)
+        mPointCamera.x = mCameraFree.x
+        mPointCamera.y = mCameraFree.y
+        mPointCamera.z = mCameraFree.z
+
         mRayIntersection.intersect(
-            MGVector(
-                mCameraFree.x,
-                mCameraFree.y,
-                mCameraFree.z
-            ),
+            mPointCamera,
             mCameraFree.direction,
-            out
+            mOutPointLead
         )
 
-        Log.d(TAG, "onTouchEvent: BOX: $out;;; CAMERA: X=${mCameraFree.x} Y=${mCameraFree.y} Z=${mCameraFree.z}")
-        mBoxIntersect.setPosition(
-            out.x,
-            out.y,
-            out.z
-        )
+        Log.d(TAG, "onTouchEvent: BOX: $mOutPointLead;;; CAMERA: X=${mCameraFree.x} Y=${mCameraFree.y} Z=${mCameraFree.z}")
+        mCurrentMeshInteract?.run {
+            setPosition(
+                mOutPointLead.x,
+                mOutPointLead.y,
+                mOutPointLead.z
+            )
+            invalidatePosition()
+        }
+    }
 
-        mBoxIntersect.invalidatePosition()
+    private fun placeMesh() {
+        mHandler.post {
+            mCurrentMeshInteract = MGMeshStatic(
+                MGObject3D.createFromAssets(
+                    "objs/box.obj"
+                ),
+                "textures/rock.jpg",
+                mProgramDefault
+            ).apply {
+                meshes.add(
+                    this
+                )
+            }
+        }
     }
 }
