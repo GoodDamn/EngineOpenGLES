@@ -67,36 +67,9 @@ class MGLandscape(
         direction: MGVector,
         outResult: MGVector
     ) {
-        val startRay = MGVector(
-            position.x,
-            position.y,
-            position.z
-        )
-
-        val endRay = MGVector(
-            position.x + direction.x * 10f,
-            position.y + direction.y * 10f,
-            position.z + direction.z * 10f
-        )
-
-        outResult.x = endRay.x
-        outResult.y = endRay.y
-        outResult.z = endRay.z
-
-    }
-
-    private fun searchIntersection(
-        start: Int,
-        end: Int,
-    ) {
-        if (start > end) {
-            return
-        }
-
-        searchIntersection(
-            start + 1,
-            end
-        )
+        outResult.x = position.x + direction.x * 10f
+        outResult.y = position.y + direction.y * 10f
+        outResult.z = position.z + direction.z * 10f
     }
 
     fun setResolution(
