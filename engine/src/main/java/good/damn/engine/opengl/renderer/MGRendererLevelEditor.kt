@@ -257,8 +257,8 @@ MGIListenerMove {
         )
 
         mBtnPlaceMesh.bounds(
-            fWidth - btnLen,
-            btnLen,
+            (fWidth - btnLen) * 0.5f,
+            (fHeight - btnLen) * 0.5f,
             btnLen,
             btnLen
         )
