@@ -367,6 +367,8 @@ MGIListenerMove {
 //                mCameraFree
 //            )
 //        }
+
+        glFlush()
     }
 
     override fun onGetUserContent(
