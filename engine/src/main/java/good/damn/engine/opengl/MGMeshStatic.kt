@@ -12,9 +12,7 @@ open class MGMeshStatic(
     obj: MGObject3D,
     texturePath: String,
     program: Int
-): MGMesh(
-    program
-) {
+): MGMesh() {
 
     var material = MGMaterial(
         program

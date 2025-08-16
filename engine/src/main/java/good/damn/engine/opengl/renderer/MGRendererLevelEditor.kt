@@ -16,6 +16,7 @@ import good.damn.engine.opengl.MGMeshStatic
 import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCameraFree
+import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.entities.MGLandscape
 import good.damn.engine.opengl.entities.MGSkySphere
 import good.damn.engine.opengl.maps.MGMapDisplace
@@ -46,7 +47,11 @@ MGIListenerMove {
         private const val TAG = "MGRendererLevelEditor"
     }
 
-    private val mCameraFree = MGCameraFree()
+    private val modelMatrixCamera = MGMMatrix()
+
+    private val mCameraFree = MGCameraFree(
+        modelMatrixCamera
+    )
 
     private val mTouchScale = MGTouchScale().apply {
         onScale = this@MGRendererLevelEditor
@@ -176,6 +181,18 @@ MGIListenerMove {
             mProgramDefault
         )
 
+        mCameraFree.setupUniforms(
+            mProgramDefault
+        )
+
+        mLandscape.setupUniforms(
+            mProgramDefault
+        )
+
+        mSky.setupUniforms(
+            mProgramDefault
+        )
+
         glEnable(
             GL_DEPTH_TEST
         )
@@ -292,6 +309,7 @@ MGIListenerMove {
             1.0f
         )
 
+        mCameraFree.draw()
         mDrawerLightDirectional.draw()
         mLandscape.draw(
             mCameraFree
@@ -385,9 +403,9 @@ MGIListenerMove {
     }
 
     private inline fun updateIntersection() {
-        mPointCamera.x = mCameraFree.x
-        mPointCamera.y = mCameraFree.y
-        mPointCamera.z = mCameraFree.z
+        mPointCamera.x = modelMatrixCamera.x
+        mPointCamera.y = modelMatrixCamera.y
+        mPointCamera.z = modelMatrixCamera.z
 
         mRayIntersection.intersect(
             mPointCamera,
@@ -395,7 +413,6 @@ MGIListenerMove {
             mOutPointLead
         )
 
-        Log.d(TAG, "onTouchEvent: BOX: $mOutPointLead;;; CAMERA: X=${mCameraFree.x} Y=${mCameraFree.y} Z=${mCameraFree.z}")
         mCurrentMeshInteract?.run {
             setPosition(
                 mOutPointLead.x,

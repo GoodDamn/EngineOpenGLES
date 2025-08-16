@@ -13,9 +13,7 @@ import java.nio.FloatBuffer
 
 class MGLandscape(
     program: Int
-): MGMesh(
-    program
-) {
+): MGMesh() {
     companion object {
         private const val TAG = "Landscape"
         private const val MAX_HEIGHT = 255f

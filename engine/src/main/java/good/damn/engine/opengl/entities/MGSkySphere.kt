@@ -11,9 +11,7 @@ import good.damn.engine.opengl.textures.MGTexture
 
 class MGSkySphere(
     program: Int
-): MGMesh(
-    program
-) {
+): MGMesh() {
 
     private val material = MGMaterial(
         program

@@ -2,14 +2,21 @@ package good.damn.engine.opengl.camera
 
 import android.opengl.GLES30.*
 import android.opengl.Matrix
+import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.engine.opengl.drawers.MGIUniform
 import good.damn.engine.opengl.entities.MGObjectDimension
 
-open class MGCamera
-: MGObjectDimension() {
+open class MGCamera(
+    var modelMatrix: MGMMatrix
+): MGIDrawer,
+MGIUniform {
 
     private val mProjection = FloatArray(
         16
     )
+
+    private var mUniformProject = 0
+    private var mUniformCamera = 0
 
     fun setPerspective(
         width: Int,
@@ -25,14 +32,23 @@ open class MGCamera
         )
     }
 
-    fun draw(
-        unifProj: Int,
-        unifModel: Int,
-        unifCamera: Int,
-        model: FloatArray
+    override fun setupUniforms(
+        program: Int
     ) {
+        mUniformProject = glGetUniformLocation(
+            program,
+            "projection"
+        )
+
+        mUniformCamera = glGetUniformLocation(
+            program,
+            "view"
+        )
+    }
+
+    override fun draw() {
         glUniformMatrix4fv(
-            unifProj,
+            mUniformProject,
             1,
             false,
             mProjection,
@@ -40,18 +56,10 @@ open class MGCamera
         )
 
         glUniformMatrix4fv(
-            unifCamera,
+            mUniformCamera,
             1,
             false,
-            this.model,
-            0
-        )
-
-        glUniformMatrix4fv(
-            unifModel,
-            1,
-            false,
-            model,
+            modelMatrix.model,
             0
         )
     }

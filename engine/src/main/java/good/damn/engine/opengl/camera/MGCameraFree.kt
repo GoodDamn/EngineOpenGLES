@@ -6,8 +6,11 @@ import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.sin
 
-class MGCameraFree
-: MGCamera() {
+class MGCameraFree(
+    modelMatrix: MGMMatrix
+): MGCamera(
+    modelMatrix
+) {
 
     val direction = MGVector(
         0.0f, 0.0f, -1.0f
@@ -25,18 +28,21 @@ class MGCameraFree
     private var mPitch = 0.0f
 
     init {
-        setPosition(
-            0f,
-            0f,
-            3.0f
-        )
+        modelMatrix.x = 0f
+        modelMatrix.y = 0f
+        modelMatrix.z = 3.0f
         addRotation(0.0f,0.0f)
         invalidatePosition()
     }
 
     fun invalidatePosition() {
+        val x = modelMatrix.x
+        val y = modelMatrix.y
+        val z = modelMatrix.z
+
+        modelMatrix.invalidatePosition()
         setLookAtM(
-            model,
+            modelMatrix.model,
             0,
             x, y, z,
             direction.x + x,
@@ -56,7 +62,7 @@ class MGCameraFree
             x, y
         ) * 0.03f
 
-        super.addPosition(
+        modelMatrix.addPosition(
             direction.x * mSpeed * -directionY,
             direction.y * mSpeed * -directionY,
             direction.z * mSpeed * -directionY
@@ -68,7 +74,7 @@ class MGCameraFree
         )
         mPositionDirection.normalize()
 
-        super.addPosition(
+        modelMatrix.addPosition(
             mPositionDirection.x * mSpeed * directionX,
             mPositionDirection.y * mSpeed * directionX,
             mPositionDirection.z * mSpeed * directionX

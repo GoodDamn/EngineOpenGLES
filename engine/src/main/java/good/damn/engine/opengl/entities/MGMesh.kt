@@ -3,10 +3,11 @@ package good.damn.engine.opengl.entities
 import android.opengl.GLES30.*
 import android.opengl.Matrix
 import good.damn.engine.opengl.camera.MGCamera
+import good.damn.engine.opengl.drawers.MGIUniform
 
-open class MGMesh(
-    program: Int
-): MGObjectDimension() {
+open class MGMesh
+: MGObjectDimension(),
+MGIUniform {
 
     companion object {
         internal const val mStride = 8 * 4
@@ -14,30 +15,27 @@ open class MGMesh(
 
     protected var mTextureOffset = 1f
 
-    private val mUniformModelView = glGetUniformLocation(
-        program,
-        "model"
-    )
-
-    private val mUniformProject = glGetUniformLocation(
-        program,
-        "projection"
-    )
-
-    private val mUniformCamera = glGetUniformLocation(
-        program,
-        "view"
-    )
-
-    private val mUniformTextureOffset = glGetUniformLocation(
-        program,
-        "textureOffset"
-    )
+    private var mUniformModelView = 0
+    private var mUniformTextureOffset = 0
 
     init {
         Matrix.setIdentityM(
             model,
             0
+        )
+    }
+
+    override fun setupUniforms(
+        program: Int
+    ) {
+        mUniformModelView = glGetUniformLocation(
+            program,
+            "model"
+        )
+
+        mUniformTextureOffset = glGetUniformLocation(
+            program,
+            "textureOffset"
         )
     }
 
@@ -49,12 +47,15 @@ open class MGMesh(
             mTextureOffset
         )
 
-        camera.draw(
-            mUniformProject,
+        glUniformMatrix4fv(
             mUniformModelView,
-            mUniformCamera,
-            model
+            1,
+            false,
+            model,
+            0
         )
+
+        //camera.draw()
     }
 
 }
