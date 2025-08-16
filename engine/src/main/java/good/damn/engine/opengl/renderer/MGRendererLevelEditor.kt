@@ -18,6 +18,8 @@ import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.entities.MGDrawerSky
+import good.damn.engine.opengl.entities.MGLandscape
+import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.textures.MGTexture
@@ -47,9 +49,20 @@ MGIListenerMove {
 
     private val modelMatrixSky = MGMMatrix()
     private val modelMatrixCamera = MGMMatrix()
+    private val modelMatrixLandscape = MGMMatrix()
+
+    private val materialLandscape = MGMaterial()
 
     private val mVerticesSky = MGArrayVertex()
+
     private val mTextureSky = MGTexture()
+    private val mTextureLandscape = MGTexture()
+
+    private val mLandscape = MGLandscape(
+        mTextureLandscape,
+        materialLandscape,
+        modelMatrixLandscape
+    )
 
     private val mCameraFree = MGCameraFree(
         modelMatrixCamera
@@ -113,7 +126,7 @@ MGIListenerMove {
     private var mProgramDefault = 0
 
     private val mDrawerLightDirectional = MGDrawerLightDirectional()
-    //private lateinit var mLandscape: MGLandscape
+
     //private lateinit var mRayIntersection: MGRayIntersection
 
     //private var mCurrentMeshInteract: MGMeshStatic? = null
@@ -145,6 +158,10 @@ MGIListenerMove {
             mProgramDefault
         )
 
+        materialLandscape.setupUniforms(
+            mProgramDefault
+        )
+
         /*mCameraRotation.radius = 1250f
         mTouchScale.scale = mCameraRotation.radius
 
@@ -161,13 +178,23 @@ MGIListenerMove {
             mProgramDefault
         )
 
+        mTextureLandscape.run {
+            setupUniforms(
+                mProgramDefault
+            )
+
+            setupTexture(
+                "textures/terrain.png",
+                GL_REPEAT
+            )
+        }
+
         mTextureSky.run {
             setupUniforms(
                 mProgramDefault
             )
             setupTexture(
-                "textures/sky/skysphere_light.jpg",
-                GL_REPEAT
+                "textures/sky/skysphere_light.jpg"
             )
         }
 
@@ -181,39 +208,33 @@ MGIListenerMove {
             )
         }
 
-//        mLandscape = MGLandscape(
-//            mProgramDefault
-//        ).apply {
-//            setResolution(
-//                mProgramDefault,
-//                1024,
-//                1024
-//            )
-//
-//            displace(
-//                MGMapDisplace.createFromAssets(
-//                    "maps/terrain_height.png"
-//                )
-//            )
-//        }
-//
-//        mRayIntersection = MGRayIntersection(
-//            mLandscape
-//        )
-//
-//        mLandscape.setScale(
-//            3.0f,
-//            3.0f,
-//            3.0f
-//        )
+        mLandscape.apply {
+            setupUniforms(
+                mProgramDefault
+            )
+
+            setResolution(
+                mProgramDefault,
+                1024,
+                1024
+            )
+
+            displace(
+                MGMapDisplace.createFromAssets(
+                    "maps/terrain_height.png"
+                )
+            )
+        }
+
+        modelMatrixLandscape.setScale(
+            3.0f,
+            3.0f,
+            3.0f
+        )
 
         mCameraFree.setupUniforms(
             mProgramDefault
         )
-
-//        mLandscape.setupUniforms(
-//            mProgramDefault
-//        )
 
         glEnable(
             GL_DEPTH_TEST
@@ -334,6 +355,9 @@ MGIListenerMove {
         mCameraFree.draw()
         mDrawerLightDirectional.draw()
         mDrawerSky.draw()
+
+        mLandscape.draw()
+
 //        mLandscape.draw(
 //            mCameraFree
 //        )
@@ -356,9 +380,9 @@ MGIListenerMove {
             Looper.getMainLooper()
         ).post {
             mHandler.post {
-//                mLandscape.displace(
-//                    mapDisplace
-//                )
+                mLandscape.displace(
+                    mapDisplace
+                )
             }
         }
     }

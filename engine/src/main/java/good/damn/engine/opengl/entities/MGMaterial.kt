@@ -1,30 +1,41 @@
 package good.damn.engine.opengl.entities
 
 import android.opengl.GLES30
+import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.engine.opengl.drawers.MGIUniform
 
-class MGMaterial(
-    program: Int
-) {
+class MGMaterial
+: MGIDrawer,
+MGIUniform {
 
     var specular = 0f
     var shine = 1f
     var lightIntensity = 0.2f
 
-    private val mUniformSpecular = GLES30.glGetUniformLocation(
-        program,
-        "specularIntensity"
-    )
-    private val mUniformShininess = GLES30.glGetUniformLocation(
-        program,
-        "shine"
-    )
+    private var mUniformSpecular = 0
+    private var mUniformShininess = 0
+    private var mUniformIntensityLight = 0
 
-    private val mUniformIntensityLight = GLES30.glGetUniformLocation(
-        program,
-        "light.intensity"
-    )
+    override fun setupUniforms(
+        program: Int
+    ) {
+        mUniformSpecular = GLES30.glGetUniformLocation(
+            program,
+            "specularIntensity"
+        )
 
-    fun draw() {
+        mUniformShininess = GLES30.glGetUniformLocation(
+            program,
+            "shine"
+        )
+
+        mUniformIntensityLight = GLES30.glGetUniformLocation(
+            program,
+            "light.intensity"
+        )
+    }
+
+    override fun draw() {
         GLES30.glUniform1f(
             mUniformShininess,
             shine
