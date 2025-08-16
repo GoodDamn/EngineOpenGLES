@@ -12,12 +12,10 @@ import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
-import good.damn.engine.opengl.MGMeshStatic
 import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGMMatrix
-import good.damn.engine.opengl.entities.MGLandscape
 import good.damn.engine.opengl.entities.MGSkySphere
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
@@ -96,7 +94,7 @@ MGIListenerMove {
 
     private val mOutPointLead = MGVector(0f)
     private val mPointCamera = MGVector(0f)
-    private val meshes = LinkedList<MGMeshStatic>()
+    //private val meshes = LinkedList<MGMeshStatic>()
 
     private var mWidth = 0
     private var mHeight = 0
@@ -105,12 +103,12 @@ MGIListenerMove {
     private var mProgramDefault = 0
 
     private val mDrawerLightDirectional = MGDrawerLightDirectional()
-    private lateinit var mLandscape: MGLandscape
+    //private lateinit var mLandscape: MGLandscape
     private lateinit var mSky: MGSkySphere
 
-    private lateinit var mRayIntersection: MGRayIntersection
+    //private lateinit var mRayIntersection: MGRayIntersection
 
-    private var mCurrentMeshInteract: MGMeshStatic? = null
+    //private var mCurrentMeshInteract: MGMeshStatic? = null
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -151,31 +149,31 @@ MGIListenerMove {
             mProgramDefault
         )
 
-        mLandscape = MGLandscape(
-            mProgramDefault
-        ).apply {
-            setResolution(
-                mProgramDefault,
-                1024,
-                1024
-            )
-
-            displace(
-                MGMapDisplace.createFromAssets(
-                    "maps/terrain_height.png"
-                )
-            )
-        }
-
-        mRayIntersection = MGRayIntersection(
-            mLandscape
-        )
-
-        mLandscape.setScale(
-            3.0f,
-            3.0f,
-            3.0f
-        )
+//        mLandscape = MGLandscape(
+//            mProgramDefault
+//        ).apply {
+//            setResolution(
+//                mProgramDefault,
+//                1024,
+//                1024
+//            )
+//
+//            displace(
+//                MGMapDisplace.createFromAssets(
+//                    "maps/terrain_height.png"
+//                )
+//            )
+//        }
+//
+//        mRayIntersection = MGRayIntersection(
+//            mLandscape
+//        )
+//
+//        mLandscape.setScale(
+//            3.0f,
+//            3.0f,
+//            3.0f
+//        )
 
         mSky = MGSkySphere(
             mProgramDefault
@@ -185,9 +183,9 @@ MGIListenerMove {
             mProgramDefault
         )
 
-        mLandscape.setupUniforms(
-            mProgramDefault
-        )
+//        mLandscape.setupUniforms(
+//            mProgramDefault
+//        )
 
         mSky.setupUniforms(
             mProgramDefault
@@ -311,18 +309,18 @@ MGIListenerMove {
 
         mCameraFree.draw()
         mDrawerLightDirectional.draw()
-        mLandscape.draw(
-            mCameraFree
-        )
+//        mLandscape.draw(
+//            mCameraFree
+//        )
         mSky.draw(
             mCameraFree
         )
 
-        meshes.forEach {
-            it.draw(
-                mCameraFree
-            )
-        }
+//        meshes.forEach {
+//            it.draw(
+//                mCameraFree
+//            )
+//        }
     }
 
     override fun onGetUserContent(
@@ -336,9 +334,9 @@ MGIListenerMove {
             Looper.getMainLooper()
         ).post {
             mHandler.post {
-                mLandscape.displace(
-                    mapDisplace
-                )
+//                mLandscape.displace(
+//                    mapDisplace
+//                )
             }
         }
     }
@@ -407,35 +405,35 @@ MGIListenerMove {
         mPointCamera.y = modelMatrixCamera.y
         mPointCamera.z = modelMatrixCamera.z
 
-        mRayIntersection.intersect(
-            mPointCamera,
-            mCameraFree.direction,
-            mOutPointLead
-        )
+//        mRayIntersection.intersect(
+//            mPointCamera,
+//            mCameraFree.direction,
+//            mOutPointLead
+//        )
 
-        mCurrentMeshInteract?.run {
-            setPosition(
-                mOutPointLead.x,
-                mOutPointLead.y,
-                mOutPointLead.z
-            )
-            invalidatePosition()
-        }
+//        mCurrentMeshInteract?.run {
+//            setPosition(
+//                mOutPointLead.x,
+//                mOutPointLead.y,
+//                mOutPointLead.z
+//            )
+//            invalidatePosition()
+//        }
     }
 
     private fun placeMesh() {
         mHandler.post {
-            mCurrentMeshInteract = MGMeshStatic(
-                MGObject3D.createFromAssets(
-                    "objs/box.obj"
-                ),
-                "textures/rock.jpg",
-                mProgramDefault
-            ).apply {
-                meshes.add(
-                    this
-                )
-            }
+//            mCurrentMeshInteract = MGMeshStatic(
+//                MGObject3D.createFromAssets(
+//                    "objs/box.obj"
+//                ),
+//                "textures/rock.jpg",
+//                mProgramDefault
+//            ).apply {
+//                meshes.add(
+//                    this
+//                )
+//            }
         }
     }
 }
