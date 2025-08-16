@@ -1,8 +1,7 @@
 package good.damn.engine.opengl.entities
 
-import android.opengl.Matrix
 import android.opengl.Matrix.*
-import good.damn.engine.opengl.MGIDrawer
+import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.MGVector
 
 open class MGObjectDimension {

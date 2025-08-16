@@ -11,7 +11,7 @@ import android.view.MotionEvent
 import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.MGDrawerLightDirectional
+import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.MGMeshStatic
 import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGVector
@@ -28,10 +28,8 @@ import good.damn.engine.touch.MGIListenerMove
 import good.damn.engine.touch.MGIListenerDelta
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.touch.MGTouchFreeMove
-import good.damn.engine.touch.MGTouchMove
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
-import org.intellij.lang.annotations.JdkConstants.BoxLayoutAxis
 import java.util.LinkedList
 import kotlin.math.cos
 import kotlin.math.sin

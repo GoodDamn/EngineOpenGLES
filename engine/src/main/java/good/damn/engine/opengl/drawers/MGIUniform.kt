@@ -1,4 +1,4 @@
-package good.damn.engine.opengl
+package good.damn.engine.opengl.drawers
 
 interface MGIUniform {
     fun setupUniforms(

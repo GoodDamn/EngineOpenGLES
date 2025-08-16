@@ -1,12 +1,13 @@
-package good.damn.engine.opengl
+package good.damn.engine.opengl.drawers
 
 import android.opengl.GLES30.glGetUniformLocation
 import android.opengl.GLES30.glUniform1f
 import android.opengl.GLES30.glUniform3f
+import good.damn.engine.opengl.MGVector
 
 class MGDrawerLightDirectional
 : MGIDrawer,
-MGIUniform {
+    MGIUniform {
 
     var ambient = 0.08f
 
