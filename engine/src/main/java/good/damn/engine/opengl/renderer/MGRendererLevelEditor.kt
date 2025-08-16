@@ -11,15 +11,16 @@ import android.view.MotionEvent
 import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGMMatrix
-import good.damn.engine.opengl.entities.MGSkySphere
+import good.damn.engine.opengl.entities.MGDrawerSky
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
-import good.damn.engine.opengl.rays.MGRayIntersection
+import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.opengl.ui.MGSeekBarGl
@@ -29,7 +30,6 @@ import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.touch.MGTouchFreeMove
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
-import java.util.LinkedList
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -45,10 +45,20 @@ MGIListenerMove {
         private const val TAG = "MGRendererLevelEditor"
     }
 
+    private val modelMatrixSky = MGMMatrix()
     private val modelMatrixCamera = MGMMatrix()
+
+    private val mVerticesSky = MGArrayVertex()
+    private val mTextureSky = MGTexture()
 
     private val mCameraFree = MGCameraFree(
         modelMatrixCamera
+    )
+
+    private val mDrawerSky = MGDrawerSky(
+        modelMatrixSky,
+        mVerticesSky,
+        mTextureSky
     )
 
     private val mTouchScale = MGTouchScale().apply {
@@ -104,8 +114,6 @@ MGIListenerMove {
 
     private val mDrawerLightDirectional = MGDrawerLightDirectional()
     //private lateinit var mLandscape: MGLandscape
-    private lateinit var mSky: MGSkySphere
-
     //private lateinit var mRayIntersection: MGRayIntersection
 
     //private var mCurrentMeshInteract: MGMeshStatic? = null
@@ -149,6 +157,30 @@ MGIListenerMove {
             mProgramDefault
         )
 
+        mDrawerSky.setupUniforms(
+            mProgramDefault
+        )
+
+        mTextureSky.run {
+            setupUniforms(
+                mProgramDefault
+            )
+            setupTexture(
+                "textures/sky/skysphere_light.jpg",
+                GL_REPEAT
+            )
+        }
+
+        MGObject3D.createFromAssets(
+            "objs/semi_sphere.obj"
+        ).run {
+            mVerticesSky.configure(
+                mProgramDefault,
+                vertices,
+                indices
+            )
+        }
+
 //        mLandscape = MGLandscape(
 //            mProgramDefault
 //        ).apply {
@@ -175,10 +207,6 @@ MGIListenerMove {
 //            3.0f
 //        )
 
-        mSky = MGSkySphere(
-            mProgramDefault
-        )
-
         mCameraFree.setupUniforms(
             mProgramDefault
         )
@@ -186,10 +214,6 @@ MGIListenerMove {
 //        mLandscape.setupUniforms(
 //            mProgramDefault
 //        )
-
-        mSky.setupUniforms(
-            mProgramDefault
-        )
 
         glEnable(
             GL_DEPTH_TEST
@@ -309,12 +333,10 @@ MGIListenerMove {
 
         mCameraFree.draw()
         mDrawerLightDirectional.draw()
+        mDrawerSky.draw()
 //        mLandscape.draw(
 //            mCameraFree
 //        )
-        mSky.draw(
-            mCameraFree
-        )
 
 //        meshes.forEach {
 //            it.draw(

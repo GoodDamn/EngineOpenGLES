@@ -3,27 +3,20 @@ package good.damn.engine.opengl.entities
 import android.opengl.GLES30.*
 import android.opengl.Matrix
 import good.damn.engine.opengl.camera.MGCamera
+import good.damn.engine.opengl.camera.MGMMatrix
+import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.MGIUniform
 
-open class MGMesh
-: MGObjectDimension(),
+open class MGMesh(
+    var modelMatrix: MGMMatrix
+): MGIDrawer,
 MGIUniform {
-
-    companion object {
-        internal const val mStride = 8 * 4
-    }
 
     protected var mTextureOffset = 1f
 
     private var mUniformModelView = 0
     private var mUniformTextureOffset = 0
 
-    init {
-        Matrix.setIdentityM(
-            model,
-            0
-        )
-    }
 
     override fun setupUniforms(
         program: Int
@@ -39,9 +32,7 @@ MGIUniform {
         )
     }
 
-    open fun draw(
-        camera: MGCamera
-    ) {
+    override fun draw() {
         glUniform1f(
             mUniformTextureOffset,
             mTextureOffset
@@ -51,11 +42,9 @@ MGIUniform {
             mUniformModelView,
             1,
             false,
-            model,
+            modelMatrix.model,
             0
         )
-
-        //camera.draw()
     }
 
 }

@@ -4,24 +4,21 @@ import android.graphics.BitmapFactory
 import android.opengl.GLES30.*
 import android.opengl.GLUtils
 import good.damn.engine.MGEngine
+import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.engine.opengl.drawers.MGIUniform
 
-class MGTexture(
-    assetPath: String,
-    program: Int,
-    wrapMode: Int = GL_CLAMP_TO_EDGE
-) {
+class MGTexture
+: MGIDrawer,
+MGIUniform {
 
-    private var mId = intArrayOf(
-        1
-    )
+    private var mId = intArrayOf(1)
 
-    private val mUniformTexture = glGetUniformLocation(
-        program,
-        "texture"
-    )
+    private var mUniformTexture = 0
 
-    init {
-
+    fun setupTexture(
+        assetPath: String,
+        wrapMode: Int = GL_CLAMP_TO_EDGE
+    ) {
         val inp = MGEngine.ASSETS.open(
             assetPath
         )
@@ -87,11 +84,18 @@ class MGTexture(
             GL_MAX_TEXTURE_LOD_BIAS,
             -0.4f
         )
-
     }
 
-    fun draw() {
+    override fun setupUniforms(
+        program: Int
+    ) {
+        mUniformTexture = glGetUniformLocation(
+            program,
+            "texture"
+        )
+    }
 
+    override fun draw() {
         glActiveTexture(
             GL_TEXTURE0
         )

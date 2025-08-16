@@ -1,12 +1,15 @@
 package good.damn.engine.opengl
 
 import android.opengl.GLES30.*
-import good.damn.engine.opengl.entities.MGMesh.Companion.mStride
 import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
 class MGArrayVertex {
+
+    companion object {
+        private const val STRIDE = 8 * 4
+    }
 
     private val mVertexArray = intArrayOf(1)
     private val mVertexArrayBuffer = intArrayOf(1)
@@ -216,7 +219,7 @@ class MGArrayVertex {
             size,
             GL_FLOAT,
             false,
-            mStride,
+            STRIDE,
             offset
         )
 
