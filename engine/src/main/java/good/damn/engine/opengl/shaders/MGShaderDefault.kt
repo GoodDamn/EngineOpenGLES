@@ -35,10 +35,19 @@ class MGShaderDefault
     override var uniformCameraView = 0
         private set
 
+    override val light = MGShaderLight()
+    override val material = MGShaderMaterial()
 
     override fun setupUniforms(
         program: Int
     ) {
+        light.setupUniforms(
+            program
+        )
+
+        material.setupUniforms(
+            program
+        )
 
         attribPosition = glGetAttribLocation(
             program,

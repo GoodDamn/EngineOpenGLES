@@ -54,7 +54,9 @@ MGIListenerMove {
     private val modelMatrixCamera = MGMMatrix()
     private val modelMatrixLandscape = MGMMatrix()
 
-    private val materialLandscape = MGMaterial()
+    private val materialLandscape = MGMaterial(
+        mShaderDefault.material
+    )
 
     private val mVerticesSky = MGArrayVertex()
 
@@ -133,10 +135,9 @@ MGIListenerMove {
     private var mWidth = 0
     private var mHeight = 0
 
-    private var mProgramWireframe = 0
-    private var mProgramDefault = 0
-
-    private val mDrawerLightDirectional = MGDrawerLightDirectional()
+    private val mDrawerLightDirectional = MGDrawerLightDirectional(
+        mShaderDefault.light
+    )
 
     //private lateinit var mRayIntersection: MGRayIntersection
 
@@ -147,34 +148,30 @@ MGIListenerMove {
         config: EGLConfig?
     ) {
 
-        mProgramDefault = MGUtilsShader.createProgramFromAssets(
+        val programDefault = MGUtilsShader.createProgramFromAssets(
             "shaders/vert.glsl",
             "shaders/frag.glsl"
         )
 
-        mProgramWireframe = MGUtilsShader.createProgramFromAssets(
+        val programWireframe = MGUtilsShader.createProgramFromAssets(
             "shaders/vert.glsl",
             "shaders/frag_wireframe.glsl"
         )
 
         glLinkProgram(
-            mProgramWireframe
+            programWireframe
         )
 
         glLinkProgram(
-            mProgramDefault
+            programDefault
         )
 
         glUseProgram(
-            mProgramDefault
+            programDefault
         )
 
         mShaderDefault.setupUniforms(
-            mProgramDefault
-        )
-
-        materialLandscape.setupUniforms(
-            mProgramDefault
+            programDefault
         )
 
         /*mCameraRotation.radius = 1250f
@@ -184,10 +181,6 @@ MGIListenerMove {
             0f,
             0.01f
         )*/
-
-        mDrawerLightDirectional.setupUniforms(
-            mProgramDefault
-        )
 
         mTextureLandscape.run {
             setupTexture(

@@ -13,6 +13,9 @@ interface MGIShader {
     val uniformCameraProjection: Int
     val uniformCameraView: Int
 
+    val light: MGShaderLight
+    val material: MGShaderMaterial
+
     fun setupUniforms(
         program: Int
     )
