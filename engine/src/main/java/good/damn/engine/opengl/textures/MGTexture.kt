@@ -14,6 +14,9 @@ MGIUniform {
     private var mId = intArrayOf(1)
 
     private var mUniformTexture = 0
+    private var mUniformTextureOffset = 0
+
+    private var mTextureOffset = 1f
 
     fun setupTexture(
         assetPath: String,
@@ -93,6 +96,11 @@ MGIUniform {
             program,
             "texture"
         )
+
+        mUniformTextureOffset = glGetUniformLocation(
+            program,
+            "textureOffset"
+        )
     }
 
     override fun draw() {
@@ -108,6 +116,11 @@ MGIUniform {
         glUniform1i(
             mUniformTexture,
             0
+        )
+
+        glUniform1f(
+            mUniformTextureOffset,
+            mTextureOffset
         )
     }
 }

@@ -12,11 +12,7 @@ open class MGMesh(
 ): MGIDrawer,
 MGIUniform {
 
-    protected var mTextureOffset = 1f
-
     private var mUniformModelView = 0
-    private var mUniformTextureOffset = 0
-
 
     override fun setupUniforms(
         program: Int
@@ -25,19 +21,9 @@ MGIUniform {
             program,
             "model"
         )
-
-        mUniformTextureOffset = glGetUniformLocation(
-            program,
-            "textureOffset"
-        )
     }
 
     override fun draw() {
-        glUniform1f(
-            mUniformTextureOffset,
-            mTextureOffset
-        )
-
         glUniformMatrix4fv(
             mUniformModelView,
             1,
