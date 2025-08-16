@@ -5,18 +5,16 @@ import android.opengl.Matrix
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.MGIUniform
 import good.damn.engine.opengl.entities.MGObjectDimension
+import good.damn.engine.opengl.shaders.MGIShader
 
 open class MGCamera(
+    var shader: MGIShader,
     var modelMatrix: MGMMatrix
-): MGIDrawer,
-MGIUniform {
+): MGIDrawer {
 
     private val mProjection = FloatArray(
         16
     )
-
-    private var mUniformProject = 0
-    private var mUniformCamera = 0
 
     fun setPerspective(
         width: Int,
@@ -32,23 +30,9 @@ MGIUniform {
         )
     }
 
-    override fun setupUniforms(
-        program: Int
-    ) {
-        mUniformProject = glGetUniformLocation(
-            program,
-            "projection"
-        )
-
-        mUniformCamera = glGetUniformLocation(
-            program,
-            "view"
-        )
-    }
-
     override fun draw() {
         glUniformMatrix4fv(
-            mUniformProject,
+            shader.uniformCameraProjection,
             1,
             false,
             mProjection,
@@ -56,7 +40,7 @@ MGIUniform {
         )
 
         glUniformMatrix4fv(
-            mUniformCamera,
+            shader.uniformCameraView,
             1,
             false,
             modelMatrix.model,

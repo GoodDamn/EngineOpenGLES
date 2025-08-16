@@ -6,15 +6,13 @@ import android.opengl.GLUtils
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.MGIUniform
+import good.damn.engine.opengl.shaders.MGIShader
 
-class MGTexture
-: MGIDrawer,
-MGIUniform {
+class MGTexture(
+    var shader: MGIShader
+): MGIDrawer {
 
     private var mId = intArrayOf(1)
-
-    private var mUniformTexture = 0
-    private var mUniformTextureOffset = 0
 
     private var mTextureOffset = 1f
 
@@ -89,20 +87,6 @@ MGIUniform {
         )
     }
 
-    override fun setupUniforms(
-        program: Int
-    ) {
-        mUniformTexture = glGetUniformLocation(
-            program,
-            "texture"
-        )
-
-        mUniformTextureOffset = glGetUniformLocation(
-            program,
-            "textureOffset"
-        )
-    }
-
     override fun draw() {
         glActiveTexture(
             GL_TEXTURE0
@@ -114,12 +98,12 @@ MGIUniform {
         )
 
         glUniform1i(
-            mUniformTexture,
+            shader.uniformTexture,
             0
         )
 
         glUniform1f(
-            mUniformTextureOffset,
+            shader.uniformTextureOffset,
             mTextureOffset
         )
     }

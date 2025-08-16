@@ -1,6 +1,7 @@
 package good.damn.engine.opengl
 
 import android.opengl.GLES30.*
+import good.damn.engine.opengl.shaders.MGIShader
 import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -27,7 +28,7 @@ class MGArrayVertex {
     ) = mBufferVertex[i]
 
     fun configure(
-        program: Int,
+        shader: MGIShader,
         vertices: FloatBuffer,
         indices: IntBuffer
     ) {
@@ -51,7 +52,7 @@ class MGArrayVertex {
         )
 
         enableAttrs(
-            program
+            shader
         )
 
         glBindVertexArray(
@@ -175,31 +176,22 @@ class MGArrayVertex {
     }
 
     private inline fun enableAttrs(
-        program: Int
+        shader: MGIShader
     ) {
         enableVertex(
-            glGetAttribLocation(
-                program,
-                "position"
-            ),
+            shader.attribPosition,
             0,
             3
         )
 
         enableVertex(
-            glGetAttribLocation(
-                program,
-                "texCoord"
-            ),
+            shader.attribTextureCoordinates,
             3 * 4,
             2
         )
 
         enableVertex(
-            glGetAttribLocation(
-                program,
-                "normal"
-            ),
+            shader.attribNormal,
             5 * 4,
             3
         )

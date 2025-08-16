@@ -22,6 +22,7 @@ import good.damn.engine.opengl.entities.MGLandscape
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
+import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
@@ -47,6 +48,8 @@ MGIListenerMove {
         private const val TAG = "MGRendererLevelEditor"
     }
 
+    private val mShaderDefault = MGShaderDefault()
+
     private val modelMatrixSky = MGMMatrix()
     private val modelMatrixCamera = MGMMatrix()
     private val modelMatrixLandscape = MGMMatrix()
@@ -55,20 +58,28 @@ MGIListenerMove {
 
     private val mVerticesSky = MGArrayVertex()
 
-    private val mTextureSky = MGTexture()
-    private val mTextureLandscape = MGTexture()
+    private val mTextureSky = MGTexture(
+        mShaderDefault
+    )
+
+    private val mTextureLandscape = MGTexture(
+        mShaderDefault
+    )
 
     private val mLandscape = MGLandscape(
         mTextureLandscape,
         materialLandscape,
-        modelMatrixLandscape
+        modelMatrixLandscape,
+        mShaderDefault
     )
 
     private val mCameraFree = MGCameraFree(
+        mShaderDefault,
         modelMatrixCamera
     )
 
     private val mDrawerSky = MGDrawerSky(
+        mShaderDefault,
         modelMatrixSky,
         mVerticesSky,
         mTextureSky
@@ -158,6 +169,10 @@ MGIListenerMove {
             mProgramDefault
         )
 
+        mShaderDefault.setupUniforms(
+            mProgramDefault
+        )
+
         materialLandscape.setupUniforms(
             mProgramDefault
         )
@@ -174,15 +189,7 @@ MGIListenerMove {
             mProgramDefault
         )
 
-        mDrawerSky.setupUniforms(
-            mProgramDefault
-        )
-
         mTextureLandscape.run {
-            setupUniforms(
-                mProgramDefault
-            )
-
             setupTexture(
                 "textures/terrain.png",
                 GL_REPEAT
@@ -190,9 +197,6 @@ MGIListenerMove {
         }
 
         mTextureSky.run {
-            setupUniforms(
-                mProgramDefault
-            )
             setupTexture(
                 "textures/sky/skysphere_light.jpg"
             )
@@ -202,19 +206,14 @@ MGIListenerMove {
             "objs/semi_sphere.obj"
         ).run {
             mVerticesSky.configure(
-                mProgramDefault,
+                mShaderDefault,
                 vertices,
                 indices
             )
         }
 
         mLandscape.apply {
-            setupUniforms(
-                mProgramDefault
-            )
-
             setResolution(
-                mProgramDefault,
                 1024,
                 1024
             )
@@ -230,10 +229,6 @@ MGIListenerMove {
             3.0f,
             3.0f,
             3.0f
-        )
-
-        mCameraFree.setupUniforms(
-            mProgramDefault
         )
 
         glEnable(

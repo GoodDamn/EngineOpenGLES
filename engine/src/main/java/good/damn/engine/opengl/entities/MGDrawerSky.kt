@@ -6,16 +6,18 @@ import android.opengl.GLES30.glFrontFace
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.camera.MGMMatrix
+import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.textures.MGTexture
 
 class MGDrawerSky(
+    shader: MGIShader,
     modelMatrix: MGMMatrix,
     var vertexArray: MGArrayVertex,
     var texture: MGTexture
 ): MGMesh(
+    shader,
     modelMatrix
 ) {
-
 
     init {
         modelMatrix.setScale(

@@ -6,26 +6,15 @@ import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.MGIUniform
+import good.damn.engine.opengl.shaders.MGIShader
 
 open class MGMesh(
+    var shader: MGIShader,
     var modelMatrix: MGMMatrix
-): MGIDrawer,
-MGIUniform {
-
-    private var mUniformModelView = 0
-
-    override fun setupUniforms(
-        program: Int
-    ) {
-        mUniformModelView = glGetUniformLocation(
-            program,
-            "model"
-        )
-    }
-
+): MGIDrawer {
     override fun draw() {
         glUniformMatrix4fv(
-            mUniformModelView,
+            shader.uniformModelView,
             1,
             false,
             modelMatrix.model,

@@ -8,6 +8,7 @@ import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.maps.MGMapDisplace
+import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.utils.MGUtilsBuffer
 import java.nio.FloatBuffer
@@ -15,8 +16,10 @@ import java.nio.FloatBuffer
 class MGLandscape(
     var texture: MGTexture,
     var material: MGMaterial,
-    modelMatrix: MGMMatrix
+    modelMatrix: MGMMatrix,
+    shader: MGIShader
 ): MGMesh(
+    shader,
     modelMatrix
 ) {
     companion object {
@@ -59,7 +62,6 @@ class MGLandscape(
     }
 
     fun setResolution(
-        program: Int,
         width: Int,
         height: Int
     ) {
@@ -142,7 +144,7 @@ class MGLandscape(
 
         time = System.currentTimeMillis()
         mVertexArray.configure(
-            program,
+            shader,
             bufferVertex,
             bufferIndices
         )
