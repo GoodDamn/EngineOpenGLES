@@ -57,6 +57,12 @@ MGIListenerMove {
     private val modelMatrixCamera = MGMMatrix()
     private val modelMatrixLandscape = MGMMatrix()
 
+    private lateinit var mBatchCPUObj: MGObject3D
+
+    private val materialInteract = MGMaterial(
+        mShaderDefault.material
+    )
+
     private val materialLandscape = MGMaterial(
         mShaderDefault.material
     )
@@ -64,6 +70,10 @@ MGIListenerMove {
     private val mVerticesSky = MGArrayVertex()
 
     private val mTextureSky = MGTexture(
+        mShaderDefault
+    )
+
+    private val mTextureInteract = MGTexture(
         mShaderDefault
     )
 
@@ -177,6 +187,14 @@ MGIListenerMove {
 
         mShaderDefault.setupUniforms(
             programDefault
+        )
+
+        mBatchCPUObj = MGObject3D.createFromAssets(
+            "objs/box.obj"
+        )
+
+        mTextureInteract.setupTexture(
+            "textures/rock.jpg"
         )
 
         /*mCameraRotation.radius = 1250f
@@ -452,28 +470,17 @@ MGIListenerMove {
 
     private fun placeMesh() {
         mHandler.post {
-            Log.d(TAG, "placeMesh: ")
             val modelMatrix = MGMMatrix()
             mCurrentModelInteract = modelMatrix
             meshes.add(
                 MGMeshStatic(
                     mShaderDefault,
                     modelMatrix,
-                    MGMaterial(
-                        mShaderDefault.material
-                    ),
-                    MGTexture(
-                        mShaderDefault
-                    ).apply {
-                        setupTexture(
-                            "textures/rock.jpg"
-                        )
-                    }
+                    materialInteract,
+                    mTextureInteract
                 ).apply {
                     loadObject(
-                        MGObject3D.createFromAssets(
-                            "objs/box.obj"
-                        )
+                        mBatchCPUObj
                     )
                 }
             )
