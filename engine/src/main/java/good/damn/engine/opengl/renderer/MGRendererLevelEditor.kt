@@ -20,8 +20,10 @@ import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.entities.MGDrawerSky
 import good.damn.engine.opengl.entities.MGLandscape
 import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.entities.MGMeshStatic
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
+import good.damn.engine.opengl.rays.MGRayIntersection
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
@@ -33,6 +35,7 @@ import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.touch.MGTouchFreeMove
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
+import java.util.LinkedList
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -130,7 +133,7 @@ MGIListenerMove {
 
     private val mOutPointLead = MGVector(0f)
     private val mPointCamera = MGVector(0f)
-    //private val meshes = LinkedList<MGMeshStatic>()
+    private val meshes = LinkedList<MGMeshStatic>()
 
     private var mWidth = 0
     private var mHeight = 0
@@ -139,9 +142,11 @@ MGIListenerMove {
         mShaderDefault.light
     )
 
-    //private lateinit var mRayIntersection: MGRayIntersection
+    private val mRayIntersection = MGRayIntersection(
+        mLandscape
+    )
 
-    //private var mCurrentMeshInteract: MGMeshStatic? = null
+    private var mCurrentModelInteract: MGMMatrix? = null
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -182,18 +187,14 @@ MGIListenerMove {
             0.01f
         )*/
 
-        mTextureLandscape.run {
-            setupTexture(
-                "textures/terrain.png",
-                GL_REPEAT
-            )
-        }
+        mTextureLandscape.setupTexture(
+            "textures/terrain.png",
+            GL_REPEAT
+        )
 
-        mTextureSky.run {
-            setupTexture(
-                "textures/sky/skysphere_light.jpg"
-            )
-        }
+        mTextureSky.setupTexture(
+            "textures/sky/skysphere_light.jpg"
+        )
 
         MGObject3D.createFromAssets(
             "objs/semi_sphere.obj"
@@ -346,15 +347,9 @@ MGIListenerMove {
 
         mLandscape.draw()
 
-//        mLandscape.draw(
-//            mCameraFree
-//        )
-
-//        meshes.forEach {
-//            it.draw(
-//                mCameraFree
-//            )
-//        }
+        meshes.forEach {
+            it.draw()
+        }
 
         glFlush()
     }
@@ -441,35 +436,47 @@ MGIListenerMove {
         mPointCamera.y = modelMatrixCamera.y
         mPointCamera.z = modelMatrixCamera.z
 
-//        mRayIntersection.intersect(
-//            mPointCamera,
-//            mCameraFree.direction,
-//            mOutPointLead
-//        )
+        mRayIntersection.intersect(
+            mPointCamera,
+            mCameraFree.direction,
+            mOutPointLead
+        )
 
-//        mCurrentMeshInteract?.run {
-//            setPosition(
-//                mOutPointLead.x,
-//                mOutPointLead.y,
-//                mOutPointLead.z
-//            )
-//            invalidatePosition()
-//        }
+        mCurrentModelInteract?.run {
+            x = mOutPointLead.x
+            y = mOutPointLead.y
+            z = mOutPointLead.z
+            invalidatePosition()
+        }
     }
 
     private fun placeMesh() {
         mHandler.post {
-//            mCurrentMeshInteract = MGMeshStatic(
-//                MGObject3D.createFromAssets(
-//                    "objs/box.obj"
-//                ),
-//                "textures/rock.jpg",
-//                mProgramDefault
-//            ).apply {
-//                meshes.add(
-//                    this
-//                )
-//            }
+            Log.d(TAG, "placeMesh: ")
+            val modelMatrix = MGMMatrix()
+            mCurrentModelInteract = modelMatrix
+            meshes.add(
+                MGMeshStatic(
+                    mShaderDefault,
+                    modelMatrix,
+                    MGMaterial(
+                        mShaderDefault.material
+                    ),
+                    MGTexture(
+                        mShaderDefault
+                    ).apply {
+                        setupTexture(
+                            "textures/rock.jpg"
+                        )
+                    }
+                ).apply {
+                    loadObject(
+                        MGObject3D.createFromAssets(
+                            "objs/box.obj"
+                        )
+                    )
+                }
+            )
         }
     }
 }
