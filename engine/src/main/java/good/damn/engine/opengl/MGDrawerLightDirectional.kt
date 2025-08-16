@@ -1,20 +1,19 @@
-package good.damn.engine.opengl.light
+package good.damn.engine.opengl
 
-import android.opengl.GLES30.*
-import good.damn.engine.opengl.MGMeshStatic
-import good.damn.engine.opengl.MGVector
-import good.damn.engine.opengl.entities.MGObjectDimension
+import android.opengl.GLES30.glGetUniformLocation
+import android.opengl.GLES30.glUniform1f
+import android.opengl.GLES30.glUniform3f
 
-class MGLightDirectional(
-    program: Int
-): MGObjectDimension() {
+class MGDrawerLightDirectional
+: MGIDrawer,
+MGIUniform {
 
     var ambient = 0.08f
 
-    private val mUniformColor: Int
-    private val mUniformAmbient: Int
-    private val mUniformPosition: Int
-    private val mUniformIntensity: Int
+    private var mUniformColor = 0
+    private var mUniformAmbient = 0
+    private var mUniformPosition = 0
+    private var mUniformIntensity = 0
 
     private val mPosition = MGVector(
         1f,
@@ -24,7 +23,21 @@ class MGLightDirectional(
 
     init {
         mPosition.normalize()
+    }
 
+    fun setPosition(
+        x: Float,
+        y: Float,
+        z: Float
+    ) {
+        mPosition.x = x
+        mPosition.y = y
+        mPosition.z = z
+    }
+
+    override fun setupUniforms(
+        program: Int
+    ) {
         mUniformColor = glGetUniformLocation(
             program,
             "light.color"
@@ -46,17 +59,7 @@ class MGLightDirectional(
         )
     }
 
-    override fun setPosition(
-        x: Float,
-        y: Float,
-        z: Float
-    ) {
-        mPosition.x = x
-        mPosition.y = y
-        mPosition.z = z
-    }
-
-    fun draw() {
+    override fun draw() {
         glUniform3f(
             mUniformColor,
             1f,
@@ -81,5 +84,4 @@ class MGLightDirectional(
             mPosition.z,
         )
     }
-
 }

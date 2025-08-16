@@ -2,6 +2,7 @@ package good.damn.engine.opengl.entities
 
 import android.opengl.Matrix
 import android.opengl.Matrix.*
+import good.damn.engine.opengl.MGIDrawer
 import good.damn.engine.opengl.MGVector
 
 open class MGObjectDimension {
@@ -19,12 +20,18 @@ open class MGObjectDimension {
 
     internal var model = FloatArray(16)
 
+    var drawer: MGIDrawer? = null
+
     init {
         setIdentityM(
             model,
             0
         )
     }
+
+    open fun setupUniforms(
+        program: Int
+    ) = Unit
 
     open fun setPosition(
         v: MGVector
@@ -78,5 +85,9 @@ open class MGObjectDimension {
             y,
             z
         )
+    }
+
+    fun draw() {
+        drawer?.draw()
     }
 }

@@ -11,13 +11,13 @@ import android.view.MotionEvent
 import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.opengl.MGDrawerLightDirectional
 import good.damn.engine.opengl.MGMeshStatic
 import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.entities.MGLandscape
 import good.damn.engine.opengl.entities.MGSkySphere
-import good.damn.engine.opengl.light.MGLightDirectional
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.rays.MGRayIntersection
@@ -86,7 +86,7 @@ MGIListenerMove {
     }
 
     private val mBarSeekAmbient = MGSeekBarGl {
-        mDirectionalLight.ambient = it
+        mDrawerLightDirectional.ambient = it
     }
 
     private val mHandler = MGHandlerGl()
@@ -101,7 +101,7 @@ MGIListenerMove {
     private var mProgramWireframe = 0
     private var mProgramDefault = 0
 
-    private lateinit var mDirectionalLight: MGLightDirectional
+    private val mDrawerLightDirectional = MGDrawerLightDirectional()
     private lateinit var mLandscape: MGLandscape
     private lateinit var mSky: MGSkySphere
 
@@ -144,7 +144,7 @@ MGIListenerMove {
             0.01f
         )*/
 
-        mDirectionalLight = MGLightDirectional(
+        mDrawerLightDirectional.setupUniforms(
             mProgramDefault
         )
 
@@ -271,7 +271,7 @@ MGIListenerMove {
         val fx = sin(f) * 840f
         val fz = cos(f) * 840f
 
-        mDirectionalLight.setPosition(
+        mDrawerLightDirectional.setPosition(
             fx, 600f, fz
         )
 
@@ -294,7 +294,7 @@ MGIListenerMove {
             1.0f
         )
 
-        mDirectionalLight.draw()
+        mDrawerLightDirectional.draw()
         mLandscape.draw(
             mCameraFree
         )
