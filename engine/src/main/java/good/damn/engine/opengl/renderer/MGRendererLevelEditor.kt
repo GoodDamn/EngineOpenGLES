@@ -25,6 +25,7 @@ import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.rays.MGRayIntersection
 import good.damn.engine.opengl.shaders.MGShaderDefault
+import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
@@ -52,6 +53,7 @@ MGIListenerMove {
     }
 
     private val mShaderDefault = MGShaderDefault()
+    private val mShaderSkySphere = MGShaderSkySphere()
 
     private val modelMatrixSky = MGMMatrix()
     private val modelMatrixCamera = MGMMatrix()
@@ -94,7 +96,7 @@ MGIListenerMove {
     )
 
     private val mDrawerSky = MGDrawerSky(
-        mShaderDefault,
+        mShaderSkySphere,
         modelMatrixSky,
         mVerticesSky,
         mTextureSky
@@ -173,6 +175,15 @@ MGIListenerMove {
             "shaders/frag_wireframe.glsl"
         )
 
+        val programSkySphere = MGUtilsShader.createProgramFromAssets(
+            "shaders/sky/vert.glsl",
+            "shaders/sky/frag.glsl"
+        )
+
+        glLinkProgram(
+            programSkySphere
+        )
+
         glLinkProgram(
             programWireframe
         )
@@ -183,6 +194,10 @@ MGIListenerMove {
 
         glUseProgram(
             programDefault
+        )
+
+        mShaderSkySphere.setupUniforms(
+            programSkySphere
         )
 
         mShaderDefault.setupUniforms(
@@ -224,7 +239,7 @@ MGIListenerMove {
             "objs/semi_sphere.obj"
         ).run {
             mVerticesSky.configure(
-                mShaderDefault,
+                mShaderSkySphere,
                 vertices,
                 indices
             )
@@ -366,9 +381,13 @@ MGIListenerMove {
             1.0f
         )
 
+        mShaderSkySphere.use()
+        mCameraFree.draw()
+        mDrawerSky.draw()
+
+        mShaderDefault.use()
         mCameraFree.draw()
         mDrawerLightDirectional.draw()
-        mDrawerSky.draw()
 
         mLandscape.draw()
 

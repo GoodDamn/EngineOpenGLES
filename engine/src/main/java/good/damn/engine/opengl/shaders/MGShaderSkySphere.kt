@@ -3,9 +3,8 @@ package good.damn.engine.opengl.shaders
 import android.opengl.GLES30.glGetAttribLocation
 import android.opengl.GLES30.glGetUniformLocation
 import android.opengl.GLES30.glUseProgram
-import kotlinx.coroutines.processNextEventInCurrentThread
 
-class MGShaderDefault
+class MGShaderSkySphere
 : MGIShader {
 
     override var attribPosition = 0
@@ -18,27 +17,23 @@ class MGShaderDefault
         private set
 
 
-
-
     override var uniformTexture = 0
         private set
 
     override var uniformModelView = 0
         private set
 
-    override var uniformTextureOffset = 0
+    override val material = MGShaderMaterial()
+    override val light = MGShaderLight()
+
+    override var uniformTextureOffset = -1
         private set
-
-
 
     override var uniformCameraProjection = 0
         private set
 
     override var uniformCameraView = 0
         private set
-
-    override val light = MGShaderLight()
-    override val material = MGShaderMaterial()
 
     private var mProgram = 0
 
@@ -52,15 +47,6 @@ class MGShaderDefault
         program: Int
     ) {
         mProgram = program
-
-        light.setupUniforms(
-            program
-        )
-
-        material.setupUniforms(
-            program
-        )
-
         attribPosition = glGetAttribLocation(
             program,
             "position"
@@ -92,7 +78,6 @@ class MGShaderDefault
             program,
             "textureOffset"
         )
-
 
         uniformCameraProjection = glGetUniformLocation(
             program,

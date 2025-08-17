@@ -99,7 +99,7 @@ class MGArrayVertex {
             GL_ARRAY_BUFFER,
             mBufferVertex.capacity() * 4,
             mBufferVertex,
-            GL_DYNAMIC_DRAW
+            GL_STATIC_DRAW
         )
     }
 

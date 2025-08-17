@@ -16,6 +16,8 @@ interface MGIShader {
     val light: MGShaderLight
     val material: MGShaderMaterial
 
+    fun use()
+
     fun setupUniforms(
         program: Int
     )
