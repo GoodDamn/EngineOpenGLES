@@ -355,7 +355,8 @@ MGIListenerMove {
         )
 
         glClear(GL_COLOR_BUFFER_BIT or
-            GL_DEPTH_BUFFER_BIT
+            GL_DEPTH_BUFFER_BIT or
+            GL_STENCIL_BUFFER_BIT
         )
 
         glClearColor(
@@ -399,22 +400,11 @@ MGIListenerMove {
     fun onTouchEvent(
         event: MotionEvent
     ) {
-        if (event.pointerCount == 1 && event.action == MotionEvent.ACTION_DOWN) {
-            if (mBarSeekAmbient.intercept(event.x, event.y)) {
-                return
-            }
-
-            if (mBtnLoadUserContent.intercept(event.x, event.y)) {
-                return
-            }
-
-            if (mBtnSwitchWireframe.intercept(event.x, event.y)) {
-                return
-            }
-
-            if (mBtnPlaceMesh.intercept(event.x, event.y)) {
-                return
-            }
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            mBarSeekAmbient.intercept(event.x, event.y)
+            mBtnLoadUserContent.intercept(event.x, event.y)
+            mBtnSwitchWireframe.intercept(event.x, event.y)
+            mBtnPlaceMesh.intercept(event.x, event.y)
         }
 
         mTouchMove.onTouchEvent(
