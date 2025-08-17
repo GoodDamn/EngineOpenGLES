@@ -15,22 +15,12 @@ class MGMeshStatic(
     shader: MGIShader,
     modelMatrix: MGMMatrix,
     var material: MGMaterial,
-    var texture: MGTexture
+    var texture: MGTexture,
+    var vertexArray: MGArrayVertex
 ): MGMesh(
     shader,
     modelMatrix
 ) {
-    private val mVertexArray = MGArrayVertex()
-
-    fun loadObject(
-        obj: MGObject3D
-    ) {
-        mVertexArray.configure(
-            shader,
-            obj.vertices,
-            obj.indices
-        )
-    }
 
     override fun draw() {
         glFrontFace(
@@ -40,13 +30,13 @@ class MGMeshStatic(
         super.draw()
 
         if (MGEngine.isWireframe) {
-            mVertexArray.draw(
+            vertexArray.draw(
                 GL_LINES
             )
             return
         }
 
-        mVertexArray.draw()
+        vertexArray.draw()
         texture.draw()
         material.draw()
     }

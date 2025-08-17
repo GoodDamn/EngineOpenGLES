@@ -57,7 +57,7 @@ MGIListenerMove {
     private val modelMatrixCamera = MGMMatrix()
     private val modelMatrixLandscape = MGMMatrix()
 
-    private lateinit var mBatchCPUObj: MGObject3D
+    private val mBatchArrayObject = MGArrayVertex()
 
     private val materialInteract = MGMaterial(
         mShaderDefault.material
@@ -189,9 +189,15 @@ MGIListenerMove {
             programDefault
         )
 
-        mBatchCPUObj = MGObject3D.createFromAssets(
+        MGObject3D.createFromAssets(
             "objs/box.obj"
-        )
+        ).run {
+            mBatchArrayObject.configure(
+                mShaderDefault,
+                vertices,
+                indices
+            )
+        }
 
         mTextureInteract.setupTexture(
             "textures/rock.jpg"
@@ -477,12 +483,9 @@ MGIListenerMove {
                     mShaderDefault,
                     modelMatrix,
                     materialInteract,
-                    mTextureInteract
-                ).apply {
-                    loadObject(
-                        mBatchCPUObj
-                    )
-                }
+                    mTextureInteract,
+                    mBatchArrayObject
+                )
             )
         }
     }
