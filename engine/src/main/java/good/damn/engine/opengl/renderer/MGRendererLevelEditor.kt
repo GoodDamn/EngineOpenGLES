@@ -19,7 +19,9 @@ import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.drawers.MGDrawerDefault
 import good.damn.engine.opengl.drawers.MGDrawerMesh
+import good.damn.engine.opengl.drawers.MGDrawerOpaque
 import good.damn.engine.opengl.drawers.MGDrawerSky
+import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.maps.MGMapDisplace
@@ -156,7 +158,9 @@ MGIListenerMove {
 
     private val mOutPointLead = MGVector(0f)
     private val mPointCamera = MGVector(0f)
-    private val meshes = LinkedList<MGDrawerMesh>()
+    private val meshes = LinkedList<MGIDrawer>().apply {
+        add(mLandscape)
+    }
 
     private var mWidth = 0
     private var mHeight = 0
@@ -167,6 +171,15 @@ MGIListenerMove {
 
     private val mRayIntersection = MGRayIntersection(
         //mLandscape
+    )
+
+    private val mDrawerOpaque = MGDrawerOpaque(
+        mShaderSkySphere,
+        mShaderDefault,
+        mDrawerSky,
+        mCameraFree,
+        mDrawerLightDirectional,
+        meshes
     )
 
     private var mCurrentModelInteract: MGMMatrix? = null
@@ -384,19 +397,7 @@ MGIListenerMove {
             1.0f
         )
 
-        mShaderSkySphere.use()
-        mCameraFree.draw()
-        mDrawerSky.draw()
-
-        mShaderDefault.use()
-        mCameraFree.draw()
-        mDrawerLightDirectional.draw()
-
-        mLandscape.draw()
-
-        meshes.forEach {
-            it.draw()
-        }
+        mDrawerOpaque.draw()
 
         glFlush()
     }
