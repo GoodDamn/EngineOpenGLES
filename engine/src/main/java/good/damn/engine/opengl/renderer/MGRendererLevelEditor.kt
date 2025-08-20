@@ -19,7 +19,8 @@ import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.drawers.MGDrawerDefault
 import good.damn.engine.opengl.drawers.MGDrawerMesh
-import good.damn.engine.opengl.drawers.MGDrawerOpaque
+import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
+import good.damn.engine.opengl.drawers.MGDrawerModeWireframe
 import good.damn.engine.opengl.drawers.MGDrawerSky
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.entities.MGMaterial
@@ -173,7 +174,7 @@ MGIListenerMove {
         //mLandscape
     )
 
-    private val mDrawerOpaque = MGDrawerOpaque(
+    private val mDrawerModeOpaque = MGDrawerModeOpaque(
         mShaderSkySphere,
         mShaderDefault,
         mDrawerSky,
@@ -182,6 +183,7 @@ MGIListenerMove {
         meshes
     )
 
+    private var mCurrentDrawerMode: MGIDrawer = mDrawerModeOpaque
     private var mCurrentModelInteract: MGMMatrix? = null
 
     override fun onSurfaceCreated(
@@ -397,7 +399,7 @@ MGIListenerMove {
             1.0f
         )
 
-        mDrawerOpaque.draw()
+        mCurrentDrawerMode.draw()
 
         glFlush()
     }

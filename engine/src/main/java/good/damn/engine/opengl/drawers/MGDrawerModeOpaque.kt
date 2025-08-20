@@ -1,12 +1,11 @@
 package good.damn.engine.opengl.drawers
 
 import good.damn.engine.opengl.camera.MGCamera
-import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import java.util.LinkedList
 
-data class MGDrawerOpaque(
+data class MGDrawerModeOpaque(
     var shaderSky: MGShaderSkySphere,
     var shaderOpaque: MGShaderDefault,
     var sky: MGDrawerMesh,
