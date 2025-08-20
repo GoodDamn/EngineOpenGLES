@@ -13,10 +13,8 @@ class MGDrawerModeWireframe(
 
     override fun draw() {
         shaderWireframe.use()
-        sky.draw()
         camera.draw()
-        /*meshes.forEach {
-            it.draw()
-        }*/
+        sky.draw()
+        meshes[0].draw()
     }
 }

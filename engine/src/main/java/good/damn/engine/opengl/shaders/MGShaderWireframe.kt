@@ -58,6 +58,16 @@ class MGShaderWireframe
             "position"
         )
 
+        attribTextureCoordinates = glGetAttribLocation(
+            program,
+            "texCoord"
+        )
+
+        attribNormal = glGetAttribLocation(
+            program,
+            "normal"
+        )
+
 
         // Uniforms
 

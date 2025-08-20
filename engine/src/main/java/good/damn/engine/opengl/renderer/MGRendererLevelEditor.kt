@@ -18,11 +18,9 @@ import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.drawers.MGDrawerMesh
-import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeWireframe
-import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.sky.MGDrawerSky
 import good.damn.engine.opengl.entities.MGMaterial
@@ -41,7 +39,6 @@ import good.damn.engine.touch.MGIListenerMove
 import good.damn.engine.touch.MGIListenerDelta
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.touch.MGTouchFreeMove
-import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
 import java.util.LinkedList
 import kotlin.math.cos
@@ -60,7 +57,7 @@ MGIListenerMove {
     }
 
     private val mShaderDefault = MGShaderDefault()
-    private val mShaderSkySphere = MGShaderSkySphere()
+    private val mShaderSky = MGShaderSkySphere()
     private val mShaderWireframe = MGShaderWireframe()
 
     private val modelMatrixSky = MGMMatrix().apply {
@@ -102,39 +99,25 @@ MGIListenerMove {
         mShaderDefault
     )
 
-    private val mDrawerMeshSky = MGDrawerSky(
-        mVerticesSky,
-        mTextureSky
-    )
-
     private val mDrawerLandscape = MGDrawerMesh(
         mVerticesLandscape,
         mTextureLandscape,
-        materialLandscape
-    )
-
-    private val mDrawerSky = MGDrawerPositionEntity(
-        mDrawerMeshSky,
-        mShaderSkySphere,
-        modelMatrixSky
-    )
-
-    private val mLandscape = MGDrawerPositionEntity(
-        mDrawerLandscape,
+        materialLandscape,
         mShaderDefault,
         modelMatrixLandscape
+    )
+
+    private val mDrawerSky = MGDrawerSky(
+        mVerticesSky,
+        mTextureSky,
+        mShaderSky,
+        modelMatrixSky
     )
 
     private val mCameraFree = MGCameraFree(
         mShaderDefault,
         modelMatrixCamera
     )
-
-
-    private val mTouchScale = MGTouchScale().apply {
-        onScale = this@MGRendererLevelEditor
-        onDelta = this@MGRendererLevelEditor
-    }
 
     private val mTouchMove = MGTouchFreeMove().apply {
         setListenerMove(
@@ -157,10 +140,23 @@ MGIListenerMove {
         mHandler.post {
             if (MGEngine.isWireframe) {
                 mCurrentDrawerMode = mDrawerModeWireframe
+                mDrawerSky.switchToWireframeMode(
+                    mShaderSky
+                )
+                mDrawerLandscape.switchToWireframeMode(
+                    mShaderWireframe
+                )
                 return@post
             }
 
             mCurrentDrawerMode = mDrawerModeOpaque
+
+            mDrawerSky.switchToOpaqueMode(
+                mShaderSky
+            )
+            mDrawerLandscape.switchToOpaqueMode(
+                mShaderDefault
+            )
         }
     }
 
@@ -177,7 +173,7 @@ MGIListenerMove {
     private val mOutPointLead = MGVector(0f)
     private val mPointCamera = MGVector(0f)
     private val meshes = LinkedList<MGDrawerPositionEntity>().apply {
-        add(mLandscape)
+        add(mDrawerLandscape)
     }
 
     private var mWidth = 0
@@ -192,7 +188,7 @@ MGIListenerMove {
     )
 
     private val mDrawerModeOpaque = MGDrawerModeOpaque(
-        mShaderSkySphere,
+        mShaderSky,
         mShaderDefault,
         mDrawerSky,
         mCameraFree,
@@ -246,7 +242,7 @@ MGIListenerMove {
             programDefault
         )
 
-        mShaderSkySphere.setupUniforms(
+        mShaderSky.setupUniforms(
             programSkySphere
         )
 
@@ -293,7 +289,7 @@ MGIListenerMove {
             "objs/semi_sphere.obj"
         ).run {
             mVerticesSky.configure(
-                mShaderSkySphere,
+                mShaderSky,
                 vertices,
                 indices
             )
@@ -530,7 +526,7 @@ MGIListenerMove {
         mHandler.post {
             val modelMatrix = MGMMatrix()
             mCurrentModelInteract = modelMatrix
-            meshes.add(
+            /*meshes.add(
                 MGDrawerPositionEntity(
                     MGDrawerMeshOpaque(
                         mBatchArrayObject,
@@ -540,7 +536,7 @@ MGIListenerMove {
                     mShaderDefault,
                     modelMatrix
                 )
-            )
+            )*/
         }
     }
 }

@@ -32,20 +32,10 @@ class MGArrayVertex {
         shader: MGIShader
     ) {
         bindVertexBuffer()
-        glBindBuffer(
-            GL_ELEMENT_ARRAY_BUFFER,
-            mIndicesArrayBuffer[0]
-        )
-
         enableAttrs(
             shader
         )
-
         unbindVertexBuffer()
-        glBindBuffer(
-            GL_ELEMENT_ARRAY_BUFFER,
-            0
-        )
     }
 
     fun configure(

@@ -1,23 +1,22 @@
 package good.damn.engine.opengl.drawers
 
 import android.opengl.GLES30.*
+import androidx.annotation.CallSuper
 import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.shaders.MGIShader
 
-class MGDrawerPositionEntity(
-    private var drawer: MGIDrawer,
+abstract class MGDrawerPositionEntity(
     private var shader: MGIShader,
     var modelMatrix: MGMMatrix
 ): MGIDrawer {
 
     fun setDrawerShader(
-        drawer: MGIDrawer,
         shader: MGIShader
     ) {
         this.shader = shader
-        this.drawer = drawer
     }
 
+    @CallSuper
     override fun draw() {
         glUniformMatrix4fv(
             shader.uniformModelView,
@@ -26,7 +25,6 @@ class MGDrawerPositionEntity(
             modelMatrix.model,
             0
         )
-        drawer.draw()
     }
 
 }
