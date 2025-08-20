@@ -8,10 +8,10 @@ import java.util.LinkedList
 data class MGDrawerModeOpaque(
     var shaderSky: MGShaderSkySphere,
     var shaderOpaque: MGShaderDefault,
-    var sky: MGDrawerMesh,
+    var sky: MGDrawerPositionEntity,
     var camera: MGCamera,
     var directionalLight: MGDrawerLightDirectional,
-    var meshes: LinkedList<MGIDrawer>
+    var meshes: LinkedList<MGDrawerPositionEntity>
 ): MGIDrawer {
 
     override fun draw() {

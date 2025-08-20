@@ -3,9 +3,9 @@ package good.damn.engine.opengl.drawers
 import android.opengl.GLES30
 import good.damn.engine.opengl.MGArrayVertex
 
-class MGDrawerWireframe(
-    var vertexArray: MGArrayVertex
-): MGIDrawer {
+class MGDrawerMeshWireframe(
+    override var vertexArray: MGArrayVertex
+): MGIDrawerMesh {
 
     override fun draw() {
         vertexArray.draw(

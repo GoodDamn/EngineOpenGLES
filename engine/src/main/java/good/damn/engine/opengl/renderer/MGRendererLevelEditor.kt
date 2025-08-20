@@ -17,12 +17,14 @@ import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGMMatrix
-import good.damn.engine.opengl.drawers.MGDrawerDefault
 import good.damn.engine.opengl.drawers.MGDrawerMesh
+import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
+import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeWireframe
-import good.damn.engine.opengl.drawers.MGDrawerSky
+import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.engine.opengl.drawers.sky.MGDrawerSky
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.maps.MGMapDisplace
@@ -30,6 +32,7 @@ import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.rays.MGRayIntersection
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
+import good.damn.engine.opengl.shaders.MGShaderWireframe
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
@@ -58,6 +61,7 @@ MGIListenerMove {
 
     private val mShaderDefault = MGShaderDefault()
     private val mShaderSkySphere = MGShaderSkySphere()
+    private val mShaderWireframe = MGShaderWireframe()
 
     private val modelMatrixSky = MGMMatrix().apply {
         setScale(
@@ -98,12 +102,25 @@ MGIListenerMove {
         mShaderDefault
     )
 
-    private val mLandscape = MGDrawerMesh(
-        MGDrawerDefault(
-            mVerticesLandscape,
-            mTextureLandscape,
-            materialLandscape
-        ),
+    private val mDrawerMeshSky = MGDrawerSky(
+        mVerticesSky,
+        mTextureSky
+    )
+
+    private val mDrawerLandscape = MGDrawerMesh(
+        mVerticesLandscape,
+        mTextureLandscape,
+        materialLandscape
+    )
+
+    private val mDrawerSky = MGDrawerPositionEntity(
+        mDrawerMeshSky,
+        mShaderSkySphere,
+        modelMatrixSky
+    )
+
+    private val mLandscape = MGDrawerPositionEntity(
+        mDrawerLandscape,
         mShaderDefault,
         modelMatrixLandscape
     )
@@ -113,14 +130,6 @@ MGIListenerMove {
         modelMatrixCamera
     )
 
-    private val mDrawerSky = MGDrawerMesh(
-        MGDrawerSky(
-            mVerticesSky,
-            mTextureSky
-        ),
-        mShaderSkySphere,
-        modelMatrixSky
-    )
 
     private val mTouchScale = MGTouchScale().apply {
         onScale = this@MGRendererLevelEditor
@@ -145,6 +154,14 @@ MGIListenerMove {
 
     private val mBtnSwitchWireframe = MGButtonGL {
         MGEngine.isWireframe = !MGEngine.isWireframe
+        mHandler.post {
+            if (MGEngine.isWireframe) {
+                mCurrentDrawerMode = mDrawerModeWireframe
+                return@post
+            }
+
+            mCurrentDrawerMode = mDrawerModeOpaque
+        }
     }
 
     private val mBtnPlaceMesh = MGButtonGL {
@@ -159,7 +176,7 @@ MGIListenerMove {
 
     private val mOutPointLead = MGVector(0f)
     private val mPointCamera = MGVector(0f)
-    private val meshes = LinkedList<MGIDrawer>().apply {
+    private val meshes = LinkedList<MGDrawerPositionEntity>().apply {
         add(mLandscape)
     }
 
@@ -183,6 +200,13 @@ MGIListenerMove {
         meshes
     )
 
+    private val mDrawerModeWireframe = MGDrawerModeWireframe(
+        mShaderWireframe,
+        mDrawerSky,
+        mCameraFree,
+        meshes
+    )
+
     private var mCurrentDrawerMode: MGIDrawer = mDrawerModeOpaque
     private var mCurrentModelInteract: MGMMatrix? = null
 
@@ -201,12 +225,21 @@ MGIListenerMove {
             "shaders/sky/frag.glsl"
         )
 
+        val programWireframe = MGUtilsShader.createProgramFromAssets(
+            "shaders/wireframe/vert.glsl",
+            "shaders/wireframe/frag.glsl"
+        )
+
         glLinkProgram(
             programSkySphere
         )
 
         glLinkProgram(
             programDefault
+        )
+
+        glLinkProgram(
+            programWireframe
         )
 
         glUseProgram(
@@ -219,6 +252,10 @@ MGIListenerMove {
 
         mShaderDefault.setupUniforms(
             programDefault
+        )
+
+        mShaderWireframe.setupUniforms(
+            programWireframe
         )
 
         MGObject3D.createFromAssets(
@@ -494,8 +531,8 @@ MGIListenerMove {
             val modelMatrix = MGMMatrix()
             mCurrentModelInteract = modelMatrix
             meshes.add(
-                MGDrawerMesh(
-                    MGDrawerDefault(
+                MGDrawerPositionEntity(
+                    MGDrawerMeshOpaque(
                         mBatchArrayObject,
                         mTextureInteract,
                         materialInteract

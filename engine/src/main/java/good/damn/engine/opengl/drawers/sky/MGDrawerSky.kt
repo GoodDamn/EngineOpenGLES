@@ -1,24 +1,23 @@
-package good.damn.engine.opengl.drawers
+package good.damn.engine.opengl.drawers.sky
 
 import good.damn.engine.opengl.MGArrayVertex
-import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
+import good.damn.engine.opengl.drawers.MGDrawerMeshWireframe
+import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.textures.MGTexture
 
-class MGDrawerMesh(
+class MGDrawerSky(
     vertexArray: MGArrayVertex,
-    texture: MGTexture,
-    material: MGMaterial
+    texture: MGTexture
 ): MGIDrawer {
-
     private val modeWireframe = MGDrawerMeshWireframe(
         vertexArray
     )
 
-    private val modeOpaque = MGDrawerMeshOpaque(
+    private val modeOpaque = MGDrawerSkyOpaque(
         vertexArray,
-        texture,
-        material
+        texture
     )
 
     private var mCurrentMode: MGIDrawer = modeOpaque

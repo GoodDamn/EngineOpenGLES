@@ -5,11 +5,11 @@ import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.textures.MGTexture
 
-class MGDrawerDefault(
-    var vertexArray: MGArrayVertex,
+class MGDrawerMeshOpaque(
+    override var vertexArray: MGArrayVertex,
     var texture: MGTexture,
     var material: MGMaterial,
-): MGIDrawer {
+): MGIDrawerMesh {
 
     override fun draw() {
         glFrontFace(
