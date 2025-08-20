@@ -125,12 +125,6 @@ MGIListenerMove {
 
     private val mBtnSwitchWireframe = MGButtonGL {
         MGEngine.isWireframe = !MGEngine.isWireframe
-        /*mHandler.post {
-            glUseProgram(
-                if (MGEngine.isWireframe) mProgramWireframe
-                else mProgramDefault
-            )
-        }*/
     }
 
     private val mBtnPlaceMesh = MGButtonGL {
@@ -170,11 +164,6 @@ MGIListenerMove {
             "shaders/frag.glsl"
         )
 
-        val programWireframe = MGUtilsShader.createProgramFromAssets(
-            "shaders/vert.glsl",
-            "shaders/frag_wireframe.glsl"
-        )
-
         val programSkySphere = MGUtilsShader.createProgramFromAssets(
             "shaders/sky/vert.glsl",
             "shaders/sky/frag.glsl"
@@ -182,10 +171,6 @@ MGIListenerMove {
 
         glLinkProgram(
             programSkySphere
-        )
-
-        glLinkProgram(
-            programWireframe
         )
 
         glLinkProgram(

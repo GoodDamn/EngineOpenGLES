@@ -14,6 +14,7 @@ class MGArrayVertex {
 
     private val mVertexArray = intArrayOf(1)
     private val mVertexArrayBuffer = intArrayOf(1)
+    private val mIndicesArrayBuffer = intArrayOf(1)
 
     private lateinit var mBufferVertex: FloatBuffer
     private lateinit var mBufferIndices: IntBuffer
@@ -26,6 +27,26 @@ class MGArrayVertex {
     operator fun get(
         i: Int
     ) = mBufferVertex[i]
+
+    fun changeAttrs(
+        shader: MGIShader
+    ) {
+        bindVertexBuffer()
+        glBindBuffer(
+            GL_ELEMENT_ARRAY_BUFFER,
+            mIndicesArrayBuffer[0]
+        )
+
+        enableAttrs(
+            shader
+        )
+
+        unbindVertexBuffer()
+        glBindBuffer(
+            GL_ELEMENT_ARRAY_BUFFER,
+            0
+        )
+    }
 
     fun configure(
         shader: MGIShader,
@@ -154,17 +175,15 @@ class MGArrayVertex {
     private inline fun generateIndexBuffer(
         indices: IntBuffer
     ) {
-        val ido = intArrayOf(1)
-
         glGenBuffers(
-            ido.size,
-            ido,
+            mIndicesArrayBuffer.size,
+            mIndicesArrayBuffer,
             0
         )
 
         glBindBuffer(
             GL_ELEMENT_ARRAY_BUFFER,
-            ido[0]
+            mIndicesArrayBuffer[0]
         )
 
         glBufferData(
