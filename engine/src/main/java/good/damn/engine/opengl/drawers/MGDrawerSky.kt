@@ -1,23 +1,20 @@
 package good.damn.engine.opengl.drawers
 
-import android.opengl.GLES30.*
+import android.opengl.GLES30.GL_CCW
+import android.opengl.GLES30.glFrontFace
 import good.damn.engine.opengl.MGArrayVertex
-import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.textures.MGTexture
 
-class MGDrawerDefault(
+class MGDrawerSky(
     var vertexArray: MGArrayVertex,
-    var texture: MGTexture,
-    var material: MGMaterial,
+    var texture: MGTexture
 ): MGIDrawer {
 
     override fun draw() {
         glFrontFace(
-            GL_CW
+            GL_CCW
         )
         texture.draw()
-        material.draw()
         vertexArray.draw()
     }
-
 }

@@ -1,14 +1,11 @@
-package good.damn.engine.opengl.entities
+package good.damn.engine.opengl.drawers
 
 import android.opengl.GLES30.*
-import android.opengl.Matrix
-import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.camera.MGMMatrix
-import good.damn.engine.opengl.drawers.MGIDrawer
-import good.damn.engine.opengl.drawers.MGIUniform
 import good.damn.engine.opengl.shaders.MGIShader
 
-open class MGMesh(
+class MGDrawerMesh(
+    var drawer: MGIDrawer,
     var shader: MGIShader,
     var modelMatrix: MGMMatrix
 ): MGIDrawer {
@@ -20,6 +17,7 @@ open class MGMesh(
             modelMatrix.model,
             0
         )
+        drawer.draw()
     }
 
 }

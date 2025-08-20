@@ -17,10 +17,11 @@ import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGMMatrix
-import good.damn.engine.opengl.entities.MGDrawerSky
-import good.damn.engine.opengl.entities.MGLandscape
+import good.damn.engine.opengl.drawers.MGDrawerDefault
+import good.damn.engine.opengl.drawers.MGDrawerMesh
+import good.damn.engine.opengl.drawers.MGDrawerSky
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.entities.MGMeshStatic
+import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.rays.MGRayIntersection
@@ -55,11 +56,24 @@ MGIListenerMove {
     private val mShaderDefault = MGShaderDefault()
     private val mShaderSkySphere = MGShaderSkySphere()
 
-    private val modelMatrixSky = MGMMatrix()
+    private val modelMatrixSky = MGMMatrix().apply {
+        setScale(
+            200000f,
+            200000f,
+            200000f
+        )
+    }
     private val modelMatrixCamera = MGMMatrix()
     private val modelMatrixLandscape = MGMMatrix()
 
     private val mBatchArrayObject = MGArrayVertex()
+
+    private val mVerticesSky = MGArrayVertex()
+    private val mVerticesLandscape = MGArrayVertex()
+
+    private val mGeneratorLandscape = MGGeneratorLandscape(
+        mVerticesLandscape
+    )
 
     private val materialInteract = MGMaterial(
         mShaderDefault.material
@@ -68,8 +82,6 @@ MGIListenerMove {
     private val materialLandscape = MGMaterial(
         mShaderDefault.material
     )
-
-    private val mVerticesSky = MGArrayVertex()
 
     private val mTextureSky = MGTexture(
         mShaderDefault
@@ -83,11 +95,14 @@ MGIListenerMove {
         mShaderDefault
     )
 
-    private val mLandscape = MGLandscape(
-        mTextureLandscape,
-        materialLandscape,
-        modelMatrixLandscape,
-        mShaderDefault
+    private val mLandscape = MGDrawerMesh(
+        MGDrawerDefault(
+            mVerticesLandscape,
+            mTextureLandscape,
+            materialLandscape
+        ),
+        mShaderDefault,
+        modelMatrixLandscape
     )
 
     private val mCameraFree = MGCameraFree(
@@ -95,11 +110,13 @@ MGIListenerMove {
         modelMatrixCamera
     )
 
-    private val mDrawerSky = MGDrawerSky(
+    private val mDrawerSky = MGDrawerMesh(
+        MGDrawerSky(
+            mVerticesSky,
+            mTextureSky
+        ),
         mShaderSkySphere,
-        modelMatrixSky,
-        mVerticesSky,
-        mTextureSky
+        modelMatrixSky
     )
 
     private val mTouchScale = MGTouchScale().apply {
@@ -139,7 +156,7 @@ MGIListenerMove {
 
     private val mOutPointLead = MGVector(0f)
     private val mPointCamera = MGVector(0f)
-    private val meshes = LinkedList<MGMeshStatic>()
+    private val meshes = LinkedList<MGDrawerMesh>()
 
     private var mWidth = 0
     private var mHeight = 0
@@ -149,7 +166,7 @@ MGIListenerMove {
     )
 
     private val mRayIntersection = MGRayIntersection(
-        mLandscape
+        //mLandscape
     )
 
     private var mCurrentModelInteract: MGMMatrix? = null
@@ -230,10 +247,11 @@ MGIListenerMove {
             )
         }
 
-        mLandscape.apply {
+        mGeneratorLandscape.apply {
             setResolution(
                 1024,
-                1024
+                1024,
+                mShaderDefault
             )
 
             displace(
@@ -394,7 +412,7 @@ MGIListenerMove {
             Looper.getMainLooper()
         ).post {
             mHandler.post {
-                mLandscape.displace(
+                mGeneratorLandscape.displace(
                     mapDisplace
                 )
             }
@@ -473,12 +491,14 @@ MGIListenerMove {
             val modelMatrix = MGMMatrix()
             mCurrentModelInteract = modelMatrix
             meshes.add(
-                MGMeshStatic(
+                MGDrawerMesh(
+                    MGDrawerDefault(
+                        mBatchArrayObject,
+                        mTextureInteract,
+                        materialInteract
+                    ),
                     mShaderDefault,
-                    modelMatrix,
-                    materialInteract,
-                    mTextureInteract,
-                    mBatchArrayObject
+                    modelMatrix
                 )
             )
         }
