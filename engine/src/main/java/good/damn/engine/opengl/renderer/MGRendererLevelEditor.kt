@@ -65,6 +65,7 @@ MGIListenerMove {
     private val mShaderSky = MGShaderSkySphere()
     private val mShaderWireframe = MGShaderWireframe()
     private val mShaderNormals = MGShaderWireframe()
+    private val mShaderTexCoords = MGShaderWireframe()
 
     private val modelMatrixSky = MGMMatrix().apply {
         setScale(
@@ -189,6 +190,16 @@ MGIListenerMove {
                 MGEnumDrawMode.NORMALS -> {
                     switchDrawMode(
                         MGEnumDrawMode.NORMALS,
+                        mDrawerModeTexCoords,
+                        mShaderTexCoords,
+                        mShaderTexCoords
+                    )
+                    MGEngine.drawMode = MGEnumDrawMode.TEX_COORDS
+                }
+
+                MGEnumDrawMode.TEX_COORDS -> {
+                    switchDrawMode(
+                        MGEnumDrawMode.TEX_COORDS,
                         mDrawerModeOpaque,
                         mShaderDefault,
                         mShaderSky
@@ -252,6 +263,13 @@ MGIListenerMove {
         meshes
     )
 
+    private val mDrawerModeTexCoords = MGDrawerModeWireframe(
+        mShaderTexCoords,
+        meshSky,
+        mCameraFree,
+        meshes
+    )
+
     private var mCurrentDrawerMode: MGIDrawer = mDrawerModeOpaque
     private var mCurrentModelInteract: MGMMatrix? = null
 
@@ -280,6 +298,11 @@ MGIListenerMove {
             "shaders/normals/frag.glsl"
         )
 
+        val programTexCoords = MGUtilsShader.createProgramFromAssets(
+            "shaders/texCoords/vert.glsl",
+            "shaders/texCoords/frag.glsl",
+        )
+
         glLinkProgram(
             programSkySphere
         )
@@ -290,6 +313,10 @@ MGIListenerMove {
 
         glLinkProgram(
             programWireframe
+        )
+
+        glLinkProgram(
+            programTexCoords
         )
 
         glLinkProgram(
@@ -310,6 +337,10 @@ MGIListenerMove {
 
         mShaderWireframe.setupUniforms(
             programWireframe
+        )
+
+        mShaderTexCoords.setupUniforms(
+            programTexCoords
         )
 
         mShaderNormals.setupUniforms(

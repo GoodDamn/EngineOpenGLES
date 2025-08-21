@@ -24,6 +24,11 @@ class MGDrawerModeSwitch(
         GL_TRIANGLES
     )
 
+    private val modeTexCoords = MGDrawerMeshWireframe(
+        vertexArray,
+        GL_TRIANGLES
+    )
+
     private var mCurrentMode: MGIDrawer = modeOpaque
 
     fun switchDrawMode(
@@ -32,7 +37,8 @@ class MGDrawerModeSwitch(
         mCurrentMode = when (drawMode) {
             MGEnumDrawMode.OPAQUE -> modeWireframe
             MGEnumDrawMode.WIREFRAME -> modeNormals
-            MGEnumDrawMode.NORMALS -> modeOpaque
+            MGEnumDrawMode.NORMALS -> modeTexCoords
+            MGEnumDrawMode.TEX_COORDS -> modeOpaque
         }
     }
 
