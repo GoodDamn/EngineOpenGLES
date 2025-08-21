@@ -25,6 +25,7 @@ import good.damn.engine.opengl.drawers.MGDrawerModeWireframe
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
+import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
@@ -122,25 +123,23 @@ MGIListenerMove {
         )
     )
 
-    private val mDrawerSwitchSky = MGDrawerModeSwitch(
-        mVerticesSky,
-        MGDrawerSkyOpaque(
+    private val mSky = MGSky(
+        MGDrawerModeSwitch(
             mVerticesSky,
-            mTextureSky
+            MGDrawerSkyOpaque(
+                mVerticesSky,
+                mTextureSky
+            ),
+            GL_CCW
         ),
-        GL_CCW
+        mShaderSky,
+        modelMatrixSky
     )
 
     private val mDrawerLandscape = MGDrawerPositionEntity(
         mDrawerSwitchLandscape,
         mShaderDefault,
         modelMatrixLandscape
-    )
-
-    private val mDrawerSky = MGDrawerPositionEntity(
-        mDrawerSwitchSky,
-        mShaderDefault,
-        modelMatrixSky
     )
 
     private val mCameraFree = MGCameraFree(
@@ -238,7 +237,7 @@ MGIListenerMove {
     private val mDrawerModeOpaque = MGDrawerModeOpaque(
         mShaderSky,
         mShaderDefault,
-        mDrawerSky,
+        mSky,
         mCameraFree,
         mDrawerLightDirectional,
         meshes
@@ -246,14 +245,14 @@ MGIListenerMove {
 
     private val mDrawerModeWireframe = MGDrawerModeWireframe(
         mShaderWireframe,
-        mDrawerSky,
+        mSky,
         mCameraFree,
         meshes
     )
 
     private val mDrawerModeNormals = MGDrawerModeWireframe(
         mShaderNormals,
-        mDrawerSky,
+        mSky,
         mCameraFree,
         meshes
     )
@@ -610,10 +609,10 @@ MGIListenerMove {
             shader
         )
 
-        mDrawerSwitchSky.switchDrawMode(
+        mSky.switchDrawMode(
+            shader,
             drawMode
         )
-        mDrawerSky.shader = shaderSky
 
         meshes.forEach {
             it.switchDrawMode(

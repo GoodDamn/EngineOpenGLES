@@ -3,7 +3,7 @@ package good.damn.engine.opengl.drawers
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.shaders.MGIShader
 
-data class MGDrawerMeshSwitch(
+open class MGDrawerMeshSwitch(
     private val drawSwitch: MGDrawerModeSwitch,
     private val drawEntity: MGDrawerPositionEntity
 ): MGIDrawer {
