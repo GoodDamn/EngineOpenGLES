@@ -17,11 +17,13 @@ import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGMMatrix
-import good.damn.engine.opengl.drawers.MGDrawerMesh
+import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
+import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeWireframe
+import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGIDrawer
-import good.damn.engine.opengl.drawers.sky.MGDrawerSky
+import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
@@ -101,18 +103,42 @@ MGIListenerMove {
         mShaderDefault
     )
 
-    private val mDrawerLandscape = MGDrawerMesh(
+    private val mDrawerSwitchLandscape = MGDrawerModeSwitch(
         mVerticesLandscape,
-        mTextureLandscape,
-        materialLandscape,
+        MGDrawerMeshOpaque(
+            mVerticesLandscape,
+            mTextureLandscape,
+            materialLandscape
+        )
+    )
+
+    private val mDrawerSwitchBatch = MGDrawerModeSwitch(
+        mVerticesBatchObject,
+        MGDrawerMeshOpaque(
+            mVerticesBatchObject,
+            mTextureInteract,
+            materialInteract
+        )
+    )
+
+    private val mDrawerSwitchSky = MGDrawerModeSwitch(
+        mVerticesSky,
+        MGDrawerSkyOpaque(
+            mVerticesSky,
+            mTextureSky
+        ),
+        GL_CCW
+    )
+
+    private val mDrawerLandscape = MGDrawerPositionEntity(
+        mDrawerSwitchLandscape,
         mShaderDefault,
         modelMatrixLandscape
     )
 
-    private val mDrawerSky = MGDrawerSky(
-        mVerticesSky,
-        mTextureSky,
-        mShaderSky,
+    private val mDrawerSky = MGDrawerPositionEntity(
+        mDrawerSwitchSky,
+        mShaderDefault,
         modelMatrixSky
     )
 
@@ -188,8 +214,15 @@ MGIListenerMove {
 
     private val mOutPointLead = MGVector(0f)
     private val mPointCamera = MGVector(0f)
-    private val meshes = LinkedList<MGDrawerMesh>().apply {
-        add(mDrawerLandscape)
+    private val meshes = LinkedList<
+        Pair<MGDrawerModeSwitch, MGDrawerPositionEntity>
+    >().apply {
+        add(
+            Pair(
+                mDrawerSwitchLandscape,
+                mDrawerLandscape
+            )
+        )
     }
 
     private var mWidth = 0
@@ -576,16 +609,16 @@ MGIListenerMove {
             shader
         )
 
-        mDrawerSky.switchDrawMode(
-            shaderSky,
+        mDrawerSwitchSky.switchDrawMode(
             drawMode
         )
+        mDrawerSky.shader = shaderSky
 
         meshes.forEach {
-            it.switchDrawMode(
-                shader,
+            it.first.switchDrawMode(
                 drawMode
             )
+            it.second.shader = shader
         }
     }
 
@@ -594,12 +627,13 @@ MGIListenerMove {
             val modelMatrix = MGMMatrix()
             mCurrentModelInteract = modelMatrix
             meshes.add(
-                MGDrawerMesh(
-                    mVerticesBatchObject,
-                    mTextureInteract,
-                    materialInteract,
-                    mShaderDefault,
-                    modelMatrix
+                Pair(
+                    mDrawerSwitchBatch,
+                    MGDrawerPositionEntity(
+                        mDrawerSwitchBatch,
+                        mShaderDefault,
+                        modelMatrix
+                    )
                 )
             )
         }

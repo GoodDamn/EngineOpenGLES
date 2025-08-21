@@ -11,7 +11,7 @@ data class MGDrawerModeOpaque(
     var sky: MGDrawerPositionEntity,
     var camera: MGCamera,
     var directionalLight: MGDrawerLightDirectional,
-    var meshes: LinkedList<MGDrawerMesh>
+    var meshes: LinkedList<Pair<MGDrawerModeSwitch, MGDrawerPositionEntity>>
 ): MGIDrawer {
 
     override fun draw() {
@@ -24,7 +24,7 @@ data class MGDrawerModeOpaque(
         directionalLight.draw()
 
         meshes.forEach {
-            it.draw()
+            it.second.draw()
         }
     }
 

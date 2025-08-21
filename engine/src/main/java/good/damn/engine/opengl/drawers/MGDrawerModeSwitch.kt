@@ -4,32 +4,19 @@ import android.opengl.GLES30.GL_CW
 import android.opengl.GLES30.GL_TRIANGLES
 import android.opengl.GLES30.glFrontFace
 import good.damn.engine.opengl.MGArrayVertex
-import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.textures.MGTexture
-import javax.microedition.khronos.opengles.GL10.GL_CCW
 
-class MGDrawerMesh(
+class MGDrawerModeSwitch(
     vertexArray: MGArrayVertex,
-    texture: MGTexture,
-    material: MGMaterial,
-    shader: MGIShader,
-    model: MGMMatrix
-): MGDrawerPositionEntity(
-    shader,
-    model
-) {
+    private val modeOpaque: MGIDrawer,
+    private val frontFace: Int = GL_CW
+): MGIDrawer {
 
     private val modeWireframe = MGDrawerMeshWireframe(
         vertexArray
-    )
-
-    private val modeOpaque = MGDrawerMeshOpaque(
-        vertexArray,
-        texture,
-        material
     )
 
     private val modeNormals = MGDrawerMeshWireframe(
@@ -40,10 +27,8 @@ class MGDrawerMesh(
     private var mCurrentMode: MGIDrawer = modeOpaque
 
     fun switchDrawMode(
-        shader: MGIShader,
         drawMode: MGEnumDrawMode
     ) {
-        setDrawerShader(shader)
         mCurrentMode = when (drawMode) {
             MGEnumDrawMode.OPAQUE -> modeWireframe
             MGEnumDrawMode.WIREFRAME -> modeNormals
@@ -52,10 +37,10 @@ class MGDrawerMesh(
     }
 
     override fun draw() {
-        super.draw()
         glFrontFace(
-            GL_CW
+            frontFace
         )
         mCurrentMode.draw()
     }
+
 }

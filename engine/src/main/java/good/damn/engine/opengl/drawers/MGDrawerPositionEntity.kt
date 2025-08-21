@@ -5,18 +5,12 @@ import androidx.annotation.CallSuper
 import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.shaders.MGIShader
 
-abstract class MGDrawerPositionEntity(
-    private var shader: MGIShader,
+class MGDrawerPositionEntity(
+    private val drawer: MGIDrawer,
+    var shader: MGIShader,
     var modelMatrix: MGMMatrix
 ): MGIDrawer {
 
-    fun setDrawerShader(
-        shader: MGIShader
-    ) {
-        this.shader = shader
-    }
-
-    @CallSuper
     override fun draw() {
         glUniformMatrix4fv(
             shader.uniformModelView,
@@ -25,6 +19,7 @@ abstract class MGDrawerPositionEntity(
             modelMatrix.model,
             0
         )
+        drawer.draw()
     }
 
 }
