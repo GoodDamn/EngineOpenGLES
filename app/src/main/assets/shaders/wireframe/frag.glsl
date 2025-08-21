@@ -4,8 +4,5 @@ varying vec3 outNormal;
 varying vec2 outTexCoords;
 
 void main() {
-    gl_FragColor = vec4(
-        outNormal,
-        1.0
-    );
+    gl_FragColor = vec4(0.5);
 }

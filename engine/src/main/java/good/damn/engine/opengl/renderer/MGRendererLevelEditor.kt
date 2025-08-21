@@ -156,9 +156,11 @@ MGIListenerMove {
                 mDrawerSky.switchToWireframeMode(
                     mShaderSky
                 )
-                mDrawerLandscape.switchToWireframeMode(
-                    mShaderWireframe
-                )
+                meshes.forEach {
+                    it.switchToWireframeMode(
+                        mShaderWireframe
+                    )
+                }
                 return@post
             }
 
@@ -179,13 +181,19 @@ MGIListenerMove {
             mDrawerSky.switchToOpaqueMode(
                 mShaderSky
             )
-            mDrawerLandscape.switchToOpaqueMode(
-                mShaderDefault
-            )
+
+            meshes.forEach {
+                it.switchToOpaqueMode(
+                    mShaderDefault
+                )
+            }
         }
     }
 
     private val mBtnPlaceMesh = MGButtonGL {
+        if (MGEngine.isWireframe) {
+            return@MGButtonGL
+        }
         placeMesh()
     }
 
@@ -197,7 +205,7 @@ MGIListenerMove {
 
     private val mOutPointLead = MGVector(0f)
     private val mPointCamera = MGVector(0f)
-    private val meshes = LinkedList<MGDrawerPositionEntity>().apply {
+    private val meshes = LinkedList<MGDrawerMesh>().apply {
         add(mDrawerLandscape)
     }
 
@@ -208,9 +216,7 @@ MGIListenerMove {
         mShaderDefault.light
     )
 
-    private val mRayIntersection = MGRayIntersection(
-        //mLandscape
-    )
+    private val mRayIntersection = MGRayIntersection()
 
     private val mDrawerModeOpaque = MGDrawerModeOpaque(
         mShaderSky,
@@ -547,9 +553,8 @@ MGIListenerMove {
         }
     }
 
-    private fun placeMesh() {
+    private inline fun placeMesh() {
         mHandler.post {
-            Log.d("TAG", "placeMesh: ")
             val modelMatrix = MGMMatrix()
             mCurrentModelInteract = modelMatrix
             meshes.add(

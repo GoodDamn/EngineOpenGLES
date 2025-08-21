@@ -9,11 +9,9 @@ class MGRayIntersection {
         direction: MGVector,
         outResult: MGVector
     ) {
-//        landscape.intersect(
-//            position,
-//            direction,
-//            outResult
-//        )
+        outResult.x = position.x + direction.x * 10f
+        outResult.y = position.y + direction.y * 10f
+        outResult.z = position.z + direction.z * 10f
     }
 
 }

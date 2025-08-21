@@ -11,7 +11,7 @@ data class MGDrawerModeOpaque(
     var sky: MGDrawerPositionEntity,
     var camera: MGCamera,
     var directionalLight: MGDrawerLightDirectional,
-    var meshes: LinkedList<MGDrawerPositionEntity>
+    var meshes: LinkedList<MGDrawerMesh>
 ): MGIDrawer {
 
     override fun draw() {
