@@ -4,10 +4,7 @@ import android.opengl.GLES30.GL_CW
 import android.opengl.GLES30.GL_TRIANGLES
 import android.opengl.GLES30.glFrontFace
 import good.damn.engine.opengl.MGArrayVertex
-import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumDrawMode
-import good.damn.engine.opengl.shaders.MGIShader
-import good.damn.engine.opengl.textures.MGTexture
 
 class MGDrawerModeSwitch(
     vertexArray: MGArrayVertex,
@@ -15,16 +12,11 @@ class MGDrawerModeSwitch(
     private val frontFace: Int = GL_CW
 ): MGIDrawer {
 
-    private val modeWireframe = MGDrawerMeshWireframe(
+    private val modeLines = MGDrawerVertexArray(
         vertexArray
     )
 
-    private val modeNormals = MGDrawerMeshWireframe(
-        vertexArray,
-        GL_TRIANGLES
-    )
-
-    private val modeTexCoords = MGDrawerMeshWireframe(
+    private val modeTriangles = MGDrawerVertexArray(
         vertexArray,
         GL_TRIANGLES
     )
@@ -35,9 +27,9 @@ class MGDrawerModeSwitch(
         drawMode: MGEnumDrawMode
     ) {
         mCurrentMode = when (drawMode) {
-            MGEnumDrawMode.OPAQUE -> modeWireframe
-            MGEnumDrawMode.WIREFRAME -> modeNormals
-            MGEnumDrawMode.NORMALS -> modeTexCoords
+            MGEnumDrawMode.OPAQUE -> modeLines
+            MGEnumDrawMode.WIREFRAME -> modeTriangles
+            MGEnumDrawMode.NORMALS -> modeTriangles
             MGEnumDrawMode.TEX_COORDS -> modeOpaque
         }
     }

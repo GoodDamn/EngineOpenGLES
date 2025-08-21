@@ -21,7 +21,7 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
-import good.damn.engine.opengl.drawers.MGDrawerModeWireframe
+import good.damn.engine.opengl.drawers.MGDrawerModeSingleShader
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
@@ -35,7 +35,7 @@ import good.damn.engine.opengl.rays.MGRayIntersection
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
-import good.damn.engine.opengl.shaders.MGShaderWireframe
+import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
@@ -63,9 +63,9 @@ MGIListenerMove {
 
     private val mShaderDefault = MGShaderDefault()
     private val mShaderSky = MGShaderSkySphere()
-    private val mShaderWireframe = MGShaderWireframe()
-    private val mShaderNormals = MGShaderWireframe()
-    private val mShaderTexCoords = MGShaderWireframe()
+    private val mShaderWireframe = MGShaderSingleMode()
+    private val mShaderNormals = MGShaderSingleMode()
+    private val mShaderTexCoords = MGShaderSingleMode()
 
     private val modelMatrixSky = MGMMatrix().apply {
         setScale(
@@ -249,21 +249,21 @@ MGIListenerMove {
         meshes
     )
 
-    private val mDrawerModeWireframe = MGDrawerModeWireframe(
+    private val mDrawerModeWireframe = MGDrawerModeSingleShader(
         mShaderWireframe,
         meshSky,
         mCameraFree,
         meshes
     )
 
-    private val mDrawerModeNormals = MGDrawerModeWireframe(
+    private val mDrawerModeNormals = MGDrawerModeSingleShader(
         mShaderNormals,
         meshSky,
         mCameraFree,
         meshes
     )
 
-    private val mDrawerModeTexCoords = MGDrawerModeWireframe(
+    private val mDrawerModeTexCoords = MGDrawerModeSingleShader(
         mShaderTexCoords,
         meshSky,
         mCameraFree,

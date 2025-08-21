@@ -3,9 +3,8 @@ package good.damn.engine.opengl.shaders
 import android.opengl.GLES30.glGetAttribLocation
 import android.opengl.GLES30.glGetUniformLocation
 import android.opengl.GLES30.glUseProgram
-import kotlinx.coroutines.processNextEventInCurrentThread
 
-class MGShaderWireframe
+class MGShaderSingleMode
 : MGIShader {
 
     override var attribPosition = 0
