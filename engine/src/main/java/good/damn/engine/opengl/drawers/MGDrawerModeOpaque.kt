@@ -1,7 +1,7 @@
 package good.damn.engine.opengl.drawers
 
 import good.damn.engine.opengl.camera.MGCamera
-import good.damn.engine.opengl.entities.MGSky
+import good.damn.engine.opengl.entities.MGMesh
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import java.util.LinkedList
@@ -9,7 +9,7 @@ import java.util.LinkedList
 data class MGDrawerModeOpaque(
     var shaderSky: MGShaderSkySphere,
     var shaderOpaque: MGShaderDefault,
-    var sky: MGSky,
+    var sky: MGMesh,
     var camera: MGCamera,
     var directionalLight: MGDrawerLightDirectional,
     var meshes: LinkedList<MGDrawerMeshSwitch>
