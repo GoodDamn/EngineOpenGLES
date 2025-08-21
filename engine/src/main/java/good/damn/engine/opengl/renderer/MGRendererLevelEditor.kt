@@ -18,6 +18,7 @@ import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
+import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeWireframe
@@ -215,10 +216,10 @@ MGIListenerMove {
     private val mOutPointLead = MGVector(0f)
     private val mPointCamera = MGVector(0f)
     private val meshes = LinkedList<
-        Pair<MGDrawerModeSwitch, MGDrawerPositionEntity>
+        MGDrawerMeshSwitch
     >().apply {
         add(
-            Pair(
+            MGDrawerMeshSwitch(
                 mDrawerSwitchLandscape,
                 mDrawerLandscape
             )
@@ -615,10 +616,10 @@ MGIListenerMove {
         mDrawerSky.shader = shaderSky
 
         meshes.forEach {
-            it.first.switchDrawMode(
+            it.switchDrawMode(
+                shader,
                 drawMode
             )
-            it.second.shader = shader
         }
     }
 
@@ -627,7 +628,7 @@ MGIListenerMove {
             val modelMatrix = MGMMatrix()
             mCurrentModelInteract = modelMatrix
             meshes.add(
-                Pair(
+                MGDrawerMeshSwitch(
                     mDrawerSwitchBatch,
                     MGDrawerPositionEntity(
                         mDrawerSwitchBatch,

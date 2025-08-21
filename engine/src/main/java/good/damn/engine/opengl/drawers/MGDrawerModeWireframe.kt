@@ -8,7 +8,7 @@ class MGDrawerModeWireframe(
     private val shaderWireframe: MGShaderWireframe,
     private val sky: MGIDrawer,
     private val camera: MGCamera,
-    private val meshes: LinkedList<Pair<MGDrawerModeSwitch, MGDrawerPositionEntity>>
+    private val meshes: LinkedList<MGDrawerMeshSwitch>
 ): MGIDrawer {
 
     override fun draw() {
@@ -16,7 +16,7 @@ class MGDrawerModeWireframe(
         camera.draw()
         sky.draw()
         meshes.forEach {
-            it.second.draw()
+            it.draw()
         }
     }
 }
