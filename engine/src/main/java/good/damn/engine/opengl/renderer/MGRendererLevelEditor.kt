@@ -70,7 +70,7 @@ MGIListenerMove {
     private val modelMatrixCamera = MGMMatrix()
     private val modelMatrixLandscape = MGMMatrix()
 
-    private val mBatchArrayObject = MGArrayVertex()
+    private val mVerticesBatchObject = MGArrayVertex()
 
     private val mVerticesSky = MGArrayVertex()
     private val mVerticesLandscape = MGArrayVertex()
@@ -140,6 +140,19 @@ MGIListenerMove {
         mHandler.post {
             if (MGEngine.isWireframe) {
                 mCurrentDrawerMode = mDrawerModeWireframe
+
+                mVerticesSky.changeAttrs(
+                    mShaderWireframe
+                )
+
+                mVerticesLandscape.changeAttrs(
+                    mShaderWireframe
+                )
+
+                mVerticesBatchObject.changeAttrs(
+                    mShaderWireframe
+                )
+
                 mDrawerSky.switchToWireframeMode(
                     mShaderSky
                 )
@@ -150,6 +163,18 @@ MGIListenerMove {
             }
 
             mCurrentDrawerMode = mDrawerModeOpaque
+
+            mVerticesSky.changeAttrs(
+                mShaderSky
+            )
+
+            mVerticesLandscape.changeAttrs(
+                mShaderDefault
+            )
+
+            mVerticesBatchObject.changeAttrs(
+                mShaderDefault
+            )
 
             mDrawerSky.switchToOpaqueMode(
                 mShaderSky
@@ -257,7 +282,7 @@ MGIListenerMove {
         MGObject3D.createFromAssets(
             "objs/box.obj"
         ).run {
-            mBatchArrayObject.configure(
+            mVerticesBatchObject.configure(
                 mShaderDefault,
                 vertices,
                 indices
@@ -524,19 +549,18 @@ MGIListenerMove {
 
     private fun placeMesh() {
         mHandler.post {
+            Log.d("TAG", "placeMesh: ")
             val modelMatrix = MGMMatrix()
             mCurrentModelInteract = modelMatrix
-            /*meshes.add(
-                MGDrawerPositionEntity(
-                    MGDrawerMeshOpaque(
-                        mBatchArrayObject,
-                        mTextureInteract,
-                        materialInteract
-                    ),
+            meshes.add(
+                MGDrawerMesh(
+                    mVerticesBatchObject,
+                    mTextureInteract,
+                    materialInteract,
                     mShaderDefault,
                     modelMatrix
                 )
-            )*/
+            )
         }
     }
 }

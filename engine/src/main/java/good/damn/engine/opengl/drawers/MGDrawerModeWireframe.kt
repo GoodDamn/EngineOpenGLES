@@ -15,6 +15,8 @@ class MGDrawerModeWireframe(
         shaderWireframe.use()
         camera.draw()
         sky.draw()
-        meshes[0].draw()
+        meshes.forEach {
+            it.draw()
+        }
     }
 }

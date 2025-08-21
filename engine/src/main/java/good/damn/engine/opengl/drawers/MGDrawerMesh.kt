@@ -35,9 +35,6 @@ class MGDrawerMesh(
         shader: MGIShader
     ) {
         mCurrentMode = modeOpaque
-        modeOpaque.vertexArray.changeAttrs(
-            shader
-        )
         setDrawerShader(
             shader
         )
@@ -47,9 +44,6 @@ class MGDrawerMesh(
         shader: MGIShader
     ) {
         mCurrentMode = modeWireframe
-        modeWireframe.vertexArray.changeAttrs(
-            shader
-        )
         setDrawerShader(
             shader
         )
