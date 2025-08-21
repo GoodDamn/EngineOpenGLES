@@ -31,6 +31,20 @@ class MGMMatrix {
         model[INDEX_Z] = z
     }
 
+    fun addRotation(
+        yaw: Float,
+        pitch: Float
+    ) {
+        Matrix.rotateM(
+            model,
+            0,
+            yaw,
+            0.0f,
+            1.0f,
+            0.0f
+        )
+    }
+
     fun addPosition(
         dx: Float,
         dy: Float,

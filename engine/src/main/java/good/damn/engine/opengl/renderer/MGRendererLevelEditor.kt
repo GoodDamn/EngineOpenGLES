@@ -44,6 +44,7 @@ import good.damn.engine.touch.MGIListenerMove
 import good.damn.engine.touch.MGIListenerDelta
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.touch.MGTouchFreeMove
+import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.utils.MGUtilsShader
 import java.util.LinkedList
 import kotlin.math.cos
@@ -155,6 +156,22 @@ MGIListenerMove {
         setListenerDelta(
             this@MGRendererLevelEditor
         )
+    }
+
+    private val mTouchScale = MGTouchScale().apply {
+        onScale = this@MGRendererLevelEditor
+        onDelta = object: MGIListenerDelta {
+            override fun onDelta(
+                dx: Float,
+                dy: Float
+            ) {
+                Log.d(TAG, "onDelta: MODEL: $dx $dy $mCurrentModelInteract")
+                mCurrentModelInteract?.addRotation(
+                    dx * 0.5f,
+                    0.0f
+                )
+            }
+        }
     }
 
     private val mBtnLoadUserContent = MGButtonGL {
@@ -486,11 +503,20 @@ MGIListenerMove {
             btnLen
         )
 
+        val btnLen2 = btnLen
+        val midX = (fWidth - btnLen2) * 0.5f
+        val midY = (fHeight - btnLen2) * 0.5f
         mBtnPlaceMesh.bounds(
-            (fWidth - btnLen) * 0.5f,
-            (fHeight - btnLen) * 0.5f,
-            btnLen,
-            btnLen
+            midX,
+            midY,
+            btnLen2,
+            btnLen2
+        )
+
+        mTouchScale.setBounds(
+            midX, midY,
+            midX + btnLen2,
+            midY + btnLen2
         )
     }
 
@@ -561,6 +587,9 @@ MGIListenerMove {
         mTouchMove.onTouchEvent(
             event
         )
+        mTouchScale.onTouchEvent(
+            event
+        )
     }
 
     override fun onDelta(
@@ -578,7 +607,12 @@ MGIListenerMove {
     override fun onScale(
         scale: Float
     ) {
-        //mCameraRotation.radius = scale
+        Log.d(TAG, "onScale: $scale")
+        mCurrentModelInteract?.setScale(
+            scale,
+            scale,
+            scale
+        )
     }
 
     override fun onMove(

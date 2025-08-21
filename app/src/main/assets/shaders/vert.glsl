@@ -18,10 +18,9 @@ void main() {
     mat4 spaceView = view * model;
     mat4 spaceClip = projection * spaceView;
 
-    gl_Position = spaceClip * position;
-
     outFragPosition = spaceWorld;
     outNormal = normal;
-
     outTexCoord = texCoord * vec2(textureOffset);
+
+    gl_Position = spaceClip * position;
 }

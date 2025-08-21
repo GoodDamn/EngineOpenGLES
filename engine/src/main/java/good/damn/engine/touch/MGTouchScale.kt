@@ -1,13 +1,14 @@
 package good.damn.engine.touch
 
+import android.util.Log
 import android.view.MotionEvent
 import kotlin.math.hypot
 
 class MGTouchScale
-: MGITouchable {
+: MGTouchBound() {
 
     companion object {
-        private const val SCALE_FACTOR = 0.25f
+        private const val SCALE_FACTOR = 0.1f
     }
 
     var onScale: MGIListenerScale? = null
@@ -31,86 +32,112 @@ class MGTouchScale
     var scale = 1.0f
     private var mScaleDt = 0f
 
-    override fun onTouchEvent(
-        event: MotionEvent
-    ) {
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                mPivotX = event.x
-                mPivotY = event.y
+    private var mFirstTouchIndex = -1
+    private var mSecondTouchIndex = -1
 
-                mPrevX = mPivotX
-                mPrevY = mPivotY
-            }
+    override fun onTouchDown(
+        event: MotionEvent,
+        touchIndex: Int
+    ): Boolean {
+        if (event.isNotInsideBounds(
+            mLeft, mTop,
+            mRight, mBottom,
+            touchIndex
+        )) {
+            return false
+        }
 
-            MotionEvent.ACTION_POINTER_DOWN -> {
-                if (event.pointerCount == 2) {
-                    event.apply {
-                        mPrevDistance = hypot(
-                            getX(1) - getX(0),
-                            getY(1) - getY(0)
-                        )
-
-                    }
-                }
-            }
-
-            MotionEvent.ACTION_MOVE -> actionMove(
-                event
+        if (mFirstTouchIndex == -1) {
+            mPivotX = event.getX(
+                touchIndex
             )
 
-            MotionEvent.ACTION_POINTER_UP -> {
-                if (event.pointerCount == 2) {
-                    val pivotIndex = if (
-                        event.actionIndex == 0
-                    ) 1 else 0
+            mPivotY = event.getY(
+                touchIndex
+            )
 
-                    mPivotX = event.getX(pivotIndex)
-                    mPivotY = event.getY(pivotIndex)
-
-                    mPrevX = mPivotX
-                    mPrevY = mPivotY
-
-                    mTranslateX = mTranslate2X
-                    mTranslateY = mTranslate2Y
-                }
-            }
-
-            MotionEvent.ACTION_UP,
-            MotionEvent.ACTION_CANCEL -> {
-                mTranslateX = mTranslate2X
-                mTranslateY = mTranslate2Y
-            }
+            mPrevX = mPivotX
+            mPrevY = mPivotY
+            mFirstTouchIndex = touchIndex
+            return true
         }
+
+        event.run {
+            mPrevDistance = hypot(
+                getX(touchIndex) - getX(mFirstTouchIndex),
+                getY(touchIndex) - getY(mFirstTouchIndex)
+            )
+        }
+
+        mSecondTouchIndex = touchIndex
+        return true
+    }
+
+    override fun onTouchMove(
+        event: MotionEvent,
+        touchIndex: Int
+    ) = actionMove(
+        event,
+        touchIndex
+    )
+
+    override fun onTouchUp(
+        event: MotionEvent,
+        touchIndex: Int
+    ) {
+        if (mFirstTouchIndex == touchIndex) {
+            mFirstTouchIndex = mSecondTouchIndex
+        }
+
+        if (mSecondTouchIndex == touchIndex) {
+            mSecondTouchIndex = -1
+        }
+
+        if (mFirstTouchIndex == -1) {
+            return
+        }
+
+        mPivotX = event.getX(
+            mFirstTouchIndex
+        )
+
+        mPivotY = event.getY(
+            mFirstTouchIndex
+        )
+
+        mPrevX = mPivotX
+        mPrevY = mPivotY
+
+        mTranslateX = mTranslate2X
+        mTranslateY = mTranslate2Y
     }
 
     private inline fun actionMove(
-        event: MotionEvent
+        event: MotionEvent,
+        touchIndex: Int
     ) = when {
-        event.pointerCount == 1 -> {
-            mTranslate2X = mTranslateX + event.x - mPivotX
-            mTranslate2Y = mTranslateY + event.y - mPivotY
-//            listener?.onTranslate(
-//                mTranslate2X,
-//                mTranslate2Y
-//            )
+        mSecondTouchIndex == -1 -> {
+            val x = event.getX(touchIndex)
+            val y = event.getY(touchIndex)
+            mTranslate2X = mTranslateX + x - mPivotX
+            mTranslate2Y = mTranslateY + y - mPivotY
 
-            val dx = mPrevX - event.x
-            val dy = event.y - mPrevY
+            val dx = mPrevX - x
+            val dy = y - mPrevY
             onDelta?.onDelta(
                 dx, dy
             )
 
-            mPrevX = event.x
-            mPrevY = event.y
+            mPrevX = x
+            mPrevY = y
         }
 
-        event.pointerCount > 1 -> {
-            val x = event.getX(0)
-            val y = event.getY(0)
+        else -> {
+            val x = event.getX(mFirstTouchIndex)
+            val y = event.getY(mFirstTouchIndex)
 
-            val xx = event.getX(1)
-            val yy = event.getY(1)
+            val xx = event.getX(mSecondTouchIndex)
+            val yy = event.getY(mSecondTouchIndex)
 
             mCurrentDistance = hypot(
                 xx - x,
@@ -132,6 +159,5 @@ class MGTouchScale
 
             mPrevDistance = mCurrentDistance
         }
-        else -> Unit
     }
 }
