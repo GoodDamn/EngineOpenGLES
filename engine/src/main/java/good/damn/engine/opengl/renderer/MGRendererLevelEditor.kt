@@ -18,16 +18,17 @@ import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.drawers.MGDrawerMesh
-import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeWireframe
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.sky.MGDrawerSky
 import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.rays.MGRayIntersection
+import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.shaders.MGShaderWireframe
@@ -59,6 +60,7 @@ MGIListenerMove {
     private val mShaderDefault = MGShaderDefault()
     private val mShaderSky = MGShaderSkySphere()
     private val mShaderWireframe = MGShaderWireframe()
+    private val mShaderNormals = MGShaderWireframe()
 
     private val modelMatrixSky = MGMMatrix().apply {
         setScale(
@@ -136,62 +138,43 @@ MGIListenerMove {
     }
 
     private val mBtnSwitchWireframe = MGButtonGL {
-        MGEngine.isWireframe = !MGEngine.isWireframe
         mHandler.post {
-            if (MGEngine.isWireframe) {
-                mCurrentDrawerMode = mDrawerModeWireframe
-
-                mVerticesSky.changeAttrs(
-                    mShaderWireframe
-                )
-
-                mVerticesLandscape.changeAttrs(
-                    mShaderWireframe
-                )
-
-                mVerticesBatchObject.changeAttrs(
-                    mShaderWireframe
-                )
-
-                mDrawerSky.switchToWireframeMode(
-                    mShaderSky
-                )
-                meshes.forEach {
-                    it.switchToWireframeMode(
+            when (MGEngine.drawMode) {
+                MGEnumDrawMode.OPAQUE -> {
+                    switchDrawMode(
+                        MGEnumDrawMode.OPAQUE,
+                        mDrawerModeWireframe,
+                        mShaderWireframe,
                         mShaderWireframe
                     )
+                    MGEngine.drawMode = MGEnumDrawMode.WIREFRAME
                 }
-                return@post
-            }
 
-            mCurrentDrawerMode = mDrawerModeOpaque
+                MGEnumDrawMode.WIREFRAME -> {
+                    switchDrawMode(
+                        MGEnumDrawMode.WIREFRAME,
+                        mDrawerModeNormals,
+                        mShaderNormals,
+                        mShaderNormals
+                    )
+                    MGEngine.drawMode = MGEnumDrawMode.NORMALS
+                }
 
-            mVerticesSky.changeAttrs(
-                mShaderSky
-            )
-
-            mVerticesLandscape.changeAttrs(
-                mShaderDefault
-            )
-
-            mVerticesBatchObject.changeAttrs(
-                mShaderDefault
-            )
-
-            mDrawerSky.switchToOpaqueMode(
-                mShaderSky
-            )
-
-            meshes.forEach {
-                it.switchToOpaqueMode(
-                    mShaderDefault
-                )
+                MGEnumDrawMode.NORMALS -> {
+                    switchDrawMode(
+                        MGEnumDrawMode.NORMALS,
+                        mDrawerModeOpaque,
+                        mShaderDefault,
+                        mShaderSky
+                    )
+                    MGEngine.drawMode = MGEnumDrawMode.OPAQUE
+                }
             }
         }
     }
 
     private val mBtnPlaceMesh = MGButtonGL {
-        if (MGEngine.isWireframe) {
+        if (MGEngine.drawMode != MGEnumDrawMode.OPAQUE) {
             return@MGButtonGL
         }
         placeMesh()
@@ -234,6 +217,13 @@ MGIListenerMove {
         meshes
     )
 
+    private val mDrawerModeNormals = MGDrawerModeWireframe(
+        mShaderNormals,
+        mDrawerSky,
+        mCameraFree,
+        meshes
+    )
+
     private var mCurrentDrawerMode: MGIDrawer = mDrawerModeOpaque
     private var mCurrentModelInteract: MGMMatrix? = null
 
@@ -257,6 +247,11 @@ MGIListenerMove {
             "shaders/wireframe/frag.glsl"
         )
 
+        val programNormals = MGUtilsShader.createProgramFromAssets(
+            "shaders/normals/vert.glsl",
+            "shaders/normals/frag.glsl"
+        )
+
         glLinkProgram(
             programSkySphere
         )
@@ -267,6 +262,10 @@ MGIListenerMove {
 
         glLinkProgram(
             programWireframe
+        )
+
+        glLinkProgram(
+            programNormals
         )
 
         glUseProgram(
@@ -283,6 +282,10 @@ MGIListenerMove {
 
         mShaderWireframe.setupUniforms(
             programWireframe
+        )
+
+        mShaderNormals.setupUniforms(
+            programNormals
         )
 
         MGObject3D.createFromAssets(
@@ -550,6 +553,39 @@ MGIListenerMove {
             y = mOutPointLead.y
             z = mOutPointLead.z
             invalidatePosition()
+        }
+    }
+
+    private fun switchDrawMode(
+        drawMode: MGEnumDrawMode,
+        drawerMode: MGIDrawer,
+        shader: MGIShader,
+        shaderSky: MGIShader
+    ) {
+        mCurrentDrawerMode = drawerMode
+
+        mVerticesSky.changeAttrs(
+            shaderSky
+        )
+
+        mVerticesLandscape.changeAttrs(
+            shader
+        )
+
+        mVerticesBatchObject.changeAttrs(
+            shader
+        )
+
+        mDrawerSky.switchDrawMode(
+            shaderSky,
+            drawMode
+        )
+
+        meshes.forEach {
+            it.switchDrawMode(
+                shader,
+                drawMode
+            )
         }
     }
 
