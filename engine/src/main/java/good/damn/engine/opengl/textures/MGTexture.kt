@@ -87,6 +87,18 @@ class MGTexture(
         )
     }
 
+    fun unbind() {
+        glBindTexture(
+            GL_TEXTURE_2D,
+            0
+        )
+
+        glUniform1i(
+            shader.uniformTexture,
+            0
+        )
+    }
+
     override fun draw() {
         glActiveTexture(
             GL_TEXTURE0

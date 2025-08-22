@@ -12,12 +12,10 @@ class MGDrawerMeshOpaque(
 ): MGIDrawerMesh {
 
     override fun draw() {
-        glFrontFace(
-            GL_CW
-        )
         texture.draw()
         material.draw()
         vertexArray.draw()
+        texture.unbind()
     }
 
 }

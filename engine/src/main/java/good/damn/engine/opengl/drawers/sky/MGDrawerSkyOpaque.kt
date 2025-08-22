@@ -12,5 +12,6 @@ class MGDrawerSkyOpaque(
     override fun draw() {
         texture.draw()
         vertexArray.draw()
+        texture.unbind()
     }
 }
