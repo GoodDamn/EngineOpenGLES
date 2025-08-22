@@ -7,9 +7,10 @@ import good.damn.engine.MGEngine
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.MGIUniform
 import good.damn.engine.opengl.shaders.MGIShader
+import good.damn.engine.opengl.shaders.MGIShaderTexture
 
 class MGTexture(
-    var shader: MGIShader
+    var shader: MGIShaderTexture
 ): MGIDrawer {
 
     private var mId = intArrayOf(1)

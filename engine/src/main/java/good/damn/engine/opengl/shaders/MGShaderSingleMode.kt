@@ -5,7 +5,8 @@ import android.opengl.GLES30.glGetUniformLocation
 import android.opengl.GLES30.glUseProgram
 
 class MGShaderSingleMode
-: MGIShader {
+: MGIShader,
+MGIShaderCamera {
 
     override var attribPosition = 0
         private set
@@ -16,28 +17,14 @@ class MGShaderSingleMode
     override var attribNormal = 0
         private set
 
-
-
-
-    override var uniformTexture = 0
-        private set
-
     override var uniformModelView = 0
         private set
-
-    override var uniformTextureOffset = 0
-        private set
-
-
 
     override var uniformCameraProjection = 0
         private set
 
     override var uniformCameraView = 0
         private set
-
-    override val light = MGShaderLight()
-    override val material = MGShaderMaterial()
 
     private var mProgram = 0
 

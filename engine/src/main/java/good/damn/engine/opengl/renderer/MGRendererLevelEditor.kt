@@ -33,6 +33,7 @@ import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.rays.MGRayIntersection
 import good.damn.engine.opengl.shaders.MGIShader
+import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
@@ -652,8 +653,8 @@ MGIListenerMove {
     private fun switchDrawMode(
         drawMode: MGEnumDrawMode,
         drawerMode: MGIDrawer,
-        shader: MGIShader,
-        shaderSky: MGIShader
+        shader: MGIShaderCamera,
+        shaderSky: MGIShaderCamera
     ) {
         mCurrentDrawerMode = drawerMode
 

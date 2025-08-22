@@ -6,9 +6,10 @@ import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.MGIUniform
 import good.damn.engine.opengl.entities.MGObjectDimension
 import good.damn.engine.opengl.shaders.MGIShader
+import good.damn.engine.opengl.shaders.MGIShaderCamera
 
 open class MGCamera(
-    var shader: MGIShader,
+    var shader: MGIShaderCamera,
     var modelMatrix: MGMMatrix
 ): MGIDrawer {
 

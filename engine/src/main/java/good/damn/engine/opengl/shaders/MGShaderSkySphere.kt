@@ -5,7 +5,9 @@ import android.opengl.GLES30.glGetUniformLocation
 import android.opengl.GLES30.glUseProgram
 
 class MGShaderSkySphere
-: MGIShader {
+: MGIShader,
+MGIShaderCamera,
+MGIShaderTexture {
 
     override var attribPosition = 0
         private set
@@ -22,9 +24,6 @@ class MGShaderSkySphere
 
     override var uniformModelView = 0
         private set
-
-    override val material = MGShaderMaterial()
-    override val light = MGShaderLight()
 
     override var uniformTextureOffset = -1
         private set

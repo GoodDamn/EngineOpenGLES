@@ -2,6 +2,7 @@ package good.damn.engine.opengl.drawers
 
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.shaders.MGIShader
+import good.damn.engine.opengl.shaders.MGIShaderCamera
 
 open class MGDrawerMeshSwitch(
     private val drawSwitch: MGDrawerModeSwitch,
@@ -9,7 +10,7 @@ open class MGDrawerMeshSwitch(
 ): MGIDrawer {
 
     fun switchDrawMode(
-        shader: MGIShader,
+        shader: MGIShaderCamera,
         drawMode: MGEnumDrawMode
     ) {
         drawEntity.shader = shader

@@ -2,6 +2,7 @@ package good.damn.engine.opengl
 
 import android.opengl.GLES30.*
 import good.damn.engine.opengl.shaders.MGIShader
+import good.damn.engine.opengl.shaders.MGIShaderCamera
 import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -29,7 +30,7 @@ class MGArrayVertex {
     ) = mBufferVertex[i]
 
     fun changeAttrs(
-        shader: MGIShader
+        shader: MGIShaderCamera
     ) {
         bindVertexBuffer()
         enableAttrs(
@@ -39,7 +40,7 @@ class MGArrayVertex {
     }
 
     fun configure(
-        shader: MGIShader,
+        shader: MGIShaderCamera,
         vertices: FloatBuffer,
         indices: IntBuffer
     ) {
@@ -185,7 +186,7 @@ class MGArrayVertex {
     }
 
     private inline fun enableAttrs(
-        shader: MGIShader
+        shader: MGIShaderCamera
     ) {
         enableVertex(
             shader.attribPosition,

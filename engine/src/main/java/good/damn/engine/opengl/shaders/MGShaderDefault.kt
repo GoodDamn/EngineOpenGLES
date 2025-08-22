@@ -6,7 +6,10 @@ import android.opengl.GLES30.glUseProgram
 import kotlinx.coroutines.processNextEventInCurrentThread
 
 class MGShaderDefault
-: MGIShader {
+: MGIShader,
+MGIShaderCamera,
+MGIShaderLight,
+MGIShaderTexture {
 
     override var attribPosition = 0
         private set

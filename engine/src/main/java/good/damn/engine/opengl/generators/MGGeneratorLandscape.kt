@@ -4,6 +4,7 @@ import android.util.Log
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.shaders.MGIShader
+import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.utils.MGUtilsBuffer
 
 class MGGeneratorLandscape(
@@ -21,7 +22,7 @@ class MGGeneratorLandscape(
     fun setResolution(
         width: Int,
         height: Int,
-        shader: MGIShader
+        shader: MGIShaderCamera
     ) {
         mWidth = width
         mHeight = height
