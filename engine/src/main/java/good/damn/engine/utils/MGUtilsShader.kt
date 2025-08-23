@@ -1,6 +1,7 @@
 package good.damn.engine.utils
 
 import android.opengl.GLES20
+import android.util.Log
 
 class MGUtilsShader {
     companion object {
@@ -63,6 +64,20 @@ class MGUtilsShader {
             GLES20.glCompileShader(
                 shader
             )
+
+            val status = intArrayOf(0)
+            GLES20.glGetShaderiv(
+                shader,
+                GLES20.GL_COMPILE_STATUS,
+                status,
+                0
+            )
+
+            Log.d("TAG", "createShader: STATUS: ${status[0]}")
+            if (status[0] == GLES20.GL_FALSE) {
+                Log.d("TAG", "createShader: NOT COMPILED")
+                return -1
+            }
 
             return shader
         }

@@ -21,8 +21,7 @@ class MGGeneratorLandscape(
 
     fun setResolution(
         width: Int,
-        height: Int,
-        shader: MGIShaderCamera
+        height: Int
     ) {
         mWidth = width
         mHeight = height
@@ -103,7 +102,6 @@ class MGGeneratorLandscape(
 
         time = System.currentTimeMillis()
         vertexArray.configure(
-            shader,
             bufferVertex,
             bufferIndices
         )

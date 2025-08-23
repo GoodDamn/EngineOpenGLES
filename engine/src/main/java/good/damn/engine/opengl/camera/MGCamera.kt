@@ -9,9 +9,8 @@ import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderCamera
 
 open class MGCamera(
-    var shader: MGIShaderCamera,
     var modelMatrix: MGMMatrix
-): MGIDrawer {
+) {
 
     private val mProjection = FloatArray(
         16
@@ -31,7 +30,9 @@ open class MGCamera(
         )
     }
 
-    override fun draw() {
+    fun draw(
+        shader: MGIShaderCamera
+    ) {
         glUniformMatrix4fv(
             shader.uniformCameraProjection,
             1,
@@ -48,5 +49,4 @@ open class MGCamera(
             0
         )
     }
-
 }

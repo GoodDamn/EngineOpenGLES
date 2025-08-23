@@ -65,9 +65,9 @@ MGIListenerMove {
 
     private val mShaderDefault = MGShaderDefault()
     private val mShaderSky = MGShaderSkySphere()
-    private val mShaderWireframe = MGShaderSingleMode()
     private val mShaderNormals = MGShaderSingleMode()
     private val mShaderTexCoords = MGShaderSingleMode()
+    private val mShaderWireframe = MGShaderSingleMode()
 
     private val modelMatrixSky = MGMMatrix().apply {
         setScale(
@@ -97,7 +97,7 @@ MGIListenerMove {
     )
 
     private val mTextureSky = MGTexture(
-        mShaderDefault
+        mShaderSky
     )
 
     private val mTextureInteract = MGTexture(
@@ -146,7 +146,6 @@ MGIListenerMove {
 
 
     private val mCameraFree = MGCameraFree(
-        mShaderDefault,
         modelMatrixCamera
     )
 
@@ -225,6 +224,11 @@ MGIListenerMove {
                     MGEngine.drawMode = MGEnumDrawMode.OPAQUE
                 }
             }
+            val error = glGetError()
+            if (error != GL_NO_ERROR) {
+                Log.d("TAG", "post: ERROR: ${error.toString(16)}")
+                return@post
+            }
         }
     }
 
@@ -295,81 +299,56 @@ MGIListenerMove {
         gl: GL10?,
         config: EGLConfig?
     ) {
+        mShaderWireframe.run {
+            compile(
+                "shaders/wireframe/vert.glsl",
+                "shaders/wireframe/frag.glsl"
+            )
+            link()
+            setupUniforms()
+        }
 
-        val programDefault = MGUtilsShader.createProgramFromAssets(
-            "shaders/vert.glsl",
-            "shaders/frag.glsl"
-        )
+        mShaderDefault.run {
+            compile(
+                "shaders/vert.glsl",
+                "shaders/frag.glsl"
+            )
+            link()
+            setupUniforms()
+        }
 
-        val programSkySphere = MGUtilsShader.createProgramFromAssets(
-            "shaders/sky/vert.glsl",
-            "shaders/sky/frag.glsl"
-        )
+        mShaderSky.run {
+            compile(
+                "shaders/sky/vert.glsl",
+                "shaders/sky/frag.glsl"
+            )
+            link()
+            setupUniforms()
+        }
 
-        val programWireframe = MGUtilsShader.createProgramFromAssets(
-            "shaders/wireframe/vert.glsl",
-            "shaders/wireframe/frag.glsl"
-        )
+        mShaderNormals.run {
+            compile(
+                "shaders/normals/vert.glsl",
+                "shaders/normals/frag.glsl"
+            )
+            link()
+            setupUniforms()
+        }
 
-        val programNormals = MGUtilsShader.createProgramFromAssets(
-            "shaders/normals/vert.glsl",
-            "shaders/normals/frag.glsl"
-        )
+        mShaderTexCoords.run {
+            compile(
+                "shaders/texCoords/vert.glsl",
+                "shaders/texCoords/frag.glsl"
+            )
+            link()
+            setupUniforms()
+        }
 
-        val programTexCoords = MGUtilsShader.createProgramFromAssets(
-            "shaders/texCoords/vert.glsl",
-            "shaders/texCoords/frag.glsl",
-        )
-
-        glLinkProgram(
-            programSkySphere
-        )
-
-        glLinkProgram(
-            programDefault
-        )
-
-        glLinkProgram(
-            programWireframe
-        )
-
-        glLinkProgram(
-            programTexCoords
-        )
-
-        glLinkProgram(
-            programNormals
-        )
-
-        glUseProgram(
-            programDefault
-        )
-
-        mShaderSky.setupUniforms(
-            programSkySphere
-        )
-
-        mShaderDefault.setupUniforms(
-            programDefault
-        )
-
-        mShaderWireframe.setupUniforms(
-            programWireframe
-        )
-
-        mShaderTexCoords.setupUniforms(
-            programTexCoords
-        )
-
-        mShaderNormals.setupUniforms(
-            programNormals
-        )
 
         MGObject3D.createFromAssets(
             "objs/box.obj"
         ).run {
             mVerticesBatchObject.configure(
-                mShaderDefault,
                 vertices,
                 indices
             )
@@ -400,7 +379,6 @@ MGIListenerMove {
             "objs/semi_sphere.obj"
         ).run {
             mVerticesSky.configure(
-                mShaderSky,
                 vertices,
                 indices
             )
@@ -409,8 +387,7 @@ MGIListenerMove {
         mGeneratorLandscape.apply {
             setResolution(
                 1024,
-                1024,
-                mShaderDefault
+                1024
             )
 
             displace(
@@ -524,15 +501,14 @@ MGIListenerMove {
     override fun onDrawFrame(
         gl: GL10?
     ) {
-        val f = System.currentTimeMillis() % 100000L * 0.001f
+        /*val f = System.currentTimeMillis() % 100000L * 0.001f
         val fx = sin(f) * 840f
         val fz = cos(f) * 840f
 
         mDrawerLightDirectional.setPosition(
             fx, 600f, fz
-        )
+        )*/
 
-        mHandler.run()
         glViewport(
             0,
             0,
@@ -541,8 +517,7 @@ MGIListenerMove {
         )
 
         glClear(GL_COLOR_BUFFER_BIT or
-            GL_DEPTH_BUFFER_BIT or
-            GL_STENCIL_BUFFER_BIT
+            GL_DEPTH_BUFFER_BIT
         )
 
         glClearColor(
@@ -552,9 +527,14 @@ MGIListenerMove {
             1.0f
         )
 
+        val error = glGetError()
+        if (error != GL_NO_ERROR) {
+            Log.d("TAG", "onDrawFrame: ERROR: ${error.toString(16)}")
+            return
+        }
         mCurrentDrawerMode.draw()
 
-        glFlush()
+        mHandler.run()
     }
 
     override fun onGetUserContent(
@@ -658,20 +638,8 @@ MGIListenerMove {
     ) {
         mCurrentDrawerMode = drawerMode
 
-        mVerticesSky.changeAttrs(
-            shaderSky
-        )
-
-        mVerticesLandscape.changeAttrs(
-            shader
-        )
-
-        mVerticesBatchObject.changeAttrs(
-            shader
-        )
-
         meshSky.switchDrawMode(
-            shader,
+            shaderSky,
             drawMode
         )
 

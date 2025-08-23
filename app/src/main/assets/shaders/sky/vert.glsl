@@ -1,5 +1,4 @@
 attribute vec4 position;
-attribute vec3 normal;
 attribute vec2 texCoord;
 
 uniform mat4 projection;
@@ -16,7 +15,7 @@ void main() {
     mat4 spaceView = view * model;
     mat4 spaceClip = projection * spaceView;
 
-    gl_Position = spaceClip * position;
-
     outTexCoord = texCoord * vec2(textureOffset);
+
+    gl_Position = spaceClip * position;
 }

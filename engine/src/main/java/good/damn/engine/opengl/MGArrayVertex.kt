@@ -1,6 +1,7 @@
 package good.damn.engine.opengl
 
 import android.opengl.GLES30.*
+import android.util.Log
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderCamera
 import java.nio.Buffer
@@ -11,6 +12,9 @@ class MGArrayVertex {
 
     companion object {
         private const val STRIDE = 8 * 4
+        private const val INDEX_POSITION = 0
+        private const val INDEX_TEX_COORD = 1
+        private const val INDEX_NORMAL = 2
     }
 
     private val mVertexArray = intArrayOf(1)
@@ -29,18 +33,8 @@ class MGArrayVertex {
         i: Int
     ) = mBufferVertex[i]
 
-    fun changeAttrs(
-        shader: MGIShaderCamera
-    ) {
-        bindVertexBuffer()
-        enableAttrs(
-            shader
-        )
-        unbindVertexBuffer()
-    }
 
     fun configure(
-        shader: MGIShaderCamera,
         vertices: FloatBuffer,
         indices: IntBuffer
     ) {
@@ -63,9 +57,7 @@ class MGArrayVertex {
             indices
         )
 
-        enableAttrs(
-            shader
-        )
+        enableAttrs()
 
         glBindVertexArray(
             0
@@ -185,25 +177,23 @@ class MGArrayVertex {
         )
     }
 
-    private inline fun enableAttrs(
-        shader: MGIShaderCamera
-    ) {
+    private inline fun enableAttrs() {
         enableVertex(
-            shader.attribPosition,
+            INDEX_POSITION,
             0,
             3
         )
 
         enableVertex(
-            shader.attribTextureCoordinates,
-            3 * 4,
-            2
+            INDEX_NORMAL,
+            5 * 4,
+            3
         )
 
         enableVertex(
-            shader.attribNormal,
-            5 * 4,
-            3
+            INDEX_TEX_COORD,
+            3 * 4,
+            2
         )
     }
 

@@ -9,10 +9,8 @@ import kotlin.math.hypot
 import kotlin.math.sin
 
 class MGCameraFree(
-    shader: MGIShaderCamera,
     modelMatrix: MGMMatrix
 ): MGCamera(
-    shader,
     modelMatrix
 ) {
 

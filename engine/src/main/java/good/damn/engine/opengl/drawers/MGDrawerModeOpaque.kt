@@ -17,11 +17,15 @@ data class MGDrawerModeOpaque(
 
     override fun draw() {
         shaderSky.use()
-        camera.draw()
+        camera.draw(
+            shaderSky
+        )
         sky.draw()
 
         shaderOpaque.use()
-        camera.draw()
+        camera.draw(
+            shaderOpaque
+        )
         directionalLight.draw()
 
         meshes.forEach {

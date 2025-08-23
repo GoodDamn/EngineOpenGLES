@@ -1,6 +1,6 @@
 attribute vec4 position;
-attribute vec3 normal;
 attribute vec2 texCoord;
+attribute vec3 normal;
 
 uniform mat4 projection;
 uniform mat4 model;
