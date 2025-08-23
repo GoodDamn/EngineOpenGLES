@@ -624,11 +624,16 @@ MGIListenerMove {
     }
 
     private inline fun placeMesh() {
+        if (mCallbackOnDeltaInteract.currentMeshInteract != null) {
+            mCallbackOnDeltaInteract.currentMeshInteract = null
+            return
+        }
+
         val modelMatrix = MGMMatrix().apply {
             setScale(
-                0.001f,
-                0.001f,
-                0.001f
+                0.01f,
+                0.01f,
+                0.01f
             )
         }
         mCallbackOnDeltaInteract.currentMeshInteract = modelMatrix
