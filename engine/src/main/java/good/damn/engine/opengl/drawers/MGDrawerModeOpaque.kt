@@ -5,6 +5,7 @@ import good.damn.engine.opengl.entities.MGMesh
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import java.util.LinkedList
+import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGDrawerModeOpaque(
     var shaderSky: MGShaderSkySphere,
@@ -12,7 +13,7 @@ data class MGDrawerModeOpaque(
     var sky: MGMesh,
     var camera: MGCamera,
     var directionalLight: MGDrawerLightDirectional,
-    var meshes: LinkedList<MGDrawerMeshSwitch>
+    var meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>
 ): MGIDrawer {
 
     override fun draw() {

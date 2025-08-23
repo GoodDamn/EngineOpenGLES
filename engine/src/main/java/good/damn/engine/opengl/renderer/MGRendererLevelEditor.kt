@@ -47,6 +47,7 @@ import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.touch.MGTouchFreeMove
 import good.damn.engine.touch.MGTouchScale
 import java.util.LinkedList
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGRendererLevelEditor(
     private val requesterUserContent: MGIRequestUserContent
@@ -235,7 +236,7 @@ MGIListenerMove {
 
     private val mOutPointLead = MGVector(0f)
     private val mPointCamera = MGVector(0f)
-    private val meshes = LinkedList<
+    private val meshes = ConcurrentLinkedQueue<
         MGDrawerMeshSwitch
     >().apply {
         add(meshLandscape)
@@ -313,7 +314,7 @@ MGIListenerMove {
 
 
         MGObject3D.createFromAssets(
-            "objs/box.obj"
+            "objs/house.obj"
         ).run {
             mVerticesBatchObject.configure(
                 vertices,
@@ -453,7 +454,7 @@ MGIListenerMove {
         val midY = (fHeight - btnLen2) * 0.5f
         mBtnPlaceMesh.bounds(
             midX,
-            midY,
+            fHeight - btnLen2,
             btnLen2,
             btnLen2
         )
@@ -623,7 +624,13 @@ MGIListenerMove {
     }
 
     private inline fun placeMesh() {
-        val modelMatrix = MGMMatrix()
+        val modelMatrix = MGMMatrix().apply {
+            setScale(
+                0.001f,
+                0.001f,
+                0.001f
+            )
+        }
         mCallbackOnDeltaInteract.currentMeshInteract = modelMatrix
         meshes.add(
             MGDrawerMeshSwitch(
