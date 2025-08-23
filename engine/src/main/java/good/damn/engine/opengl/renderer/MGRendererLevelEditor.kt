@@ -299,50 +299,30 @@ MGIListenerMove {
         gl: GL10?,
         config: EGLConfig?
     ) {
-        mShaderWireframe.run {
-            compile(
-                "shaders/wireframe/vert.glsl",
-                "shaders/wireframe/frag.glsl"
-            )
-            link()
-            setupUniforms()
-        }
+        mShaderWireframe.setup(
+            "shaders/wireframe/vert.glsl",
+            "shaders/wireframe/frag.glsl"
+        )
 
-        mShaderDefault.run {
-            compile(
-                "shaders/vert.glsl",
-                "shaders/frag.glsl"
-            )
-            link()
-            setupUniforms()
-        }
+        mShaderDefault.setup(
+            "shaders/vert.glsl",
+            "shaders/frag.glsl"
+        )
 
-        mShaderSky.run {
-            compile(
-                "shaders/sky/vert.glsl",
-                "shaders/sky/frag.glsl"
-            )
-            link()
-            setupUniforms()
-        }
+        mShaderSky.setup(
+            "shaders/sky/vert.glsl",
+            "shaders/sky/frag.glsl"
+        )
 
-        mShaderNormals.run {
-            compile(
-                "shaders/normals/vert.glsl",
-                "shaders/normals/frag.glsl"
-            )
-            link()
-            setupUniforms()
-        }
+        mShaderNormals.setup(
+            "shaders/normals/vert.glsl",
+            "shaders/normals/frag.glsl"
+        )
 
-        mShaderTexCoords.run {
-            compile(
-                "shaders/texCoords/vert.glsl",
-                "shaders/texCoords/frag.glsl"
-            )
-            link()
-            setupUniforms()
-        }
+        mShaderTexCoords.setup(
+            "shaders/texCoords/vert.glsl",
+            "shaders/texCoords/frag.glsl"
+        )
 
 
         MGObject3D.createFromAssets(

@@ -60,6 +60,20 @@ abstract class MGShaderBase
         Log.d(TAG, "link: ERROR:")
     }
 
+    fun setup(
+        pathVertex: String,
+        pathFragment: String
+    ) {
+        compile(
+            pathVertex,
+            pathFragment
+        )
+        link()
+        setupUniforms(
+            mProgram
+        )
+    }
+
     private inline fun bindAttribLocation(
         program: Int
     ) {
