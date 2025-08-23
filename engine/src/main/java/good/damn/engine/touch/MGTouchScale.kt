@@ -69,29 +69,31 @@ class MGTouchScale
             )
         }
 
-        mSecondTouchIndex = touchIndex
+        //mSecondTouchIndex = touchIndex
         return true
     }
 
     override fun onTouchMove(
         event: MotionEvent,
         touchIndex: Int
-    ) = actionMove(
-        event,
-        touchIndex
-    )
+    ) {
+        actionMove(
+            event,
+            touchIndex
+        )
+    }
 
     override fun onTouchUp(
         event: MotionEvent,
         touchIndex: Int
     ) {
-        if (mFirstTouchIndex == touchIndex) {
+        /*if (mFirstTouchIndex == touchIndex) {
             mFirstTouchIndex = mSecondTouchIndex
         }
 
         if (mSecondTouchIndex == touchIndex) {
             mSecondTouchIndex = -1
-        }
+        }*/
 
         if (mFirstTouchIndex == -1) {
             return
@@ -108,32 +110,16 @@ class MGTouchScale
         mPrevX = mPivotX
         mPrevY = mPivotY
 
-        mTranslateX = mTranslate2X
-        mTranslateY = mTranslate2Y
+        //mTranslateX = mTranslate2X
+        //mTranslateY = mTranslate2Y
     }
 
     private inline fun actionMove(
         event: MotionEvent,
         touchIndex: Int
     ) = when {
-        mSecondTouchIndex == -1 -> {
-            val x = event.getX(touchIndex)
-            val y = event.getY(touchIndex)
-            mTranslate2X = mTranslateX + x - mPivotX
-            mTranslate2Y = mTranslateY + y - mPivotY
-
-            val dx = mPrevX - x
-            val dy = y - mPrevY
-            onDelta?.onDelta(
-                dx, dy
-            )
-
-            mPrevX = x
-            mPrevY = y
-        }
-
-        else -> {
-            val x = event.getX(mFirstTouchIndex)
+        mSecondTouchIndex != -1 -> {
+            /*val x = event.getX(mFirstTouchIndex)
             val y = event.getY(mFirstTouchIndex)
 
             val xx = event.getX(mSecondTouchIndex)
@@ -157,7 +143,23 @@ class MGTouchScale
                 scale
             )
 
-            mPrevDistance = mCurrentDistance
+            mPrevDistance = mCurrentDistance*/
+        }
+
+        else -> {
+            val x = event.getX(touchIndex)
+            val y = event.getY(touchIndex)
+            //mTranslate2X = mTranslateX + x - mPivotX
+            //mTranslate2Y = mTranslateY + y - mPivotY
+
+            val dx = mPrevX - x
+            val dy = y - mPrevY
+            onDelta?.onDelta(
+                dx, dy
+            )
+
+            mPrevX = x
+            mPrevY = y
         }
     }
 }

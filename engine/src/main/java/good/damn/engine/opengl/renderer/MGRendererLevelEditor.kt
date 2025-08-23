@@ -15,6 +15,7 @@ import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGVector
+import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
@@ -32,7 +33,6 @@ import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.rays.MGRayIntersection
-import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
@@ -46,10 +46,7 @@ import good.damn.engine.touch.MGIListenerDelta
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.touch.MGTouchFreeMove
 import good.damn.engine.touch.MGTouchScale
-import good.damn.engine.utils.MGUtilsShader
 import java.util.LinkedList
-import kotlin.math.cos
-import kotlin.math.sin
 
 class MGRendererLevelEditor(
     private val requesterUserContent: MGIRequestUserContent
@@ -158,20 +155,11 @@ MGIListenerMove {
         )
     }
 
+    private val mCallbackOnDeltaInteract = MGCallbackOnDeltaInteract()
+
     private val mTouchScale = MGTouchScale().apply {
         onScale = this@MGRendererLevelEditor
-        onDelta = object: MGIListenerDelta {
-            override fun onDelta(
-                dx: Float,
-                dy: Float
-            ) {
-                Log.d(TAG, "onDelta: MODEL: $dx $dy $mCurrentModelInteract")
-                mCurrentModelInteract?.addRotation(
-                    dx * 0.5f,
-                    0.0f
-                )
-            }
-        }
+        onDelta = mCallbackOnDeltaInteract
     }
 
     private val mBtnLoadUserContent = MGButtonGL {
@@ -293,7 +281,6 @@ MGIListenerMove {
     )
 
     private var mCurrentDrawerMode: MGIDrawer = mDrawerModeOpaque
-    private var mCurrentModelInteract: MGMMatrix? = null
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -543,12 +530,26 @@ MGIListenerMove {
             mBtnLoadUserContent.intercept(event.x, event.y)
             mBtnSwitchWireframe.intercept(event.x, event.y)
             mBtnPlaceMesh.intercept(event.x, event.y)
+
+            mTouchScale.onTouchEvent(
+                event
+            )
+
+            if (mTouchScale.touchId != -1) {
+                return
+            }
+
+            mTouchMove.onTouchEvent(
+                event
+            )
+            return
         }
 
-        mTouchMove.onTouchEvent(
+        mTouchScale.onTouchEvent(
             event
         )
-        mTouchScale.onTouchEvent(
+
+        mTouchMove.onTouchEvent(
             event
         )
     }
@@ -569,11 +570,6 @@ MGIListenerMove {
         scale: Float
     ) {
         Log.d(TAG, "onScale: $scale")
-        mCurrentModelInteract?.setScale(
-            scale,
-            scale,
-            scale
-        )
     }
 
     override fun onMove(
@@ -602,12 +598,7 @@ MGIListenerMove {
             mOutPointLead
         )
 
-        mCurrentModelInteract?.run {
-            x = mOutPointLead.x
-            y = mOutPointLead.y
-            z = mOutPointLead.z
-            invalidatePosition()
-        }
+        invalidatePositionInteract()
     }
 
     private fun switchDrawMode(
@@ -632,19 +623,28 @@ MGIListenerMove {
     }
 
     private inline fun placeMesh() {
-        mHandler.post {
-            val modelMatrix = MGMMatrix()
-            mCurrentModelInteract = modelMatrix
-            meshes.add(
-                MGDrawerMeshSwitch(
+        val modelMatrix = MGMMatrix()
+        mCallbackOnDeltaInteract.currentMeshInteract = modelMatrix
+        meshes.add(
+            MGDrawerMeshSwitch(
+                mDrawerSwitchBatch,
+                MGDrawerPositionEntity(
                     mDrawerSwitchBatch,
-                    MGDrawerPositionEntity(
-                        mDrawerSwitchBatch,
-                        mShaderDefault,
-                        modelMatrix
-                    )
+                    mShaderDefault,
+                    modelMatrix
                 )
             )
+        )
+
+        invalidatePositionInteract()
+    }
+
+    private inline fun invalidatePositionInteract() {
+        mCallbackOnDeltaInteract.currentMeshInteract?.run {
+            x = mOutPointLead.x
+            y = mOutPointLead.y
+            z = mOutPointLead.z
+            invalidatePosition()
         }
     }
 }
