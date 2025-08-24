@@ -350,7 +350,7 @@ MGIListenerMove {
         )
 
         mTextureSky.setupTexture(
-            "textures/sky/skysphere_light.jpg"
+            "textures/sky/night.png"
         )
 
         MGObject3D.createFromAssets(
