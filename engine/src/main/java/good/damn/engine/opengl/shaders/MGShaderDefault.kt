@@ -8,6 +8,7 @@ import kotlinx.coroutines.processNextEventInCurrentThread
 
 class MGShaderDefault
 : MGShaderBase(),
+MGIShaderNormal,
 MGIShaderCamera,
 MGIShaderLight,
 MGIShaderTexture {
@@ -21,6 +22,9 @@ MGIShaderTexture {
     override var uniformTextureOffset = 0
         private set
 
+
+    override var uniformNormalMatrix = 0
+        private set
 
 
     override var uniformCameraProjection = 0
@@ -70,6 +74,11 @@ MGIShaderTexture {
         uniformCameraView = glGetUniformLocation(
             program,
             "view"
+        )
+
+        uniformNormalMatrix = glGetUniformLocation(
+            program,
+            "normalMatrix"
         )
     }
 }

@@ -12,6 +12,12 @@ class MGMMatrix {
     }
 
     var model = FloatArray(16)
+        private set
+
+    var normalMatrix = FloatArray(16)
+        private set
+
+    private var matrixInverted = FloatArray(16)
 
     var x = 0f
     var y = 0f
@@ -20,6 +26,11 @@ class MGMMatrix {
     init {
         Matrix.setIdentityM(
             model,
+            0
+        )
+
+        Matrix.setIdentityM(
+            normalMatrix,
             0
         )
     }
@@ -43,6 +54,7 @@ class MGMMatrix {
             1.0f,
             0.0f
         )
+        calculateNormals()
     }
 
     fun addPosition(
@@ -64,6 +76,23 @@ class MGMMatrix {
             model,
             0,
             x, y, z
+        )
+        calculateNormals()
+    }
+
+    private inline fun calculateNormals() {
+        Matrix.invertM(
+            matrixInverted,
+            0,
+            model,
+            0
+        )
+
+        Matrix.transposeM(
+            normalMatrix,
+            0,
+            matrixInverted,
+            0
         )
     }
 }

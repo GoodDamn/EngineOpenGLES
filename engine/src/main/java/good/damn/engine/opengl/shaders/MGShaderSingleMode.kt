@@ -4,21 +4,23 @@ import android.opengl.GLES30.glGetAttribLocation
 import android.opengl.GLES30.glGetUniformLocation
 import android.opengl.GLES30.glUseProgram
 import android.util.Log
+import androidx.annotation.CallSuper
 
-class MGShaderSingleMode
+open class MGShaderSingleMode
 : MGShaderBase(),
 MGIShaderCamera {
 
-    override var uniformModelView = 0
+    final override var uniformModelView = 0
         private set
 
-    override var uniformCameraProjection = 0
+    final override var uniformCameraProjection = 0
         private set
 
-    override var uniformCameraView = 0
+    final override var uniformCameraView = 0
         private set
 
 
+    @CallSuper
     override fun setupUniforms(
         program: Int
     ) {

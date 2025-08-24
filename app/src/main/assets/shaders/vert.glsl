@@ -5,6 +5,7 @@ attribute vec3 normal;
 uniform mat4 projection;
 uniform mat4 model;
 uniform mat4 view;
+uniform mat4 normalMatrix;
 
 uniform float textureOffset;
 
@@ -19,7 +20,7 @@ void main() {
     mat4 spaceClip = projection * spaceView;
 
     outFragPosition = spaceWorld;
-    outNormal = normal;
+    outNormal = mat3(normalMatrix) * normal;
     outTexCoord = texCoord * vec2(textureOffset);
 
     gl_Position = spaceClip * position;

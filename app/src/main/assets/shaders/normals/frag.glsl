@@ -4,7 +4,7 @@ varying vec3 outNormal;
 
 void main() {
     gl_FragColor = vec4(
-        outNormal,
+        normalize(outNormal),
         1.0
     );
 }

@@ -34,9 +34,11 @@ import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.rays.MGRayIntersection
 import good.damn.engine.opengl.shaders.MGIShaderCamera
+import good.damn.engine.opengl.shaders.MGIShaderNormal
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
+import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
@@ -63,7 +65,7 @@ MGIListenerMove {
 
     private val mShaderDefault = MGShaderDefault()
     private val mShaderSky = MGShaderSkySphere()
-    private val mShaderNormals = MGShaderSingleMode()
+    private val mShaderNormals = MGShaderSingleModeNormals()
     private val mShaderTexCoords = MGShaderSingleMode()
     private val mShaderWireframe = MGShaderSingleMode()
 
@@ -178,7 +180,9 @@ MGIListenerMove {
                         MGEnumDrawMode.OPAQUE,
                         mDrawerModeWireframe,
                         mShaderWireframe,
-                        mShaderWireframe
+                        mShaderWireframe,
+                        null,
+                        null
                     )
                     MGEngine.drawMode = MGEnumDrawMode.WIREFRAME
                 }
@@ -187,6 +191,8 @@ MGIListenerMove {
                     switchDrawMode(
                         MGEnumDrawMode.WIREFRAME,
                         mDrawerModeNormals,
+                        mShaderNormals,
+                        mShaderNormals,
                         mShaderNormals,
                         mShaderNormals
                     )
@@ -198,7 +204,9 @@ MGIListenerMove {
                         MGEnumDrawMode.NORMALS,
                         mDrawerModeTexCoords,
                         mShaderTexCoords,
-                        mShaderTexCoords
+                        mShaderTexCoords,
+                        null,
+                        null
                     )
                     MGEngine.drawMode = MGEnumDrawMode.TEX_COORDS
                 }
@@ -208,7 +216,9 @@ MGIListenerMove {
                         MGEnumDrawMode.TEX_COORDS,
                         mDrawerModeOpaque,
                         mShaderDefault,
-                        mShaderSky
+                        mShaderSky,
+                        mShaderDefault,
+                        null
                     )
                     MGEngine.drawMode = MGEnumDrawMode.OPAQUE
                 }
@@ -606,18 +616,22 @@ MGIListenerMove {
         drawMode: MGEnumDrawMode,
         drawerMode: MGIDrawer,
         shader: MGIShaderCamera,
-        shaderSky: MGIShaderCamera
+        shaderSky: MGIShaderCamera,
+        shaderNormals: MGIShaderNormal?,
+        shaderNormalsSky: MGIShaderNormal?
     ) {
         mCurrentDrawerMode = drawerMode
 
         meshSky.switchDrawMode(
             shaderSky,
+            shaderNormalsSky,
             drawMode
         )
 
         meshes.forEach {
             it.switchDrawMode(
                 shader,
+                shaderNormals,
                 drawMode
             )
         }
