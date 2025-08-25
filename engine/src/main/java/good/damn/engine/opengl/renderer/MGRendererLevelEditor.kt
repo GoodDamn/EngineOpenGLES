@@ -34,7 +34,6 @@ import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.models.MGMUserContent
-import good.damn.engine.opengl.rays.MGRayIntersection
 import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.opengl.shaders.MGIShaderNormal
 import good.damn.engine.opengl.shaders.MGShaderDefault
@@ -43,10 +42,10 @@ import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
-import good.damn.engine.opengl.ui.MGButtonGL
-import good.damn.engine.opengl.ui.MGSeekBarGl
 import good.damn.engine.touch.MGTouchFreeMove
 import good.damn.engine.touch.MGTouchScale
+import good.damn.engine.ui.MGIClick
+import good.damn.engine.ui.MGUILayerEditor
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGRendererLevelEditor(
@@ -153,96 +152,6 @@ MGIListenerOnGetUserContent, MGIListenerOnIntersectPosition {
         )
     }
 
-    private val mTouchMove = MGTouchFreeMove().apply {
-        setListenerMove(
-            mCallbackOnCameraMove
-        )
-        setListenerDelta(
-            mCallbackOnCameraMove
-        )
-    }
-
-    private val mTouchScale = MGTouchScale().apply {
-        onDelta = mCallbackOnDeltaInteract
-    }
-
-    private val mBtnLoadUserContent = MGButtonGL {
-        requesterUserContent.requestUserContent(
-            this,
-            "*/*"
-        )
-    }
-
-    private val mBtnSwitchWireframe = MGButtonGL {
-        mHandler.post {
-            when (MGEngine.drawMode) {
-                MGEnumDrawMode.OPAQUE -> {
-                    switchDrawMode(
-                        MGEnumDrawMode.OPAQUE,
-                        mDrawerModeWireframe,
-                        mShaderWireframe,
-                        mShaderWireframe,
-                        null,
-                        null
-                    )
-                    MGEngine.drawMode = MGEnumDrawMode.WIREFRAME
-                }
-
-                MGEnumDrawMode.WIREFRAME -> {
-                    switchDrawMode(
-                        MGEnumDrawMode.WIREFRAME,
-                        mDrawerModeNormals,
-                        mShaderNormals,
-                        mShaderNormals,
-                        mShaderNormals,
-                        mShaderNormals
-                    )
-                    MGEngine.drawMode = MGEnumDrawMode.NORMALS
-                }
-
-                MGEnumDrawMode.NORMALS -> {
-                    switchDrawMode(
-                        MGEnumDrawMode.NORMALS,
-                        mDrawerModeTexCoords,
-                        mShaderTexCoords,
-                        mShaderTexCoords,
-                        null,
-                        null
-                    )
-                    MGEngine.drawMode = MGEnumDrawMode.TEX_COORDS
-                }
-
-                MGEnumDrawMode.TEX_COORDS -> {
-                    switchDrawMode(
-                        MGEnumDrawMode.TEX_COORDS,
-                        mDrawerModeOpaque,
-                        mShaderDefault,
-                        mShaderSky,
-                        mShaderDefault,
-                        null
-                    )
-                    MGEngine.drawMode = MGEnumDrawMode.OPAQUE
-                }
-            }
-            val error = glGetError()
-            if (error != GL_NO_ERROR) {
-                Log.d("TAG", "post: ERROR: ${error.toString(16)}")
-                return@post
-            }
-        }
-    }
-
-    private val mBtnPlaceMesh = MGButtonGL {
-        if (MGEngine.drawMode != MGEnumDrawMode.OPAQUE) {
-            return@MGButtonGL
-        }
-        placeMesh()
-    }
-
-    private val mBarSeekAmbient = MGSeekBarGl {
-        mDrawerLightDirectional.ambient = it
-    }
-
     private val mHandler = MGHandlerGl()
 
     private val meshes = ConcurrentLinkedQueue<
@@ -290,6 +199,97 @@ MGIListenerOnGetUserContent, MGIListenerOnIntersectPosition {
 
     private var mCurrentDrawerMode: MGIDrawer = mDrawerModeOpaque
 
+    private val mLayerEditor = MGUILayerEditor(
+        clickLoadUserContent = object: MGIClick {
+            override fun onClick() {
+                requesterUserContent.requestUserContent(
+                    this@MGRendererLevelEditor,
+                    "*/*"
+                )
+            }
+        },
+        clickPlaceMesh = object: MGIClick {
+            override fun onClick() {
+                if (MGEngine.drawMode != MGEnumDrawMode.OPAQUE) {
+                    return
+                }
+                placeMesh()
+            }
+        },
+        clickSwitchDrawerMode = object: MGIClick {
+            override fun onClick() {
+                mHandler.post {
+                    when (MGEngine.drawMode) {
+                        MGEnumDrawMode.OPAQUE -> {
+                            switchDrawMode(
+                                MGEnumDrawMode.OPAQUE,
+                                mDrawerModeWireframe,
+                                mShaderWireframe,
+                                mShaderWireframe,
+                                null,
+                                null
+                            )
+                            MGEngine.drawMode = MGEnumDrawMode.WIREFRAME
+                        }
+
+                        MGEnumDrawMode.WIREFRAME -> {
+                            switchDrawMode(
+                                MGEnumDrawMode.WIREFRAME,
+                                mDrawerModeNormals,
+                                mShaderNormals,
+                                mShaderNormals,
+                                mShaderNormals,
+                                mShaderNormals
+                            )
+                            MGEngine.drawMode = MGEnumDrawMode.NORMALS
+                        }
+
+                        MGEnumDrawMode.NORMALS -> {
+                            switchDrawMode(
+                                MGEnumDrawMode.NORMALS,
+                                mDrawerModeTexCoords,
+                                mShaderTexCoords,
+                                mShaderTexCoords,
+                                null,
+                                null
+                            )
+                            MGEngine.drawMode = MGEnumDrawMode.TEX_COORDS
+                        }
+
+                        MGEnumDrawMode.TEX_COORDS -> {
+                            switchDrawMode(
+                                MGEnumDrawMode.TEX_COORDS,
+                                mDrawerModeOpaque,
+                                mShaderDefault,
+                                mShaderSky,
+                                mShaderDefault,
+                                null
+                            )
+                            MGEngine.drawMode = MGEnumDrawMode.OPAQUE
+                        }
+                    }
+                    val error = glGetError()
+                    if (error != GL_NO_ERROR) {
+                        Log.d("TAG", "post: ERROR: ${error.toString(16)}")
+                        return@post
+                    }
+                }
+            }
+        }
+    ).apply {
+        setListenerTouchMove(
+            mCallbackOnCameraMove
+        )
+
+        setListenerTouchDelta(
+            mCallbackOnCameraMove
+        )
+
+        setListenerTouchDeltaInteract(
+            mCallbackOnDeltaInteract
+        )
+    }
+    
     override fun onSurfaceCreated(
         gl: GL10?,
         config: EGLConfig?
@@ -400,68 +400,10 @@ MGIListenerOnGetUserContent, MGIListenerOnIntersectPosition {
             height
         )
 
-        val w: Float
-        val h: Float
-
-        if (width < height) {
-            w = fWidth
-            h = fHeight
-        } else {
-            w = fHeight
-            h = fWidth
-        }
-
-        mTouchMove.setBoundsMove(
-            0f,
-            0f,
-            fWidth * 0.5f,
-            fHeight
-        )
-
-        val btnLen = w * 0.1f
-
-        mTouchMove.setBoundsDelta(
-            fWidth * 0.5f,
-            0f,
+        mLayerEditor.layout(
+            0f, 0f,
             fWidth,
             fHeight
-        )
-
-        mBarSeekAmbient.bounds(
-            0f,
-            0f,
-            btnLen,
-            fHeight
-        )
-
-        mBtnSwitchWireframe.bounds(
-            fWidth - btnLen,
-            fHeight - btnLen,
-            btnLen,
-            btnLen
-        )
-
-        mBtnLoadUserContent.bounds(
-            fWidth - btnLen,
-            0f,
-            btnLen,
-            btnLen
-        )
-
-        val btnLen2 = btnLen
-        val midX = (fWidth - btnLen2) * 0.5f
-        val midY = (fHeight - btnLen2) * 0.5f
-        mBtnPlaceMesh.bounds(
-            midX,
-            fHeight - btnLen2,
-            btnLen2,
-            btnLen2
-        )
-
-        mTouchScale.setBounds(
-            midX, midY,
-            midX + btnLen2,
-            midY + btnLen2
         )
     }
 
@@ -525,45 +467,10 @@ MGIListenerOnGetUserContent, MGIListenerOnIntersectPosition {
     fun onTouchEvent(
         event: MotionEvent
     ) {
-        val action = event.actionMasked
-        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
-            val x = event.getX(
-                event.actionIndex
-            )
-
-            val y = event.getY(
-                event.actionIndex
-            )
-
-            mBarSeekAmbient.intercept(x,y)
-            mBtnLoadUserContent.intercept(x,y)
-            mBtnSwitchWireframe.intercept(x,y)
-            mBtnPlaceMesh.intercept(x,y)
-
-            mTouchScale.onTouchEvent(
-                event
-            )
-
-            if (mTouchScale.touchId != -1) {
-                return
-            }
-
-            mTouchMove.onTouchEvent(
-                event
-            )
-            return
-        }
-
-        mTouchScale.onTouchEvent(
-            event
-        )
-
-        mTouchMove.onTouchEvent(
+        mLayerEditor.onTouchEvent(
             event
         )
     }
-
-
 
     private fun switchDrawMode(
         drawMode: MGEnumDrawMode,

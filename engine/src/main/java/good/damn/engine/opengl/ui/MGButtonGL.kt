@@ -1,13 +1,14 @@
 package good.damn.engine.opengl.ui
 
 import android.util.Log
+import good.damn.engine.ui.MGIClick
 
 class MGButtonGL(
     private var mX: Float = 0f,
     private var mY: Float = 0f,
     private var mWidth: Float = 0f,
     private var mHeight: Float = 0f,
-    private val mAction: () -> Unit
+    private val click: MGIClick
 ) {
     companion object {
         private const val TAG = "GLButton"
@@ -38,7 +39,7 @@ class MGButtonGL(
             return false
         }
 
-        mAction()
+        click.onClick()
         return true
     }
 
