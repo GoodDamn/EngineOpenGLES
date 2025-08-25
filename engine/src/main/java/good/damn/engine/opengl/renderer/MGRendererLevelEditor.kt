@@ -525,11 +525,20 @@ MGIListenerOnGetUserContent, MGIListenerOnIntersectPosition {
     fun onTouchEvent(
         event: MotionEvent
     ) {
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            mBarSeekAmbient.intercept(event.x, event.y)
-            mBtnLoadUserContent.intercept(event.x, event.y)
-            mBtnSwitchWireframe.intercept(event.x, event.y)
-            mBtnPlaceMesh.intercept(event.x, event.y)
+        val action = event.actionMasked
+        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
+            val x = event.getX(
+                event.actionIndex
+            )
+
+            val y = event.getY(
+                event.actionIndex
+            )
+
+            mBarSeekAmbient.intercept(x,y)
+            mBtnLoadUserContent.intercept(x,y)
+            mBtnSwitchWireframe.intercept(x,y)
+            mBtnPlaceMesh.intercept(x,y)
 
             mTouchScale.onTouchEvent(
                 event
