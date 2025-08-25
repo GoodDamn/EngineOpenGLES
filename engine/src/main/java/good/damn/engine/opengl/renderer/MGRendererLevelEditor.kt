@@ -15,7 +15,9 @@ import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGVector
+import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
+import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
@@ -43,21 +45,14 @@ import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.opengl.ui.MGSeekBarGl
-import good.damn.engine.touch.MGIListenerMove
-import good.damn.engine.touch.MGIListenerDelta
-import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.touch.MGTouchFreeMove
 import good.damn.engine.touch.MGTouchScale
-import java.util.LinkedList
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGRendererLevelEditor(
     private val requesterUserContent: MGIRequestUserContent
 ): GLSurfaceView.Renderer,
-MGIListenerOnGetUserContent,
-MGIListenerScale,
-MGIListenerDelta,
-MGIListenerMove {
+MGIListenerOnGetUserContent, MGIListenerOnIntersectPosition {
 
     companion object {
         private const val TAG = "MGRendererLevelEditor"
@@ -149,19 +144,25 @@ MGIListenerMove {
         modelMatrixCamera
     )
 
-    private val mTouchMove = MGTouchFreeMove().apply {
-        setListenerMove(
-            this@MGRendererLevelEditor
-        )
-        setListenerDelta(
+    private val mCallbackOnDeltaInteract = MGCallbackOnDeltaInteract()
+    private val mCallbackOnCameraMove = MGCallbackOnCameraMovement(
+        mCameraFree
+    ).apply {
+        setListenerIntersection(
             this@MGRendererLevelEditor
         )
     }
 
-    private val mCallbackOnDeltaInteract = MGCallbackOnDeltaInteract()
+    private val mTouchMove = MGTouchFreeMove().apply {
+        setListenerMove(
+            mCallbackOnCameraMove
+        )
+        setListenerDelta(
+            mCallbackOnCameraMove
+        )
+    }
 
     private val mTouchScale = MGTouchScale().apply {
-        onScale = this@MGRendererLevelEditor
         onDelta = mCallbackOnDeltaInteract
     }
 
@@ -244,8 +245,6 @@ MGIListenerMove {
 
     private val mHandler = MGHandlerGl()
 
-    private val mOutPointLead = MGVector(0f)
-    private val mPointCamera = MGVector(0f)
     private val meshes = ConcurrentLinkedQueue<
         MGDrawerMeshSwitch
     >().apply {
@@ -258,8 +257,6 @@ MGIListenerMove {
     private val mDrawerLightDirectional = MGDrawerLightDirectional(
         mShaderDefault.light
     )
-
-    private val mRayIntersection = MGRayIntersection()
 
     private val mDrawerModeOpaque = MGDrawerModeOpaque(
         mShaderSky,
@@ -335,14 +332,6 @@ MGIListenerMove {
         mTextureInteract.setupTexture(
             "textures/rock.jpg"
         )
-
-        /*mCameraRotation.radius = 1250f
-        mTouchScale.scale = mCameraRotation.radius
-
-        mCameraRotation.setRotation(
-            0f,
-            0.01f
-        )*/
 
         mTextureLandscape.setupTexture(
             "textures/terrain.png",
@@ -565,52 +554,7 @@ MGIListenerMove {
         )
     }
 
-    override fun onDelta(
-        dx: Float,
-        dy: Float
-    ) {
-        mCameraFree.addRotation(
-            dx * 0.001f,
-            dy * 0.001f
-        )
-        mCameraFree.invalidatePosition()
-        updateIntersection()
-    }
 
-    override fun onScale(
-        scale: Float
-    ) {
-        Log.d(TAG, "onScale: $scale")
-    }
-
-    override fun onMove(
-        x: Float,
-        y: Float,
-        directionX: Float,
-        directionY: Float
-    ) {
-        mCameraFree.addPosition(
-            x, y,
-            directionX,
-            directionY
-        )
-        mCameraFree.invalidatePosition()
-        updateIntersection()
-    }
-
-    private inline fun updateIntersection() {
-        mPointCamera.x = modelMatrixCamera.x
-        mPointCamera.y = modelMatrixCamera.y
-        mPointCamera.z = modelMatrixCamera.z
-
-        mRayIntersection.intersect(
-            mPointCamera,
-            mCameraFree.direction,
-            mOutPointLead
-        )
-
-        invalidatePositionInteract()
-    }
 
     private fun switchDrawMode(
         drawMode: MGEnumDrawMode,
@@ -662,14 +606,18 @@ MGIListenerMove {
             )
         )
 
-        invalidatePositionInteract()
+        onIntersectPosition(
+            mCallbackOnCameraMove.outPointLead
+        )
     }
 
-    private inline fun invalidatePositionInteract() {
+    override fun onIntersectPosition(
+        p: MGVector
+    ) {
         mCallbackOnDeltaInteract.currentMeshInteract?.run {
-            x = mOutPointLead.x
-            y = mOutPointLead.y
-            z = mOutPointLead.z
+            x = p.x
+            y = p.y
+            z = p.z
             invalidatePosition()
         }
     }
