@@ -10,5 +10,5 @@ data class MGMMeshEditor(
     var scale: MGVector,
     var specIntensity: Byte,
     var shininess: Byte,
-    var mesh: MGMeshStatic? = null
+    //var mesh: MGMeshStatic? = null
 )

@@ -2,10 +2,15 @@ package good.damn.engine.opengl.camera
 
 import android.opengl.GLES30.*
 import android.opengl.Matrix
+import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.engine.opengl.drawers.MGIUniform
 import good.damn.engine.opengl.entities.MGObjectDimension
+import good.damn.engine.opengl.shaders.MGIShader
+import good.damn.engine.opengl.shaders.MGIShaderCamera
 
-open class MGCamera
-: MGObjectDimension() {
+open class MGCamera(
+    var modelMatrix: MGMMatrix
+) {
 
     private val mProjection = FloatArray(
         16
@@ -26,13 +31,10 @@ open class MGCamera
     }
 
     fun draw(
-        unifProj: Int,
-        unifModel: Int,
-        unifCamera: Int,
-        model: FloatArray
+        shader: MGIShaderCamera
     ) {
         glUniformMatrix4fv(
-            unifProj,
+            shader.uniformCameraProjection,
             1,
             false,
             mProjection,
@@ -40,20 +42,11 @@ open class MGCamera
         )
 
         glUniformMatrix4fv(
-            unifCamera,
+            shader.uniformCameraView,
             1,
             false,
-            this.model,
-            0
-        )
-
-        glUniformMatrix4fv(
-            unifModel,
-            1,
-            false,
-            model,
+            modelMatrix.model,
             0
         )
     }
-
 }

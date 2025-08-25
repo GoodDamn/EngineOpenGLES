@@ -1,15 +1,25 @@
 package good.damn.engine.opengl
 
 import android.opengl.GLES30.*
-import good.damn.engine.opengl.entities.MGMesh.Companion.mStride
+import android.util.Log
+import good.damn.engine.opengl.shaders.MGIShader
+import good.damn.engine.opengl.shaders.MGIShaderCamera
 import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
 class MGArrayVertex {
 
+    companion object {
+        private const val STRIDE = 8 * 4
+        private const val INDEX_POSITION = 0
+        private const val INDEX_TEX_COORD = 1
+        private const val INDEX_NORMAL = 2
+    }
+
     private val mVertexArray = intArrayOf(1)
     private val mVertexArrayBuffer = intArrayOf(1)
+    private val mIndicesArrayBuffer = intArrayOf(1)
 
     private lateinit var mBufferVertex: FloatBuffer
     private lateinit var mBufferIndices: IntBuffer
@@ -23,8 +33,8 @@ class MGArrayVertex {
         i: Int
     ) = mBufferVertex[i]
 
+
     fun configure(
-        program: Int,
         vertices: FloatBuffer,
         indices: IntBuffer
     ) {
@@ -47,9 +57,7 @@ class MGArrayVertex {
             indices
         )
 
-        enableAttrs(
-            program
-        )
+        enableAttrs()
 
         glBindVertexArray(
             0
@@ -95,7 +103,7 @@ class MGArrayVertex {
             GL_ARRAY_BUFFER,
             mBufferVertex.capacity() * 4,
             mBufferVertex,
-            GL_DYNAMIC_DRAW
+            GL_STATIC_DRAW
         )
     }
 
@@ -150,17 +158,15 @@ class MGArrayVertex {
     private inline fun generateIndexBuffer(
         indices: IntBuffer
     ) {
-        val ido = intArrayOf(1)
-
         glGenBuffers(
-            ido.size,
-            ido,
+            mIndicesArrayBuffer.size,
+            mIndicesArrayBuffer,
             0
         )
 
         glBindBuffer(
             GL_ELEMENT_ARRAY_BUFFER,
-            ido[0]
+            mIndicesArrayBuffer[0]
         )
 
         glBufferData(
@@ -171,34 +177,23 @@ class MGArrayVertex {
         )
     }
 
-    private inline fun enableAttrs(
-        program: Int
-    ) {
+    private inline fun enableAttrs() {
         enableVertex(
-            glGetAttribLocation(
-                program,
-                "position"
-            ),
+            INDEX_POSITION,
             0,
             3
         )
 
         enableVertex(
-            glGetAttribLocation(
-                program,
-                "texCoord"
-            ),
-            3 * 4,
-            2
+            INDEX_NORMAL,
+            5 * 4,
+            3
         )
 
         enableVertex(
-            glGetAttribLocation(
-                program,
-                "normal"
-            ),
-            5 * 4,
-            3
+            INDEX_TEX_COORD,
+            3 * 4,
+            2
         )
     }
 
@@ -216,7 +211,7 @@ class MGArrayVertex {
             size,
             GL_FLOAT,
             false,
-            mStride,
+            STRIDE,
             offset
         )
 

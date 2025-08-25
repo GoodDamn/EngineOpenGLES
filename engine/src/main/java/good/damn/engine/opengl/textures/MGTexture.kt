@@ -3,25 +3,25 @@ package good.damn.engine.opengl.textures
 import android.graphics.BitmapFactory
 import android.opengl.GLES30.*
 import android.opengl.GLUtils
+import android.util.Log
 import good.damn.engine.MGEngine
+import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.engine.opengl.drawers.MGIUniform
+import good.damn.engine.opengl.shaders.MGIShader
+import good.damn.engine.opengl.shaders.MGIShaderTexture
 
 class MGTexture(
-    assetPath: String,
-    program: Int,
-    wrapMode: Int = GL_CLAMP_TO_EDGE
-) {
+    var shader: MGIShaderTexture
+): MGIDrawer {
 
-    private var mId = intArrayOf(
-        1
-    )
+    private var mId = intArrayOf(1)
 
-    private val mUniformTexture = glGetUniformLocation(
-        program,
-        "texture"
-    )
+    private var mTextureOffset = 1f
 
-    init {
-
+    fun setupTexture(
+        assetPath: String,
+        wrapMode: Int = GL_CLAMP_TO_EDGE
+    ) {
         val inp = MGEngine.ASSETS.open(
             assetPath
         )
@@ -72,7 +72,7 @@ class MGTexture(
             0
         )
 
-        glGenerateMipmap(
+        /*glGenerateMipmap(
             GL_TEXTURE_2D
         )
 
@@ -86,12 +86,27 @@ class MGTexture(
             GL_TEXTURE_2D,
             GL_MAX_TEXTURE_LOD_BIAS,
             -0.4f
-        )
+        )*/
 
+        val error = glGetError()
+        if (error != GL_NO_ERROR) {
+            Log.d("MGTexture", "setupTexture: ERROR: ${error.toString(16)}")
+        }
     }
 
-    fun draw() {
+    fun unbind() {
+        glBindTexture(
+            GL_TEXTURE_2D,
+            0
+        )
 
+        glUniform1i(
+            shader.uniformTexture,
+            0
+        )
+    }
+
+    override fun draw() {
         glActiveTexture(
             GL_TEXTURE0
         )
@@ -102,8 +117,13 @@ class MGTexture(
         )
 
         glUniform1i(
-            mUniformTexture,
+            shader.uniformTexture,
             0
+        )
+
+        glUniform1f(
+            shader.uniformTextureOffset,
+            mTextureOffset
         )
     }
 }

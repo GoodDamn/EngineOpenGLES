@@ -1,22 +1,17 @@
 package good.damn.engine.opengl.rays
 
 import good.damn.engine.opengl.MGVector
-import good.damn.engine.opengl.entities.MGLandscape
 
-class MGRayIntersection(
-    private val landscape: MGLandscape
-) {
+class MGRayIntersection {
 
     fun intersect(
         position: MGVector,
         direction: MGVector,
         outResult: MGVector
     ) {
-        landscape.intersect(
-            position,
-            direction,
-            outResult
-        )
+        outResult.x = position.x + direction.x * 10f
+        outResult.y = position.y + direction.y * 10f
+        outResult.z = position.z + direction.z * 10f
     }
 
 }

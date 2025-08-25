@@ -1,12 +1,12 @@
 package good.damn.engine.touch
 
-import android.util.Log
 import android.view.MotionEvent
 
 open class MGTouchMulti
 : MGITouchable {
 
-    private var mTouchId = -1
+    var touchId = -1
+        private set
 
     final override fun onTouchEvent(
         event: MotionEvent
@@ -15,7 +15,7 @@ open class MGTouchMulti
             MotionEvent.ACTION_DOWN,
             MotionEvent.ACTION_POINTER_DOWN -> {
                 val index = event.actionIndex
-                if (mTouchId != -1) {
+                if (touchId != -1) {
                     return
                 }
 
@@ -26,28 +26,31 @@ open class MGTouchMulti
                     return
                 }
 
-                mTouchId = event.getPointerId(
+                touchId = event.getPointerId(
                     index
                 )
             }
 
             MotionEvent.ACTION_MOVE -> {
-                if (mTouchId == -1) {
+                if (touchId == -1) {
                     return
                 }
                 onTouchMove(
                     event,
                     event.findPointerIndex(
-                        mTouchId
+                        touchId
                     )
                 )
             }
 
             MotionEvent.ACTION_CANCEL,
             MotionEvent.ACTION_POINTER_UP -> {
+                if (touchId == -1) {
+                    return
+                }
                 val index = event.actionIndex
-                if (event.findPointerIndex(mTouchId) == index) {
-                    mTouchId = -1
+                if (event.findPointerIndex(touchId) == index) {
+                    touchId = -1
                     onTouchUp(
                         event,
                         index
@@ -56,7 +59,7 @@ open class MGTouchMulti
             }
 
             MotionEvent.ACTION_UP -> {
-                mTouchId = -1
+                touchId = -1
                 onTouchUp(
                     event,
                     0

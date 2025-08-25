@@ -2,6 +2,7 @@ package good.damn.engine
 
 import android.content.Context
 import android.content.res.AssetManager
+import good.damn.engine.opengl.enums.MGEnumDrawMode
 import java.io.File
 import java.nio.ByteOrder
 import java.nio.charset.Charset
@@ -11,7 +12,7 @@ class MGEngine {
         internal lateinit var ASSETS: AssetManager
         internal lateinit var DIR_CACHE: File
 
-        internal var isWireframe = false
+        internal var drawMode = MGEnumDrawMode.OPAQUE
 
         internal val BYTE_ORDER = ByteOrder.nativeOrder()
         internal val BUFFER_MB = ByteArray(1024*1024)

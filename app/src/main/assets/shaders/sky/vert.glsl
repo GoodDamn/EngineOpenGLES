@@ -1,16 +1,12 @@
 attribute vec4 position;
 attribute vec2 texCoord;
-attribute vec3 normal;
 
 uniform mat4 projection;
 uniform mat4 model;
 uniform mat4 view;
-uniform mat4 normalMatrix;
 
 uniform float textureOffset;
 
-varying lowp vec3 outFragPosition;
-varying lowp vec3 outNormal;
 varying lowp vec2 outTexCoord;
 
 void main() {
@@ -19,8 +15,6 @@ void main() {
     mat4 spaceView = view * model;
     mat4 spaceClip = projection * spaceView;
 
-    outFragPosition = spaceWorld;
-    outNormal = mat3(normalMatrix) * normal;
     outTexCoord = texCoord * vec2(textureOffset);
 
     gl_Position = spaceClip * position;

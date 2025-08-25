@@ -1,79 +1,25 @@
-package good.damn.engine.opengl.entities
+package good.damn.engine.opengl.generators
 
-import android.opengl.GLES30.*
 import android.util.Log
-import good.damn.engine.MGEngine
 import good.damn.engine.opengl.MGArrayVertex
-import good.damn.engine.opengl.MGVector
-import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.maps.MGMapDisplace
-import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.shaders.MGIShader
+import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.utils.MGUtilsBuffer
-import java.nio.FloatBuffer
 
-class MGLandscape(
-    program: Int
-): MGMesh(
-    program
+class MGGeneratorLandscape(
+    val vertexArray: MGArrayVertex
 ) {
-    companion object {
-        private const val TAG = "Landscape"
-        private const val MAX_HEIGHT = 255f
-    }
-
-    var texture = MGTexture(
-        "textures/terrain.png",
-        program,
-        wrapMode = GL_REPEAT
-    )
-
-    var material = MGMaterial(
-        program
-    )
 
     private var mWidth = 1
     private var mHeight = 1
 
-    private val mVertexArray = MGArrayVertex()
-
-    init {
-        mTextureOffset = 1.0f
-    }
-
-    override fun draw(
-        camera: MGCamera
-    ) {
-        glFrontFace(
-            GL_CW
-        )
-
-        super.draw(
-            camera
-        )
-
-        if (MGEngine.isWireframe) {
-            mVertexArray.draw(
-                GL_LINES
-            )
-            return
-        }
-        texture.draw()
-        material.draw()
-        mVertexArray.draw()
-    }
-
-    fun intersect(
-        position: MGVector,
-        direction: MGVector,
-        outResult: MGVector
-    ) {
-        outResult.x = position.x + direction.x * 10f
-        outResult.y = position.y + direction.y * 10f
-        outResult.z = position.z + direction.z * 10f
+    companion object {
+        private const val TAG = "MGGeneratorLandscape"
+        private const val MAX_HEIGHT = 255f
     }
 
     fun setResolution(
-        program: Int,
         width: Int,
         height: Int
     ) {
@@ -155,8 +101,7 @@ class MGLandscape(
         bufferIndices.position(0)
 
         time = System.currentTimeMillis()
-        mVertexArray.configure(
-            program,
+        vertexArray.configure(
             bufferVertex,
             bufferIndices
         )
@@ -166,12 +111,12 @@ class MGLandscape(
     fun displace(
         map: MGMapDisplace
     ) {
-        val c = mVertexArray.sizeVertexArray
+        val c = vertexArray.sizeVertexArray
 
         var index = 0
 
         var time = System.currentTimeMillis()
-        mVertexArray.bindVertexBuffer()
+        vertexArray.bindVertexBuffer()
         while(index < c) {
             changeVertexData(
                 map,
@@ -183,31 +128,18 @@ class MGLandscape(
 
         Log.d(TAG, "displace: changeVertexData: ${System.currentTimeMillis() - time}")
         time = System.currentTimeMillis()
-        mVertexArray.sendVertexBufferData()
+        vertexArray.sendVertexBufferData()
         Log.d(TAG, "displace: changeVertexData: send to GPU ${System.currentTimeMillis() - time}")
 
-        mVertexArray.unbindVertexBuffer()
-    }
-
-    override fun setScale(
-        x: Float,
-        y: Float,
-        z: Float
-    ) {
-        super.setScale(x, y, z)
-        setPosition(
-            mWidth * -0.5f * x,
-            0f,
-            mHeight * -0.5f * z
-        )
+        vertexArray.unbindVertexBuffer()
     }
 
     private inline fun changeVertexData(
         map: MGMapDisplace,
         index: Int
     ) {
-        val x = mVertexArray[index].toInt()
-        val z = mVertexArray[index + 2].toInt()
+        val x = vertexArray[index].toInt()
+        val z = vertexArray[index + 2].toInt()
         val topVert = map.getHeightNormalRatio(
             x, z - 1,
             mWidth, mHeight
@@ -235,26 +167,26 @@ class MGLandscape(
 
         val smooth = (
             middleVert + topVert + rightVert + leftVert + bottomVert
-        ) / 5f
+            ) / 5f
         // Position Y
-        mVertexArray.writeVertexBufferData(
+        vertexArray.writeVertexBufferData(
             index + 1,
             smooth * MAX_HEIGHT
         )
 
         // Normal X
-        mVertexArray.writeVertexBufferData(
+        vertexArray.writeVertexBufferData(
             index + 5,
             rightVert - leftVert
         )
 
         // Normal Y
-        mVertexArray.writeVertexBufferData(
+        vertexArray.writeVertexBufferData(
             index+6,
             1.0f
         )
         // Normal Z
-        mVertexArray.writeVertexBufferData(
+        vertexArray.writeVertexBufferData(
             index+7,
             bottomVert - topVert
         )

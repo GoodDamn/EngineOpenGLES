@@ -1,0 +1,43 @@
+package good.damn.engine.opengl.shaders
+
+import android.opengl.GLES30.glGetAttribLocation
+import android.opengl.GLES30.glGetUniformLocation
+import android.opengl.GLES30.glUseProgram
+import android.util.Log
+import androidx.annotation.CallSuper
+
+open class MGShaderSingleMode
+: MGShaderBase(),
+MGIShaderCamera {
+
+    final override var uniformModelView = 0
+        private set
+
+    final override var uniformCameraProjection = 0
+        private set
+
+    final override var uniformCameraView = 0
+        private set
+
+
+    @CallSuper
+    override fun setupUniforms(
+        program: Int
+    ) {
+        // Uniforms
+        uniformModelView = glGetUniformLocation(
+            program,
+            "model"
+        )
+
+        uniformCameraProjection = glGetUniformLocation(
+            program,
+            "projection"
+        )
+
+        uniformCameraView = glGetUniformLocation(
+            program,
+            "view"
+        )
+    }
+}
