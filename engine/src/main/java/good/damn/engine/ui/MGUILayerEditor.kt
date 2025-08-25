@@ -1,25 +1,19 @@
 package good.damn.engine.ui
 
-import android.opengl.GLES30.GL_NO_ERROR
-import android.opengl.GLES30.glGetError
-import android.util.Log
 import android.view.MotionEvent
-import good.damn.engine.MGEngine
-import good.damn.engine.opengl.enums.MGEnumDrawMode
-import good.damn.engine.opengl.renderer.MGRendererLevelEditor
 import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.opengl.ui.MGSeekBarGl
 import good.damn.engine.touch.MGIListenerDelta
 import good.damn.engine.touch.MGIListenerMove
 import good.damn.engine.touch.MGITouchable
 import good.damn.engine.touch.MGTouchFreeMove
-import good.damn.engine.touch.MGTouchMove
 import good.damn.engine.touch.MGTouchScale
 
 class MGUILayerEditor(
     clickLoadUserContent: MGIClick,
     clickSwitchDrawerMode: MGIClick,
-    clickPlaceMesh: MGIClick
+    clickPlaceMesh: MGIClick,
+    seekAmbientChanged: MGIListenerValueChanged
 ): MGITouchable {
 
     private val mBtnLoadUserContent = MGButtonGL(
@@ -37,9 +31,9 @@ class MGUILayerEditor(
     private val mTouchMove = MGTouchFreeMove()
     private val mTouchScale = MGTouchScale()
 
-    private val mBarSeekAmbient = MGSeekBarGl {
-        //mDrawerLightDirectional.ambient = it
-    }
+    private val mBarSeekAmbient = MGSeekBarGl(
+        onChangeValue = seekAmbientChanged
+    )
 
     fun setListenerTouchMove(
         v: MGIListenerMove?

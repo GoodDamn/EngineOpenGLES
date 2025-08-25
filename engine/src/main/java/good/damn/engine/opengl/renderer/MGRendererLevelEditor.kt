@@ -45,6 +45,7 @@ import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.touch.MGTouchFreeMove
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.ui.MGIClick
+import good.damn.engine.ui.MGIListenerValueChanged
 import good.damn.engine.ui.MGUILayerEditor
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -214,6 +215,13 @@ MGIListenerOnGetUserContent, MGIListenerOnIntersectPosition {
                     return
                 }
                 placeMesh()
+            }
+        },
+        seekAmbientChanged = object: MGIListenerValueChanged {
+            override fun onValueChanged(
+                v: Float
+            ) {
+                mDrawerLightDirectional.ambient = v
             }
         },
         clickSwitchDrawerMode = object: MGIClick {
