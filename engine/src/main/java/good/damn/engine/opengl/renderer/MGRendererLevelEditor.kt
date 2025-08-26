@@ -14,6 +14,7 @@ import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.MGObject3D
+import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
@@ -33,6 +34,7 @@ import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.maps.MGMapDisplace
+import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.opengl.shaders.MGIShaderNormal
@@ -47,12 +49,14 @@ import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.ui.MGIClick
 import good.damn.engine.ui.MGIListenerValueChanged
 import good.damn.engine.ui.MGUILayerEditor
+import good.damn.engine.ui.clicks.MGClickGenerateLandscape
+import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGRendererLevelEditor(
     private val requesterUserContent: MGIRequestUserContent
 ): GLSurfaceView.Renderer,
-MGIListenerOnGetUserContent, MGIListenerOnIntersectPosition {
+MGIListenerOnIntersectPosition {
 
     companion object {
         private const val TAG = "MGRendererLevelEditor"
@@ -177,38 +181,18 @@ MGIListenerOnGetUserContent, MGIListenerOnIntersectPosition {
         meshes
     )
 
-    private val mDrawerModeWireframe = MGDrawerModeSingleShader(
-        mShaderWireframe,
+    private val mSwitcherDrawMode = MGSwitcherDrawMode(
         meshSky,
-        mCameraFree,
-        meshes
+        meshes,
+        mDrawerModeOpaque
     )
-
-    private val mDrawerModeNormals = MGDrawerModeSingleShader(
-        mShaderNormals,
-        meshSky,
-        mCameraFree,
-        meshes
-    )
-
-    private val mDrawerModeTexCoords = MGDrawerModeSingleShader(
-        mShaderTexCoords,
-        meshSky,
-        mCameraFree,
-        meshes
-    )
-
-    private var mCurrentDrawerMode: MGIDrawer = mDrawerModeOpaque
 
     private val mLayerEditor = MGUILayerEditor(
-        clickLoadUserContent = object: MGIClick {
-            override fun onClick() {
-                requesterUserContent.requestUserContent(
-                    this@MGRendererLevelEditor,
-                    "*/*"
-                )
-            }
-        },
+        clickLoadUserContent = MGClickGenerateLandscape(
+            mHandler,
+            mGeneratorLandscape,
+            requesterUserContent
+        ),
         clickPlaceMesh = object: MGIClick {
             override fun onClick() {
                 if (MGEngine.drawMode != MGEnumDrawMode.OPAQUE) {
@@ -224,66 +208,7 @@ MGIListenerOnGetUserContent, MGIListenerOnIntersectPosition {
                 mDrawerLightDirectional.ambient = v
             }
         },
-        clickSwitchDrawerMode = object: MGIClick {
-            override fun onClick() {
-                mHandler.post {
-                    when (MGEngine.drawMode) {
-                        MGEnumDrawMode.OPAQUE -> {
-                            switchDrawMode(
-                                MGEnumDrawMode.OPAQUE,
-                                mDrawerModeWireframe,
-                                mShaderWireframe,
-                                mShaderWireframe,
-                                null,
-                                null
-                            )
-                            MGEngine.drawMode = MGEnumDrawMode.WIREFRAME
-                        }
-
-                        MGEnumDrawMode.WIREFRAME -> {
-                            switchDrawMode(
-                                MGEnumDrawMode.WIREFRAME,
-                                mDrawerModeNormals,
-                                mShaderNormals,
-                                mShaderNormals,
-                                mShaderNormals,
-                                mShaderNormals
-                            )
-                            MGEngine.drawMode = MGEnumDrawMode.NORMALS
-                        }
-
-                        MGEnumDrawMode.NORMALS -> {
-                            switchDrawMode(
-                                MGEnumDrawMode.NORMALS,
-                                mDrawerModeTexCoords,
-                                mShaderTexCoords,
-                                mShaderTexCoords,
-                                null,
-                                null
-                            )
-                            MGEngine.drawMode = MGEnumDrawMode.TEX_COORDS
-                        }
-
-                        MGEnumDrawMode.TEX_COORDS -> {
-                            switchDrawMode(
-                                MGEnumDrawMode.TEX_COORDS,
-                                mDrawerModeOpaque,
-                                mShaderDefault,
-                                mShaderSky,
-                                mShaderDefault,
-                                null
-                            )
-                            MGEngine.drawMode = MGEnumDrawMode.OPAQUE
-                        }
-                    }
-                    val error = glGetError()
-                    if (error != GL_NO_ERROR) {
-                        Log.d("TAG", "post: ERROR: ${error.toString(16)}")
-                        return@post
-                    }
-                }
-            }
-        }
+        clickSwitchDrawerMode = createDrawModeSwitcher()
     ).apply {
         setListenerTouchMove(
             mCallbackOnCameraMove
@@ -449,26 +374,22 @@ MGIListenerOnGetUserContent, MGIListenerOnIntersectPosition {
             Log.d("TAG", "onDrawFrame: ERROR: ${error.toString(16)}")
             return
         }
-        mCurrentDrawerMode.draw()
+
+        mSwitcherDrawMode
+            .currentDrawerMode
+            .draw()
 
         mHandler.run()
     }
 
-    override fun onGetUserContent(
-        userContent: MGMUserContent
+    override fun onIntersectPosition(
+        p: MGVector
     ) {
-        val mapDisplace = MGMapDisplace.createFromStream(
-            userContent.stream
-        )
-
-        Handler(
-            Looper.getMainLooper()
-        ).post {
-            mHandler.post {
-                mGeneratorLandscape.displace(
-                    mapDisplace
-                )
-            }
+        mCallbackOnDeltaInteract.currentMeshInteract?.run {
+            x = p.x
+            y = p.y
+            z = p.z
+            invalidatePosition()
         }
     }
 
@@ -478,31 +399,6 @@ MGIListenerOnGetUserContent, MGIListenerOnIntersectPosition {
         mLayerEditor.onTouchEvent(
             event
         )
-    }
-
-    private fun switchDrawMode(
-        drawMode: MGEnumDrawMode,
-        drawerMode: MGIDrawer,
-        shader: MGIShaderCamera,
-        shaderSky: MGIShaderCamera,
-        shaderNormals: MGIShaderNormal?,
-        shaderNormalsSky: MGIShaderNormal?
-    ) {
-        mCurrentDrawerMode = drawerMode
-
-        meshSky.switchDrawMode(
-            shaderSky,
-            shaderNormalsSky,
-            drawMode
-        )
-
-        meshes.forEach {
-            it.switchDrawMode(
-                shader,
-                shaderNormals,
-                drawMode
-            )
-        }
     }
 
     private inline fun placeMesh() {
@@ -535,14 +431,46 @@ MGIListenerOnGetUserContent, MGIListenerOnIntersectPosition {
         )
     }
 
-    override fun onIntersectPosition(
-        p: MGVector
-    ) {
-        mCallbackOnDeltaInteract.currentMeshInteract?.run {
-            x = p.x
-            y = p.y
-            z = p.z
-            invalidatePosition()
-        }
-    }
+    private inline fun createDrawModeSwitcher() = MGClickSwitchDrawMode(
+        mHandler,
+        mSwitcherDrawMode,
+        MGMDrawMode(
+            mDrawerModeOpaque,
+            mShaderDefault,
+            mShaderSky,
+            mShaderDefault
+        ),
+        MGMDrawMode(
+            MGDrawerModeSingleShader(
+                mShaderWireframe,
+                meshSky,
+                mCameraFree,
+                meshes
+            ),
+            mShaderWireframe,
+            mShaderWireframe
+        ),
+        MGMDrawMode(
+            MGDrawerModeSingleShader(
+                mShaderNormals,
+                meshSky,
+                mCameraFree,
+                meshes
+            ),
+            mShaderNormals,
+            mShaderNormals,
+            mShaderNormals,
+            mShaderNormals
+        ),
+        MGMDrawMode(
+            MGDrawerModeSingleShader(
+                mShaderTexCoords,
+                meshSky,
+                mCameraFree,
+                meshes
+            ),
+            mShaderTexCoords,
+            mShaderTexCoords
+        )
+    )
 }
