@@ -50,6 +50,7 @@ import good.damn.engine.ui.MGIClick
 import good.damn.engine.ui.MGIListenerValueChanged
 import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickGenerateLandscape
+import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.ui.seek.MGSeekValueChangedLightAmbient
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -194,14 +195,13 @@ MGIListenerOnIntersectPosition {
             mGeneratorLandscape,
             requesterUserContent
         ),
-        clickPlaceMesh = object: MGIClick {
-            override fun onClick() {
-                if (MGEngine.drawMode != MGEnumDrawMode.OPAQUE) {
-                    return
-                }
-                placeMesh()
-            }
-        },
+        clickPlaceMesh = MGClickPlaceMesh(
+            mCallbackOnDeltaInteract,
+            meshes,
+            mDrawerSwitchBatch,
+            mShaderDefault,
+            mCallbackOnCameraMove
+        ),
         seekAmbientChanged = MGSeekValueChangedLightAmbient(
             mDrawerLightDirectional
         ),
@@ -395,36 +395,6 @@ MGIListenerOnIntersectPosition {
     ) {
         mLayerEditor.onTouchEvent(
             event
-        )
-    }
-
-    private inline fun placeMesh() {
-        if (mCallbackOnDeltaInteract.currentMeshInteract != null) {
-            mCallbackOnDeltaInteract.currentMeshInteract = null
-            return
-        }
-
-        val modelMatrix = MGMMatrix().apply {
-            setScale(
-                0.01f,
-                0.01f,
-                0.01f
-            )
-        }
-        mCallbackOnDeltaInteract.currentMeshInteract = modelMatrix
-        meshes.add(
-            MGDrawerMeshSwitch(
-                mDrawerSwitchBatch,
-                MGDrawerPositionEntity(
-                    mDrawerSwitchBatch,
-                    mShaderDefault,
-                    modelMatrix
-                )
-            )
-        )
-
-        onIntersectPosition(
-            mCallbackOnCameraMove.outPointLead
         )
     }
 
