@@ -51,6 +51,7 @@ import good.damn.engine.ui.MGIListenerValueChanged
 import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickGenerateLandscape
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
+import good.damn.engine.ui.seek.MGSeekValueChangedLightAmbient
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGRendererLevelEditor(
@@ -201,13 +202,9 @@ MGIListenerOnIntersectPosition {
                 placeMesh()
             }
         },
-        seekAmbientChanged = object: MGIListenerValueChanged {
-            override fun onValueChanged(
-                v: Float
-            ) {
-                mDrawerLightDirectional.ambient = v
-            }
-        },
+        seekAmbientChanged = MGSeekValueChangedLightAmbient(
+            mDrawerLightDirectional
+        ),
         clickSwitchDrawerMode = createDrawModeSwitcher()
     ).apply {
         setListenerTouchMove(
