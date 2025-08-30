@@ -13,12 +13,12 @@ open class MGTouchMulti(
 
     final override fun onTouchEvent(
         event: MotionEvent
-    ) {
+    ): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN,
             MotionEvent.ACTION_POINTER_DOWN -> {
                 if (mTouchIds.size >= maxTouches) {
-                    return
+                    return false
                 }
 
                 val index = event.actionIndex
@@ -27,7 +27,7 @@ open class MGTouchMulti(
                     event,
                     index
                 )) {
-                    return
+                    return false
                 }
 
                 val ptrId = event.getPointerId(
@@ -46,7 +46,7 @@ open class MGTouchMulti(
                     )
 
                     if (index == -1) {
-                        return
+                        return false
                     }
 
                     Log.d(javaClass.simpleName, "onTouchEvent: $index -> $it = $mTouchIds")
@@ -60,7 +60,7 @@ open class MGTouchMulti(
             MotionEvent.ACTION_CANCEL,
             MotionEvent.ACTION_POINTER_UP -> {
                 if (mTouchIds.isEmpty()) {
-                    return
+                    return false
                 }
 
                 val index = event.actionIndex
@@ -88,6 +88,8 @@ open class MGTouchMulti(
                 )
             }
         }
+
+        return true
     }
 
     fun containsMotionEvent(

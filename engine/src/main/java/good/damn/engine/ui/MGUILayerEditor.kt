@@ -110,7 +110,7 @@ class MGUILayerEditor(
 
     override fun onTouchEvent(
         event: MotionEvent
-    ) {
+    ): Boolean {
         val action = event.actionMasked
         if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
             val index = event.actionIndex
@@ -126,20 +126,28 @@ class MGUILayerEditor(
             mBtnLoadUserContent.intercept(x,y)
             mBtnSwitchWireframe.intercept(x,y)
             mBtnPlaceMesh.intercept(x,y)
+
+            if (mTouchScale.onTouchEvent(
+                event
+            )) {
+                return true
+            }
+
+            mTouchMove.onTouchEvent(
+                event
+            )
+
+            return true
         }
 
         mTouchScale.onTouchEvent(
             event
         )
 
-        if (mTouchScale.containsMotionEvent(
-            event
-        )) {
-            return
-        }
-
         mTouchMove.onTouchEvent(
             event
         )
+
+        return true
     }
 }
