@@ -2,10 +2,13 @@ package good.damn.engine.touch
 
 import android.view.MotionEvent
 
-open class MGTouchMulti
-: MGITouchable {
+open class MGTouchMulti(
+    private val maxTouches: Int = 1
+): MGITouchable {
 
-    val touchIds = ArrayList<Int>(2)
+    val touchIds = ArrayList<Int>(
+        maxTouches
+    )
 
     final override fun onTouchEvent(
         event: MotionEvent
@@ -13,7 +16,7 @@ open class MGTouchMulti
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN,
             MotionEvent.ACTION_POINTER_DOWN -> {
-                if (touchIds.isNotEmpty()) {
+                if (touchIds.size >= maxTouches) {
                     return
                 }
 
@@ -37,10 +40,18 @@ open class MGTouchMulti
                 if (touchIds.isEmpty()) {
                     return
                 }
+                val ptrId = event.getPointerId(
+                    event.actionIndex
+                )
+
+                if (!touchIds.contains(ptrId)) {
+                    return
+                }
+
                 onTouchMove(
                     event,
                     event.findPointerIndex(
-                        touchIds[0]
+                        ptrId
                     )
                 )
             }
@@ -50,12 +61,23 @@ open class MGTouchMulti
                 if (touchIds.isEmpty()) {
                     return
                 }
+
                 val index = event.actionIndex
+                val ptrId = event.getPointerId(
+                    index
+                )
+
+                if (!touchIds.contains(
+                    ptrId
+                )) {
+                    return
+                }
+
                 if (event.findPointerIndex(
-                    touchIds[0]
+                    ptrId
                 ) == index) {
                     touchIds.remove(
-                        element = touchIds[0]
+                        element = ptrId
                     )
                     onTouchUp(
                         event,
