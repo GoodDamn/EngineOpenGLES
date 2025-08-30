@@ -1,5 +1,6 @@
 package good.damn.engine.ui
 
+import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.opengl.ui.MGSeekBarGl
@@ -112,36 +113,30 @@ class MGUILayerEditor(
     ) {
         val action = event.actionMasked
         if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
+            val index = event.actionIndex
             val x = event.getX(
-                event.actionIndex
+                index
             )
 
             val y = event.getY(
-                event.actionIndex
+                index
             )
 
             mBarSeekAmbient.intercept(x,y)
             mBtnLoadUserContent.intercept(x,y)
             mBtnSwitchWireframe.intercept(x,y)
             mBtnPlaceMesh.intercept(x,y)
-
-            mTouchScale.onTouchEvent(
-                event
-            )
-
-            if (mTouchScale.touchIds.isNotEmpty()) {
-                return
-            }
-
-            mTouchMove.onTouchEvent(
-                event
-            )
-            return
         }
 
-        mTouchScale.onTouchEvent(
+        /*mTouchScale.onTouchEvent(
             event
         )
+
+        if (mTouchScale.containsMotionEvent(
+            event
+        )) {
+            return
+        }*/
 
         mTouchMove.onTouchEvent(
             event

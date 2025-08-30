@@ -1,12 +1,13 @@
 package good.damn.engine.touch
 
+import android.util.Log
 import android.view.MotionEvent
 
 open class MGTouchMulti(
-    private val maxTouches: Int = 1
+    private val maxTouches: Int
 ): MGITouchable {
 
-    val touchIds = ArrayList<Int>(
+    private val mTouchIds = ArrayList<Int>(
         maxTouches
     )
 
@@ -16,7 +17,7 @@ open class MGTouchMulti(
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN,
             MotionEvent.ACTION_POINTER_DOWN -> {
-                if (touchIds.size >= maxTouches) {
+                if (mTouchIds.size >= maxTouches) {
                     return
                 }
 
@@ -29,36 +30,36 @@ open class MGTouchMulti(
                     return
                 }
 
-                touchIds.add(
-                    event.getPointerId(
-                        index
-                    )
+                val ptrId = event.getPointerId(
+                    index
+                )
+                Log.d(javaClass.simpleName, "onTouchEvent: ACTION_DOWN: $index -> $ptrId")
+                mTouchIds.add(
+                    ptrId
                 )
             }
 
             MotionEvent.ACTION_MOVE -> {
-                if (touchIds.isEmpty()) {
-                    return
-                }
-                val ptrId = event.getPointerId(
-                    event.actionIndex
-                )
-
-                if (!touchIds.contains(ptrId)) {
-                    return
-                }
-
-                onTouchMove(
-                    event,
-                    event.findPointerIndex(
-                        ptrId
+                mTouchIds.forEach {
+                    val index = event.findPointerIndex(
+                        it
                     )
-                )
+
+                    if (index == -1) {
+                        return
+                    }
+
+                    Log.d(javaClass.simpleName, "onTouchEvent: $index -> $it = $mTouchIds")
+                    onTouchMove(
+                        event,
+                        index
+                    )
+                }
             }
 
             MotionEvent.ACTION_CANCEL,
             MotionEvent.ACTION_POINTER_UP -> {
-                if (touchIds.isEmpty()) {
+                if (mTouchIds.isEmpty()) {
                     return
                 }
 
@@ -67,18 +68,11 @@ open class MGTouchMulti(
                     index
                 )
 
-                if (!touchIds.contains(
-                    ptrId
+                Log.d(javaClass.simpleName, "onTouchEvent: ACTION_UP: $ptrId=$mTouchIds")
+                if (mTouchIds.remove(
+                    element = ptrId
                 )) {
-                    return
-                }
-
-                if (event.findPointerIndex(
-                    ptrId
-                ) == index) {
-                    touchIds.remove(
-                        element = ptrId
-                    )
+                    Log.d(javaClass.simpleName, "onTouchEvent: $ptrId removed")
                     onTouchUp(
                         event,
                         index
@@ -87,7 +81,7 @@ open class MGTouchMulti(
             }
 
             MotionEvent.ACTION_UP -> {
-                touchIds.clear()
+                mTouchIds.clear()
                 onTouchUp(
                     event,
                     0
@@ -95,6 +89,14 @@ open class MGTouchMulti(
             }
         }
     }
+
+    fun containsMotionEvent(
+        event: MotionEvent
+    ) = mTouchIds.contains(
+        event.getPointerId(
+            event.actionIndex
+        )
+    )
 
     protected open fun onTouchDown(
         event: MotionEvent,
