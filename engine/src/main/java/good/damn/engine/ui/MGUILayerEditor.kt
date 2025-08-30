@@ -128,7 +128,7 @@ class MGUILayerEditor(
             mBtnPlaceMesh.intercept(x,y)
         }
 
-        /*mTouchScale.onTouchEvent(
+        mTouchScale.onTouchEvent(
             event
         )
 
@@ -136,7 +136,7 @@ class MGUILayerEditor(
             event
         )) {
             return
-        }*/
+        }
 
         mTouchMove.onTouchEvent(
             event
