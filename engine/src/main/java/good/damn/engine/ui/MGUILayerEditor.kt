@@ -129,7 +129,7 @@ class MGUILayerEditor(
                 event
             )
 
-            if (mTouchScale.touchId != -1) {
+            if (mTouchScale.touchIds.isNotEmpty()) {
                 return
             }
 

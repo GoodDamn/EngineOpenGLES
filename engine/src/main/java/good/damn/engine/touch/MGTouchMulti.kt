@@ -5,8 +5,7 @@ import android.view.MotionEvent
 open class MGTouchMulti
 : MGITouchable {
 
-    var touchId = -1
-        private set
+    val touchIds = ArrayList<Int>(2)
 
     final override fun onTouchEvent(
         event: MotionEvent
@@ -14,10 +13,11 @@ open class MGTouchMulti
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN,
             MotionEvent.ACTION_POINTER_DOWN -> {
-                val index = event.actionIndex
-                if (touchId != -1) {
+                if (touchIds.isNotEmpty()) {
                     return
                 }
+
+                val index = event.actionIndex
 
                 if (!onTouchDown(
                     event,
@@ -26,31 +26,37 @@ open class MGTouchMulti
                     return
                 }
 
-                touchId = event.getPointerId(
-                    index
+                touchIds.add(
+                    event.getPointerId(
+                        index
+                    )
                 )
             }
 
             MotionEvent.ACTION_MOVE -> {
-                if (touchId == -1) {
+                if (touchIds.isEmpty()) {
                     return
                 }
                 onTouchMove(
                     event,
                     event.findPointerIndex(
-                        touchId
+                        touchIds[0]
                     )
                 )
             }
 
             MotionEvent.ACTION_CANCEL,
             MotionEvent.ACTION_POINTER_UP -> {
-                if (touchId == -1) {
+                if (touchIds.isEmpty()) {
                     return
                 }
                 val index = event.actionIndex
-                if (event.findPointerIndex(touchId) == index) {
-                    touchId = -1
+                if (event.findPointerIndex(
+                    touchIds[0]
+                ) == index) {
+                    touchIds.remove(
+                        element = touchIds[0]
+                    )
                     onTouchUp(
                         event,
                         index
@@ -59,7 +65,7 @@ open class MGTouchMulti
             }
 
             MotionEvent.ACTION_UP -> {
-                touchId = -1
+                touchIds.clear()
                 onTouchUp(
                     event,
                     0
