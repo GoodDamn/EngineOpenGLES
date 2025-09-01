@@ -6,9 +6,11 @@ import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.opengl.ui.MGSeekBarGl
 import good.damn.engine.touch.MGIListenerDelta
 import good.damn.engine.touch.MGIListenerMove
+import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.touch.MGITouchable
 import good.damn.engine.touch.MGTouchFreeMove
 import good.damn.engine.touch.MGTouchScale
+import kotlin.math.min
 
 class MGUILayerEditor(
     clickLoadUserContent: MGIClick,
@@ -47,6 +49,10 @@ class MGUILayerEditor(
     fun setListenerTouchDeltaInteract(
         v: MGIListenerDelta?
     ) { mTouchScale.onDelta = v }
+
+    fun setListenerTouchScaleInteract(
+        v: MGIListenerScale?
+    ) { mTouchScale.onScale = v }
 
     fun layout(
         left: Float,
@@ -91,15 +97,19 @@ class MGUILayerEditor(
             btnLen
         )
 
-        val btnLen2 = btnLen
+        mBtnPlaceMesh.bounds(
+            (width - btnLen) * 0.5f,
+            height - btnLen,
+            btnLen,
+            btnLen
+        )
+
+        val btnLen2 = min(
+            width,
+            height
+        ) * 0.8f
         val midX = (width - btnLen2) * 0.5f
         val midY = (height - btnLen2) * 0.5f
-        mBtnPlaceMesh.bounds(
-            midX,
-            height - btnLen2,
-            btnLen2,
-            btnLen2
-        )
 
         mTouchScale.setBounds(
             midX, midY,

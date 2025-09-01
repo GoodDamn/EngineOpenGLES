@@ -44,6 +44,7 @@ import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.touch.MGTouchFreeMove
 import good.damn.engine.touch.MGTouchScale
 import good.damn.engine.ui.MGIClick
@@ -213,6 +214,20 @@ MGIListenerOnIntersectPosition {
 
         setListenerTouchDelta(
             mCallbackOnCameraMove
+        )
+
+        setListenerTouchScaleInteract(
+            object: MGIListenerScale {
+                override fun onScale(
+                    scale: Float
+                ) {
+                    mCallbackOnDeltaInteract.currentMeshInteract?.setScale(
+                        scale,
+                        scale,
+                        scale
+                    )
+                }
+            }
         )
 
         setListenerTouchDeltaInteract(
