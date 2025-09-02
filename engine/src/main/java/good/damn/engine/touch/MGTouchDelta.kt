@@ -35,10 +35,19 @@ class MGTouchDelta
 
     override fun onTouchMove(
         event: MotionEvent,
-        touchIndex: Int
+        touchIds: List<Int>
     ) {
-        val x = event.getX(touchIndex)
-        val y = event.getY(touchIndex)
+        val touchIndex = event.findPointerIndex(
+            touchIds[0]
+        )
+
+        val x = event.getX(
+            touchIndex
+        )
+
+        val y = event.getY(
+            touchIndex
+        )
 
         val dx = x - mPrevX
         val dy = mPrevY - y

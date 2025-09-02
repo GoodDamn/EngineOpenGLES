@@ -9,7 +9,7 @@ class MGTouchScale
 ) {
 
     companion object {
-        private const val SCALE_FACTOR = 0.01f
+        private const val SCALE_FACTOR = 0.0001f
     }
 
     var onScale: MGIListenerScale? = null
@@ -84,11 +84,11 @@ class MGTouchScale
 
     override fun onTouchMove(
         event: MotionEvent,
-        touchIndex: Int
+        touchIds: List<Int>
     ) {
         actionMove(
             event,
-            touchIndex
+            touchIds
         )
     }
 
@@ -135,9 +135,9 @@ class MGTouchScale
 
     private inline fun actionMove(
         event: MotionEvent,
-        touchIndex: Int
+        touchIds: List<Int>
     ) = when {
-        mSecondTouchId != -1 -> {
+        touchIds.size >= 2 -> {
 
             val indexFirst = event.findPointerIndex(
                 mFirstTouchId
@@ -168,7 +168,7 @@ class MGTouchScale
             )
 
             mScaleDt = (mPrevDistance - mCurrentDistance) * SCALE_FACTOR
-            scale += mScaleDt
+            scale -= mScaleDt
             /*if (mScale > 7f) {
                 mScale = 7f
             }
@@ -184,8 +184,17 @@ class MGTouchScale
         }
 
         else -> {
-            val x = event.getX(touchIndex)
-            val y = event.getY(touchIndex)
+            val touchIndex = event.findPointerIndex(
+                touchIds[0]
+            )
+            val x = event.getX(
+                touchIndex
+            )
+
+            val y = event.getY(
+                touchIndex
+            )
+
             mTranslate2X = mTranslateX + x - mPivotX
             mTranslate2Y = mTranslateY + y - mPivotY
 

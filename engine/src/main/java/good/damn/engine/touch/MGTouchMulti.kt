@@ -40,21 +40,13 @@ open class MGTouchMulti(
             }
 
             MotionEvent.ACTION_MOVE -> {
-                mTouchIds.forEach {
-                    val index = event.findPointerIndex(
-                        it
-                    )
-
-                    if (index == -1) {
-                        return false
-                    }
-
-                    Log.d(javaClass.simpleName, "onTouchEvent: $index -> $it = $mTouchIds")
-                    onTouchMove(
-                        event,
-                        index
-                    )
+                if (mTouchIds.isEmpty()) {
+                    return false
                 }
+                onTouchMove(
+                    event,
+                    mTouchIds
+                )
             }
 
             MotionEvent.ACTION_CANCEL,
@@ -107,7 +99,7 @@ open class MGTouchMulti(
 
     protected open fun onTouchMove(
         event: MotionEvent,
-        touchIndex: Int
+        touchIds: List<Int>
     ) = Unit
 
     protected open fun onTouchUp(
