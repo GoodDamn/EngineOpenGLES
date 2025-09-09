@@ -3,6 +3,7 @@ package good.damn.engine.opengl.generators
 import android.util.Log
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.maps.MGMapDisplace
+import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.utils.MGUtilsBuffer
@@ -110,7 +111,8 @@ class MGGeneratorLandscape(
     }
 
     fun displace(
-        map: MGMapDisplace
+        map: MGMapDisplace,
+        mapNormal: MGMapNormal
     ) {
         val c = vertexArray.sizeVertexArray
 
@@ -121,6 +123,7 @@ class MGGeneratorLandscape(
         while(index < c) {
             changeVertexData(
                 map,
+                mapNormal,
                 index
             )
 
@@ -137,6 +140,7 @@ class MGGeneratorLandscape(
 
     private inline fun changeVertexData(
         map: MGMapDisplace,
+        mapNormal: MGMapNormal,
         index: Int
     ) {
         val x = vertexArray[index].toInt()
@@ -169,6 +173,11 @@ class MGGeneratorLandscape(
         val smooth = (
             middleVert + topVert + rightVert + leftVert + bottomVert
             ) / 5f
+
+        val norm = mapNormal.getNormalRatio(
+            x, z
+        )
+
         // Position Y
         vertexArray.writeVertexBufferData(
             index + 1,
@@ -178,18 +187,18 @@ class MGGeneratorLandscape(
         // Normal X
         vertexArray.writeVertexBufferData(
             index + 5,
-            rightVert - leftVert
+            norm.x
         )
 
         // Normal Y
         vertexArray.writeVertexBufferData(
             index+6,
-            1.0f
+            norm.y
         )
         // Normal Z
         vertexArray.writeVertexBufferData(
             index+7,
-            bottomVert - topVert
+            norm.z
         )
     }
 }

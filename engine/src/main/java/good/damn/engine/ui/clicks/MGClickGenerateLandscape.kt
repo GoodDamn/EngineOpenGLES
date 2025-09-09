@@ -41,9 +41,9 @@ Runnable {
 
     override fun run() {
         mapDisplace?.run {
-            generatorLandscape.displace(
+            /*generatorLandscape.displace(
                 this
-            )
+            )*/
             mapDisplace = null
         }
     }

@@ -34,6 +34,7 @@ import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.maps.MGMapDisplace
+import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.shaders.MGIShaderCamera
@@ -311,6 +312,9 @@ MGIListenerOnIntersectPosition {
             displace(
                 MGMapDisplace.createFromAssets(
                     "maps/terrain_height.png"
+                ),
+                MGMapNormal.createFromAssets(
+                    "maps/normal/terrain_normal.png"
                 )
             )
         }
@@ -387,13 +391,13 @@ MGIListenerOnIntersectPosition {
         val m = 2048f
         val s = sin(t)
         val c = cos(t)
-        modelMatrixLightMesh.x = s * m
+        modelMatrixLightMesh.x = 0.0f
         modelMatrixLightMesh.y = c * m
-        modelMatrixLightMesh.z = 0.0f
+        modelMatrixLightMesh.z = s * m
         mDrawerLightDirectional.setPosition(
-            s,
+            0.0f,
             c,
-            0.0f
+            s
         )
         modelMatrixLightMesh.invalidatePosition()
 
