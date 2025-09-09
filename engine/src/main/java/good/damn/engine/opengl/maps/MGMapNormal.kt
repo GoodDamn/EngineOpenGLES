@@ -65,6 +65,10 @@ class MGMapNormal(
         )
     }
 
+    fun destroy() {
+        bitmap.recycle()
+    }
+
     private inline fun Int.normalize(
         mask: Int,
         offset: Int

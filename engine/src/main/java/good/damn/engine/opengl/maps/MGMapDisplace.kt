@@ -73,4 +73,8 @@ class MGMapDisplace(
         val digitalHeight = color and iDIGITAL_HEIGHT_MAX
         return digitalHeight / fDIGITAL_HEIGHT_MAX
     }
+
+    fun destroy() {
+        mBitmap.recycle()
+    }
 }

@@ -309,14 +309,20 @@ MGIListenerOnIntersectPosition {
                 landSize
             )
 
-            displace(
-                MGMapDisplace.createFromAssets(
-                    "maps/terrain_height.png"
-                ),
-                MGMapNormal.createFromAssets(
-                    "maps/normal/terrain_normal.png"
-                )
+            val mapNormal = MGMapNormal.createFromAssets(
+                "maps/normal/terrain_normal.png"
             )
+
+            val mapHeight = MGMapDisplace.createFromAssets(
+                "maps/terrain_height.png"
+            )
+            displace(
+                mapHeight,
+                mapNormal
+            )
+
+            mapNormal.destroy()
+            mapHeight.destroy()
         }
 
         modelMatrixLandscape.setScale(
