@@ -1,8 +1,8 @@
 package good.damn.engine.opengl.drawers
 
-import android.opengl.GLES30.glGetUniformLocation
 import android.opengl.GLES30.glUniform1f
 import android.opengl.GLES30.glUniform3f
+import android.util.Log
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.shaders.MGShaderLight
 
@@ -30,15 +30,17 @@ class MGDrawerLightDirectional(
         mPosition.x = x
         mPosition.y = y
         mPosition.z = z
+        mPosition.normalize()
+        Log.d("TAG", "setPosition: $mPosition")
     }
 
 
     override fun draw() {
         glUniform3f(
             shader.uniformColor,
-            1f,
-            1f,
-            1f
+            .149f,
+            .407f,
+            .631f
         )
 
         glUniform1f(
@@ -52,7 +54,7 @@ class MGDrawerLightDirectional(
         )
 
         glUniform3f(
-            shader.uniformPosition,
+            shader.uniformDirection,
             mPosition.x,
             mPosition.y,
             mPosition.z,

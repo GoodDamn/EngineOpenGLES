@@ -6,6 +6,7 @@ import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.utils.MGUtilsBuffer
+import kotlin.random.Random
 
 class MGGeneratorLandscape(
     val vertexArray: MGArrayVertex

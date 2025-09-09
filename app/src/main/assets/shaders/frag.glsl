@@ -4,7 +4,7 @@ struct Light {
     lowp vec3 color;
     lowp float factorAmbient;
     lowp float intensity;
-    lowp vec3 position;
+    lowp vec3 direction;
 };
 
 uniform sampler2D texture;
@@ -19,19 +19,18 @@ varying lowp vec2 outTexCoord;
 
 void main() {
 
-    lowp vec3 ambColor = vec3(1.0) * light.factorAmbient;
+    lowp vec3 ambColor = vec3(0.75) * light.factorAmbient;
 
     // Diffuse
     vec3 norm = normalize(outNormal);
-    vec3 lightDirection = normalize(light.position - outFragPosition);
-    float diffFactor = max(dot(norm, lightDirection), 0.01);
+    float diffFactor = max(dot(norm, light.direction), 0.01);
     vec3 diffColor = light.color * diffFactor;
 
     // Specular
     //lowp vec3 eye = normalize(posOut);
     //lowp vec3 reflection = reflect(light.direction, normal);
     //lowp float specFactor = pow(max(0.0, -dot(reflection, eye)), shine);
-    //lowp vec3 specColor = light.color * specularIntensity * specFactor;
+    /*lowp vec3 specColor = light.color * specularIntensity * specFactor;*/
 
     gl_FragColor = texture2D(
         texture,

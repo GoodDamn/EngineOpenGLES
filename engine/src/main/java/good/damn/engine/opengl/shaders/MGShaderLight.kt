@@ -11,7 +11,7 @@ class MGShaderLight
     var uniformAmbient = 0
         private set
 
-    var uniformPosition = 0
+    var uniformDirection = 0
         private set
 
     var uniformIntensity = 0
@@ -30,9 +30,9 @@ class MGShaderLight
             "light.factorAmbient"
         )
 
-        uniformPosition = glGetUniformLocation(
+        uniformDirection = glGetUniformLocation(
             program,
-            "light.position"
+            "light.direction"
         )
 
         uniformIntensity = glGetUniformLocation(

@@ -55,6 +55,9 @@ import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.ui.seek.MGSeekValueChangedLightAmbient
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.sin
 
 class MGRendererLevelEditor(
     private val requesterUserContent: MGIRequestUserContent
@@ -174,6 +177,8 @@ MGIListenerOnIntersectPosition {
     private val mDrawerLightDirectional = MGDrawerLightDirectional(
         mShaderDefault.light
     )
+
+    private val modelMatrixLightMesh = MGMMatrix()
 
     private val mDrawerModeOpaque = MGDrawerModeOpaque(
         mShaderSky,
@@ -296,10 +301,11 @@ MGIListenerOnIntersectPosition {
             )
         }
 
+        val landSize = 1024
         mGeneratorLandscape.apply {
             setResolution(
-                1024,
-                1024
+                landSize,
+                landSize
             )
 
             displace(
@@ -313,6 +319,28 @@ MGIListenerOnIntersectPosition {
             3.0f,
             3.0f,
             3.0f
+        )
+
+
+        val off = landSize / -2f * 3f
+
+        modelMatrixLandscape.addPosition(
+            off,
+            0f,
+            off
+        )
+
+        modelMatrixLandscape.invalidatePosition()
+
+        meshes.add(
+            MGDrawerMeshSwitch(
+                mDrawerSwitchBatch,
+                MGDrawerPositionEntity(
+                    mDrawerSwitchBatch,
+                    mShaderDefault,
+                    modelMatrixLightMesh
+                )
+            )
         )
 
         glEnable(
@@ -355,13 +383,19 @@ MGIListenerOnIntersectPosition {
     override fun onDrawFrame(
         gl: GL10?
     ) {
-        /*val f = System.currentTimeMillis() % 100000L * 0.001f
-        val fx = sin(f) * 840f
-        val fz = cos(f) * 840f
-
+        val t = System.currentTimeMillis() % 1000000L * 0.001f
+        val m = 2048f
+        val s = sin(t)
+        val c = cos(t)
+        modelMatrixLightMesh.x = s * m
+        modelMatrixLightMesh.y = c * m
+        modelMatrixLightMesh.z = 0.0f
         mDrawerLightDirectional.setPosition(
-            fx, 600f, fz
-        )*/
+            s,
+            c,
+            0.0f
+        )
+        modelMatrixLightMesh.invalidatePosition()
 
         glViewport(
             0,

@@ -9,7 +9,7 @@ class MGMaterial(
     var shader: MGShaderMaterial
 ): MGIDrawer {
 
-    var specular = 0f
+    var specular = 1f
     var shine = 1f
     var lightIntensity = 0.2f
 
