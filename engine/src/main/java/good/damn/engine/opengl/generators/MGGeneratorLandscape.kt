@@ -187,18 +187,18 @@ class MGGeneratorLandscape(
         // Normal X
         vertexArray.writeVertexBufferData(
             index + 5,
-            norm.x
+            norm.y
         )
 
         // Normal Y
         vertexArray.writeVertexBufferData(
             index+6,
-            norm.y
+            norm.z
         )
         // Normal Z
         vertexArray.writeVertexBufferData(
             index+7,
-            norm.z
+            norm.x
         )
     }
 }
