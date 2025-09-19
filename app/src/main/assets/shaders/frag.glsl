@@ -10,6 +10,8 @@ struct Light {
 uniform sampler2D texture;
 uniform Light light;
 
+uniform lowp vec3 viewPos;
+
 uniform lowp float shine;
 uniform lowp float specularIntensity;
 
@@ -27,7 +29,9 @@ void main() {
     vec3 diffColor = light.color * diffFactor;
 
     // Specular
-    //lowp vec3 eye = normalize(posOut);
+    lowp vec3 eye = normalize(
+        viewPos - outFragPosition
+    );
     //lowp vec3 reflection = reflect(light.direction, normal);
     //lowp float specFactor = pow(max(0.0, -dot(reflection, eye)), shine);
     /*lowp vec3 specColor = light.color * specularIntensity * specFactor;*/

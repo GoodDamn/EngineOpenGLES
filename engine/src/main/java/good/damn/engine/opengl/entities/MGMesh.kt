@@ -6,10 +6,11 @@ import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderCamera
+import good.damn.engine.opengl.shaders.MGIShaderModel
 
 class MGMesh(
     drawerSwitch: MGDrawerModeSwitch,
-    shader: MGIShaderCamera,
+    shader: MGIShaderModel,
     model: MGMMatrix
 ): MGDrawerMeshSwitch(
     drawerSwitch,

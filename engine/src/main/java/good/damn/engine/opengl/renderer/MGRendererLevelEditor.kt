@@ -61,7 +61,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class MGRendererLevelEditor(
-    private val requesterUserContent: MGIRequestUserContent
+    requesterUserContent: MGIRequestUserContent
 ): GLSurfaceView.Renderer,
 MGIListenerOnIntersectPosition {
 

@@ -5,10 +5,11 @@ import androidx.annotation.CallSuper
 import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderCamera
+import good.damn.engine.opengl.shaders.MGIShaderModel
 
 class MGDrawerPositionEntity(
     private val drawer: MGIDrawer,
-    var shader: MGIShaderCamera,
+    var shader: MGIShaderModel,
     var modelMatrix: MGMMatrix
 ): MGIDrawer {
 

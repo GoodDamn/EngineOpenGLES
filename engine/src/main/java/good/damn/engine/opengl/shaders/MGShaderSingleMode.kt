@@ -8,7 +8,8 @@ import androidx.annotation.CallSuper
 
 open class MGShaderSingleMode
 : MGShaderBase(),
-MGIShaderCamera {
+MGIShaderCamera,
+MGIShaderModel {
 
     final override var uniformModelView = 0
         private set

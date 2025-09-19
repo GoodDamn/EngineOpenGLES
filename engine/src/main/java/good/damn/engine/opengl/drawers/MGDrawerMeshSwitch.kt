@@ -4,6 +4,7 @@ import android.opengl.GLES30
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderCamera
+import good.damn.engine.opengl.shaders.MGIShaderModel
 import good.damn.engine.opengl.shaders.MGIShaderNormal
 
 open class MGDrawerMeshSwitch(
@@ -14,7 +15,7 @@ open class MGDrawerMeshSwitch(
     private var mShaderNormals: MGIShaderNormal? = null
 
     fun switchDrawMode(
-        shader: MGIShaderCamera,
+        shader: MGIShaderModel,
         shaderNormals: MGIShaderNormal?,
         drawMode: MGEnumDrawMode
     ) {

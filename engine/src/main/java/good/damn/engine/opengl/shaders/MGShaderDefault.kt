@@ -11,7 +11,8 @@ class MGShaderDefault
 MGIShaderNormal,
 MGIShaderCamera,
 MGIShaderLight,
-MGIShaderTexture {
+MGIShaderTexture,
+MGIShaderModel {
 
     override var uniformTexture = 0
         private set
