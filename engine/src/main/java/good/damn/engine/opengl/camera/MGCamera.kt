@@ -1,12 +1,16 @@
 package good.damn.engine.opengl.camera
 
+import android.opengl.GLES20
 import android.opengl.GLES30.*
 import android.opengl.Matrix
+import android.util.Log
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.MGIUniform
 import good.damn.engine.opengl.entities.MGObjectDimension
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderCamera
+import good.damn.engine.opengl.shaders.MGIShaderCameraPosition
+import good.damn.engine.opengl.shaders.MGIShaderModel
 
 open class MGCamera(
     var modelMatrix: MGMMatrix
@@ -27,6 +31,17 @@ open class MGCamera(
             width.toFloat() / height.toFloat(),
             0.1f,
             1000000f
+        )
+    }
+
+    fun drawPosition(
+        shader: MGIShaderCameraPosition
+    ) {
+        glUniform3f(
+            shader.uniformCameraPosition,
+            modelMatrix.x,
+            modelMatrix.y,
+            modelMatrix.z
         )
     }
 

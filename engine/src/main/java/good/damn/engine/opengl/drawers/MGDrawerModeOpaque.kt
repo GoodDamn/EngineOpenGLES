@@ -27,6 +27,9 @@ data class MGDrawerModeOpaque(
         camera.draw(
             shaderOpaque
         )
+        camera.drawPosition(
+            shaderOpaque
+        )
         directionalLight.draw()
 
         meshes.forEach {

@@ -10,6 +10,7 @@ class MGShaderDefault
 : MGShaderBase(),
 MGIShaderNormal,
 MGIShaderCamera,
+MGIShaderCameraPosition,
 MGIShaderLight,
 MGIShaderTexture,
 MGIShaderModel {
@@ -23,10 +24,11 @@ MGIShaderModel {
     override var uniformTextureOffset = 0
         private set
 
+    override var uniformCameraPosition = 0
+        private set
 
     override var uniformNormalMatrix = 0
         private set
-
 
     override var uniformCameraProjection = 0
         private set
@@ -80,6 +82,11 @@ MGIShaderModel {
         uniformNormalMatrix = glGetUniformLocation(
             program,
             "normalMatrix"
+        )
+
+        uniformCameraPosition = glGetUniformLocation(
+            program,
+            "cameraPosition"
         )
     }
 }

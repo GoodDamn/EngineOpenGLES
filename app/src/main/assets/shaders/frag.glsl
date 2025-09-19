@@ -9,8 +9,7 @@ struct Light {
 
 uniform sampler2D texture;
 uniform Light light;
-
-uniform lowp vec3 viewPos;
+uniform lowp vec3 cameraPosition;
 
 uniform lowp float shine;
 uniform lowp float specularIntensity;
@@ -30,15 +29,23 @@ void main() {
 
     // Specular
     lowp vec3 eye = normalize(
-        viewPos - outFragPosition
+        cameraPosition - outFragPosition
     );
-    //lowp vec3 reflection = reflect(light.direction, normal);
-    //lowp float specFactor = pow(max(0.0, -dot(reflection, eye)), shine);
-    /*lowp vec3 specColor = light.color * specularIntensity * specFactor;*/
+
+    lowp vec3 reflection = reflect(
+        -light.direction,
+        norm
+    );
+
+    lowp float specFactor = pow(
+        max(0.0, dot(eye, reflection)),
+        32.0
+    );
+    lowp vec3 specColor = light.color * specFactor;
 
     gl_FragColor = texture2D(
         texture,
         outTexCoord
-    ) * vec4(ambColor + diffColor, 1.0);
+    ) * vec4(ambColor + diffColor + specColor, 1.0);
 
 }

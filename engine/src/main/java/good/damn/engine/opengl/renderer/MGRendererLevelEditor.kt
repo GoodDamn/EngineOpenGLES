@@ -353,6 +353,20 @@ MGIListenerOnIntersectPosition {
             )
         )
 
+        val lx = 0.0f
+        val ly = 0.5f
+        val lz = -0.5f
+        val m = 2048f
+        modelMatrixLightMesh.x = lx * m
+        modelMatrixLightMesh.y = ly * m
+        modelMatrixLightMesh.z = lz * m
+        mDrawerLightDirectional.setPosition(
+            lx,
+            ly,
+            lz
+        )
+        modelMatrixLightMesh.invalidatePosition()
+
         glEnable(
             GL_DEPTH_TEST
         )
@@ -393,20 +407,6 @@ MGIListenerOnIntersectPosition {
     override fun onDrawFrame(
         gl: GL10?
     ) {
-        val t = System.currentTimeMillis() % 1000000L * 0.001f
-        val m = 2048f
-        val s = sin(t)
-        val c = cos(t)
-        modelMatrixLightMesh.x = 0.0f
-        modelMatrixLightMesh.y = c * m
-        modelMatrixLightMesh.z = s * m
-        mDrawerLightDirectional.setPosition(
-            0.0f,
-            c,
-            s
-        )
-        modelMatrixLightMesh.invalidatePosition()
-
         glViewport(
             0,
             0,
