@@ -4,9 +4,11 @@ import android.util.Log
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGVector
+import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 
 class MGTriggerSimple(
+    private val dirLight: MGDrawerLightDirectional,
     min: MGVector,
     max: MGVector
 ): MGTriggerBaseDebug(
@@ -58,9 +60,11 @@ class MGTriggerSimple(
 ) {
     override fun onTriggerBegin() {
         Log.d("TAG", "onTriggerBegin: TRIGGER BEGIN")
+        dirLight.ambient = 0.5f
     }
 
     override fun onTriggerEnd() {
         Log.d("TAG", "onTriggerBegin: TRIGGER END")
+        dirLight.ambient = 0.05f
     }
 }

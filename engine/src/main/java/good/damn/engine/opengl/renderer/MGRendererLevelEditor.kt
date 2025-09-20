@@ -203,9 +203,6 @@ MGIListenerOnIntersectPosition {
             mShaderDefault,
             mCallbackOnCameraMove
         ),
-        seekAmbientChanged = MGSeekValueChangedLightAmbient(
-            mDrawerLightDirectional
-        ),
         clickSwitchDrawerMode = createDrawModeSwitcher()
     ).apply {
         setListenerTouchMove(
@@ -276,13 +273,14 @@ MGIListenerOnIntersectPosition {
 
         mTriggers.add(
             MGTriggerSimple(
+                mDrawerLightDirectional,
                 MGVector(
                     5f,
                     5f,
                     5f
                 ),
                 MGVector(
-                    100f,
+                    200f,
                     100f,
                     100f
                 )
