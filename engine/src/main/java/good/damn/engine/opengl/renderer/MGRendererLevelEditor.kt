@@ -325,14 +325,7 @@ MGIListenerOnIntersectPosition {
             mapHeight.destroy()
         }
 
-        modelMatrixLandscape.setScale(
-            3.0f,
-            3.0f,
-            3.0f
-        )
-
-
-        val off = landSize / -2f * 3f
+        val off = mGeneratorLandscape.actualWidth / -2f
 
         modelMatrixLandscape.addPosition(
             off,

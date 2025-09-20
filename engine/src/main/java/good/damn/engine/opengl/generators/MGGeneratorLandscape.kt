@@ -4,21 +4,25 @@ import android.util.Log
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.maps.MGMapNormal
-import good.damn.engine.opengl.shaders.MGIShader
-import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.utils.MGUtilsBuffer
-import kotlin.random.Random
 
 class MGGeneratorLandscape(
     val vertexArray: MGArrayVertex
 ) {
+
+    val actualWidth: Int
+        get() = mWidth * INTERVAL_VERTEX
+
+    val actualHeight: Int
+        get() = mHeight * INTERVAL_VERTEX
 
     private var mWidth = 1
     private var mHeight = 1
 
     companion object {
         private const val TAG = "MGGeneratorLandscape"
-        private const val MAX_HEIGHT = 255f
+        private const val INTERVAL_VERTEX = 50
+        private const val MAX_HEIGHT = 255f * INTERVAL_VERTEX
     }
 
     fun setResolution(
@@ -30,6 +34,9 @@ class MGGeneratorLandscape(
 
         val dgx = 1.0f / mWidth
         val dgy = 1.0f / mHeight
+
+        val widthInterval = mWidth * INTERVAL_VERTEX
+        val heightInterval = mHeight * INTERVAL_VERTEX
 
         var textureX: Float
         var textureY = 0f
@@ -45,10 +52,10 @@ class MGGeneratorLandscape(
         )
 
         var time = System.currentTimeMillis()
-        for (z in 0..mHeight) {
+        for (z in 0..heightInterval step INTERVAL_VERTEX) {
             textureX = 0f
             val fz = z.toFloat()
-            for (x in 0..mWidth) {
+            for (x in 0..widthInterval step INTERVAL_VERTEX) {
                 val fx = x.toFloat()
 
                 // Position
@@ -114,13 +121,13 @@ class MGGeneratorLandscape(
         map: MGMapDisplace,
         mapNormal: MGMapNormal
     ) {
-        val c = vertexArray.sizeVertexArray
-
         var index = 0
 
         var time = System.currentTimeMillis()
         vertexArray.bindVertexBuffer()
-        while(index < c) {
+        val c = vertexArray.sizeVertexArray
+
+        while (index < c) {
             changeVertexData(
                 map,
                 mapNormal,
@@ -128,6 +135,7 @@ class MGGeneratorLandscape(
             )
 
             index += 8
+
         }
 
         Log.d(TAG, "displace: changeVertexData: ${System.currentTimeMillis() - time}")
@@ -143,8 +151,8 @@ class MGGeneratorLandscape(
         mapNormal: MGMapNormal,
         index: Int
     ) {
-        val x = vertexArray[index].toInt()
-        val z = vertexArray[index + 2].toInt()
+        val x = (vertexArray[index] / INTERVAL_VERTEX).toInt()
+        val z = (vertexArray[index + 2] / INTERVAL_VERTEX).toInt()
         val topVert = map.getHeightNormalRatio(
             x, z - 1,
             mWidth, mHeight
@@ -192,12 +200,12 @@ class MGGeneratorLandscape(
 
         // Normal Y
         vertexArray.writeVertexBufferData(
-            index+6,
+            index + 6,
             norm.z
         )
         // Normal Z
         vertexArray.writeVertexBufferData(
-            index+7,
+            index + 7,
             norm.x
         )
     }
