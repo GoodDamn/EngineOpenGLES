@@ -189,6 +189,9 @@ class MGArrayVertex {
             3,
             stride
         )
+        if (stride <= 12) {
+            return
+        }
 
         enableVertex(
             INDEX_NORMAL,

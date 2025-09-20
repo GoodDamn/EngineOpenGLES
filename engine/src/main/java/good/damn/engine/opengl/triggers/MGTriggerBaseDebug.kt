@@ -2,6 +2,9 @@ package good.damn.engine.opengl.triggers
 
 import android.opengl.GLES30
 import good.damn.engine.opengl.MGArrayVertex
+import good.damn.engine.opengl.camera.MGMMatrix
+import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
+import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.utils.MGUtilsBuffer
 
 abstract class MGTriggerBaseDebug(
@@ -10,7 +13,7 @@ abstract class MGTriggerBaseDebug(
     indices: IntArray
 ): MGTriggerBase(
     triggerMethod
-) {
+), MGIDrawer {
     private val vertexArray = MGArrayVertex().apply {
         configure(
             MGUtilsBuffer.createFloat(
@@ -23,7 +26,7 @@ abstract class MGTriggerBaseDebug(
         )
     }
 
-    fun draw() {
+    override fun draw() {
         vertexArray.draw(
             GLES30.GL_LINES
         )

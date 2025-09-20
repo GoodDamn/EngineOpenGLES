@@ -65,7 +65,7 @@ class MGUtilsBuffer {
         ): IntBuffer {
             val b = ByteBuffer
                 .allocateDirect(
-                    i.size * 2
+                    i.size * 4
                 ).order(
                     MGEngine.BYTE_ORDER
                 ).asIntBuffer()

@@ -39,6 +39,7 @@ import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.MGTriggerBase
+import good.damn.engine.opengl.triggers.MGTriggerBaseDebug
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.ui.MGUILayerEditor
@@ -138,7 +139,6 @@ MGIListenerOnIntersectPosition {
         modelMatrixSky
     )
 
-
     private val mCameraFree = MGCameraFree(
         modelMatrixCamera
     )
@@ -160,6 +160,10 @@ MGIListenerOnIntersectPosition {
         add(meshLandscape)
     }
 
+    private val mTriggers = ConcurrentLinkedQueue<
+        MGTriggerBaseDebug
+    >()
+
     private var mWidth = 0
     private var mHeight = 0
 
@@ -172,10 +176,12 @@ MGIListenerOnIntersectPosition {
     private val mDrawerModeOpaque = MGDrawerModeOpaque(
         mShaderSky,
         mShaderDefault,
+        mShaderWireframe,
         meshSky,
         mCameraFree,
         mDrawerLightDirectional,
-        meshes
+        meshes,
+        mTriggers
     )
 
     private val mSwitcherDrawMode = MGSwitcherDrawMode(
@@ -183,25 +189,6 @@ MGIListenerOnIntersectPosition {
         meshes,
         mDrawerModeOpaque
     )
-
-    private val mTriggers = ConcurrentLinkedQueue<
-        MGTriggerBase
-    >().apply {
-        add(
-            MGTriggerSimple(
-                MGVector(
-                    5f,
-                    5f,
-                    5f
-                ),
-                MGVector(
-                    100f,
-                    100f,
-                    100f
-                )
-            )
-        )
-    }
 
     private val mLayerEditor = MGUILayerEditor(
         clickLoadUserContent = MGClickGenerateLandscape(
@@ -286,6 +273,21 @@ MGIListenerOnIntersectPosition {
                 indices
             )
         }
+
+        mTriggers.add(
+            MGTriggerSimple(
+                MGVector(
+                    5f,
+                    5f,
+                    5f
+                ),
+                MGVector(
+                    100f,
+                    100f,
+                    100f
+                )
+            )
+        )
 
         mTextureInteract.setupTexture(
             "textures/rock.jpg"
@@ -441,6 +443,18 @@ MGIListenerOnIntersectPosition {
             return
         }
 
+        // 1. Camera point triggering needs to check only on self position changes
+        // it doesn't need to check on each touch event
+        // 2. For other entities who can trigger, check it inside infinite loop
+        val model = mCameraFree.modelMatrix
+        mTriggers.forEach {
+            it.trigger(
+                model.x,
+                model.y,
+                model.z
+            )
+        }
+
         mSwitcherDrawMode
             .currentDrawerMode
             .draw()
@@ -465,18 +479,6 @@ MGIListenerOnIntersectPosition {
         mLayerEditor.onTouchEvent(
             event
         )
-
-        // 1. Camera point triggering needs to check only on self position changes
-        // it doesn't need to check on each touch event
-        // 2. For other entities who can trigger, check it inside infinite loop
-        val model = mCameraFree.modelMatrix
-        mTriggers.forEach {
-            it.trigger(
-                model.x,
-                model.y,
-                model.z
-            )
-        }
     }
 
     private inline fun createDrawModeSwitcher() = MGClickSwitchDrawMode(

@@ -1,7 +1,10 @@
 package good.damn.engine.opengl.triggers
 
 import android.util.Log
+import good.damn.engine.opengl.MGArrayVertex
+import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGVector
+import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 
 class MGTriggerSimple(
     min: MGVector,
