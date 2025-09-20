@@ -3,6 +3,7 @@ package good.damn.engine.utils
 import good.damn.engine.MGEngine
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
+import java.nio.IntBuffer
 import java.nio.ShortBuffer
 
 class MGUtilsBuffer {
@@ -54,6 +55,20 @@ class MGUtilsBuffer {
                 ).order(
                     MGEngine.BYTE_ORDER
                 ).asShortBuffer()
+                .put(i)
+            b.position(0)
+            return b
+        }
+
+        fun createInt(
+            i: IntArray
+        ): IntBuffer {
+            val b = ByteBuffer
+                .allocateDirect(
+                    i.size * 2
+                ).order(
+                    MGEngine.BYTE_ORDER
+                ).asIntBuffer()
                 .put(i)
             b.position(0)
             return b
