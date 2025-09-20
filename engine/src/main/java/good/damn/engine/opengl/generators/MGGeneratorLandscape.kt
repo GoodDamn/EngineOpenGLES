@@ -2,6 +2,7 @@ package good.damn.engine.opengl.generators
 
 import android.util.Log
 import good.damn.engine.opengl.MGArrayVertex
+import good.damn.engine.opengl.maps.MGIVertexIterator
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.utils.MGUtilsBuffer
@@ -22,7 +23,6 @@ class MGGeneratorLandscape(
     companion object {
         private const val TAG = "MGGeneratorLandscape"
         private const val INTERVAL_VERTEX = 50
-        private const val MAX_HEIGHT = 255f * INTERVAL_VERTEX
     }
 
     fun setResolution(
@@ -117,9 +117,8 @@ class MGGeneratorLandscape(
         Log.d(TAG, "setResolution: CONFIGURE: ${System.currentTimeMillis() - time}")
     }
 
-    fun displace(
-        map: MGMapDisplace,
-        mapNormal: MGMapNormal
+    fun forEachVertex(
+        vertexIterator: MGIVertexIterator
     ) {
         var index = 0
 
@@ -128,14 +127,17 @@ class MGGeneratorLandscape(
         val c = vertexArray.sizeVertexArray
 
         while (index < c) {
-            changeVertexData(
-                map,
-                mapNormal,
-                index
+            val x = (vertexArray[index] / INTERVAL_VERTEX).toInt()
+            val z = (vertexArray[index + 2] / INTERVAL_VERTEX).toInt()
+
+            vertexIterator.onEachVertex(
+                index,
+                x,
+                z,
+                vertexArray
             )
 
             index += 8
-
         }
 
         Log.d(TAG, "displace: changeVertexData: ${System.currentTimeMillis() - time}")
@@ -144,69 +146,5 @@ class MGGeneratorLandscape(
         Log.d(TAG, "displace: changeVertexData: send to GPU ${System.currentTimeMillis() - time}")
 
         vertexArray.unbindVertexBuffer()
-    }
-
-    private inline fun changeVertexData(
-        map: MGMapDisplace,
-        mapNormal: MGMapNormal,
-        index: Int
-    ) {
-        val x = (vertexArray[index] / INTERVAL_VERTEX).toInt()
-        val z = (vertexArray[index + 2] / INTERVAL_VERTEX).toInt()
-        val topVert = map.getHeightNormalRatio(
-            x, z - 1,
-            mWidth, mHeight
-        )
-
-        val leftVert = map.getHeightNormalRatio(
-            x - 1, z,
-            mWidth, mHeight
-        )
-
-        val bottomVert = map.getHeightNormalRatio(
-            x, z + 1,
-            mWidth, mHeight
-        )
-
-        val rightVert = map.getHeightNormalRatio(
-            x + 1, z,
-            mWidth, mHeight
-        )
-
-        val middleVert = map.getHeightNormalRatio(
-            x, z,
-            mWidth, mHeight
-        )
-
-        val smooth = (
-            middleVert + topVert + rightVert + leftVert + bottomVert
-            ) / 5f
-
-        val norm = mapNormal.getNormalRatio(
-            x, z
-        )
-
-        // Position Y
-        vertexArray.writeVertexBufferData(
-            index + 1,
-            smooth * MAX_HEIGHT
-        )
-
-        // Normal X
-        vertexArray.writeVertexBufferData(
-            index + 5,
-            norm.y
-        )
-
-        // Normal Y
-        vertexArray.writeVertexBufferData(
-            index + 6,
-            norm.z
-        )
-        // Normal Z
-        vertexArray.writeVertexBufferData(
-            index + 7,
-            norm.x
-        )
     }
 }

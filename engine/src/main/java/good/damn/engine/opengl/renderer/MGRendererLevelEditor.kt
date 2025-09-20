@@ -4,12 +4,8 @@ import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.MotionEvent
-import good.damn.engine.MGEngine
-import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
@@ -27,18 +23,15 @@ import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeSingleShader
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
-import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.entities.MGMesh
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.maps.MGMapNormal
+import good.damn.engine.opengl.maps.MGVertexIteratorLandscapeDisplace
+import good.damn.engine.opengl.maps.MGVertexIteratorLandscapeNormal
 import good.damn.engine.opengl.models.MGMDrawMode
-import good.damn.engine.opengl.models.MGMUserContent
-import good.damn.engine.opengl.shaders.MGIShaderCamera
-import good.damn.engine.opengl.shaders.MGIShaderNormal
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
@@ -46,19 +39,12 @@ import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.touch.MGIListenerScale
-import good.damn.engine.touch.MGTouchFreeMove
-import good.damn.engine.touch.MGTouchScale
-import good.damn.engine.ui.MGIClick
-import good.damn.engine.ui.MGIListenerValueChanged
 import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickGenerateLandscape
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.ui.seek.MGSeekValueChangedLightAmbient
 import java.util.concurrent.ConcurrentLinkedQueue
-import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.sin
 
 class MGRendererLevelEditor(
     requesterUserContent: MGIRequestUserContent
@@ -316,12 +302,22 @@ MGIListenerOnIntersectPosition {
             val mapHeight = MGMapDisplace.createFromAssets(
                 "maps/terrain_height.png"
             )
-            displace(
-                mapHeight,
-                mapNormal
-            )
 
+            forEachVertex(
+                MGVertexIteratorLandscapeNormal(
+                    mapNormal
+                )
+            )
             mapNormal.destroy()
+
+            forEachVertex(
+                MGVertexIteratorLandscapeDisplace(
+                    mapHeight,
+                    255 * 50,
+                    landSize,
+                    landSize
+                )
+            )
             mapHeight.destroy()
         }
 
