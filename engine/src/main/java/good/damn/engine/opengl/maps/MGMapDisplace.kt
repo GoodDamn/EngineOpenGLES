@@ -33,7 +33,6 @@ class MGMapDisplace(
             )
         }
 
-        private const val TAG = "DisplacementMap"
         private const val iDIGITAL_HEIGHT_MAX = 0x00ffffff
         private const val fDIGITAL_HEIGHT_MAX = iDIGITAL_HEIGHT_MAX.toFloat()
     }
