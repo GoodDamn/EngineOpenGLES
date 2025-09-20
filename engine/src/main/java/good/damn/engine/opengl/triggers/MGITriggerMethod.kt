@@ -1,6 +1,6 @@
 package good.damn.engine.opengl.triggers
 
-interface MGITrigger {
+interface MGITriggerMethod {
     fun canTrigger(
         x: Float,
         y: Float,
