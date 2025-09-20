@@ -1,4 +1,4 @@
-package good.damn.engine.opengl.maps
+package good.damn.engine.opengl.iterators.vertex
 
 import good.damn.engine.opengl.MGArrayVertex
 

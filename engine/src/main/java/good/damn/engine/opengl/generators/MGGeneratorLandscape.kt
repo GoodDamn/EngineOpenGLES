@@ -2,9 +2,7 @@ package good.damn.engine.opengl.generators
 
 import android.util.Log
 import good.damn.engine.opengl.MGArrayVertex
-import good.damn.engine.opengl.maps.MGIVertexIterator
-import good.damn.engine.opengl.maps.MGMapDisplace
-import good.damn.engine.opengl.maps.MGMapNormal
+import good.damn.engine.opengl.iterators.vertex.MGIVertexIterator
 import good.damn.engine.utils.MGUtilsBuffer
 
 class MGGeneratorLandscape(

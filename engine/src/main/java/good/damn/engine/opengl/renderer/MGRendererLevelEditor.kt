@@ -29,8 +29,8 @@ import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.maps.MGMapNormal
-import good.damn.engine.opengl.maps.MGVertexIteratorLandscapeDisplace
-import good.damn.engine.opengl.maps.MGVertexIteratorLandscapeNormal
+import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
+import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
 import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
@@ -325,7 +325,7 @@ MGIListenerOnIntersectPosition {
 
         modelMatrixLandscape.addPosition(
             off,
-            0f,
+            -5500f,
             off
         )
 
