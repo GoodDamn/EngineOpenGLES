@@ -21,12 +21,6 @@ data class MGDrawerModeOpaque(
     var triggers: ConcurrentLinkedQueue<MGTriggerBaseDebug>
 ): MGIDrawer {
 
-    private val meshNull = MGDrawerPositionEntity(
-        object: MGIDrawer { override fun draw() {} },
-        shaderTrigger,
-        MGMMatrix()
-    )
-
     override fun draw() {
         shaderSky.use()
         camera.draw(
@@ -51,7 +45,6 @@ data class MGDrawerModeOpaque(
 
 
         shaderTrigger.use()
-        meshNull.draw()
         camera.draw(
             shaderTrigger
         )

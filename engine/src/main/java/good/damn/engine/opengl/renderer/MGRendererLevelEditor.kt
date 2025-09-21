@@ -73,6 +73,7 @@ MGIListenerOnIntersectPosition {
     }
     private val modelMatrixCamera = MGMMatrix()
     private val modelMatrixLandscape = MGMMatrix()
+    private val modelMatrixTrigger = MGMMatrix()
 
     private val mVerticesBatchObject = MGArrayVertex()
 
@@ -274,15 +275,17 @@ MGIListenerOnIntersectPosition {
         mTriggers.add(
             MGTriggerSimple(
                 mDrawerLightDirectional,
+                mShaderWireframe,
+                modelMatrixTrigger,
                 MGVector(
-                    5f,
-                    5f,
-                    5f
+                    -1f,
+                    -1f,
+                    -1f
                 ),
                 MGVector(
-                    200f,
-                    100f,
-                    100f
+                    1f,
+                    1f,
+                    1f
                 )
             )
         )
@@ -452,6 +455,11 @@ MGIListenerOnIntersectPosition {
                 model.z
             )
         }
+
+        modelMatrixTrigger.addRotation(
+            0.01f,
+            0f
+        )
 
         mSwitcherDrawMode
             .currentDrawerMode
