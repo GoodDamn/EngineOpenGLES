@@ -15,7 +15,8 @@ abstract class MGTriggerBaseDebug(
     shader: MGIShaderModel,
     modelMatrix: MGMMatrix
 ): MGTriggerBase(
-    triggerMethod
+    triggerMethod,
+    modelMatrix
 ), MGIDrawer {
     private val mEntity = MGDrawerPositionEntity(
         MGDrawerVertexArray(
