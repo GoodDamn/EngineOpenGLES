@@ -76,7 +76,6 @@ MGIListenerOnIntersectPosition {
     private val modelMatrixCamera = MGMMatrix()
     private val modelMatrixLandscape = MGMMatrix()
     private val modelMatrixTrigger = MGMMatrix()
-    private val modelMatrixTransformed = MGMMatrix()
 
     private val mVerticesBatchObject = MGArrayVertex()
 
@@ -143,20 +142,6 @@ MGIListenerOnIntersectPosition {
         modelMatrixSky
     )
 
-    private val meshTransformed = MGMesh(
-        MGDrawerModeSwitch(
-            mVerticesBatchObject,
-            MGDrawerMeshOpaque(
-                mVerticesBatchObject,
-                mTextureLandscape,
-                materialLandscape
-            ),
-            GL_CCW
-        ),
-        mShaderDefault,
-        modelMatrixTransformed
-    )
-
     private val mCameraFree = MGCameraFree(
         modelMatrixCamera
     )
@@ -176,7 +161,6 @@ MGIListenerOnIntersectPosition {
         MGDrawerMeshSwitch
     >().apply {
         add(meshLandscape)
-        add(meshTransformed)
     }
 
     private val mTriggers = ConcurrentLinkedQueue<
@@ -304,8 +288,7 @@ MGIListenerOnIntersectPosition {
                     100f,
                     10f,
                     10f
-                ),
-                modelMatrixTransformed
+                )
             )
         )
 

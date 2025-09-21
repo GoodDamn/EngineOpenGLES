@@ -13,12 +13,10 @@ abstract class MGTriggerBaseDebug(
     triggerMethod: MGITriggerMethod,
     vertexArray: MGArrayVertex,
     shader: MGIShaderModel,
-    modelMatrix: MGMMatrix,
-    transformedMatrix: MGMMatrix,
+    modelMatrix: MGMMatrix
 ): MGTriggerBase(
     triggerMethod,
-    modelMatrix,
-    transformedMatrix
+    modelMatrix
 ), MGIDrawer {
     private val mEntity = MGDrawerPositionEntity(
         MGDrawerVertexArray(

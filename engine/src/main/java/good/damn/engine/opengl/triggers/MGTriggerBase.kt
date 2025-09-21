@@ -7,8 +7,7 @@ import good.damn.engine.opengl.camera.MGMMatrix
 
 abstract class MGTriggerBase(
     private val triggerMethod: MGITriggerMethod,
-    private val modelMatrix: MGMMatrix,
-    private val transformedModelMatrix: MGMMatrix
+    private val modelMatrix: MGMMatrix
 ) {
 
     private var mIsInside = false
@@ -33,11 +32,6 @@ abstract class MGTriggerBase(
             mTriggerPosition,
             0
         )
-
-        transformedModelMatrix.x = mTransformedPosition[0]
-        transformedModelMatrix.y = mTransformedPosition[1]
-        transformedModelMatrix.z = mTransformedPosition[2]
-        transformedModelMatrix.invalidatePosition()
 
         val xx = mTransformedPosition[0]
         val yy = mTransformedPosition[1]
