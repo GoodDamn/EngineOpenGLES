@@ -1,7 +1,6 @@
 package good.damn.engine.opengl.camera
 
 import android.opengl.Matrix
-import android.opengl.Matrix.setLookAtM
 
 class MGMMatrix {
 
@@ -17,7 +16,8 @@ class MGMMatrix {
     var normalMatrix = FloatArray(16)
         private set
 
-    private var matrixInverted = FloatArray(16)
+    var modelInverted = FloatArray(16)
+        private set
 
     var x = 0f
     var y = 0f
@@ -82,7 +82,7 @@ class MGMMatrix {
 
     private inline fun calculateNormals() {
         Matrix.invertM(
-            matrixInverted,
+            modelInverted,
             0,
             model,
             0
@@ -91,7 +91,7 @@ class MGMMatrix {
         Matrix.transposeM(
             normalMatrix,
             0,
-            matrixInverted,
+            modelInverted,
             0
         )
     }

@@ -7,7 +7,8 @@ import good.damn.engine.opengl.camera.MGMMatrix
 
 abstract class MGTriggerBase(
     private val triggerMethod: MGITriggerMethod,
-    private val modelMatrix: MGMMatrix
+    private val modelMatrix: MGMMatrix,
+    private val transformedModelMatrix: MGMMatrix
 ) {
 
     private var mIsInside = false
@@ -27,15 +28,24 @@ abstract class MGTriggerBase(
         Matrix.multiplyMV(
             mTransformedPosition,
             0,
-            modelMatrix.normalMatrix,
+            modelMatrix.modelInverted,
             0,
             mTriggerPosition,
             0
         )
 
+        transformedModelMatrix.x = mTransformedPosition[0]
+        transformedModelMatrix.y = mTransformedPosition[1]
+        transformedModelMatrix.z = mTransformedPosition[2]
+        transformedModelMatrix.invalidatePosition()
+
+        val xx = mTransformedPosition[0]
+        val yy = mTransformedPosition[1]
+        val zz = mTransformedPosition[2]
+
         if (mIsInside) {
             if (!triggerMethod.canTrigger(
-                x, y, z
+                xx, yy, zz
             )) {
                 mIsInside = false
                 onTriggerEnd()
@@ -44,7 +54,7 @@ abstract class MGTriggerBase(
         }
 
         if (triggerMethod.canTrigger(
-            x, y, z
+            xx, yy, zz
         )) {
             mIsInside = true
             onTriggerBegin()

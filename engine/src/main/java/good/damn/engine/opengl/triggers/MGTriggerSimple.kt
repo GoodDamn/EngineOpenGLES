@@ -17,6 +17,7 @@ class MGTriggerSimple(
     modelMatrix: MGMMatrix,
     min: MGVector,
     max: MGVector,
+    transformedMatrix: MGMMatrix
 ): MGTriggerBaseDebug(
     MGTriggerMethodBox(
         min, max
@@ -35,7 +36,8 @@ class MGTriggerSimple(
         )
     },
     shader,
-    modelMatrix
+    modelMatrix,
+    transformedMatrix
 ) {
     override fun onTriggerBegin() {
         Log.d("TAG", "onTriggerBegin: TRIGGER BEGIN")

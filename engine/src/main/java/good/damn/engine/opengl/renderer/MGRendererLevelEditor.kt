@@ -47,6 +47,8 @@ import good.damn.engine.ui.clicks.MGClickGenerateLandscape
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.ui.seek.MGSeekValueChangedLightAmbient
+import good.damn.engine.utils.MGUtilsBuffer
+import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGRendererLevelEditor(
@@ -74,6 +76,7 @@ MGIListenerOnIntersectPosition {
     private val modelMatrixCamera = MGMMatrix()
     private val modelMatrixLandscape = MGMMatrix()
     private val modelMatrixTrigger = MGMMatrix()
+    private val modelMatrixTransformed = MGMMatrix()
 
     private val mVerticesBatchObject = MGArrayVertex()
 
@@ -140,6 +143,20 @@ MGIListenerOnIntersectPosition {
         modelMatrixSky
     )
 
+    private val meshTransformed = MGMesh(
+        MGDrawerModeSwitch(
+            mVerticesBatchObject,
+            MGDrawerMeshOpaque(
+                mVerticesBatchObject,
+                mTextureLandscape,
+                materialLandscape
+            ),
+            GL_CCW
+        ),
+        mShaderDefault,
+        modelMatrixTransformed
+    )
+
     private val mCameraFree = MGCameraFree(
         modelMatrixCamera
     )
@@ -159,6 +176,7 @@ MGIListenerOnIntersectPosition {
         MGDrawerMeshSwitch
     >().apply {
         add(meshLandscape)
+        add(meshTransformed)
     }
 
     private val mTriggers = ConcurrentLinkedQueue<
@@ -264,7 +282,7 @@ MGIListenerOnIntersectPosition {
 
 
         MGObject3D.createFromAssets(
-            "objs/house.obj"
+            "objs/box.obj"
         ).run {
             mVerticesBatchObject.configure(
                 vertices,
@@ -278,15 +296,16 @@ MGIListenerOnIntersectPosition {
                 mShaderWireframe,
                 modelMatrixTrigger,
                 MGVector(
-                    -1f,
-                    -1f,
-                    -1f
+                    -100f,
+                    -10f,
+                    -10f
                 ),
                 MGVector(
-                    1f,
-                    1f,
-                    1f
-                )
+                    100f,
+                    10f,
+                    10f
+                ),
+                modelMatrixTransformed
             )
         )
 
