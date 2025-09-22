@@ -325,16 +325,16 @@ MGIListenerOnIntersectPosition {
                 "maps/normal/terrain_normal.png"
             )
 
-            val mapHeight = MGMapDisplace.createFromAssets(
-                "maps/terrain_height.png"
-            )
-
             forEachVertex(
                 MGVertexIteratorLandscapeNormal(
                     mapNormal
                 )
             )
             mapNormal.destroy()
+
+            val mapHeight = MGMapDisplace.createFromAssets(
+                "maps/terrain_height.png"
+            )
 
             forEachVertex(
                 MGVertexIteratorLandscapeDisplace(
