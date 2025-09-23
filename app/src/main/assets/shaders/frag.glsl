@@ -70,7 +70,7 @@ vec3 calculateLightPoint(
     colorSpec *= attenuation;
     colorDiff *= attenuation;
 
-    return colorDiff + colorSpec + colorAmbient * attenuation;
+    return colorDiff + colorSpec;
 }
 
 vec3 calculateLightDirectional(
@@ -123,6 +123,6 @@ void main() {
     gl_FragColor = texture2D(
         texture,
         outTexCoord
-    ) * vec4(lightDirColor, 1.0);
+    ) * vec4(lightDirColor + lightPointColor, 1.0);
 
 }

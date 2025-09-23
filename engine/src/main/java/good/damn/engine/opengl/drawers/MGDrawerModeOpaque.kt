@@ -18,7 +18,8 @@ data class MGDrawerModeOpaque(
     var camera: MGCamera,
     var directionalLight: MGDrawerLightDirectional,
     var meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>,
-    var triggers: ConcurrentLinkedQueue<MGTriggerBaseDebug>
+    var triggers: ConcurrentLinkedQueue<MGTriggerBaseDebug>,
+    var lights: ConcurrentLinkedQueue<MGIDrawer>
 ): MGIDrawer {
 
     override fun draw() {
@@ -39,6 +40,9 @@ data class MGDrawerModeOpaque(
         )
         directionalLight.draw()
         meshes.forEach {
+            it.draw()
+        }
+        lights.forEach {
             it.draw()
         }
 

@@ -23,6 +23,8 @@ import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeSingleShader
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
+import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.entities.MGMesh
 import good.damn.engine.opengl.entities.MGMaterial
@@ -49,6 +51,7 @@ import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.sin
 
 class MGRendererLevelEditor(
     requesterUserContent: MGIRequestUserContent
@@ -166,12 +169,28 @@ MGIListenerOnIntersectPosition {
         MGTriggerBaseDebug
     >()
 
+    private val mLights = ConcurrentLinkedQueue<
+        MGIDrawer
+    >()
+
     private var mWidth = 0
     private var mHeight = 0
 
     private val mDrawerLightDirectional = MGDrawerLightDirectional(
         mShaderDefault.light
     )
+
+    private val mDrawerLightPoint = MGDrawerLightPoint(
+        mShaderDefault.lightPoint
+    ).apply {
+        color.x = 0.0f
+        color.y = 1.0f
+        color.z = 1.0f
+
+        mLights.add(
+            this
+        )
+    }
 
     private val modelMatrixLightMesh = MGMMatrix()
 
@@ -183,7 +202,8 @@ MGIListenerOnIntersectPosition {
         mCameraFree,
         mDrawerLightDirectional,
         meshes,
-        mTriggers
+        mTriggers,
+        mLights
     )
 
     private val mSwitcherDrawMode = MGSwitcherDrawMode(
@@ -472,6 +492,11 @@ MGIListenerOnIntersectPosition {
     override fun onIntersectPosition(
         p: MGVector
     ) {
+        mDrawerLightPoint.position.run {
+            x = p.x
+            y = p.y
+            z = p.z
+        }
         mCallbackOnDeltaInteract.currentMeshInteract?.run {
             x = p.x
             y = p.y
