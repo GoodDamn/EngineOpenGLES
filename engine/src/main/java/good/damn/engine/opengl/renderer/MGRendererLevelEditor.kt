@@ -46,7 +46,6 @@ import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickGenerateLandscape
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
-import good.damn.engine.ui.seek.MGSeekValueChangedLightAmbient
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue

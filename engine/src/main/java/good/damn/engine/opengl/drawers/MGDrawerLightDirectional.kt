@@ -10,11 +10,10 @@ class MGDrawerLightDirectional(
     var shader: MGShaderLightDirectional
 ): MGIDrawer {
 
-    var ambient = 0.08f
     val ambColor = MGVector(
-        0.75f,
-        0.75f,
-        0.75f
+        0.05f,
+        0.05f,
+        0.05f
     )
 
     private val mPosition = MGVector(

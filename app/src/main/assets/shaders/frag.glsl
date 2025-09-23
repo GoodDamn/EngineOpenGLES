@@ -41,7 +41,7 @@ vec3 calculateLightDirectional(
         16.0
     );
 
-    return dirLight.color * specFactor;
+    return diffColor + dirLight.color * specFactor;
 }
 
 void main() {
