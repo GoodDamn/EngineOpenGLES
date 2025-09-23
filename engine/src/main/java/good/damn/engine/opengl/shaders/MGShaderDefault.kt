@@ -34,12 +34,16 @@ MGIShaderModel {
 
     override val light = MGShaderLightDirectional()
     override val material = MGShaderMaterial()
-
+    override val lightPoint = MGShaderLightPoint()
 
     override fun setupUniforms(
         program: Int
     ) {
         light.setupUniforms(
+            program
+        )
+
+        lightPoint.setupUniforms(
             program
         )
 
