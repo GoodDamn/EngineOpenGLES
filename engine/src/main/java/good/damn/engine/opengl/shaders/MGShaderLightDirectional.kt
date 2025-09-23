@@ -8,13 +8,10 @@ class MGShaderLightDirectional
     var uniformColor = 0
         private set
 
-    var uniformAmbient = 0
+    var uniformColorAmbient = 0
         private set
 
     var uniformDirection = 0
-        private set
-
-    var uniformIntensity = 0
         private set
 
     override fun setupUniforms(
@@ -25,19 +22,14 @@ class MGShaderLightDirectional
             "dirLight.color"
         )
 
-        uniformAmbient = glGetUniformLocation(
-            program,
-            "dirLight.factorAmbient"
-        )
-
         uniformDirection = glGetUniformLocation(
             program,
             "dirLight.direction"
         )
 
-        uniformIntensity = glGetUniformLocation(
+        uniformColorAmbient = glGetUniformLocation(
             program,
-            "dirLight.intensity"
+            "dirLight.ambientColor"
         )
     }
 }

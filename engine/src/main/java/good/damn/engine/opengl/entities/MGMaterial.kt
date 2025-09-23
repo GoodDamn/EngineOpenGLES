@@ -11,7 +11,6 @@ class MGMaterial(
 
     var specular = 1f
     var shine = 1f
-    var lightIntensity = 0.2f
 
     override fun draw() {
         GLES30.glUniform1f(
@@ -22,11 +21,6 @@ class MGMaterial(
         GLES30.glUniform1f(
             shader.uniformSpecular,
             specular
-        )
-
-        GLES30.glUniform1f(
-            shader.uniformIntensityLight,
-            lightIntensity
         )
     }
 

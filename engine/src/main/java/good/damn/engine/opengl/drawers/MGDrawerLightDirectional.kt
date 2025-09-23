@@ -11,6 +11,11 @@ class MGDrawerLightDirectional(
 ): MGIDrawer {
 
     var ambient = 0.08f
+    val ambColor = MGVector(
+        0.75f,
+        0.75f,
+        0.75f
+    )
 
     private val mPosition = MGVector(
         1f,
@@ -43,14 +48,11 @@ class MGDrawerLightDirectional(
             .631f
         )
 
-        glUniform1f(
-            shader.uniformIntensity,
-            2.0f
-        )
-
-        glUniform1f(
-            shader.uniformAmbient,
-            ambient
+        glUniform3f(
+            shader.uniformColorAmbient,
+            ambColor.x,
+            ambColor.y,
+            ambColor.z
         )
 
         glUniform3f(

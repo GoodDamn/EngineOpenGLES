@@ -12,25 +12,17 @@ class MGShaderMaterial
     var uniformShininess = 0
         private set
 
-    var uniformIntensityLight = 0
-        private set
-
     override fun setupUniforms(
         program: Int
     ) {
         uniformSpecular = glGetUniformLocation(
             program,
-            "specularIntensity"
+            "material.specular"
         )
 
         uniformShininess = glGetUniformLocation(
             program,
-            "shine"
-        )
-
-        uniformIntensityLight = glGetUniformLocation(
-            program,
-            "light.intensity"
+            "material.shine"
         )
     }
 }
