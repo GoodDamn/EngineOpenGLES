@@ -4,10 +4,10 @@ import android.opengl.GLES30.glUniform1f
 import android.opengl.GLES30.glUniform3f
 import android.util.Log
 import good.damn.engine.opengl.MGVector
-import good.damn.engine.opengl.shaders.MGShaderLight
+import good.damn.engine.opengl.shaders.MGShaderLightDirectional
 
 class MGDrawerLightDirectional(
-    var shader: MGShaderLight
+    var shader: MGShaderLightDirectional
 ): MGIDrawer {
 
     var ambient = 0.08f

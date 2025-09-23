@@ -1,10 +1,6 @@
 package good.damn.engine.opengl.shaders
 
-import android.opengl.GLES30.glGetAttribLocation
 import android.opengl.GLES30.glGetUniformLocation
-import android.opengl.GLES30.glUseProgram
-import android.util.Log
-import kotlinx.coroutines.processNextEventInCurrentThread
 
 class MGShaderDefault
 : MGShaderBase(),
@@ -36,7 +32,7 @@ MGIShaderModel {
     override var uniformCameraView = 0
         private set
 
-    override val light = MGShaderLight()
+    override val light = MGShaderLightDirectional()
     override val material = MGShaderMaterial()
 
 
