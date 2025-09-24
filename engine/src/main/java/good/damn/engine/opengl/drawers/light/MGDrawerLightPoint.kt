@@ -10,8 +10,8 @@ class MGDrawerLightPoint(
 ): MGIDrawer {
 
     var constant = 1.0f
-    var linear = 0.007f
-    var quad = 0.0002f
+    var linear = 0.0014f
+    var quad = 0.000007f
     val position = MGVector(0f)
     val color = MGVector(0f)
 

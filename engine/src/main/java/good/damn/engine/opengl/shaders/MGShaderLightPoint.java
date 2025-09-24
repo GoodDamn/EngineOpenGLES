@@ -3,6 +3,7 @@ package good.damn.engine.opengl.shaders;
 import static android.opengl.GLES20.glGetUniformLocation;
 
 import android.opengl.GLES30;
+import android.util.Log;
 
 import good.damn.engine.opengl.drawers.MGIUniform;
 
@@ -15,34 +16,43 @@ implements MGIUniform {
     private int mUniformPosition;
     private int mUniformColor;
 
+    private final String mId;
+
+    public MGShaderLightPoint(
+        final int id
+    ) {
+        mId = "lightPoints[" + id + "].";
+    }
+
     @Override
     public final void setupUniforms(
         int program
     ) {
         mUniformConstant = glGetUniformLocation(
             program,
-            "lightPoint.constant"
+            mId+"constant"
         );
 
         mUniformLinear = glGetUniformLocation(
             program,
-            "lightPoint.linear"
+            mId+"linear"
         );
 
         mUniformQuad = glGetUniformLocation(
             program,
-            "lightPoint.quad"
+            mId+"quad"
         );
 
         mUniformPosition = glGetUniformLocation(
             program,
-            "lightPoint.position"
+            mId+"position"
         );
 
         mUniformColor = glGetUniformLocation(
             program,
-            "lightPoint.color"
+            mId+"color"
         );
+        Log.d("MGShaderLightPoint", "setupUniforms: " + mId + " " + mUniformColor + " " + mUniformPosition + " ");
     }
 
     public final int getUniformConstant() {

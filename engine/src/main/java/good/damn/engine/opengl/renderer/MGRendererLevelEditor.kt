@@ -51,6 +51,7 @@ import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.cos
 import kotlin.math.sin
 
 class MGRendererLevelEditor(
@@ -78,6 +79,9 @@ MGIListenerOnIntersectPosition {
     private val modelMatrixCamera = MGMMatrix()
     private val modelMatrixLandscape = MGMMatrix()
     private val modelMatrixTrigger = MGMMatrix()
+    private val modelMatrixLightPoint = MGMMatrix().apply {
+        setScale(10f, 10f, 10f)
+    }
 
     private val mVerticesBatchObject = MGArrayVertex()
 
@@ -144,6 +148,20 @@ MGIListenerOnIntersectPosition {
         modelMatrixSky
     )
 
+    private val meshTest = MGMesh(
+        MGDrawerModeSwitch(
+            mVerticesBatchObject,
+            MGDrawerMeshOpaque(
+                mVerticesBatchObject,
+                mTextureLandscape,
+                materialLandscape
+            ),
+            GL_CCW
+        ),
+        mShaderDefault,
+        modelMatrixLightPoint
+    )
+
     private val mCameraFree = MGCameraFree(
         modelMatrixCamera
     )
@@ -163,6 +181,7 @@ MGIListenerOnIntersectPosition {
         MGDrawerMeshSwitch
     >().apply {
         add(meshLandscape)
+        add(meshTest)
     }
 
     private val mTriggers = ConcurrentLinkedQueue<
@@ -183,9 +202,21 @@ MGIListenerOnIntersectPosition {
     private val mDrawerLightPoint = MGDrawerLightPoint(
         mShaderDefault.lightPoint
     ).apply {
-        color.x = 0.0f
-        color.y = 1.0f
+        color.x = 1.0f
+        color.y = 0.0f
         color.z = 1.0f
+
+        mLights.add(
+            this
+        )
+    }
+
+    private val mDrawerLightPoint2 = MGDrawerLightPoint(
+        mShaderDefault.lightPoint2
+    ).apply {
+        color.x = 1.0f
+        color.y = 1.0f
+        color.z = 0.0f
 
         mLights.add(
             this
@@ -394,6 +425,10 @@ MGIListenerOnIntersectPosition {
         modelMatrixLightMesh.x = lx * m
         modelMatrixLightMesh.y = ly * m
         modelMatrixLightMesh.z = lz * m
+        modelMatrixCamera.run {
+            y = -1850f
+            z = -3250f
+        }
         mDrawerLightDirectional.setPosition(
             lx,
             ly,
@@ -459,6 +494,25 @@ MGIListenerOnIntersectPosition {
             1.0f
         )
 
+        val t = System.currentTimeMillis() % 1000000L * 0.0007f
+
+        mDrawerLightPoint2.position.run {
+            x = cos(t) * 1250f
+            y = -1850f
+            z = -3250f
+        }
+
+        mDrawerLightPoint.position.run {
+            x = sin(t) * 1250f
+            y = -1850f
+            z = -3250f
+
+            modelMatrixLightPoint.x = x
+            modelMatrixLightPoint.y = y
+            modelMatrixLightPoint.z = z
+            modelMatrixLightPoint.invalidatePosition()
+        }
+
         val error = glGetError()
         if (error != GL_NO_ERROR) {
             Log.d("TAG", "onDrawFrame: ERROR: ${error.toString(16)}")
@@ -492,11 +546,6 @@ MGIListenerOnIntersectPosition {
     override fun onIntersectPosition(
         p: MGVector
     ) {
-        mDrawerLightPoint.position.run {
-            x = p.x
-            y = p.y
-            z = p.z
-        }
         mCallbackOnDeltaInteract.currentMeshInteract?.run {
             x = p.x
             y = p.y

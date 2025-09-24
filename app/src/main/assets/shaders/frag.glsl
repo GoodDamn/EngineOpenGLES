@@ -1,5 +1,7 @@
 precision mediump float;
 
+#define NUM_LIGHTS 2
+
 struct LightPoint {
     lowp vec3 color;
     lowp vec3 position;
@@ -23,7 +25,7 @@ struct Material {
 uniform sampler2D texture;
 uniform LightDirectional dirLight;
 uniform Material material;
-uniform LightPoint lightPoint;
+uniform LightPoint lightPoints[NUM_LIGHTS];
 uniform lowp vec3 cameraPosition;
 
 varying lowp vec3 outFragPosition;
@@ -64,7 +66,7 @@ vec3 calculateLightPoint(
     );
 
     float attenuation = 1.0 / (
-        light.constant + light.linear * dst + light.quad * dst * dst
+        light.constant + light.linear * dst + light.quad * (dst * dst)
     );
 
     colorSpec *= attenuation;
@@ -111,18 +113,22 @@ void main() {
         viewDirection
     );
 
-    vec3 lightPointColor = calculateLightPoint(
-        lightPoint,
-        material,
-        norm,
-        viewDirection,
-        outFragPosition,
-        dirLight.ambientColor
-    );
+    vec3 colorResult = lightDirColor;
+
+    for (int i = 0; i < NUM_LIGHTS; i++) {
+        colorResult += calculateLightPoint(
+            lightPoints[i],
+            material,
+            norm,
+            viewDirection,
+            outFragPosition,
+            dirLight.ambientColor
+        );
+    }
 
     gl_FragColor = texture2D(
         texture,
         outTexCoord
-    ) * vec4(lightDirColor + lightPointColor, 1.0);
+    ) * vec4(colorResult, 1.0);
 
 }
