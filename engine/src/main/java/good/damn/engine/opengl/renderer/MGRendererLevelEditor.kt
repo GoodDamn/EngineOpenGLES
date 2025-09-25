@@ -40,7 +40,6 @@ import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
-import good.damn.engine.opengl.triggers.MGTriggerBase
 import good.damn.engine.opengl.triggers.MGTriggerBaseDebug
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.touch.MGIListenerScale
@@ -48,8 +47,6 @@ import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickGenerateLandscape
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
-import good.damn.engine.utils.MGUtilsBuffer
-import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.cos
 import kotlin.math.sin
@@ -200,7 +197,7 @@ MGIListenerOnIntersectPosition {
     )
 
     private val mDrawerLightPoint = MGDrawerLightPoint(
-        mShaderDefault.lightPoint
+        mShaderDefault.lightPoints[0]
     ).apply {
         color.x = 1.0f
         color.y = 0.0f
@@ -212,7 +209,7 @@ MGIListenerOnIntersectPosition {
     }
 
     private val mDrawerLightPoint2 = MGDrawerLightPoint(
-        mShaderDefault.lightPoint2
+        mShaderDefault.lightPoints[1]
     ).apply {
         color.x = 1.0f
         color.y = 1.0f
