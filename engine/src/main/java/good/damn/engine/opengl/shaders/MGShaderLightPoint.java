@@ -16,6 +16,8 @@ implements MGIUniform {
     private int mUniformPosition;
     private int mUniformColor;
 
+    private int mUniformRadius;
+
     private final String mId;
 
     public MGShaderLightPoint(
@@ -52,26 +54,29 @@ implements MGIUniform {
             program,
             mId+"color"
         );
-        Log.d("MGShaderLightPoint", "setupUniforms: " + mId + " " + mUniformColor + " " + mUniformPosition + " ");
+
+        mUniformRadius = glGetUniformLocation(
+            program,
+            mId+"radius"
+        );
     }
 
     public final int getUniformConstant() {
         return mUniformConstant;
     }
-
     public final int getUniformLinear() {
         return mUniformLinear;
     }
-
     public final int getUniformQuad() {
         return mUniformQuad;
     }
-
     public final int getUniformPosition() {
         return mUniformPosition;
     }
-
     public final int getUniformColor() {
         return mUniformColor;
+    }
+    public final int getUniformRadius() {
+        return mUniformRadius;
     }
 }

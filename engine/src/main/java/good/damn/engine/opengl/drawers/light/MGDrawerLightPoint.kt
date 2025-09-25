@@ -12,6 +12,7 @@ class MGDrawerLightPoint(
     var constant = 1.0f
     var linear = 0.0014f
     var quad = 0.000007f
+    val radius = 600f
     val position = MGVector(0f)
     val color = MGVector(0f)
 
@@ -43,6 +44,11 @@ class MGDrawerLightPoint(
             color.x,
             color.y,
             color.z,
+        )
+
+        GLES30.glUniform1f(
+            shader.uniformRadius,
+            radius
         )
     }
 }

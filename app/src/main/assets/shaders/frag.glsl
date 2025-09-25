@@ -5,6 +5,7 @@ precision mediump float;
 struct LightPoint {
     lowp vec3 color;
     lowp vec3 position;
+    lowp float radius;
 
     lowp float constant;
     lowp float linear;
@@ -40,6 +41,14 @@ vec3 calculateLightPoint(
     vec3 fragPosition,
     vec3 colorAmbient
 ) {
+    float dst = length(
+        light.position - fragPosition
+    );
+
+    if (dst > light.radius) {
+        return vec3(0.0);
+    }
+
     vec3 direction = normalize(
         light.position - fragPosition
     );
@@ -60,10 +69,6 @@ vec3 calculateLightPoint(
     );
 
     lowp vec3 colorSpec = light.color * specFactor;
-
-    float dst = length(
-        light.position - fragPosition
-    );
 
     float attenuation = 1.0 / (
         light.constant + light.linear * dst + light.quad * (dst * dst)
