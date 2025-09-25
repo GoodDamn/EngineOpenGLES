@@ -32,7 +32,7 @@ MGIShaderModel {
     override var uniformCameraView = 0
         private set
 
-    override val light = MGShaderLightDirectional()
+    override val lightDirectional = MGShaderLightDirectional()
     override val material = MGShaderMaterial()
     override val lightPoints = Array(2) {
         MGShaderLightPoint(it)
@@ -41,7 +41,7 @@ MGIShaderModel {
     override fun setupUniforms(
         program: Int
     ) {
-        light.setupUniforms(
+        lightDirectional.setupUniforms(
             program
         )
 

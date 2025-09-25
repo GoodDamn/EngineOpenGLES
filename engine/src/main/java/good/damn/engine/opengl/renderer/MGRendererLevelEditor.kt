@@ -193,7 +193,7 @@ MGIListenerOnIntersectPosition {
     private var mHeight = 0
 
     private val mDrawerLightDirectional = MGDrawerLightDirectional(
-        mShaderDefault.light
+        mShaderDefault.lightDirectional
     )
 
     private val mDrawerLightPoint = MGDrawerLightPoint(
