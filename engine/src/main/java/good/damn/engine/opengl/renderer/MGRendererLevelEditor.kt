@@ -41,8 +41,10 @@ import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
+import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGManagerTriggerState
 import good.damn.engine.opengl.triggers.MGTriggerMethodBox
+import good.damn.engine.opengl.triggers.MGTriggerMethodSphere
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.ui.MGUILayerEditor
@@ -314,34 +316,39 @@ MGIListenerOnIntersectPosition {
             x=100f, y=10f, z=10f
         )
 
+        val lightPosition = MGVector(
+            1250f, -125f, 550f
+        )
+
         mTriggers.add(
             MGDrawerTriggerStateable(
                 MGManagerTriggerState(
-                    MGTriggerMethodBox(
-                        minPointTrigger,
-                        maxPointTrigger,
-                        modelMatrixTrigger
+                    MGTriggerMethodSphere(
+                        50f,
+                        lightPosition
                     ),
                     MGTriggerSimple(
                         mDrawerLightDirectional
                     )
                 ),
-                MGArrayVertex().apply {
-                    configure(
-                        MGUtilsBuffer.createFloat(
-                            MGUtilsVertIndices.createCubeVertices(
-                                minPointTrigger,
-                                maxPointTrigger
-                            )
-                        ),
-                        MGUtilsBuffer.createInt(
-                            MGUtilsVertIndices.createCubeIndices()
-                        ),
-                        stride = 3 * 4
-                    )
+                MGObject3D.createFromAssets(
+                    "objs/sphere_low.obj"
+                ).run {
+                    MGArrayVertex().apply {
+                        configure(
+                            vertices,
+                            indices
+                        )
+                    }
                 },
                 mShaderWireframe,
-                modelMatrixTrigger
+                modelMatrixTrigger.apply {
+                    setScale(50f, 50f, 50f)
+                    this.x = lightPosition.x
+                    this.y = lightPosition.y
+                    this.z = lightPosition.z
+                    invalidatePosition()
+                }
             )
         )
 
