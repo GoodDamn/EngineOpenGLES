@@ -1,6 +1,6 @@
 precision mediump float;
 
-#define NUM_LIGHTS 2
+#define NUM_LIGHTS 32
 
 struct LightPoint {
     lowp vec3 color;

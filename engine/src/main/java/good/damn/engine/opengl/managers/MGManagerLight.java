@@ -99,7 +99,7 @@ implements MGIDrawer {
 
     private final int findFreeIndex() {
         for (int i = 0; i < mPullLights.length; i++) {
-            if (mPullLights[i] == null) {
+            if (mPullLights[i].light == null) {
                 return i;
             }
         }
@@ -110,7 +110,13 @@ implements MGIDrawer {
         @NonNull final MGLight target
     ) {
         for (int i = 0; i < mPullLights.length; i++) {
-            if (mPullLights[i].hashCode() == target.hashCode()) {
+            @Nullable
+            final MGLight foundLight = mPullLights[i].light;
+            if (foundLight == null) {
+                continue;
+            }
+
+            if (foundLight.hashCode() == target.hashCode()) {
                 return i;
             }
         }

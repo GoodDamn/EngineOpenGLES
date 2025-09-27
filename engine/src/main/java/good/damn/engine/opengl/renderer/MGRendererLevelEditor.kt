@@ -26,6 +26,7 @@ import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
+import good.damn.engine.opengl.entities.MGLight
 import good.damn.engine.opengl.entities.MGMesh
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
@@ -33,6 +34,7 @@ import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
+import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
@@ -76,9 +78,6 @@ MGIListenerOnIntersectPosition {
     private val modelMatrixCamera = MGMMatrix()
     private val modelMatrixLandscape = MGMMatrix()
     private val modelMatrixTrigger = MGMMatrix()
-    private val modelMatrixLightPoint = MGMMatrix().apply {
-        setScale(10f, 10f, 10f)
-    }
 
     private val mVerticesBatchObject = MGArrayVertex()
 
@@ -145,20 +144,6 @@ MGIListenerOnIntersectPosition {
         modelMatrixSky
     )
 
-    private val meshTest = MGMesh(
-        MGDrawerModeSwitch(
-            mVerticesBatchObject,
-            MGDrawerMeshOpaque(
-                mVerticesBatchObject,
-                mTextureLandscape,
-                materialLandscape
-            ),
-            GL_CCW
-        ),
-        mShaderDefault,
-        modelMatrixLightPoint
-    )
-
     private val mCameraFree = MGCameraFree(
         modelMatrixCamera
     )
@@ -178,15 +163,10 @@ MGIListenerOnIntersectPosition {
         MGDrawerMeshSwitch
     >().apply {
         add(meshLandscape)
-        add(meshTest)
     }
 
     private val mTriggers = ConcurrentLinkedQueue<
         MGTriggerBaseDebug
-    >()
-
-    private val mLights = ConcurrentLinkedQueue<
-        MGIDrawer
     >()
 
     private var mWidth = 0
@@ -196,29 +176,9 @@ MGIListenerOnIntersectPosition {
         mShaderDefault.lightDirectional
     )
 
-    private val mDrawerLightPoint = MGDrawerLightPoint(
-        mShaderDefault.lightPoints[0]
-    ).apply {
-        color.x = 1.0f
-        color.y = 0.0f
-        color.z = 1.0f
-
-        mLights.add(
-            this
-        )
-    }
-
-    private val mDrawerLightPoint2 = MGDrawerLightPoint(
-        mShaderDefault.lightPoints[1]
-    ).apply {
-        color.x = 1.0f
-        color.y = 1.0f
-        color.z = 0.0f
-
-        mLights.add(
-            this
-        )
-    }
+    private val managerLights = MGManagerLight(
+        mShaderDefault
+    )
 
     private val modelMatrixLightMesh = MGMMatrix()
 
@@ -231,7 +191,7 @@ MGIListenerOnIntersectPosition {
         mDrawerLightDirectional,
         meshes,
         mTriggers,
-        mLights
+        managerLights
     )
 
     private val mSwitcherDrawMode = MGSwitcherDrawMode(
@@ -279,6 +239,30 @@ MGIListenerOnIntersectPosition {
 
         setListenerTouchDeltaInteract(
             mCallbackOnDeltaInteract
+        )
+    }
+
+    private val mLight = MGLight(
+        MGVector(
+            1f, 1f, 0f
+        ),
+        MGVector(0f,0f,0f),
+        600f
+    ).apply {
+        managerLights.register(
+            this
+        )
+    }
+
+    private val mLight2 = MGLight(
+        MGVector(
+            1f, 0f, 1f
+        ),
+        MGVector(0f,0f,0f),
+        600f
+    ).apply {
+        managerLights.register(
+            this
         )
     }
     
@@ -493,21 +477,16 @@ MGIListenerOnIntersectPosition {
 
         val t = System.currentTimeMillis() % 1000000L * 0.0007f
 
-        mDrawerLightPoint2.position.run {
+        mLight.position.run {
             x = cos(t) * 1250f
             y = -1850f
             z = -3250f
         }
 
-        mDrawerLightPoint.position.run {
+        mLight2.position.run {
             x = sin(t) * 1250f
             y = -1850f
             z = -3250f
-
-            modelMatrixLightPoint.x = x
-            modelMatrixLightPoint.y = y
-            modelMatrixLightPoint.z = z
-            modelMatrixLightPoint.invalidatePosition()
         }
 
         val error = glGetError()
