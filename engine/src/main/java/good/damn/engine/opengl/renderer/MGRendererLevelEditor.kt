@@ -23,8 +23,6 @@ import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeSingleShader
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
-import good.damn.engine.opengl.drawers.MGIDrawer
-import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.entities.MGLight
 import good.damn.engine.opengl.entities.MGMesh
@@ -42,13 +40,17 @@ import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
-import good.damn.engine.opengl.triggers.MGTriggerBaseDebug
+import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
+import good.damn.engine.opengl.triggers.MGManagerTriggerState
+import good.damn.engine.opengl.triggers.MGTriggerMethodBox
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickGenerateLandscape
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
+import good.damn.engine.utils.MGUtilsBuffer
+import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.cos
 import kotlin.math.sin
@@ -166,7 +168,7 @@ MGIListenerOnIntersectPosition {
     }
 
     private val mTriggers = ConcurrentLinkedQueue<
-        MGTriggerBaseDebug
+        MGDrawerTriggerStateable
     >()
 
     private var mWidth = 0
@@ -305,21 +307,41 @@ MGIListenerOnIntersectPosition {
             )
         }
 
+        val minPointTrigger = MGVector(
+            x=-100f, y=-10f, z=-10f
+        )
+        val maxPointTrigger = MGVector(
+            x=100f, y=10f, z=10f
+        )
+
         mTriggers.add(
-            MGTriggerSimple(
-                mDrawerLightDirectional,
-                mShaderWireframe,
-                modelMatrixTrigger,
-                MGVector(
-                    -100f,
-                    -10f,
-                    -10f
+            MGDrawerTriggerStateable(
+                MGManagerTriggerState(
+                    MGTriggerMethodBox(
+                        minPointTrigger,
+                        maxPointTrigger,
+                        modelMatrixTrigger
+                    ),
+                    MGTriggerSimple(
+                        mDrawerLightDirectional
+                    )
                 ),
-                MGVector(
-                    100f,
-                    10f,
-                    10f
-                )
+                MGArrayVertex().apply {
+                    configure(
+                        MGUtilsBuffer.createFloat(
+                            MGUtilsVertIndices.createCubeVertices(
+                                minPointTrigger,
+                                maxPointTrigger
+                            )
+                        ),
+                        MGUtilsBuffer.createInt(
+                            MGUtilsVertIndices.createCubeIndices()
+                        ),
+                        stride = 3 * 4
+                    )
+                },
+                mShaderWireframe,
+                modelMatrixTrigger
             )
         )
 
@@ -500,7 +522,7 @@ MGIListenerOnIntersectPosition {
         // 2. For other entities who can trigger, check it inside infinite loop
         val model = mCameraFree.modelMatrix
         mTriggers.forEach {
-            it.trigger(
+            it.stateManager.trigger(
                 model.x,
                 model.y,
                 model.z

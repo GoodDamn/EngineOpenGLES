@@ -13,30 +13,7 @@ import good.damn.engine.utils.MGUtilsVertIndices
 
 class MGTriggerSimple(
     private val dirLight: MGDrawerLightDirectional,
-    shader: MGIShaderModel,
-    modelMatrix: MGMMatrix,
-    min: MGVector,
-    max: MGVector
-): MGTriggerBaseDebug(
-    MGTriggerMethodBox(
-        min, max
-    ),
-    MGArrayVertex().apply {
-        configure(
-            MGUtilsBuffer.createFloat(
-                MGUtilsVertIndices.createCubeVertices(
-                    min, max
-                )
-            ),
-            MGUtilsBuffer.createInt(
-                MGUtilsVertIndices.createCubeIndices()
-            ),
-            stride = 3 * 4
-        )
-    },
-    shader,
-    modelMatrix
-) {
+): MGITrigger {
     override fun onTriggerBegin() {
         Log.d("TAG", "onTriggerBegin: TRIGGER BEGIN")
         dirLight.ambColor.x = 0.5f

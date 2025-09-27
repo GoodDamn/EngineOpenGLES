@@ -1,14 +1,12 @@
 package good.damn.engine.opengl.drawers
 
 import good.damn.engine.opengl.camera.MGCamera
-import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.entities.MGMesh
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
-import good.damn.engine.opengl.triggers.MGTriggerBaseDebug
-import java.util.LinkedList
+import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
 import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGDrawerModeOpaque(
@@ -19,7 +17,7 @@ data class MGDrawerModeOpaque(
     var camera: MGCamera,
     var directionalLight: MGDrawerLightDirectional,
     var meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>,
-    var triggers: ConcurrentLinkedQueue<MGTriggerBaseDebug>,
+    var triggers: ConcurrentLinkedQueue<MGDrawerTriggerStateable>,
     var lights: MGManagerLight
 ): MGIDrawer {
 
