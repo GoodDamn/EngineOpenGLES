@@ -5,10 +5,17 @@ import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.camera.MGMMatrix
 
 class MGTriggerMethodBox(
-    private val min: MGVector,
-    private val max: MGVector,
     private val modelMatrix: MGMMatrix
 ): MGITriggerMethod {
+
+    companion object {
+        private val MIN = MGVector(
+            -1f, -1f, -1f
+        )
+        private val MAX = MGVector(
+            1f, 1f, 1f
+        )
+    }
 
     private val mTransformedPosition = FloatArray(4)
     private val mTriggerPosition = FloatArray(4)
@@ -44,7 +51,7 @@ class MGTriggerMethodBox(
         x: Float,
         y: Float,
         z: Float
-    ) = !(min.x > x || max.x < x ||
-        min.y > y || max.y < y ||
-        min.z > z || max.z < z)
+    ) = !(MIN.x > x || MAX.x < x ||
+        MIN.y > y || MAX.y < y ||
+        MIN.z > z || MAX.z < z)
 }

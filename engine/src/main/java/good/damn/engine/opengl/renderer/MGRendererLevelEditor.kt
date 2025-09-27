@@ -309,30 +309,19 @@ MGIListenerOnIntersectPosition {
             )
         }
 
-        val minPointTrigger = MGVector(
-            x=-100f, y=-10f, z=-10f
-        )
-        val maxPointTrigger = MGVector(
-            x=100f, y=10f, z=10f
-        )
-
-        val lightPosition = MGVector(
-            1250f, -125f, 550f
-        )
 
         mTriggers.add(
             MGDrawerTriggerStateable(
                 MGManagerTriggerState(
-                    MGTriggerMethodSphere(
-                        50f,
-                        lightPosition
+                    MGTriggerMethodBox(
+                        modelMatrixTrigger
                     ),
                     MGTriggerSimple(
                         mDrawerLightDirectional
                     )
                 ),
                 MGObject3D.createFromAssets(
-                    "objs/sphere_low.obj"
+                    "objs/box.obj"
                 ).run {
                     MGArrayVertex().apply {
                         configure(
@@ -343,11 +332,7 @@ MGIListenerOnIntersectPosition {
                 },
                 mShaderWireframe,
                 modelMatrixTrigger.apply {
-                    setScale(50f, 50f, 50f)
-                    this.x = lightPosition.x
-                    this.y = lightPosition.y
-                    this.z = lightPosition.z
-                    invalidatePosition()
+                    setScale(100f, 50f, 10f)
                 }
             )
         )
@@ -537,7 +522,7 @@ MGIListenerOnIntersectPosition {
         }
 
         modelMatrixTrigger.addRotation(
-            0.01f,
+            0.07f,
             0f
         )
 

@@ -10,14 +10,9 @@ class MGMMatrix {
         private const val INDEX_Z = 14
     }
 
-    var model = FloatArray(16)
-        private set
-
-    var normalMatrix = FloatArray(16)
-        private set
-
-    var modelInverted = FloatArray(16)
-        private set
+    val model = FloatArray(16)
+    val normalMatrix = FloatArray(16)
+    val modelInverted = FloatArray(16)
 
     var x = 0f
     var y = 0f
