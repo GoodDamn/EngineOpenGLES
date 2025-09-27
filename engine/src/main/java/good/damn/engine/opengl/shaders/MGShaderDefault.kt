@@ -11,6 +11,10 @@ MGIShaderLight,
 MGIShaderTexture,
 MGIShaderModel {
 
+    companion object {
+        private val NUM_LIGHTS = 32
+    }
+
     override var uniformTexture = 0
         private set
 
@@ -34,9 +38,9 @@ MGIShaderModel {
 
     override val lightDirectional = MGShaderLightDirectional()
     override val material = MGShaderMaterial()
-    override val lightPoints = Array(2) {
-        MGShaderLightPoint(it)
-    }
+    override val lightPoints = Array(
+        NUM_LIGHTS
+    ) { MGShaderLightPoint(it) }
 
     override fun setupUniforms(
         program: Int
