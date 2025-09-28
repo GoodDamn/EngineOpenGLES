@@ -9,9 +9,9 @@ extends MGMatrixTranslate {
     private static final int INDEX_SY = 5;
     private static final int INDEX_SZ = 10;
 
-    private float msx = 1f;
-    private float msy = 1f;
-    private float msz = 1f;
+    public float msx = 1f;
+    public float msy = 1f;
+    public float msz = 1f;
 
     public final float[] modelInverted = new float[16];
     public final float[] normalMatrix = new float[16];
@@ -36,20 +36,27 @@ extends MGMatrixTranslate {
         msz = z;
     }
 
-    public final void calculateNormalMatrix() {
+    public final void calculateInvertModel() {
         Matrix.invertM(
             modelInverted,
             0,
             model,
             0
         );
+    }
 
+    public final void calculateNormalMatrix() {
         Matrix.transposeM(
             normalMatrix,
             0,
             modelInverted,
             0
         );
+    }
+
+    public final void calculateNormalInvertMatrix() {
+        calculateInvertModel();
+        calculateNormalMatrix();
     }
 
     public final void invalidateScale() {

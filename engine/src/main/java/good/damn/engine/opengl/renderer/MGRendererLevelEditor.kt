@@ -16,7 +16,6 @@ import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
 import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.camera.MGCameraFree
-import good.damn.engine.opengl.matrices.MGMMatrix
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
@@ -408,7 +407,7 @@ MGIListenerOnIntersectPosition {
         )
 
         modelMatrixLandscape.invalidatePosition()
-        modelMatrixLandscape.calculateNormalMatrix()
+        modelMatrixLandscape.calculateNormalInvertMatrix()
 
         val lx = 0.0f
         val ly = 0.5f
@@ -516,12 +515,11 @@ MGIListenerOnIntersectPosition {
             )
         }
 
-        modelMatrixTrigger.setScale(
-            1f, 1f, abs(sin(
-                System.currentTimeMillis() % 1000000L * 0.001f
-            ))
-        )
+        modelMatrixTrigger.msx = abs(sin(
+            System.currentTimeMillis() % 1000000L * 0.001f
+        )) * 50f
         modelMatrixTrigger.invalidateScale()
+        modelMatrixTrigger.calculateInvertModel()
 
         mSwitcherDrawMode
             .currentDrawerMode
