@@ -33,6 +33,7 @@ import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
 import good.damn.engine.opengl.managers.MGManagerLight
+import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.shaders.MGShaderDefault
@@ -53,6 +54,7 @@ import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -71,17 +73,18 @@ MGIListenerOnIntersectPosition {
     private val mShaderTexCoords = MGShaderSingleMode()
     private val mShaderWireframe = MGShaderSingleMode()
 
-    private val modelMatrixSky = MGMMatrix().apply {
+    private val modelMatrixSky = MGMatrixScale().apply {
         setScale(
             200000f,
             200000f,
             200000f
         )
-        invalidateTransform()
+        invalidateScale()
+        invalidatePosition()
     }
     private val modelMatrixCamera = MGMatrixTranslate()
-    private val modelMatrixLandscape = MGMMatrix()
-    private val modelMatrixTrigger = MGMMatrix()
+    private val modelMatrixLandscape = MGMatrixScale()
+    private val modelMatrixTrigger = MGMatrixScale()
 
     private val mVerticesBatchObject = MGArrayVertex()
 
@@ -183,8 +186,6 @@ MGIListenerOnIntersectPosition {
     private val managerLights = MGManagerLight(
         mShaderDefault
     )
-
-    private val modelMatrixLightMesh = MGMMatrix()
 
     private val mDrawerModeOpaque = MGDrawerModeOpaque(
         mShaderSky,
@@ -337,6 +338,8 @@ MGIListenerOnIntersectPosition {
                 mShaderWireframe,
                 modelMatrixTrigger.apply {
                     setScale(50f, 50f, 50f)
+                    invalidatePosition()
+                    invalidateScale()
                 }
             )
         )
@@ -398,34 +401,19 @@ MGIListenerOnIntersectPosition {
 
         val off = mGeneratorLandscape.actualWidth / -2f
 
-        modelMatrixLandscape.addPosition(
+        modelMatrixLandscape.setPosition(
             off,
             -5500f,
             off
         )
 
-        modelMatrixLandscape.invalidateTransform()
-
-        meshes.add(
-            MGDrawerMeshSwitch(
-                mDrawerSwitchBatch,
-                MGDrawerPositionEntity(
-                    mDrawerSwitchBatch,
-                    mShaderDefault,
-                    modelMatrixLightMesh
-                )
-            )
-        )
+        modelMatrixLandscape.invalidatePosition()
+        modelMatrixLandscape.calculateNormalMatrix()
 
         val lx = 0.0f
         val ly = 0.5f
         val lz = -0.5f
         val m = 2048f
-        modelMatrixLightMesh.setPosition(
-            lx * m,
-            ly * m,
-            lz * m
-        )
         modelMatrixCamera.setPosition(
             0f,
             -1850f,
@@ -437,7 +425,6 @@ MGIListenerOnIntersectPosition {
             ly,
             lz
         )
-        modelMatrixLightMesh.invalidateTransform()
 
         glEnable(
             GL_DEPTH_TEST
@@ -529,11 +516,12 @@ MGIListenerOnIntersectPosition {
             )
         }
 
-        modelMatrixTrigger.addRotation(
-            0.01f,
-            0f
+        modelMatrixTrigger.setScale(
+            1f, 1f, abs(sin(
+                System.currentTimeMillis() % 1000000L * 0.001f
+            ))
         )
-        modelMatrixTrigger.invalidateTransform()
+        modelMatrixTrigger.invalidateScale()
 
         mSwitcherDrawMode
             .currentDrawerMode
@@ -551,7 +539,7 @@ MGIListenerOnIntersectPosition {
                 p.y,
                 p.z
             )
-            invalidateTransform()
+            invalidatePosition()
         }
     }
 

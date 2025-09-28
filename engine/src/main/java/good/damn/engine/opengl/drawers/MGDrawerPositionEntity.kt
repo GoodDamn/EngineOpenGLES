@@ -2,12 +2,14 @@ package good.damn.engine.opengl.drawers
 
 import android.opengl.GLES30.*
 import good.damn.engine.opengl.matrices.MGMMatrix
+import good.damn.engine.opengl.matrices.MGMatrixModel
+import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.shaders.MGIShaderModel
 
 class MGDrawerPositionEntity(
     private val drawer: MGIDrawer,
     var shader: MGIShaderModel,
-    var modelMatrix: MGMMatrix
+    var modelMatrix: MGMatrixScale
 ): MGIDrawer {
 
     override fun draw() {

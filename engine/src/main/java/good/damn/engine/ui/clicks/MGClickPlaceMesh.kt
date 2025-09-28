@@ -8,6 +8,7 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.enums.MGEnumDrawMode
+import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.ui.MGIClick
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -30,7 +31,7 @@ class MGClickPlaceMesh(
             return
         }
 
-        val modelMatrix = MGMMatrix().apply {
+        val modelMatrix = MGMatrixScale().apply {
             setScale(
                 0.01f,
                 0.01f,

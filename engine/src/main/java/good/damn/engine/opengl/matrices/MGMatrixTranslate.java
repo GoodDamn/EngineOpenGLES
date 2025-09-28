@@ -1,11 +1,11 @@
 package good.damn.engine.opengl.matrices;
 
-public final class MGMatrixTranslate
+public class MGMatrixTranslate
 extends MGMatrixModel {
 
-    private static final int INDEX_X = 3;
-    private static final int INDEX_Y = 7;
-    private static final int INDEX_Z = 11;
+    private static final int INDEX_X = 12;
+    private static final int INDEX_Y = 13;
+    private static final int INDEX_Z = 14;
 
     private float mx = 0f;
     private float my = 0f;
