@@ -21,7 +21,6 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeSingleShader
-import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.entities.MGLight
 import good.damn.engine.opengl.entities.MGMesh
@@ -32,8 +31,6 @@ import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
 import good.damn.engine.opengl.managers.MGManagerLight
-import good.damn.engine.opengl.matrices.MGMatrixInvert
-import good.damn.engine.opengl.matrices.MGMatrixNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
@@ -47,7 +44,7 @@ import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
 import good.damn.engine.opengl.triggers.MGManagerTriggerState
-import good.damn.engine.opengl.triggers.MGTriggerMethodBox
+import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.ui.MGUILayerEditor

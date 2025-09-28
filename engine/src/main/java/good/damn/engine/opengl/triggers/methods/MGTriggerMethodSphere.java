@@ -1,18 +1,16 @@
-package good.damn.engine.opengl.triggers;
+package good.damn.engine.opengl.triggers.methods;
 
 import good.damn.engine.opengl.MGVector;
 
 public final class MGTriggerMethodSphere
 implements MGITriggerMethod {
-    public float radius;
+    private static final float RADIUS = 1f;
 
     public final MGVector mPosition;
 
     public MGTriggerMethodSphere(
-        final float radius,
         final MGVector position
     ) {
-        this.radius = radius;
         mPosition = position;
     }
 
@@ -27,6 +25,6 @@ implements MGITriggerMethod {
         final float cz = z - mPosition.getZ();
         return Math.sqrt(
             cx * cx + cy * cy + cz * cz
-        ) < radius;
+        ) < RADIUS;
     }
 }

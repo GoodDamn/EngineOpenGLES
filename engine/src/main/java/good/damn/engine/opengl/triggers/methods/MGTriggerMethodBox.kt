@@ -1,10 +1,8 @@
-package good.damn.engine.opengl.triggers
+package good.damn.engine.opengl.triggers.methods
 
 import android.opengl.Matrix
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.matrices.MGMatrixInvert
-import good.damn.engine.opengl.matrices.MGMatrixNormal
-import good.damn.engine.opengl.matrices.MGMatrixScale
 
 class MGTriggerMethodBox(
     private val modelMatrix: MGMatrixInvert
