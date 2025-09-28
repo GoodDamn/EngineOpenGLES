@@ -1,6 +1,5 @@
 package good.damn.engine.opengl.callbacks
 
-import good.damn.engine.opengl.matrices.MGMMatrix
 import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.touch.MGIListenerDelta
 

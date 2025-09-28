@@ -3,11 +3,11 @@ package good.damn.engine.ui.clicks
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
-import good.damn.engine.opengl.matrices.MGMMatrix
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.enums.MGEnumDrawMode
+import good.damn.engine.opengl.matrices.MGMatrixNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.ui.MGIClick
@@ -39,6 +39,11 @@ class MGClickPlaceMesh(
             )
         }
 
+        val matrixNormal = MGMatrixNormal(
+            shaderDefault,
+            modelMatrix.model
+        )
+
         callbackOnDeltaInteract.currentMeshInteract = modelMatrix
         meshes.add(
             MGDrawerMeshSwitch(
@@ -47,7 +52,8 @@ class MGClickPlaceMesh(
                     drawerSwitchBatch,
                     shaderDefault,
                     modelMatrix
-                )
+                ),
+                matrixNormal
             )
         )
 

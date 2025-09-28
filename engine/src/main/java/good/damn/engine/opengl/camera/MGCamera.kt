@@ -2,7 +2,6 @@ package good.damn.engine.opengl.camera
 
 import android.opengl.GLES30.*
 import android.opengl.Matrix
-import good.damn.engine.opengl.matrices.MGMMatrix
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.opengl.shaders.MGIShaderCameraPosition

@@ -2,11 +2,11 @@ package good.damn.engine.opengl.triggers
 
 import android.opengl.Matrix
 import good.damn.engine.opengl.MGVector
-import good.damn.engine.opengl.matrices.MGMMatrix
+import good.damn.engine.opengl.matrices.MGMatrixNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
 
 class MGTriggerMethodBox(
-    private val modelMatrix: MGMatrixScale
+    private val modelMatrix: MGMatrixNormal
 ): MGITriggerMethod {
 
     companion object {

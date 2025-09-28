@@ -2,7 +2,6 @@ package good.damn.engine.opengl.camera
 
 import android.opengl.Matrix.setLookAtM
 import good.damn.engine.opengl.MGVector
-import good.damn.engine.opengl.matrices.MGMMatrix
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import kotlin.math.cos
 import kotlin.math.hypot

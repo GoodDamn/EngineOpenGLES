@@ -1,7 +1,6 @@
 package good.damn.engine.opengl.triggers
 
 import good.damn.engine.opengl.MGArrayVertex
-import good.damn.engine.opengl.matrices.MGMMatrix
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.drawers.MGIDrawer
