@@ -10,27 +10,20 @@ import good.damn.engine.opengl.drawers.MGIDrawer;
 import good.damn.engine.opengl.shaders.MGIShaderNormal;
 
 public final class MGMatrixNormal
+extends MGMatrixInvert
 implements MGIDrawer {
 
-    public final float[] modelInverted = new float[16];
     public final float[] normalMatrix = new float[16];
 
     @Nullable
     public MGIShaderNormal shader;
 
-    @NonNull
-    private final float[] model;
-
     public MGMatrixNormal(
         @NonNull final MGIShaderNormal initShader,
         @NonNull final float[] model
     ) {
+        super(model);
         shader = initShader;
-        this.model = model;
-        Matrix.setIdentityM(
-            modelInverted, 0
-        );
-
         Matrix.setIdentityM(
             normalMatrix, 0
         );
@@ -50,15 +43,6 @@ implements MGIDrawer {
         );
     }
 
-    public final void calculateInvertModel() {
-        Matrix.invertM(
-            modelInverted,
-            0,
-            model,
-            0
-        );
-    }
-
     public final void calculateNormalMatrix() {
         Matrix.transposeM(
             normalMatrix,
@@ -66,10 +50,5 @@ implements MGIDrawer {
             modelInverted,
             0
         );
-    }
-
-    public final void calculateNormalInvertMatrix() {
-        calculateInvertModel();
-        calculateNormalMatrix();
     }
 }
