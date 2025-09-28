@@ -1,30 +1,26 @@
 package good.damn.engine.opengl.triggers.methods;
 
+import androidx.annotation.NonNull;
+
 import good.damn.engine.opengl.MGVector;
+import good.damn.engine.opengl.matrices.MGMatrixInvert;
 
 public final class MGTriggerMethodSphere
-implements MGITriggerMethod {
+extends MGTriggerMethodInvert {
     private static final float RADIUS = 1f;
 
-    public final MGVector mPosition;
-
     public MGTriggerMethodSphere(
-        final MGVector position
-    ) {
-        mPosition = position;
-    }
+        @NonNull MGMatrixInvert matrix
+    ) { super(matrix); }
 
     @Override
-    public final boolean canTrigger(
+    protected boolean canTriggerTransformed(
         float x,
         float y,
         float z
     ) {
-        final float cx = x - mPosition.getX();
-        final float cy = y - mPosition.getY();
-        final float cz = z - mPosition.getZ();
         return Math.sqrt(
-            cx * cx + cy * cy + cz * cz
+          x * x + y * y + z * z
         ) < RADIUS;
     }
 }
