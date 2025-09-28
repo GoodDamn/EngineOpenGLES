@@ -10,10 +10,10 @@ class MGTriggerMethodBox(
 
     companion object {
         private val MIN = MGVector(
-            -1f, -1f, -1f
+            -0.5f, -0.5f, -0.5f
         )
         private val MAX = MGVector(
-            1f, 1f, 1f
+            0.5f, 0.5f, 0.5f
         )
     }
 

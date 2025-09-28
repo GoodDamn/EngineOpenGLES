@@ -51,11 +51,11 @@ class MGClickPlaceMesh(
         )
 
         val p = callbackCameraMove.outPointLead
-        modelMatrix.run {
-            x = p.x
-            y = p.y
-            z = p.z
-        }
+        modelMatrix.setPosition(
+            p.x,
+            p.y,
+            p.z
+        )
     }
 
 }

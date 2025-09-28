@@ -78,6 +78,7 @@ MGIListenerOnIntersectPosition {
             200000f,
             200000f
         )
+        invalidateTransform()
     }
     private val modelMatrixCamera = MGMMatrix()
     private val modelMatrixLandscape = MGMMatrix()
@@ -332,7 +333,7 @@ MGIListenerOnIntersectPosition {
                 },
                 mShaderWireframe,
                 modelMatrixTrigger.apply {
-                    setScale(100f, 50f, 10f)
+                    setScale(50f, 50f, 50f)
                 }
             )
         )
@@ -400,7 +401,7 @@ MGIListenerOnIntersectPosition {
             off
         )
 
-        modelMatrixLandscape.invalidatePosition()
+        modelMatrixLandscape.invalidateTransform()
 
         meshes.add(
             MGDrawerMeshSwitch(
@@ -417,19 +418,22 @@ MGIListenerOnIntersectPosition {
         val ly = 0.5f
         val lz = -0.5f
         val m = 2048f
-        modelMatrixLightMesh.x = lx * m
-        modelMatrixLightMesh.y = ly * m
-        modelMatrixLightMesh.z = lz * m
-        modelMatrixCamera.run {
-            y = -1850f
-            z = -3250f
-        }
+        modelMatrixLightMesh.setPosition(
+            lx * m,
+            ly * m,
+            lz * m
+        )
+        modelMatrixCamera.setPosition(
+            0f,
+            -1850f,
+            -3250f
+        )
         mDrawerLightDirectional.setPosition(
             lx,
             ly,
             lz
         )
-        modelMatrixLightMesh.invalidatePosition()
+        modelMatrixLightMesh.invalidateTransform()
 
         glEnable(
             GL_DEPTH_TEST
@@ -522,9 +526,10 @@ MGIListenerOnIntersectPosition {
         }
 
         modelMatrixTrigger.addRotation(
-            0.07f,
+            0.01f,
             0f
         )
+        modelMatrixTrigger.invalidateTransform()
 
         mSwitcherDrawMode
             .currentDrawerMode
@@ -537,10 +542,12 @@ MGIListenerOnIntersectPosition {
         p: MGVector
     ) {
         mCallbackOnDeltaInteract.currentMeshInteract?.run {
-            x = p.x
-            y = p.y
-            z = p.z
-            invalidatePosition()
+            setPosition(
+                p.x,
+                p.y,
+                p.z
+            )
+            invalidateTransform()
         }
     }
 

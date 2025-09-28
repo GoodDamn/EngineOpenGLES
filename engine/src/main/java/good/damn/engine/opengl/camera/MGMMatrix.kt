@@ -14,9 +14,18 @@ class MGMMatrix {
     val normalMatrix = FloatArray(16)
     val modelInverted = FloatArray(16)
 
-    var x = 0f
-    var y = 0f
-    var z = 0f
+    val x: Float
+        get() = matrixTranslate[INDEX_X]
+
+    val y: Float
+        get() = matrixTranslate[INDEX_Y]
+
+    val z: Float
+        get() = matrixTranslate[INDEX_Z]
+
+    private val matrixRotation = FloatArray(16)
+    private val matrixScale = FloatArray(16)
+    private val matrixTranslate = FloatArray(16)
 
     init {
         Matrix.setIdentityM(
@@ -28,23 +37,64 @@ class MGMMatrix {
             normalMatrix,
             0
         )
+
+        Matrix.setIdentityM(
+            matrixRotation,
+            0
+        )
+
+        Matrix.setIdentityM(
+            matrixScale,
+            0
+        )
+        Matrix.setIdentityM(
+            matrixTranslate,
+            0
+        )
     }
 
+    fun invalidateTransform() {
+        Matrix.setIdentityM(
+            model,
+            0
+        )
 
-    fun invalidatePosition() {
-        model[INDEX_X] = x
-        model[INDEX_Y] = y
-        model[INDEX_Z] = z
+        Matrix.multiplyMM(
+            model,
+            0,
+            matrixScale,
+            0,
+            model,
+            0
+        )
+
+        Matrix.multiplyMM(
+            model,
+            0,
+            matrixRotation,
+            0,
+            model,
+            0
+        )
+
+        Matrix.multiplyMM(
+            model,
+            0,
+            matrixTranslate,
+            0,
+            model,
+            0
+        )
     }
 
     fun addRotation(
-        yaw: Float,
+        dYaw: Float,
         pitch: Float
     ) {
         Matrix.rotateM(
-            model,
+            matrixRotation,
             0,
-            yaw,
+            dYaw,
             0.0f,
             1.0f,
             0.0f
@@ -52,14 +102,33 @@ class MGMMatrix {
         calculateNormals()
     }
 
+    fun setPosition(
+        x: Float,
+        y: Float,
+        z: Float
+    ) {
+        Matrix.setIdentityM(
+            matrixTranslate,
+            0
+        )
+
+        Matrix.translateM(
+            matrixTranslate,
+            0,
+            x, y, z
+        )
+    }
+
     fun addPosition(
         dx: Float,
         dy: Float,
         dz: Float
     ) {
-        x += dx
-        y += dy
-        z += dz
+        Matrix.translateM(
+            matrixTranslate,
+            0,
+            dx, dy, dz
+        )
     }
 
     fun setScale(
@@ -68,18 +137,41 @@ class MGMMatrix {
         z: Float
     ) {
         Matrix.scaleM(
-            model,
+            matrixScale,
             0,
             x, y, z
         )
         calculateNormals()
     }
 
-    private inline fun calculateNormals() {
+    private fun calculateNormals() {
+        Matrix.setIdentityM(
+            modelInverted,
+            0
+        )
+
+        Matrix.multiplyMM(
+            modelInverted,
+            0,
+            matrixScale,
+            0,
+            modelInverted,
+            0
+        )
+
+        Matrix.multiplyMM(
+            modelInverted,
+            0,
+            matrixRotation,
+            0,
+            modelInverted,
+            0
+        )
+
         Matrix.invertM(
             modelInverted,
             0,
-            model,
+            modelInverted,
             0
         )
 

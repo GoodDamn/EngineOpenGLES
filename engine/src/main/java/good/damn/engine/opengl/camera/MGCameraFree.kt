@@ -30,9 +30,6 @@ class MGCameraFree(
     private var mPitch = 0.0f
 
     init {
-        modelMatrix.x = 0f
-        modelMatrix.y = 0f
-        modelMatrix.z = 3.0f
         addRotation(0.0f,0.0f)
         invalidatePosition()
     }
@@ -42,7 +39,7 @@ class MGCameraFree(
         val y = modelMatrix.y
         val z = modelMatrix.z
 
-        modelMatrix.invalidatePosition()
+        modelMatrix.invalidateTransform()
         setLookAtM(
             modelMatrix.model,
             0,
