@@ -3,12 +3,13 @@ package good.damn.engine.opengl.camera
 import android.opengl.Matrix.setLookAtM
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.matrices.MGMMatrix
+import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.sin
 
 class MGCameraFree(
-    modelMatrix: MGMMatrix
+    modelMatrix: MGMatrixTranslate
 ): MGCamera(
     modelMatrix
 ) {
@@ -38,7 +39,10 @@ class MGCameraFree(
         val y = modelMatrix.y
         val z = modelMatrix.z
 
-        modelMatrix.invalidateTransform()
+        modelMatrix.setPosition(
+            x, y, z
+        )
+        modelMatrix.invalidatePosition()
         setLookAtM(
             modelMatrix.model,
             0,

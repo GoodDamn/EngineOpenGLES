@@ -33,6 +33,7 @@ import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
 import good.damn.engine.opengl.managers.MGManagerLight
+import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
@@ -78,7 +79,7 @@ MGIListenerOnIntersectPosition {
         )
         invalidateTransform()
     }
-    private val modelMatrixCamera = MGMMatrix()
+    private val modelMatrixCamera = MGMatrixTranslate()
     private val modelMatrixLandscape = MGMMatrix()
     private val modelMatrixTrigger = MGMMatrix()
 
@@ -430,6 +431,7 @@ MGIListenerOnIntersectPosition {
             -1850f,
             -3250f
         )
+        modelMatrixCamera.invalidatePosition()
         mDrawerLightDirectional.setPosition(
             lx,
             ly,
