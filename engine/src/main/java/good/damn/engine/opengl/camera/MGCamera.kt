@@ -1,16 +1,10 @@
 package good.damn.engine.opengl.camera
 
-import android.opengl.GLES20
 import android.opengl.GLES30.*
 import android.opengl.Matrix
-import android.util.Log
-import good.damn.engine.opengl.drawers.MGIDrawer
-import good.damn.engine.opengl.drawers.MGIUniform
-import good.damn.engine.opengl.entities.MGObjectDimension
-import good.damn.engine.opengl.shaders.MGIShader
+import good.damn.engine.opengl.matrices.MGMMatrix
 import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.opengl.shaders.MGIShaderCameraPosition
-import good.damn.engine.opengl.shaders.MGIShaderModel
 
 open class MGCamera(
     var modelMatrix: MGMMatrix

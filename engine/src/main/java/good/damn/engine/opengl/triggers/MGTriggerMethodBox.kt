@@ -2,7 +2,7 @@ package good.damn.engine.opengl.triggers
 
 import android.opengl.Matrix
 import good.damn.engine.opengl.MGVector
-import good.damn.engine.opengl.camera.MGMMatrix
+import good.damn.engine.opengl.matrices.MGMMatrix
 
 class MGTriggerMethodBox(
     private val modelMatrix: MGMMatrix

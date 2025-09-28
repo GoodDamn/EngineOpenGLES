@@ -1,10 +1,7 @@
 package good.damn.engine.opengl.drawers
 
 import android.opengl.GLES30.*
-import androidx.annotation.CallSuper
-import good.damn.engine.opengl.camera.MGMMatrix
-import good.damn.engine.opengl.shaders.MGIShader
-import good.damn.engine.opengl.shaders.MGIShaderCamera
+import good.damn.engine.opengl.matrices.MGMMatrix
 import good.damn.engine.opengl.shaders.MGIShaderModel
 
 class MGDrawerPositionEntity(

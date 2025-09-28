@@ -1,4 +1,4 @@
-package good.damn.engine.opengl.camera
+package good.damn.engine.opengl.matrices
 
 import android.opengl.Matrix
 

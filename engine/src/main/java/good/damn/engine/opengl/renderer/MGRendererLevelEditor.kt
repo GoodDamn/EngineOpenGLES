@@ -16,7 +16,7 @@ import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
 import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.camera.MGCameraFree
-import good.damn.engine.opengl.camera.MGMMatrix
+import good.damn.engine.opengl.matrices.MGMMatrix
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
@@ -41,10 +41,8 @@ import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
-import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGManagerTriggerState
 import good.damn.engine.opengl.triggers.MGTriggerMethodBox
-import good.damn.engine.opengl.triggers.MGTriggerMethodSphere
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.ui.MGUILayerEditor
