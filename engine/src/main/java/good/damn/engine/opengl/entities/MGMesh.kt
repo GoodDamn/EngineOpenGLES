@@ -6,7 +6,6 @@ import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.matrices.MGMatrixModel
 import good.damn.engine.opengl.matrices.MGMatrixNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
-import good.damn.engine.opengl.matrices.MGMatrixTransformation
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.shaders.MGIShaderModel
 

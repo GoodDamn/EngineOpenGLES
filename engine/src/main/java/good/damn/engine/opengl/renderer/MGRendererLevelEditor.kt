@@ -32,9 +32,11 @@ import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
 import good.damn.engine.opengl.managers.MGManagerLight
+import good.damn.engine.opengl.matrices.MGMatrixInvert
 import good.damn.engine.opengl.matrices.MGMatrixNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
-import good.damn.engine.opengl.matrices.MGMatrixTransformation
+import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert
+import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.shaders.MGShaderDefault
@@ -84,17 +86,16 @@ MGIListenerOnIntersectPosition {
         invalidatePosition()
     }
     private val modelMatrixCamera = MGMatrixTranslate()
-    private val modelMatrixLandscape = MGMatrixTransformation(
+    private val modelMatrixLandscape = MGMatrixTransformationNormal(
         MGMatrixTranslate(),
         mShaderDefault
     )
-    private val modelMatrixTrigger = MGMatrixTransformation(
+    private val modelMatrixTrigger = MGMatrixTransformationInvert(
         MGMatrixScale().apply {
             setScale(50f, 50f, 50f)
             invalidatePosition()
             invalidateScale()
-        },
-        mShaderDefault
+        }
     )
 
     private val mVerticesBatchObject = MGArrayVertex()
@@ -328,7 +329,7 @@ MGIListenerOnIntersectPosition {
             MGDrawerTriggerStateable(
                 MGManagerTriggerState(
                     MGTriggerMethodBox(
-                        modelMatrixTrigger.normal
+                        modelMatrixTrigger.invert
                     ),
                     MGTriggerSimple(
                         mDrawerLightDirectional
@@ -530,7 +531,7 @@ MGIListenerOnIntersectPosition {
             )) * 50f
             invalidateScale()
         }
-        modelMatrixTrigger.normal.calculateInvertModel()
+        modelMatrixTrigger.invert.calculateInvertModel()
 
         mSwitcherDrawMode
             .currentDrawerMode
