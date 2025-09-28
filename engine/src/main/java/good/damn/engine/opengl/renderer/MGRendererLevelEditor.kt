@@ -321,15 +321,19 @@ MGIListenerOnIntersectPosition {
                         mDrawerLightDirectional
                     )
                 ),
-                MGObject3D.createFromAssets(
-                    "objs/box.obj"
-                ).run {
-                    MGArrayVertex().apply {
-                        configure(
-                            vertices,
-                            indices
-                        )
-                    }
+                MGArrayVertex().apply {
+                    configure(
+                        MGUtilsBuffer.createFloat(
+                            MGUtilsVertIndices.createCubeVertices(
+                                MGTriggerMethodBox.MIN,
+                                MGTriggerMethodBox.MAX
+                            )
+                        ),
+                        MGUtilsBuffer.createInt(
+                            MGUtilsVertIndices.createCubeIndices()
+                        ),
+                        stride = 3 * 4
+                    )
                 },
                 mShaderWireframe,
                 modelMatrixTrigger.apply {

@@ -9,10 +9,10 @@ class MGTriggerMethodBox(
 ): MGITriggerMethod {
 
     companion object {
-        private val MIN = MGVector(
+        val MIN = MGVector(
             -0.5f, -0.5f, -0.5f
         )
-        private val MAX = MGVector(
+        val MAX = MGVector(
             0.5f, 0.5f, 0.5f
         )
     }
