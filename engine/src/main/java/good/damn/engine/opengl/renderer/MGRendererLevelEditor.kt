@@ -6,6 +6,7 @@ import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
 import android.util.Log
 import android.view.MotionEvent
+import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
@@ -286,6 +287,30 @@ MGIListenerOnIntersectPosition {
         gl: GL10?,
         config: EGLConfig?
     ) {
+        MGEngine.DIR_PUBLIC.run {
+            if (exists() && length() != 0L) {
+                return@run
+            }
+
+            val extensions = glGetString(
+                GL_EXTENSIONS
+            ).replace(" ".toRegex(), "\n")
+
+            val numExt = extensions.count {
+                it == '\n'
+            }
+
+            outputStream().run {
+                write(
+                    numExt.toString().encodeToByteArray()
+                )
+                write(10)
+                write(
+                    extensions.encodeToByteArray()
+                )
+                close()
+            }
+        }
         mShaderWireframe.setup(
             "shaders/wireframe/vert.glsl",
             "shaders/wireframe/frag.glsl"
