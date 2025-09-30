@@ -1,56 +1,70 @@
 package good.damn.engine.touch
 
+import android.util.Log
 import android.view.MotionEvent
 
-open class MGTouchMulti
-: MGITouchable {
+open class MGTouchMulti(
+    private val maxTouches: Int
+): MGITouchable {
 
-    var touchId = -1
-        private set
+    private val mTouchIds = ArrayList<Int>(
+        maxTouches
+    )
 
     final override fun onTouchEvent(
         event: MotionEvent
-    ) {
+    ): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN,
             MotionEvent.ACTION_POINTER_DOWN -> {
-                val index = event.actionIndex
-                if (touchId != -1) {
-                    return
+                if (mTouchIds.size >= maxTouches) {
+                    return false
                 }
+
+                val index = event.actionIndex
 
                 if (!onTouchDown(
                     event,
                     index
                 )) {
-                    return
+                    return false
                 }
 
-                touchId = event.getPointerId(
+                val ptrId = event.getPointerId(
                     index
+                )
+                Log.d(javaClass.simpleName, "onTouchEvent: ACTION_DOWN: $index -> $ptrId")
+                mTouchIds.add(
+                    ptrId
                 )
             }
 
             MotionEvent.ACTION_MOVE -> {
-                if (touchId == -1) {
-                    return
+                if (mTouchIds.isEmpty()) {
+                    return false
                 }
                 onTouchMove(
                     event,
-                    event.findPointerIndex(
-                        touchId
-                    )
+                    mTouchIds
                 )
             }
 
             MotionEvent.ACTION_CANCEL,
             MotionEvent.ACTION_POINTER_UP -> {
-                if (touchId == -1) {
-                    return
+                if (mTouchIds.isEmpty()) {
+                    return false
                 }
+
                 val index = event.actionIndex
-                if (event.findPointerIndex(touchId) == index) {
-                    touchId = -1
+                val ptrId = event.getPointerId(
+                    index
+                )
+
+                Log.d(javaClass.simpleName, "onTouchEvent: ACTION_UP: $ptrId=$mTouchIds")
+                if (mTouchIds.remove(
+                    element = ptrId
+                )) {
+                    Log.d(javaClass.simpleName, "onTouchEvent: $ptrId removed")
                     onTouchUp(
                         event,
                         index
@@ -59,14 +73,24 @@ open class MGTouchMulti
             }
 
             MotionEvent.ACTION_UP -> {
-                touchId = -1
+                mTouchIds.clear()
                 onTouchUp(
                     event,
                     0
                 )
             }
         }
+
+        return true
     }
+
+    fun containsMotionEvent(
+        event: MotionEvent
+    ) = mTouchIds.contains(
+        event.getPointerId(
+            event.actionIndex
+        )
+    )
 
     protected open fun onTouchDown(
         event: MotionEvent,
@@ -75,7 +99,7 @@ open class MGTouchMulti
 
     protected open fun onTouchMove(
         event: MotionEvent,
-        touchIndex: Int
+        touchIds: List<Int>
     ) = Unit
 
     protected open fun onTouchUp(

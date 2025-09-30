@@ -1,13 +1,14 @@
 package good.damn.engine.opengl.ui
 
 import android.util.Log
+import good.damn.engine.ui.MGIListenerValueChanged
 
 class MGSeekBarGl(
     private var mX: Float = 0f,
     private var mY: Float = 0f,
     width: Float = 0f,
     height: Float = 0f,
-    private val onChangeValue: (Float) -> Unit
+    private val onChangeValue: MGIListenerValueChanged
 ) {
 
     companion object {
@@ -44,7 +45,7 @@ class MGSeekBarGl(
 
         val dth = (y - mY) / (mBottom - mY)
 
-        onChangeValue(
+        onChangeValue.onValueChanged(
             dth
         )
 

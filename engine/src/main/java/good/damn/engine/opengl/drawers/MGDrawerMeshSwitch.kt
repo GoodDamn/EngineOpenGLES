@@ -2,39 +2,32 @@ package good.damn.engine.opengl.drawers
 
 import android.opengl.GLES30
 import good.damn.engine.opengl.enums.MGEnumDrawMode
+import good.damn.engine.opengl.matrices.MGMatrixNormal
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderCamera
+import good.damn.engine.opengl.shaders.MGIShaderModel
 import good.damn.engine.opengl.shaders.MGIShaderNormal
 
 open class MGDrawerMeshSwitch(
     private val drawSwitch: MGDrawerModeSwitch,
     private val drawEntity: MGDrawerPositionEntity,
+    private val normals: MGMatrixNormal?
 ): MGIDrawer {
 
-    private var mShaderNormals: MGIShaderNormal? = null
-
     fun switchDrawMode(
-        shader: MGIShaderCamera,
+        shader: MGIShaderModel,
         shaderNormals: MGIShaderNormal?,
         drawMode: MGEnumDrawMode
     ) {
         drawEntity.shader = shader
-        mShaderNormals = shaderNormals
+        normals?.shader = shaderNormals
         drawSwitch.switchDrawMode(
             drawMode
         )
     }
 
     override fun draw() {
-        mShaderNormals?.run {
-            GLES30.glUniformMatrix4fv(
-                uniformNormalMatrix,
-                1,
-                false,
-                drawEntity.modelMatrix.normalMatrix,
-                0
-            )
-        }
+        normals?.draw()
         drawEntity.draw()
     }
 }

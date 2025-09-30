@@ -3,18 +3,15 @@ package good.damn.engine.opengl.shaders
 import android.opengl.GLES30.glGetUniformLocation
 import good.damn.engine.opengl.drawers.MGIUniform
 
-class MGShaderLight
+class MGShaderLightDirectional
 : MGIUniform {
     var uniformColor = 0
         private set
 
-    var uniformAmbient = 0
+    var uniformColorAmbient = 0
         private set
 
-    var uniformPosition = 0
-        private set
-
-    var uniformIntensity = 0
+    var uniformDirection = 0
         private set
 
     override fun setupUniforms(
@@ -22,22 +19,17 @@ class MGShaderLight
     ) {
         uniformColor = glGetUniformLocation(
             program,
-            "light.color"
+            "dirLight.color"
         )
 
-        uniformAmbient = glGetUniformLocation(
+        uniformDirection = glGetUniformLocation(
             program,
-            "light.factorAmbient"
+            "dirLight.direction"
         )
 
-        uniformPosition = glGetUniformLocation(
+        uniformColorAmbient = glGetUniformLocation(
             program,
-            "light.position"
-        )
-
-        uniformIntensity = glGetUniformLocation(
-            program,
-            "light.intensity"
+            "dirLight.ambientColor"
         )
     }
 }

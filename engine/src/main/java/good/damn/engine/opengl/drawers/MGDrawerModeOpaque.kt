@@ -2,18 +2,23 @@ package good.damn.engine.opengl.drawers
 
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.entities.MGMesh
+import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.shaders.MGShaderDefault
+import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
-import java.util.LinkedList
+import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
 import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGDrawerModeOpaque(
     var shaderSky: MGShaderSkySphere,
     var shaderOpaque: MGShaderDefault,
+    var shaderTrigger: MGShaderSingleMode,
     var sky: MGMesh,
     var camera: MGCamera,
     var directionalLight: MGDrawerLightDirectional,
-    var meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>
+    var meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>,
+    var triggers: ConcurrentLinkedQueue<MGDrawerTriggerStateable>,
+    var lights: MGManagerLight
 ): MGIDrawer {
 
     override fun draw() {
@@ -23,13 +28,28 @@ data class MGDrawerModeOpaque(
         )
         sky.draw()
 
+
+
         shaderOpaque.use()
         camera.draw(
             shaderOpaque
         )
+        camera.drawPosition(
+            shaderOpaque
+        )
         directionalLight.draw()
-
         meshes.forEach {
+            it.draw()
+        }
+        lights.draw()
+
+
+
+        shaderTrigger.use()
+        camera.draw(
+            shaderTrigger
+        )
+        triggers.forEach {
             it.draw()
         }
     }

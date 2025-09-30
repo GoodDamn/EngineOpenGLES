@@ -4,60 +4,65 @@ import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.MGEngine
-import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.MGObject3D
+import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.MGVector
+import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
+import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.camera.MGCameraFree
-import good.damn.engine.opengl.camera.MGMMatrix
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeSingleShader
-import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
-import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
+import good.damn.engine.opengl.entities.MGLight
 import good.damn.engine.opengl.entities.MGMesh
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.maps.MGMapDisplace
-import good.damn.engine.opengl.models.MGMUserContent
-import good.damn.engine.opengl.rays.MGRayIntersection
-import good.damn.engine.opengl.shaders.MGIShaderCamera
-import good.damn.engine.opengl.shaders.MGIShaderNormal
+import good.damn.engine.opengl.maps.MGMapNormal
+import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
+import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
+import good.damn.engine.opengl.managers.MGManagerLight
+import good.damn.engine.opengl.matrices.MGMatrixScale
+import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert
+import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
+import good.damn.engine.opengl.matrices.MGMatrixTranslate
+import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
-import good.damn.engine.opengl.ui.MGButtonGL
-import good.damn.engine.opengl.ui.MGSeekBarGl
-import good.damn.engine.touch.MGIListenerMove
-import good.damn.engine.touch.MGIListenerDelta
+import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
+import good.damn.engine.opengl.triggers.MGManagerTriggerState
+import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
+import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.touch.MGIListenerScale
-import good.damn.engine.touch.MGTouchFreeMove
-import good.damn.engine.touch.MGTouchScale
-import java.util.LinkedList
+import good.damn.engine.ui.MGUILayerEditor
+import good.damn.engine.ui.clicks.MGClickGenerateLandscape
+import good.damn.engine.ui.clicks.MGClickPlaceMesh
+import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
+import good.damn.engine.utils.MGUtilsBuffer
+import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.sin
 
 class MGRendererLevelEditor(
-    private val requesterUserContent: MGIRequestUserContent
+    requesterUserContent: MGIRequestUserContent
 ): GLSurfaceView.Renderer,
-MGIListenerOnGetUserContent,
-MGIListenerScale,
-MGIListenerDelta,
-MGIListenerMove {
+MGIListenerOnIntersectPosition {
 
     companion object {
         private const val TAG = "MGRendererLevelEditor"
@@ -69,15 +74,27 @@ MGIListenerMove {
     private val mShaderTexCoords = MGShaderSingleMode()
     private val mShaderWireframe = MGShaderSingleMode()
 
-    private val modelMatrixSky = MGMMatrix().apply {
+    private val modelMatrixSky = MGMatrixScale().apply {
         setScale(
             200000f,
             200000f,
             200000f
         )
+        invalidateScale()
+        invalidatePosition()
     }
-    private val modelMatrixCamera = MGMMatrix()
-    private val modelMatrixLandscape = MGMMatrix()
+    private val modelMatrixCamera = MGMatrixTranslate()
+    private val modelMatrixLandscape = MGMatrixTransformationNormal(
+        MGMatrixTranslate(),
+        mShaderDefault
+    )
+    private val modelMatrixTrigger = MGMatrixTransformationInvert(
+        MGMatrixScale().apply {
+            setScale(50f, 50f, 50f)
+            invalidatePosition()
+            invalidateScale()
+        }
+    )
 
     private val mVerticesBatchObject = MGArrayVertex()
 
@@ -128,7 +145,8 @@ MGIListenerMove {
             GL_CW
         ),
         mShaderDefault,
-        modelMatrixLandscape
+        modelMatrixLandscape.model,
+        modelMatrixLandscape.normal
     )
 
     private val meshSky = MGMesh(
@@ -141,162 +159,158 @@ MGIListenerMove {
             GL_CCW
         ),
         mShaderSky,
-        modelMatrixSky
+        modelMatrixSky,
+        normals = null
     )
-
 
     private val mCameraFree = MGCameraFree(
         modelMatrixCamera
     )
 
-    private val mTouchMove = MGTouchFreeMove().apply {
-        setListenerMove(
-            this@MGRendererLevelEditor
-        )
-        setListenerDelta(
-            this@MGRendererLevelEditor
-        )
-    }
-
     private val mCallbackOnDeltaInteract = MGCallbackOnDeltaInteract()
-
-    private val mTouchScale = MGTouchScale().apply {
-        onScale = this@MGRendererLevelEditor
-        onDelta = mCallbackOnDeltaInteract
-    }
-
-    private val mBtnLoadUserContent = MGButtonGL {
-        requesterUserContent.requestUserContent(
-            this,
-            "*/*"
+    private val mCallbackOnCameraMove = MGCallbackOnCameraMovement(
+        mCameraFree
+    ).apply {
+        setListenerIntersection(
+            this@MGRendererLevelEditor
         )
-    }
-
-    private val mBtnSwitchWireframe = MGButtonGL {
-        mHandler.post {
-            when (MGEngine.drawMode) {
-                MGEnumDrawMode.OPAQUE -> {
-                    switchDrawMode(
-                        MGEnumDrawMode.OPAQUE,
-                        mDrawerModeWireframe,
-                        mShaderWireframe,
-                        mShaderWireframe,
-                        null,
-                        null
-                    )
-                    MGEngine.drawMode = MGEnumDrawMode.WIREFRAME
-                }
-
-                MGEnumDrawMode.WIREFRAME -> {
-                    switchDrawMode(
-                        MGEnumDrawMode.WIREFRAME,
-                        mDrawerModeNormals,
-                        mShaderNormals,
-                        mShaderNormals,
-                        mShaderNormals,
-                        mShaderNormals
-                    )
-                    MGEngine.drawMode = MGEnumDrawMode.NORMALS
-                }
-
-                MGEnumDrawMode.NORMALS -> {
-                    switchDrawMode(
-                        MGEnumDrawMode.NORMALS,
-                        mDrawerModeTexCoords,
-                        mShaderTexCoords,
-                        mShaderTexCoords,
-                        null,
-                        null
-                    )
-                    MGEngine.drawMode = MGEnumDrawMode.TEX_COORDS
-                }
-
-                MGEnumDrawMode.TEX_COORDS -> {
-                    switchDrawMode(
-                        MGEnumDrawMode.TEX_COORDS,
-                        mDrawerModeOpaque,
-                        mShaderDefault,
-                        mShaderSky,
-                        mShaderDefault,
-                        null
-                    )
-                    MGEngine.drawMode = MGEnumDrawMode.OPAQUE
-                }
-            }
-            val error = glGetError()
-            if (error != GL_NO_ERROR) {
-                Log.d("TAG", "post: ERROR: ${error.toString(16)}")
-                return@post
-            }
-        }
-    }
-
-    private val mBtnPlaceMesh = MGButtonGL {
-        if (MGEngine.drawMode != MGEnumDrawMode.OPAQUE) {
-            return@MGButtonGL
-        }
-        placeMesh()
-    }
-
-    private val mBarSeekAmbient = MGSeekBarGl {
-        mDrawerLightDirectional.ambient = it
     }
 
     private val mHandler = MGHandlerGl()
 
-    private val mOutPointLead = MGVector(0f)
-    private val mPointCamera = MGVector(0f)
     private val meshes = ConcurrentLinkedQueue<
         MGDrawerMeshSwitch
     >().apply {
         add(meshLandscape)
     }
 
+    private val mTriggers = ConcurrentLinkedQueue<
+        MGDrawerTriggerStateable
+    >()
+
     private var mWidth = 0
     private var mHeight = 0
 
     private val mDrawerLightDirectional = MGDrawerLightDirectional(
-        mShaderDefault.light
+        mShaderDefault.lightDirectional
     )
 
-    private val mRayIntersection = MGRayIntersection()
+    private val managerLights = MGManagerLight(
+        mShaderDefault
+    )
 
     private val mDrawerModeOpaque = MGDrawerModeOpaque(
         mShaderSky,
         mShaderDefault,
-        meshSky,
-        mCameraFree,
-        mDrawerLightDirectional,
-        meshes
-    )
-
-    private val mDrawerModeWireframe = MGDrawerModeSingleShader(
         mShaderWireframe,
         meshSky,
         mCameraFree,
-        meshes
+        mDrawerLightDirectional,
+        meshes,
+        mTriggers,
+        managerLights
     )
 
-    private val mDrawerModeNormals = MGDrawerModeSingleShader(
-        mShaderNormals,
+    private val mSwitcherDrawMode = MGSwitcherDrawMode(
         meshSky,
-        mCameraFree,
-        meshes
+        meshes,
+        mDrawerModeOpaque
     )
 
-    private val mDrawerModeTexCoords = MGDrawerModeSingleShader(
-        mShaderTexCoords,
-        meshSky,
-        mCameraFree,
-        meshes
-    )
+    private val mLayerEditor = MGUILayerEditor(
+        clickLoadUserContent = MGClickGenerateLandscape(
+            mHandler,
+            mGeneratorLandscape,
+            requesterUserContent
+        ),
+        clickPlaceMesh = MGClickPlaceMesh(
+            mCallbackOnDeltaInteract,
+            meshes,
+            mDrawerSwitchBatch,
+            mShaderDefault,
+            mCallbackOnCameraMove
+        ),
+        clickSwitchDrawerMode = createDrawModeSwitcher()
+    ).apply {
+        setListenerTouchMove(
+            mCallbackOnCameraMove
+        )
 
-    private var mCurrentDrawerMode: MGIDrawer = mDrawerModeOpaque
+        setListenerTouchDelta(
+            mCallbackOnCameraMove
+        )
 
+        setListenerTouchScaleInteract(
+            object: MGIListenerScale {
+                override fun onScale(
+                    scale: Float
+                ) {
+                    mCallbackOnDeltaInteract.currentMeshInteract?.setScale(
+                        scale,
+                        scale,
+                        scale
+                    )
+                }
+            }
+        )
+
+        setListenerTouchDeltaInteract(
+            mCallbackOnDeltaInteract
+        )
+    }
+
+    private val mLight = MGLight(
+        MGVector(
+            1f, 1f, 0f
+        ),
+        MGVector(0f,0f,0f),
+        600f
+    ).apply {
+        managerLights.register(
+            this
+        )
+    }
+
+    private val mLight2 = MGLight(
+        MGVector(
+            1f, 0f, 1f
+        ),
+        MGVector(0f,0f,0f),
+        600f
+    ).apply {
+        managerLights.register(
+            this
+        )
+    }
+    
     override fun onSurfaceCreated(
         gl: GL10?,
         config: EGLConfig?
     ) {
+        MGEngine.DIR_PUBLIC.run {
+            if (exists() && length() != 0L) {
+                return@run
+            }
+
+            val extensions = glGetString(
+                GL_EXTENSIONS
+            ).replace(" ".toRegex(), "\n")
+
+            val numExt = extensions.count {
+                it == '\n'
+            }
+
+            outputStream().run {
+                write(
+                    numExt.toString().encodeToByteArray()
+                )
+                write(10)
+                write(
+                    extensions.encodeToByteArray()
+                )
+                close()
+            }
+        }
         mShaderWireframe.setup(
             "shaders/wireframe/vert.glsl",
             "shaders/wireframe/frag.glsl"
@@ -324,7 +338,7 @@ MGIListenerMove {
 
 
         MGObject3D.createFromAssets(
-            "objs/house.obj"
+            "objs/box.obj"
         ).run {
             mVerticesBatchObject.configure(
                 vertices,
@@ -332,17 +346,39 @@ MGIListenerMove {
             )
         }
 
+
+        mTriggers.add(
+            MGDrawerTriggerStateable(
+                MGManagerTriggerState(
+                    MGTriggerMethodBox(
+                        modelMatrixTrigger.invert
+                    ),
+                    MGTriggerSimple(
+                        mDrawerLightDirectional
+                    )
+                ),
+                MGArrayVertex().apply {
+                    configure(
+                        MGUtilsBuffer.createFloat(
+                            MGUtilsVertIndices.createCubeVertices(
+                                MGTriggerMethodBox.MIN,
+                                MGTriggerMethodBox.MAX
+                            )
+                        ),
+                        MGUtilsBuffer.createInt(
+                            MGUtilsVertIndices.createCubeIndices()
+                        ),
+                        stride = 3 * 4
+                    )
+                },
+                mShaderWireframe,
+                modelMatrixTrigger.model
+            )
+        )
+
         mTextureInteract.setupTexture(
             "textures/rock.jpg"
         )
-
-        /*mCameraRotation.radius = 1250f
-        mTouchScale.scale = mCameraRotation.radius
-
-        mCameraRotation.setRotation(
-            0f,
-            0.01f
-        )*/
 
         mTextureLandscape.setupTexture(
             "textures/terrain.png",
@@ -350,7 +386,7 @@ MGIListenerMove {
         )
 
         mTextureSky.setupTexture(
-            "textures/sky/skysphere_light.jpg"
+            "textures/sky/night.png"
         )
 
         MGObject3D.createFromAssets(
@@ -362,23 +398,63 @@ MGIListenerMove {
             )
         }
 
+        val landSize = 1024
         mGeneratorLandscape.apply {
             setResolution(
-                1024,
-                1024
+                landSize,
+                landSize
             )
 
-            displace(
-                MGMapDisplace.createFromAssets(
-                    "maps/terrain_height.png"
+            val mapNormal = MGMapNormal.createFromAssets(
+                "maps/normal/terrain_normal.png"
+            )
+
+            forEachVertex(
+                MGVertexIteratorLandscapeNormal(
+                    mapNormal
                 )
             )
+            mapNormal.destroy()
+
+            val mapHeight = MGMapDisplace.createFromAssets(
+                "maps/terrain_height.png"
+            )
+
+            forEachVertex(
+                MGVertexIteratorLandscapeDisplace(
+                    mapHeight,
+                    255 * 50,
+                    landSize,
+                    landSize
+                )
+            )
+            mapHeight.destroy()
         }
 
-        modelMatrixLandscape.setScale(
-            3.0f,
-            3.0f,
-            3.0f
+        val off = mGeneratorLandscape.actualWidth / -2f
+
+        modelMatrixLandscape.model.setPosition(
+            off,
+            -5500f,
+            off
+        )
+
+        modelMatrixLandscape.model.invalidatePosition()
+
+        val lx = 0.0f
+        val ly = 0.5f
+        val lz = -0.5f
+        val m = 2048f
+        modelMatrixCamera.setPosition(
+            0f,
+            -1850f,
+            -3250f
+        )
+        modelMatrixCamera.invalidatePosition()
+        mDrawerLightDirectional.setPosition(
+            lx,
+            ly,
+            lz
         )
 
         glEnable(
@@ -411,82 +487,16 @@ MGIListenerMove {
             height
         )
 
-        val w: Float
-        val h: Float
-
-        if (width < height) {
-            w = fWidth
-            h = fHeight
-        } else {
-            w = fHeight
-            h = fWidth
-        }
-
-        mTouchMove.setBoundsMove(
-            0f,
-            0f,
-            fWidth * 0.5f,
-            fHeight
-        )
-
-        val btnLen = w * 0.1f
-
-        mTouchMove.setBoundsDelta(
-            fWidth * 0.5f,
-            0f,
+        mLayerEditor.layout(
+            0f, 0f,
             fWidth,
             fHeight
-        )
-
-        mBarSeekAmbient.bounds(
-            0f,
-            0f,
-            btnLen,
-            fHeight
-        )
-
-        mBtnSwitchWireframe.bounds(
-            fWidth - btnLen,
-            fHeight - btnLen,
-            btnLen,
-            btnLen
-        )
-
-        mBtnLoadUserContent.bounds(
-            fWidth - btnLen,
-            0f,
-            btnLen,
-            btnLen
-        )
-
-        val btnLen2 = btnLen
-        val midX = (fWidth - btnLen2) * 0.5f
-        val midY = (fHeight - btnLen2) * 0.5f
-        mBtnPlaceMesh.bounds(
-            midX,
-            fHeight - btnLen2,
-            btnLen2,
-            btnLen2
-        )
-
-        mTouchScale.setBounds(
-            midX, midY,
-            midX + btnLen2,
-            midY + btnLen2
         )
     }
 
     override fun onDrawFrame(
         gl: GL10?
     ) {
-        /*val f = System.currentTimeMillis() % 100000L * 0.001f
-        val fx = sin(f) * 840f
-        val fz = cos(f) * 840f
-
-        mDrawerLightDirectional.setPosition(
-            fx, 600f, fz
-        )*/
-
         glViewport(
             0,
             0,
@@ -505,172 +515,114 @@ MGIListenerMove {
             1.0f
         )
 
+        val t = System.currentTimeMillis() % 1000000L * 0.0007f
+
+        mLight.position.run {
+            x = cos(t) * 1250f
+            y = -1850f
+            z = -3250f
+        }
+
+        mLight2.position.run {
+            x = sin(t) * 1250f
+            y = -1850f
+            z = -3250f
+        }
+
         val error = glGetError()
         if (error != GL_NO_ERROR) {
             Log.d("TAG", "onDrawFrame: ERROR: ${error.toString(16)}")
             return
         }
-        mCurrentDrawerMode.draw()
+
+        // 1. Camera point triggering needs to check only on self position changes
+        // it doesn't need to check on each touch event
+        // 2. For other entities who can trigger, check it inside infinite loop
+        val model = mCameraFree.modelMatrix
+        mTriggers.forEach {
+            it.stateManager.trigger(
+                model.x,
+                model.y,
+                model.z
+            )
+        }
+
+        modelMatrixTrigger.model.run {
+            msx = abs(sin(
+                System.currentTimeMillis() % 1000000L * 0.001f
+            )) * 50f
+            invalidateScale()
+        }
+        modelMatrixTrigger.invert.calculateInvertModel()
+
+        mSwitcherDrawMode
+            .currentDrawerMode
+            .draw()
 
         mHandler.run()
     }
 
-    override fun onGetUserContent(
-        userContent: MGMUserContent
+    override fun onIntersectPosition(
+        p: MGVector
     ) {
-        val mapDisplace = MGMapDisplace.createFromStream(
-            userContent.stream
-        )
-
-        Handler(
-            Looper.getMainLooper()
-        ).post {
-            mHandler.post {
-                mGeneratorLandscape.displace(
-                    mapDisplace
-                )
-            }
+        mCallbackOnDeltaInteract.currentMeshInteract?.run {
+            setPosition(
+                p.x,
+                p.y,
+                p.z
+            )
+            invalidatePosition()
         }
     }
 
     fun onTouchEvent(
         event: MotionEvent
     ) {
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            mBarSeekAmbient.intercept(event.x, event.y)
-            mBtnLoadUserContent.intercept(event.x, event.y)
-            mBtnSwitchWireframe.intercept(event.x, event.y)
-            mBtnPlaceMesh.intercept(event.x, event.y)
-
-            mTouchScale.onTouchEvent(
-                event
-            )
-
-            if (mTouchScale.touchId != -1) {
-                return
-            }
-
-            mTouchMove.onTouchEvent(
-                event
-            )
-            return
-        }
-
-        mTouchScale.onTouchEvent(
-            event
-        )
-
-        mTouchMove.onTouchEvent(
+        mLayerEditor.onTouchEvent(
             event
         )
     }
 
-    override fun onDelta(
-        dx: Float,
-        dy: Float
-    ) {
-        mCameraFree.addRotation(
-            dx * 0.001f,
-            dy * 0.001f
+    private inline fun createDrawModeSwitcher() = MGClickSwitchDrawMode(
+        mHandler,
+        mSwitcherDrawMode,
+        MGMDrawMode(
+            mDrawerModeOpaque,
+            mShaderDefault,
+            mShaderSky,
+            mShaderDefault
+        ),
+        MGMDrawMode(
+            MGDrawerModeSingleShader(
+                mShaderWireframe,
+                meshSky,
+                mCameraFree,
+                meshes
+            ),
+            mShaderWireframe,
+            mShaderWireframe
+        ),
+        MGMDrawMode(
+            MGDrawerModeSingleShader(
+                mShaderNormals,
+                meshSky,
+                mCameraFree,
+                meshes
+            ),
+            mShaderNormals,
+            mShaderNormals,
+            mShaderNormals,
+            mShaderNormals
+        ),
+        MGMDrawMode(
+            MGDrawerModeSingleShader(
+                mShaderTexCoords,
+                meshSky,
+                mCameraFree,
+                meshes
+            ),
+            mShaderTexCoords,
+            mShaderTexCoords
         )
-        mCameraFree.invalidatePosition()
-        updateIntersection()
-    }
-
-    override fun onScale(
-        scale: Float
-    ) {
-        Log.d(TAG, "onScale: $scale")
-    }
-
-    override fun onMove(
-        x: Float,
-        y: Float,
-        directionX: Float,
-        directionY: Float
-    ) {
-        mCameraFree.addPosition(
-            x, y,
-            directionX,
-            directionY
-        )
-        mCameraFree.invalidatePosition()
-        updateIntersection()
-    }
-
-    private inline fun updateIntersection() {
-        mPointCamera.x = modelMatrixCamera.x
-        mPointCamera.y = modelMatrixCamera.y
-        mPointCamera.z = modelMatrixCamera.z
-
-        mRayIntersection.intersect(
-            mPointCamera,
-            mCameraFree.direction,
-            mOutPointLead
-        )
-
-        invalidatePositionInteract()
-    }
-
-    private fun switchDrawMode(
-        drawMode: MGEnumDrawMode,
-        drawerMode: MGIDrawer,
-        shader: MGIShaderCamera,
-        shaderSky: MGIShaderCamera,
-        shaderNormals: MGIShaderNormal?,
-        shaderNormalsSky: MGIShaderNormal?
-    ) {
-        mCurrentDrawerMode = drawerMode
-
-        meshSky.switchDrawMode(
-            shaderSky,
-            shaderNormalsSky,
-            drawMode
-        )
-
-        meshes.forEach {
-            it.switchDrawMode(
-                shader,
-                shaderNormals,
-                drawMode
-            )
-        }
-    }
-
-    private inline fun placeMesh() {
-        if (mCallbackOnDeltaInteract.currentMeshInteract != null) {
-            mCallbackOnDeltaInteract.currentMeshInteract = null
-            return
-        }
-
-        val modelMatrix = MGMMatrix().apply {
-            setScale(
-                0.01f,
-                0.01f,
-                0.01f
-            )
-        }
-        mCallbackOnDeltaInteract.currentMeshInteract = modelMatrix
-        meshes.add(
-            MGDrawerMeshSwitch(
-                mDrawerSwitchBatch,
-                MGDrawerPositionEntity(
-                    mDrawerSwitchBatch,
-                    mShaderDefault,
-                    modelMatrix
-                )
-            )
-        )
-
-        invalidatePositionInteract()
-    }
-
-    private inline fun invalidatePositionInteract() {
-        mCallbackOnDeltaInteract.currentMeshInteract?.run {
-            x = mOutPointLead.x
-            y = mOutPointLead.y
-            z = mOutPointLead.z
-            invalidatePosition()
-        }
-    }
+    )
 }

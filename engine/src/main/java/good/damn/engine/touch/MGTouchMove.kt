@@ -81,8 +81,12 @@ Runnable {
 
     override fun onTouchMove(
         event: MotionEvent,
-        touchIndex: Int
+        touchIds: List<Int>
     ) {
+        val touchIndex = event.findPointerIndex(
+            touchIds[0]
+        )
+
         mTouchX = event.getX(
             touchIndex
         )

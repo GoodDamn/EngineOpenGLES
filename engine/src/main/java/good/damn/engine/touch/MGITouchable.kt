@@ -6,5 +6,5 @@ interface MGITouchable {
 
     fun onTouchEvent(
         event: MotionEvent
-    )
+    ): Boolean
 }

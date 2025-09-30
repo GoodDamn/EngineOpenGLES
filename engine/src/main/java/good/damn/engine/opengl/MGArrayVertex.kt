@@ -36,7 +36,8 @@ class MGArrayVertex {
 
     fun configure(
         vertices: FloatBuffer,
-        indices: IntBuffer
+        indices: IntBuffer,
+        stride: Int = STRIDE
     ) {
         mBufferVertex = vertices
         mBufferIndices = indices
@@ -57,7 +58,9 @@ class MGArrayVertex {
             indices
         )
 
-        enableAttrs()
+        enableAttrs(
+            stride
+        )
 
         glBindVertexArray(
             0
@@ -177,30 +180,39 @@ class MGArrayVertex {
         )
     }
 
-    private inline fun enableAttrs() {
+    private inline fun enableAttrs(
+        stride: Int
+    ) {
         enableVertex(
             INDEX_POSITION,
             0,
-            3
+            3,
+            stride
         )
+        if (stride <= 12) {
+            return
+        }
 
         enableVertex(
             INDEX_NORMAL,
             5 * 4,
-            3
+            3,
+            stride
         )
 
         enableVertex(
             INDEX_TEX_COORD,
             3 * 4,
-            2
+            2,
+            stride
         )
     }
 
     private inline fun enableVertex(
         attrib: Int,
         offset: Int,
-        size: Int
+        size: Int,
+        stride: Int
     ) {
         glEnableVertexAttribArray(
             attrib
@@ -211,7 +223,7 @@ class MGArrayVertex {
             size,
             GL_FLOAT,
             false,
-            STRIDE,
+            stride,
             offset
         )
 

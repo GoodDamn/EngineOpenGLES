@@ -1,7 +1,10 @@
 package good.damn.engine.touch
 
-open class MGTouchBound
-: MGTouchMulti() {
+open class MGTouchBound(
+    maxTouches: Int = 1
+): MGTouchMulti(
+    maxTouches
+) {
 
     protected var mLeft = 0f
         private set

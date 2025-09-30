@@ -8,7 +8,8 @@ import android.util.Log
 class MGShaderSkySphere
 : MGShaderBase(),
 MGIShaderCamera,
-MGIShaderTexture {
+MGIShaderTexture,
+MGIShaderModel {
 
     override var uniformTexture = 0
         private set

@@ -1,15 +1,14 @@
 package good.damn.engine.opengl.drawers
 
 import android.opengl.GLES30.*
-import androidx.annotation.CallSuper
-import good.damn.engine.opengl.camera.MGMMatrix
-import good.damn.engine.opengl.shaders.MGIShader
-import good.damn.engine.opengl.shaders.MGIShaderCamera
+import good.damn.engine.opengl.matrices.MGMatrixModel
+import good.damn.engine.opengl.matrices.MGMatrixScale
+import good.damn.engine.opengl.shaders.MGIShaderModel
 
 class MGDrawerPositionEntity(
     private val drawer: MGIDrawer,
-    var shader: MGIShaderCamera,
-    var modelMatrix: MGMMatrix
+    var shader: MGIShaderModel,
+    var modelMatrix: MGMatrixModel
 ): MGIDrawer {
 
     override fun draw() {

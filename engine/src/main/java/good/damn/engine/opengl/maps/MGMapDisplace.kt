@@ -33,7 +33,6 @@ class MGMapDisplace(
             )
         }
 
-        private const val TAG = "DisplacementMap"
         private const val iDIGITAL_HEIGHT_MAX = 0x00ffffff
         private const val fDIGITAL_HEIGHT_MAX = iDIGITAL_HEIGHT_MAX.toFloat()
     }
@@ -72,5 +71,9 @@ class MGMapDisplace(
 
         val digitalHeight = color and iDIGITAL_HEIGHT_MAX
         return digitalHeight / fDIGITAL_HEIGHT_MAX
+    }
+
+    fun destroy() {
+        mBitmap.recycle()
     }
 }

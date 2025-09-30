@@ -40,7 +40,7 @@ class MGTouchFreeMove
 
     override fun onTouchEvent(
         event: MotionEvent
-    ) {
+    ): Boolean {
         mTouchMove.onTouchEvent(
             event
         )
@@ -48,5 +48,7 @@ class MGTouchFreeMove
         mTouchDelta.onTouchEvent(
             event
         )
+
+        return true
     }
 }

@@ -1,6 +1,7 @@
 package good.damn.engine.opengl.shaders
 
 interface MGIShaderLight {
-    val light: MGShaderLight
+    val lightPoints: Array<MGShaderLightPoint>
+    val lightDirectional: MGShaderLightDirectional
     val material: MGShaderMaterial
 }

@@ -1,17 +1,19 @@
 package good.damn.engine.opengl.shaders
 
-import android.opengl.GLES30.glGetAttribLocation
 import android.opengl.GLES30.glGetUniformLocation
-import android.opengl.GLES30.glUseProgram
-import android.util.Log
-import kotlinx.coroutines.processNextEventInCurrentThread
 
 class MGShaderDefault
 : MGShaderBase(),
 MGIShaderNormal,
 MGIShaderCamera,
+MGIShaderCameraPosition,
 MGIShaderLight,
-MGIShaderTexture {
+MGIShaderTexture,
+MGIShaderModel {
+
+    companion object {
+        private val NUM_LIGHTS = 32
+    }
 
     override var uniformTexture = 0
         private set
@@ -22,10 +24,11 @@ MGIShaderTexture {
     override var uniformTextureOffset = 0
         private set
 
+    override var uniformCameraPosition = 0
+        private set
 
     override var uniformNormalMatrix = 0
         private set
-
 
     override var uniformCameraProjection = 0
         private set
@@ -33,16 +36,24 @@ MGIShaderTexture {
     override var uniformCameraView = 0
         private set
 
-    override val light = MGShaderLight()
+    override val lightDirectional = MGShaderLightDirectional()
     override val material = MGShaderMaterial()
-
+    override val lightPoints = Array(
+        NUM_LIGHTS
+    ) { MGShaderLightPoint(it) }
 
     override fun setupUniforms(
         program: Int
     ) {
-        light.setupUniforms(
+        lightDirectional.setupUniforms(
             program
         )
+
+        lightPoints.forEach {
+            it.setupUniforms(
+                program
+            )
+        }
 
         material.setupUniforms(
             program
@@ -79,6 +90,11 @@ MGIShaderTexture {
         uniformNormalMatrix = glGetUniformLocation(
             program,
             "normalMatrix"
+        )
+
+        uniformCameraPosition = glGetUniformLocation(
+            program,
+            "cameraPosition"
         )
     }
 }
