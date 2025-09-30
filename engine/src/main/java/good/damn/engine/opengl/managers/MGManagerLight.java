@@ -47,10 +47,12 @@ implements MGIDrawer {
             @Nullable MGLight light = wrapper.light;
 
             if (light == null) {
-                drawer.setRadius(0f);
+                drawer.setActive(0);
                 drawer.draw();
                 continue;
             }
+
+            drawer.setActive(1);
 
             drawer.setRadius(
                 light.getRadius()

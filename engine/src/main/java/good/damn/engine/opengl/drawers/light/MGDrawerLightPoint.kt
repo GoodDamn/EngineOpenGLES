@@ -9,6 +9,7 @@ class MGDrawerLightPoint(
     var shader: MGShaderLightPoint
 ): MGIDrawer {
 
+    var isActive = 1
     var constant = 1.0f
     var linear = 0.0014f
     var quad = 0.000007f
@@ -17,6 +18,11 @@ class MGDrawerLightPoint(
     val color = MGVector(0f)
 
     override fun draw() {
+        GLES30.glUniform1i(
+            shader.uniformActive,
+            isActive
+        )
+
         GLES30.glUniform1f(
             shader.uniformConstant,
             constant
