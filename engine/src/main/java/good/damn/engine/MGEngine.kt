@@ -37,7 +37,7 @@ class MGEngine {
 
         private inline fun createPublicDir() {
             File(
-                DIR_CACHE,
+                DIR_PUBLIC,
                 "MGDirectory"
             ).let {
                 if (!it.exists() && it.mkdirs()) {
