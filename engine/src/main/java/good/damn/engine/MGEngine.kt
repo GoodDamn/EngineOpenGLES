@@ -29,34 +29,23 @@ class MGEngine {
             applicationContext: Context
         ) {
             ASSETS = applicationContext.assets
-            DIR_PUBLIC = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOCUMENTS
+            DIR_PUBLIC = File(
+                Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS
+                ),
+                "MGDirectory"
             )
-            createPublicDir()
+
+            createPublicDir(
+                DIR_PUBLIC
+            )
         }
 
-        private inline fun createPublicDir() {
-            File(
-                DIR_PUBLIC,
-                "MGDirectory"
-            ).let {
-                if (!it.exists() && it.mkdirs()) {
-                    Log.d(TAG, "onSurfaceCreated: ${it.name} is created")
-                }
-
-                File(
-                    it,
-                    "extensions.txt"
-                ).run {
-                    if (exists() && length() != 0L) {
-                        return@run
-                    }
-
-                    if (createNewFile()) {
-                        Log.d(TAG, "onSurfaceCreated: $name is created")
-                    }
-                }
-
+        private inline fun createPublicDir(
+            it: File
+        ) {
+            if (!it.exists() && it.mkdirs()) {
+                Log.d(TAG, "onSurfaceCreated: ${it.name} is created")
             }
         }
     }
