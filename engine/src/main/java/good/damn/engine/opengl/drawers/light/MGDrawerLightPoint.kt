@@ -56,5 +56,10 @@ class MGDrawerLightPoint(
             shader.uniformRadius,
             radius
         )
+
+        GLES30.glUniform1f(
+            shader.uniformRadiusClip,
+            8000f
+        )
     }
 }

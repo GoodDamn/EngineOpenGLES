@@ -8,6 +8,8 @@ struct LightPoint {
     lowp vec3 position;
     lowp float radius;
 
+    lowp float radiusClip;
+
     lowp float constant;
     lowp float linear;
     lowp float quad;
@@ -115,26 +117,35 @@ void main() {
     vec3 colorResult = lightDirColor;
 
     for (int i = 0; i < NUM_LIGHTS; i++) {
-        LightPoint point = lightPoints[i];
-        if (point.isActive) {
-            float dst = length(
-                point.position - outFragPosition
-            );
-
-            if (dst > point.radius) {
-                continue;
-            }
-
-            colorResult += calculateLightPoint(
-                point,
-                dst,
-                material,
-                norm,
-                viewDirection,
-                outFragPosition,
-                dirLight.ambientColor
-            );
+        LightPoint lightPoint = lightPoints[i];
+        if (!lightPoint.isActive) {
+            continue;
         }
+        float dstCamera = length(
+            lightPoint.position - cameraPosition
+        );
+
+        if (dstCamera > lightPoint.radiusClip) {
+            continue;
+        }
+
+        float dst = length(
+            lightPoint.position - outFragPosition
+        );
+
+        if (dst > lightPoint.radius) {
+            continue;
+        }
+
+        colorResult += calculateLightPoint(
+            lightPoint,
+            dst,
+            material,
+            norm,
+            viewDirection,
+            outFragPosition,
+            dirLight.ambientColor
+        );
     }
 
     gl_FragColor = texture2D(

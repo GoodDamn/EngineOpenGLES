@@ -18,6 +18,7 @@ implements MGIUniform {
     private int mUniformColor;
 
     private int mUniformRadius;
+    private int mUniformRadiusClip;
 
     private final String mId;
 
@@ -65,6 +66,11 @@ implements MGIUniform {
             program,
             mId+"radius"
         );
+
+        mUniformRadiusClip = glGetUniformLocation(
+            program,
+            mId+"radiusClip"
+        );
     }
 
     public final int getUniformActive() {
@@ -87,5 +93,8 @@ implements MGIUniform {
     }
     public final int getUniformRadius() {
         return mUniformRadius;
+    }
+    public final int getUniformRadiusClip() {
+        return mUniformRadiusClip;
     }
 }
