@@ -485,15 +485,13 @@ MGIListenerOnIntersectPosition {
         val lz = -0.5f
         val m = 2048f
         modelMatrixCamera.setPosition(
-            0f,
-            -1850f,
-            -3250f
+            0f, 0f, 0f
         )
         modelMatrixCamera.invalidatePosition()
         mDrawerLightDirectional.setPosition(
-            lx,
-            ly,
-            lz
+            2.8929129f,
+            10.986f,
+            -9.247298f
         )
 
         glEnable(
@@ -604,6 +602,7 @@ MGIListenerOnIntersectPosition {
     override fun onIntersectPosition(
         p: MGVector
     ) {
+        Log.d(TAG, "onIntersectPosition: ${p.x} ${p.y} ${p.z}")
         mCallbackOnDeltaInteract.currentMeshInteract?.run {
             setPosition(
                 p.x,
