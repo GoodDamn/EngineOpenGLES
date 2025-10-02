@@ -15,6 +15,12 @@ class MGArrayVertex {
         private const val INDEX_POSITION = 0
         private const val INDEX_TEX_COORD = 1
         private const val INDEX_NORMAL = 2
+
+        const val INDEX_POSITION_X = 0
+        const val INDEX_POSITION_Y = 1
+        const val INDEX_POSITION_Z = 2
+
+        private const val MAX_VERTICES = 8
     }
 
     private val mVertexArray = intArrayOf(1)
@@ -28,6 +34,9 @@ class MGArrayVertex {
 
     val sizeVertexArray: Int
         get() = mBufferVertex.capacity()
+
+    val countVertices: Int
+        get() = mBufferVertex.capacity() / MAX_VERTICES
 
     operator fun get(
         i: Int
@@ -78,8 +87,9 @@ class MGArrayVertex {
     }
 
     fun getVertexBufferData(
+        iteration: Int,
         i: Int
-    ) = mBufferVertex[i]
+    ) = mBufferVertex[i + iteration * MAX_VERTICES]
 
     fun bindVertexBuffer() {
         glBindVertexArray(

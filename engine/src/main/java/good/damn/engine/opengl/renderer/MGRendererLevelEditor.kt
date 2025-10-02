@@ -53,6 +53,7 @@ import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickGenerateLandscape
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
+import good.damn.engine.utils.MGUtilsAlgo
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.io.File
@@ -90,12 +91,10 @@ MGIListenerOnIntersectPosition {
         MGMatrixTranslate(),
         mShaderDefault
     )
-    private val modelMatrixTrigger = MGMatrixTransformationInvert(
-        MGMatrixScale().apply {
-            setScale(50f, 50f, 50f)
-            invalidatePosition()
-            invalidateScale()
-        }
+
+    private val modelMatrixMeshTest = MGMatrixTransformationNormal(
+        MGMatrixScale(),
+        mShaderDefault
     )
 
     private val mVerticesBatchObject = MGArrayVertex()
@@ -165,6 +164,21 @@ MGIListenerOnIntersectPosition {
         normals = null
     )
 
+    private val meshTest = MGMesh(
+        MGDrawerModeSwitch(
+            mVerticesBatchObject,
+            MGDrawerMeshOpaque(
+                mVerticesBatchObject,
+                mTextureLandscape,
+                materialLandscape
+            ),
+            GL_CW
+        ),
+        mShaderDefault,
+        modelMatrixMeshTest.model,
+        modelMatrixMeshTest.normal
+    )
+
     private val mCameraFree = MGCameraFree(
         modelMatrixCamera
     )
@@ -184,6 +198,7 @@ MGIListenerOnIntersectPosition {
         MGDrawerMeshSwitch
     >().apply {
         add(meshLandscape)
+        add(meshTest)
     }
 
     private val mTriggers = ConcurrentLinkedQueue<
@@ -375,45 +390,72 @@ MGIListenerOnIntersectPosition {
             "shaders/texCoords/frag.glsl"
         )
 
+        val arrayVertexBox = MGArrayVertex().apply {
+            configure(
+                MGUtilsBuffer.createFloat(
+                    MGUtilsVertIndices.createCubeVertices(
+                        MGTriggerMethodBox.MIN,
+                        MGTriggerMethodBox.MAX
+                    )
+                ),
+                MGUtilsBuffer.createInt(
+                    MGUtilsVertIndices.createCubeIndices()
+                ),
+                stride = 3 * 4
+            )
+        }
+
+        val triggerAction = MGTriggerSimple(
+            mDrawerLightDirectional
+        )
 
         MGObject3D.createFromAssets(
-            "objs/box.obj"
+            "objs/house.obj"
         ).run {
             mVerticesBatchObject.configure(
                 vertices,
                 indices
             )
-        }
 
-
-        mTriggers.add(
-            MGDrawerTriggerStateable(
-                MGManagerTriggerState(
-                    MGTriggerMethodBox(
-                        modelMatrixTrigger.invert
-                    ),
-                    MGTriggerSimple(
-                        mDrawerLightDirectional
-                    )
-                ),
-                MGArrayVertex().apply {
-                    configure(
-                        MGUtilsBuffer.createFloat(
-                            MGUtilsVertIndices.createCubeVertices(
-                                MGTriggerMethodBox.MIN,
-                                MGTriggerMethodBox.MAX
-                            )
-                        ),
-                        MGUtilsBuffer.createInt(
-                            MGUtilsVertIndices.createCubeIndices()
-                        ),
-                        stride = 3 * 4
-                    )
-                },
-                mShaderWireframe,
-                modelMatrixTrigger.model
+            val modelMatrix = MGMatrixTransformationInvert(
+                MGMatrixScale()
             )
-        )
+
+            val result = MGUtilsAlgo.findMinMaxPoints(
+                mVerticesBatchObject
+            )
+
+            modelMatrix.model.run {
+                setScale(
+                    result.second.x - result.first.x,
+                    result.second.y - result.first.y,
+                    result.second.z - result.first.z,
+                )
+                setPosition(
+                    (result.second.x + result.first.x) * 0.5f,
+                    (result.second.y + result.first.y) * 0.5f,
+                    (result.second.z + result.first.z) * 0.5f
+                )
+                invalidateScale()
+                invalidatePosition()
+                Log.d(TAG, "onSurfaceCreated: MODEL:")
+                modelMatrix.invert.calculateInvertModel()
+            }
+
+            mTriggers.add(
+                MGDrawerTriggerStateable(
+                    MGManagerTriggerState(
+                        MGTriggerMethodBox(
+                            modelMatrix.invert
+                        ),
+                        triggerAction
+                    ),
+                    arrayVertexBox,
+                    mShaderWireframe,
+                    modelMatrix.model
+                )
+            )
+        }
 
         mTextureInteract.setupTexture(
             "textures/rock.jpg"
@@ -583,14 +625,6 @@ MGIListenerOnIntersectPosition {
                 model.z
             )
         }
-
-        modelMatrixTrigger.model.run {
-            msx = abs(sin(
-                System.currentTimeMillis() % 1000000L * 0.001f
-            )) * 50f
-            invalidateScale()
-        }
-        modelMatrixTrigger.invert.calculateInvertModel()
 
         mSwitcherDrawMode
             .currentDrawerMode
