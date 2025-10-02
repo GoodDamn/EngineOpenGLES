@@ -620,9 +620,9 @@ MGIListenerOnIntersectPosition {
         val model = mCameraFree.modelMatrix
         mTriggers.forEach {
             it.stateManager.trigger(
-                model.x,
-                model.y,
-                model.z
+                model.x - it.modelMatrix.x,
+                model.y - it.modelMatrix.y,
+                model.z - it.modelMatrix.z
             )
         }
 
