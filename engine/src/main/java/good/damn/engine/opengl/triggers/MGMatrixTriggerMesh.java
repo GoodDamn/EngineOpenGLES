@@ -21,9 +21,6 @@ public final class MGMatrixTriggerMesh {
     > matrixMesh;
 
     @NonNull
-    private final MGVector mTriggerPosition;
-
-    @NonNull
     private final MGVector mTriggerScale;
 
     public MGMatrixTriggerMesh(
@@ -45,22 +42,10 @@ public final class MGMatrixTriggerMesh {
             max.getZ() - min.getZ()
         );
 
-        mTriggerPosition = new MGVector(
-            0.0f,
-            0.0f,
-            0.0f
-        );
-
         matrixTrigger.model.setScale(
             mTriggerScale.getX(),
             mTriggerScale.getY(),
             mTriggerScale.getZ()
-        );
-
-        matrixTrigger.model.setPosition(
-            mTriggerPosition.getX(),
-            mTriggerPosition.getY(),
-            mTriggerPosition.getZ()
         );
     }
 
