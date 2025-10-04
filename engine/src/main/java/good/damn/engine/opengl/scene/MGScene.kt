@@ -45,6 +45,7 @@ import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
 import good.damn.engine.opengl.triggers.MGManagerTriggerState
 import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
+import good.damn.engine.opengl.triggers.MGTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.touch.MGIListenerScale
@@ -305,54 +306,23 @@ MGIListenerOnIntersectPosition {
                 indices
             )
 
-            val pointMinMax = MGUtilsAlgo.findMinMaxPoints(
-                mVerticesBatchObject
-            )
-
-            val pointMiddle = pointMinMax.first.interpolate(
-                pointMinMax.second,
-                0.5f
-            )
-
-            val dt = MGVector(
-                (abs(pointMinMax.first.x) + pointMinMax.second.x) * 0.5f,
-                (abs(pointMinMax.first.y) + pointMinMax.second.y) * 0.5f,
-                (abs(pointMinMax.first.z) + pointMinMax.second.z) * 0.5f,
-            )
-
-            Log.d(javaClass.simpleName, "onSurfaceCreated: DT: ${dt.x} ${dt.y} ${dt.z} === POINT_MID: ${pointMiddle.x} ${pointMiddle.y} ${pointMiddle.z}")
-
-            MGUtilsAlgo.offsetAnchorPoint(
+            val triggerMesh = MGTriggerMesh.createFromVertexArray(
                 mVerticesBatchObject,
-                pointMiddle
-            )
-
-            matrixMeshTrigger = MGMatrixTriggerMesh(
-                MGMatrixTransformationInvert(
-                    MGMatrixScale()
-                ),
-                MGMatrixTransformationNormal(
-                    MGMatrixScale(),
-                    shaderDefault
-                ),
-                pointMinMax.first,
-                pointMinMax.second
-            )
-
-            val mesh = MGMesh(
+                arrayVertexBox,
+                shaderDefault,
+                shaderWireframe,
                 MGDrawerModeSwitch(
                     mVerticesBatchObject,
                     MGDrawerMeshOpaque(
                         mVerticesBatchObject,
                         mTextureLandscape,
                         materialLandscape
-                    ),
-                    GL_CW
+                    )
                 ),
-                shaderDefault,
-                matrixMeshTrigger.matrixMesh.model,
-                matrixMeshTrigger.matrixMesh.normal
+                triggerAction
             )
+
+            matrixMeshTrigger = triggerMesh.matrix
 
             matrixMeshTrigger.invalidatePosition()
             matrixMeshTrigger.invalidateScale()
@@ -360,20 +330,12 @@ MGIListenerOnIntersectPosition {
             matrixMeshTrigger.calculateNormalsMesh()
             matrixMeshTrigger.calculateInvertTrigger()
 
-            meshes.add(mesh)
+            meshes.add(
+                triggerMesh.mesh
+            )
 
             mTriggers.add(
-                MGDrawerTriggerStateable(
-                    MGManagerTriggerState(
-                        MGTriggerMethodBox(
-                            matrixMeshTrigger.matrixTrigger.invert
-                        ),
-                        triggerAction
-                    ),
-                    arrayVertexBox,
-                    shaderWireframe,
-                    matrixMeshTrigger.matrixTrigger.model
-                )
+                triggerMesh.triggerState
             )
         }
 
