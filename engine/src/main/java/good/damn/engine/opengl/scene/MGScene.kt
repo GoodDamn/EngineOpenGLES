@@ -4,6 +4,7 @@ import android.opengl.GLES30.GL_CCW
 import android.opengl.GLES30.GL_CW
 import android.opengl.GLES30.GL_REPEAT
 import android.opengl.GLSurfaceView
+import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGArrayVertex
@@ -57,6 +58,7 @@ import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -270,6 +272,8 @@ MGIListenerOnIntersectPosition {
         )
     }
 
+    private lateinit var matrixMeshTrigger: MGMatrixTriggerMesh
+
     override fun onSurfaceCreated(
         gl: GL10?,
         config: EGLConfig?
@@ -301,11 +305,29 @@ MGIListenerOnIntersectPosition {
                 indices
             )
 
-            val result = MGUtilsAlgo.findMinMaxPoints(
+            val pointMinMax = MGUtilsAlgo.findMinMaxPoints(
                 mVerticesBatchObject
             )
 
-            val modelMatrixMeshTest = MGMatrixTriggerMesh(
+            val pointMiddle = pointMinMax.first.interpolate(
+                pointMinMax.second,
+                0.5f
+            )
+
+            val dt = MGVector(
+                (abs(pointMinMax.first.x) + pointMinMax.second.x) * 0.5f,
+                (abs(pointMinMax.first.y) + pointMinMax.second.y) * 0.5f,
+                (abs(pointMinMax.first.z) + pointMinMax.second.z) * 0.5f,
+            )
+
+            Log.d(javaClass.simpleName, "onSurfaceCreated: DT: ${dt.x} ${dt.y} ${dt.z} === POINT_MID: ${pointMiddle.x} ${pointMiddle.y} ${pointMiddle.z}")
+
+            MGUtilsAlgo.offsetAnchorPoint(
+                mVerticesBatchObject,
+                pointMiddle
+            )
+
+            matrixMeshTrigger = MGMatrixTriggerMesh(
                 MGMatrixTransformationInvert(
                     MGMatrixScale()
                 ),
@@ -313,8 +335,8 @@ MGIListenerOnIntersectPosition {
                     MGMatrixScale(),
                     shaderDefault
                 ),
-                result.first,
-                result.second
+                pointMinMax.first,
+                pointMinMax.second
             )
 
             val mesh = MGMesh(
@@ -328,15 +350,15 @@ MGIListenerOnIntersectPosition {
                     GL_CW
                 ),
                 shaderDefault,
-                modelMatrixMeshTest.matrixMesh.model,
-                modelMatrixMeshTest.matrixMesh.normal
+                matrixMeshTrigger.matrixMesh.model,
+                matrixMeshTrigger.matrixMesh.normal
             )
 
-            modelMatrixMeshTest.invalidatePosition()
-            modelMatrixMeshTest.invalidateScale()
+            matrixMeshTrigger.invalidatePosition()
+            matrixMeshTrigger.invalidateScale()
 
-            modelMatrixMeshTest.calculateNormalsMesh()
-            modelMatrixMeshTest.calculateInvertTrigger()
+            matrixMeshTrigger.calculateNormalsMesh()
+            matrixMeshTrigger.calculateInvertTrigger()
 
             meshes.add(mesh)
 
@@ -344,13 +366,13 @@ MGIListenerOnIntersectPosition {
                 MGDrawerTriggerStateable(
                     MGManagerTriggerState(
                         MGTriggerMethodBox(
-                            modelMatrixMeshTest.matrixTrigger.invert
+                            matrixMeshTrigger.matrixTrigger.invert
                         ),
                         triggerAction
                     ),
                     arrayVertexBox,
                     shaderWireframe,
-                    modelMatrixMeshTest.matrixTrigger.model
+                    matrixMeshTrigger.matrixTrigger.model
                 )
             )
         }
@@ -470,6 +492,18 @@ MGIListenerOnIntersectPosition {
             x = sin(t) * 1250f
             y = -1850f
             z = -3250f
+        }
+
+        matrixMeshTrigger.run {
+            val ab = abs(sin(t * 0.5f)) * 5f
+            setScale(
+                ab, ab, ab
+            )
+
+            invalidateScale()
+
+            calculateInvertTrigger()
+            calculateNormalsMesh()
         }
 
         // 1. Camera point triggering needs to check only on self position changes

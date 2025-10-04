@@ -46,9 +46,9 @@ public final class MGMatrixTriggerMesh {
         );
 
         mTriggerPosition = new MGVector(
-            (min.getX() + max.getX()) * 0.5f,
-            (min.getY() + max.getY()) * 0.5f,
-            (min.getZ() + max.getZ()) * 0.5f
+            0.0f,
+            0.0f,
+            0.0f
         );
 
         matrixTrigger.model.setScale(
@@ -88,9 +88,9 @@ public final class MGMatrixTriggerMesh {
         final float z
     ) {
         matrixTrigger.model.setScale(
-            mTriggerScale.getX() + x,
-            mTriggerScale.getY() + y,
-            mTriggerScale.getZ() + z
+            mTriggerScale.getX() * x,
+            mTriggerScale.getY() * y,
+            mTriggerScale.getZ() * z
         );
 
         matrixMesh.model.setScale(
@@ -104,9 +104,7 @@ public final class MGMatrixTriggerMesh {
         final float z
     ) {
         matrixTrigger.model.setPosition(
-            mTriggerPosition.getX() + x,
-            mTriggerPosition.getY() + y,
-            mTriggerPosition.getZ() + z
+            x, y, z
         );
 
         matrixMesh.model.setPosition(

@@ -9,6 +9,43 @@ import good.damn.engine.opengl.MGVector;
 
 public final class MGUtilsAlgo {
 
+    public static void offsetAnchorPoint(
+        @NonNull MGArrayVertex vertexArray,
+        @NonNull MGVector dt
+    ) {
+        int index = 0;
+        vertexArray.bindVertexBuffer();
+        int c = vertexArray.getSizeVertexArray();
+
+        int ix, iy, iz;
+        while (index < c) {
+            ix = index + MGArrayVertex.INDEX_POSITION_X;
+            iy = index + MGArrayVertex.INDEX_POSITION_Y;
+            iz = index + MGArrayVertex.INDEX_POSITION_Z;
+
+            float x = vertexArray.get(ix);
+            float y = vertexArray.get(iy);
+            float z = vertexArray.get(iz);
+
+            vertexArray.writeVertexBufferData(
+                ix, x - dt.getX()
+            );
+
+            vertexArray.writeVertexBufferData(
+                iy, y - dt.getY()
+            );
+
+            vertexArray.writeVertexBufferData(
+                iz, z - dt.getZ()
+            );
+
+            index += MGArrayVertex.MAX_VALUES_PER_VERTICES;
+        }
+
+        vertexArray.sendVertexBufferData();
+        vertexArray.unbindVertexBuffer();
+    }
+
     public static Pair<MGVector, MGVector> findMinMaxPoints(
         @NonNull MGArrayVertex vertices
     ) {

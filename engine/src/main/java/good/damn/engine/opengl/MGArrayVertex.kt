@@ -1,10 +1,6 @@
 package good.damn.engine.opengl
 
 import android.opengl.GLES30.*
-import android.util.Log
-import good.damn.engine.opengl.shaders.MGIShader
-import good.damn.engine.opengl.shaders.MGIShaderCamera
-import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
@@ -20,7 +16,7 @@ class MGArrayVertex {
         const val INDEX_POSITION_Y = 1
         const val INDEX_POSITION_Z = 2
 
-        private const val MAX_VERTICES = 8
+        const val MAX_VALUES_PER_VERTICES = 8
     }
 
     private val mVertexArray = intArrayOf(1)
@@ -36,7 +32,7 @@ class MGArrayVertex {
         get() = mBufferVertex.capacity()
 
     val countVertices: Int
-        get() = mBufferVertex.capacity() / MAX_VERTICES
+        get() = mBufferVertex.capacity() / MAX_VALUES_PER_VERTICES
 
     operator fun get(
         i: Int
@@ -89,7 +85,7 @@ class MGArrayVertex {
     fun getVertexBufferData(
         iteration: Int,
         i: Int
-    ) = mBufferVertex[i + iteration * MAX_VERTICES]
+    ) = mBufferVertex[i + iteration * MAX_VALUES_PER_VERTICES]
 
     fun bindVertexBuffer() {
         glBindVertexArray(
