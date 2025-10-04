@@ -457,12 +457,20 @@ MGIListenerOnIntersectPosition {
         }
 
         matrixMeshTrigger.run {
+            val tt = cos(t)
             val ab = abs(sin(t * 0.5f)) * 5f
             setScale(
                 ab, ab, ab
             )
 
+            setPosition(
+                0f,
+                0f,
+                tt * 4000f
+            )
+
             invalidateScale()
+            invalidatePosition()
 
             calculateInvertTrigger()
             calculateNormalsMesh()
