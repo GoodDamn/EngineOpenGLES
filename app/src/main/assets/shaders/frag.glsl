@@ -1,11 +1,14 @@
 precision mediump float;
 
-#define NUM_LIGHTS 32
+#define NUM_LIGHTS 4
 
 struct LightPoint {
+    bool isActive;
     lowp vec3 color;
     lowp vec3 position;
     lowp float radius;
+
+    lowp float radiusClip;
 
     lowp float constant;
     lowp float linear;
@@ -35,20 +38,13 @@ varying lowp vec2 outTexCoord;
 
 vec3 calculateLightPoint(
     LightPoint light,
+    float dst,
     Material material,
     vec3 norm,
     vec3 viewDirection,
     vec3 fragPosition,
     vec3 colorAmbient
 ) {
-    float dst = length(
-        light.position - fragPosition
-    );
-
-    if (dst > light.radius) {
-        return vec3(0.0);
-    }
-
     vec3 direction = normalize(
         light.position - fragPosition
     );
@@ -121,8 +117,29 @@ void main() {
     vec3 colorResult = lightDirColor;
 
     for (int i = 0; i < NUM_LIGHTS; i++) {
+        LightPoint lightPoint = lightPoints[i];
+        if (!lightPoint.isActive) {
+            continue;
+        }
+        float dstCamera = length(
+            lightPoint.position - cameraPosition
+        );
+
+        if (dstCamera > lightPoint.radiusClip) {
+            continue;
+        }
+
+        float dst = length(
+            lightPoint.position - outFragPosition
+        );
+
+        if (dst > lightPoint.radius) {
+            continue;
+        }
+
         colorResult += calculateLightPoint(
-            lightPoints[i],
+            lightPoint,
+            dst,
             material,
             norm,
             viewDirection,

@@ -12,7 +12,7 @@ MGIShaderTexture,
 MGIShaderModel {
 
     companion object {
-        private val NUM_LIGHTS = 32
+        private const val NUM_LIGHTS = 4
     }
 
     override var uniformTexture = 0

@@ -7,6 +7,7 @@ import android.opengl.GLES30.*
 import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.MGEngine
+import good.damn.engine.MGEngine.Companion
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
@@ -54,6 +55,7 @@ import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsVertIndices
+import java.io.File
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.abs
 import kotlin.math.cos
@@ -287,9 +289,16 @@ MGIListenerOnIntersectPosition {
         gl: GL10?,
         config: EGLConfig?
     ) {
-        MGEngine.DIR_PUBLIC.run {
-            if (exists() && length() != 0L) {
+        File(
+            MGEngine.DIR_PUBLIC,
+            "extensions.txt"
+        ).run {
+            if (length() != 0L) {
                 return@run
+            }
+
+            if (!exists() && createNewFile()) {
+                Log.d(TAG, "onSurfaceCreated: $name is created")
             }
 
             val extensions = glGetString(
@@ -300,6 +309,18 @@ MGIListenerOnIntersectPosition {
                 it == '\n'
             }
 
+            val vendor = glGetString(
+                GL_VENDOR
+            )
+
+            val renderer = glGetString(
+                GL_RENDERER
+            )
+
+            val version = glGetString(
+                GL_VERSION
+            )
+
             outputStream().run {
                 write(
                     numExt.toString().encodeToByteArray()
@@ -308,8 +329,26 @@ MGIListenerOnIntersectPosition {
                 write(
                     extensions.encodeToByteArray()
                 )
+
+                write(10)
+                write(10)
+
+                write(
+                    renderer.encodeToByteArray()
+                )
+                write(10)
+
+                write(
+                    vendor.encodeToByteArray()
+                )
+                write(10)
+
+                write(
+                    version.encodeToByteArray()
+                )
                 close()
             }
+
         }
         mShaderWireframe.setup(
             "shaders/wireframe/vert.glsl",

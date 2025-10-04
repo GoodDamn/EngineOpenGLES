@@ -10,6 +10,7 @@ import good.damn.engine.opengl.drawers.MGIUniform;
 public final class MGShaderLightPoint
 implements MGIUniform {
 
+    private int mUniformActive;
     private int mUniformConstant;
     private int mUniformLinear;
     private int mUniformQuad;
@@ -17,6 +18,7 @@ implements MGIUniform {
     private int mUniformColor;
 
     private int mUniformRadius;
+    private int mUniformRadiusClip;
 
     private final String mId;
 
@@ -30,6 +32,11 @@ implements MGIUniform {
     public final void setupUniforms(
         int program
     ) {
+        mUniformActive = glGetUniformLocation(
+            program,
+            mId+"isActive"
+        );
+
         mUniformConstant = glGetUniformLocation(
             program,
             mId+"constant"
@@ -59,8 +66,16 @@ implements MGIUniform {
             program,
             mId+"radius"
         );
+
+        mUniformRadiusClip = glGetUniformLocation(
+            program,
+            mId+"radiusClip"
+        );
     }
 
+    public final int getUniformActive() {
+        return mUniformActive;
+    }
     public final int getUniformConstant() {
         return mUniformConstant;
     }
@@ -78,5 +93,8 @@ implements MGIUniform {
     }
     public final int getUniformRadius() {
         return mUniformRadius;
+    }
+    public final int getUniformRadiusClip() {
+        return mUniformRadiusClip;
     }
 }
