@@ -2,7 +2,9 @@ package good.damn.engine.opengl
 
 import good.damn.engine.MGEngine
 import good.damn.engine.utils.MGUtilsBuffer
+import good.damn.engine.utils.MGUtilsFile
 import java.io.BufferedReader
+import java.io.FileInputStream
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.lang.Exception
@@ -19,9 +21,17 @@ class MGObject3D(
         fun createFromAssets(
             path: String
         ): MGObject3D {
+            val filePub = MGUtilsFile.getPublicFile(
+                path
+            )
+
+            if (!filePub.exists()) {
+                throw Exception("No such file: ${filePub.path}")
+            }
+
             return createFromStream(
-                MGEngine.ASSETS.open(
-                    path
+                FileInputStream(
+                    filePub
                 )
             )
         }

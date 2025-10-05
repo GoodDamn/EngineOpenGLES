@@ -4,22 +4,12 @@ import android.util.Log
 import good.damn.engine.MGEngine
 import java.io.File
 import java.io.FileInputStream
+import java.nio.file.NoSuchFileException
 
 class MGUtilsAsset {
 
     companion object {
         private const val TAG = "MGUtilsAsset"
-
-        fun createShaderPublicDir() {
-            val dir = File(
-                MGEngine.DIR_PUBLIC,
-                "shaders"
-            )
-
-            if (!dir.exists() && dir.mkdirs()) {
-                Log.d(TAG, "copyShaderCodeToExternal: ${dir.name} is created")
-            }
-        }
 
         fun loadString(
             path: String
@@ -29,12 +19,12 @@ class MGUtilsAsset {
                 path
             )
 
-            val inp = if (
-                pubFile.exists()
-            ) FileInputStream(
+            if (!pubFile.exists()) {
+                throw Exception(pubFile.path)
+            }
+
+            val inp = FileInputStream(
                 pubFile
-            ) else MGEngine.ASSETS.open(
-                path
             )
 
             val b = MGUtilsFile.readBytes(

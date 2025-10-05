@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Environment
 import android.util.Log
 import good.damn.engine.MGEngine
+import good.damn.engine.utils.MGUtilsAsset.Companion
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -15,7 +16,24 @@ import java.io.InputStream
 class MGUtilsFile {
 
     companion object {
-        private val TAG = "FileUtils"
+        private val TAG = "MGUtilsFile"
+
+        fun getPublicFile(
+            localPath: String
+        ) = File(
+            MGEngine.DIR_PUBLIC,
+            localPath
+        )
+
+        fun createShaderPublicDir() {
+            val dir = getPublicFile(
+                "shaders"
+            )
+
+            if (!dir.exists() && dir.mkdirs()) {
+                Log.d(TAG, "copyShaderCodeToExternal: ${dir.name} is created")
+            }
+        }
 
         fun read(
             uri: Uri?,

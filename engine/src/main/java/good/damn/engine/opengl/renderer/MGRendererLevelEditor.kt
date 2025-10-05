@@ -14,6 +14,7 @@ import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.utils.MGUtilsAsset
+import good.damn.engine.utils.MGUtilsFile
 import java.io.File
 
 class MGRendererLevelEditor(
@@ -108,7 +109,7 @@ class MGRendererLevelEditor(
 
         }
 
-        MGUtilsAsset.createShaderPublicDir()
+        MGUtilsFile.createShaderPublicDir()
 
         mShaderWireframe.setup(
             "shaders/wireframe/vert.glsl",
