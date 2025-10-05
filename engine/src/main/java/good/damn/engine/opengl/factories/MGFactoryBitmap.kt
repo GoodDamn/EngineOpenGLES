@@ -20,7 +20,7 @@ class MGFactoryBitmap {
             }
 
             val inp = FileInputStream(
-                assetPath
+                filePub
             )
 
             val b = BitmapFactory
