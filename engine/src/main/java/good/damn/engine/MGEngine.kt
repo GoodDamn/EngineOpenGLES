@@ -14,7 +14,6 @@ import java.nio.charset.Charset
 class MGEngine {
     companion object {
         private const val TAG = "MGEngine"
-        internal lateinit var ASSETS: AssetManager
         internal lateinit var DIR_CACHE: File
         internal lateinit var DIR_PUBLIC: File
 
@@ -28,7 +27,6 @@ class MGEngine {
         fun init(
             applicationContext: Context
         ) {
-            ASSETS = applicationContext.assets
             DIR_PUBLIC = File(
                 Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOCUMENTS

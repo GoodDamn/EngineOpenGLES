@@ -9,6 +9,8 @@ import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.MGIUniform
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderTexture
+import good.damn.engine.utils.MGUtilsFile
+import java.io.FileInputStream
 
 class MGTexture(
     var shader: MGIShaderTexture
@@ -22,8 +24,16 @@ class MGTexture(
         assetPath: String,
         wrapMode: Int = GL_CLAMP_TO_EDGE
     ) {
-        val inp = MGEngine.ASSETS.open(
+        val filePub = MGUtilsFile.getPublicFile(
             assetPath
+        )
+
+        if (!filePub.exists()) {
+            throw Exception("No such file: ${filePub.path}")
+        }
+
+        val inp = FileInputStream(
+            filePub
         )
 
         val bitmap = BitmapFactory.decodeStream(
