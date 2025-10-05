@@ -12,7 +12,7 @@ class MGDrawerTriggerStateable(
     val stateManager: MGManagerTriggerState,
     vertexArray: MGArrayVertex,
     shader: MGIShaderModel,
-    modelMatrix: MGMatrixScale
+    val modelMatrix: MGMatrixScale
 ): MGIDrawer {
     private val mEntity = MGDrawerPositionEntity(
         MGDrawerVertexArray(

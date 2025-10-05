@@ -24,6 +24,17 @@ class MGVector(
         z /= len
     }
 
+    fun interpolate(
+        v: MGVector,
+        f: Float
+    ): MGVector {
+        val result = MGVector(0f)
+        result.x = (x + v.x) * f
+        result.y = (y + v.y) * f
+        result.z = (z + v.z) * f
+        return result
+    }
+
     fun cross(
         vect1: MGVector,
         vect2: MGVector,

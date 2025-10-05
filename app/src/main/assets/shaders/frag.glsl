@@ -61,7 +61,7 @@ vec3 calculateLightPoint(
 
     lowp float specFactor = pow(
         max(0.0, dot(viewDirection, reflection)),
-        16.0
+        2.0
     );
 
     lowp vec3 colorSpec = light.color * specFactor;

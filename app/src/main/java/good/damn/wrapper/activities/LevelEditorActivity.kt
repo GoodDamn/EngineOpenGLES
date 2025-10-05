@@ -1,14 +1,19 @@
 package good.damn.wrapper.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.WindowInsetsController
+import android.os.Environment
+import android.provider.Settings
 import android.view.WindowManager
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -27,7 +32,7 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
         private const val TAG = "LevelEditorActivity"
     }
 
-    private lateinit var mContentLauncher: ContentLauncher
+    private var mContentLauncher: ContentLauncher? = null
 
     private var mCallbackRequestUserContent: MGIListenerOnGetUserContent? = null
 
@@ -78,12 +83,59 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
                 )
         }
 
-        setContentView(
-            LevelEditorView(
-                this,
-                this
-            )
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+           if (Environment.isExternalStorageManager()) {
+               initContentView()
+               return
+           }
+
+           val intent = Intent()
+           try {
+               intent.setAction(
+                   Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+               )
+               startActivity(intent)
+           } catch (e: Exception) {
+               intent.setAction(
+                   Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+               )
+               startActivity(intent)
+           }
+           return
+       }
+
+        val permissions = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
+
+        var isNotGrantedAll = false
+        permissions.forEach {
+            if (ContextCompat.checkSelfPermission(
+               context,
+               it
+            ) != PackageManager.PERMISSION_GRANTED) {
+                isNotGrantedAll = true
+            }
+        }
+
+        if (!isNotGrantedAll) {
+            initContentView()
+            return
+        }
+
+        val launcher = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) {}
+
+        launcher.launch(
+            permissions
+        )
+    }
+
+    override fun onDestroy() {
+        mContentLauncher?.unregister()
+        super.onDestroy()
     }
 
     override fun onActivityResult(
@@ -117,8 +169,17 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
         mimeType: String
     ) {
         mCallbackRequestUserContent = callback
-        mContentLauncher.launch(
+        mContentLauncher?.launch(
             mimeType
+        )
+    }
+
+    private fun initContentView() {
+        setContentView(
+            LevelEditorView(
+                this,
+                this
+            )
         )
     }
 }
