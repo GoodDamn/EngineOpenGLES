@@ -25,16 +25,6 @@ class MGUtilsFile {
             localPath
         )
 
-        fun createShaderPublicDir() {
-            val dir = getPublicFile(
-                "shaders"
-            )
-
-            if (!dir.exists() && dir.mkdirs()) {
-                Log.d(TAG, "copyShaderCodeToExternal: ${dir.name} is created")
-            }
-        }
-
         fun read(
             uri: Uri?,
             context: Context

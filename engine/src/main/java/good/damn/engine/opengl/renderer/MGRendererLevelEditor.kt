@@ -109,8 +109,6 @@ class MGRendererLevelEditor(
 
         }
 
-        MGUtilsFile.createShaderPublicDir()
-
         mShaderWireframe.setup(
             "shaders/wireframe/vert.glsl",
             "shaders/wireframe/frag.glsl"
