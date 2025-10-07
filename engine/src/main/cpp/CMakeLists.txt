@@ -26,31 +26,6 @@ project("engine")
 # for GameActivity/NativeActivity derived applications, the same library name must be
 # used in the AndroidManifest.xml file.
 
-
-set(ASSIMP_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/assimp/include")
-#set(ASSIMP_LIB_PATH "${CMAKE_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}/libassimp.so")
-
-include_directories("${ASSIMP_INCLUDE_DIR}")
-add_subdirectory(assimp/include)
-# add_library(
-#     assimp
-#     SHARED
-#     IMPORTED
-# )
-#
-# set_target_properties(
-#     assimp
-#     PROPERTIES
-#     IMPORTED_LOCATION ${ASSIMP_LIB_PATH}
-#     INTERFACE_INCLUDE_DIRECTORIES ${ASSIMP_INCLUDE_DIR}
-# )
-#
-# find_package(
-#     ${CMAKE_PROJECT_NAME}
-#     REQUIRED
-#     CONFIG
-# )
-
 add_library(
     # Library name
     ${CMAKE_PROJECT_NAME}
@@ -59,7 +34,7 @@ add_library(
     SHARED
 
     # List C/C++ source files with relative paths to this CMakeLists.txt.
-    engine.cpp
+    MGObject3d.cpp
 )
 
 
