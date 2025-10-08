@@ -37,6 +37,21 @@ add_library(
     MGObject3d.cpp
 )
 
+add_library(
+    assimp
+    SHARED
+    IMPORTED
+)
+
+set_property(
+    TARGET
+    assimp
+    PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/assimp/bin/${CMAKE_ANDROID_ARCH_ABI}/libassimp.so"
+)
+
+include_directories(
+    "${CMAKE_CURRENT_SOURCE_DIR}/assimp/include"
+)
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this

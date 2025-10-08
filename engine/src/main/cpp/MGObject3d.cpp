@@ -5,7 +5,8 @@
 #include <android/log.h>
 #include <jni.h>
 
-#define LOGD(TAG, ...) __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
+const char* TAG = "MGObject3d.cpp";
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
 
 std::string jStringToStd(
     JNIEnv* env,
@@ -74,7 +75,7 @@ Java_good_damn_engine_opengl_MGObject3d_createFromStream(
         path
     ).c_str();
 
-    LOGD("JNI::MGObject3d::jPath: ", "%s", jPath);
+    LOGD("%s", jPath);
 
     Assimp::Importer importer;
 
@@ -87,6 +88,9 @@ Java_good_damn_engine_opengl_MGObject3d_createFromStream(
     );
 
     if (!scene) {
+        LOGD("doesn't have a scene");
         return;
     }
+
+    LOGD("scene loaded");
 }
