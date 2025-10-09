@@ -20,15 +20,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-
-        ndk {
-            abiFilters += listOf(
-                //noinspection ChromeOsAbiSupport
-                "armeabi-v7a",
-                //noinspection ChromeOsAbiSupport
-                "arm64-v8a"
-            )
-        }
     }
 
     buildTypes {

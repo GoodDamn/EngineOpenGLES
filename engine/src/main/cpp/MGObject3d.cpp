@@ -8,6 +8,17 @@
 const char* TAG = "MGObject3d.cpp";
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
 
+class MGStream: public Assimp::DefaultIOStream {
+public:
+    MGStream(
+        FILE* pFile,
+        const std::string& filePath
+    ): Assimp::DefaultIOStream(
+        pFile,
+        filePath
+    ) {}
+};
+
 std::string jStringToStd(
     JNIEnv* env,
     jstring inp
@@ -77,9 +88,21 @@ Java_good_damn_engine_opengl_MGObject3d_createFromStream(
 
     LOGD("%s", jPath);
 
-    Assimp::Importer importer;
+    FILE* file = ::fopen(
+        jPath,
+        "r"
+    );
 
-    const aiScene* scene = importer.ReadFile(
+    if (!file) {
+        LOGD("file do not exists");
+        return;
+    }
+
+    Assimp::Importer* importer = new Assimp::Importer();
+
+    LOGD("set IO handler");
+
+    const aiScene* scene = importer->ReadFile(
         jPath,
         aiProcess_Triangulate |
         aiProcess_GenSmoothNormals |
@@ -88,9 +111,11 @@ Java_good_damn_engine_opengl_MGObject3d_createFromStream(
     );
 
     if (!scene) {
-        LOGD("doesn't have a scene");
+        LOGD("%s", importer->GetErrorString());
+        delete importer;
         return;
     }
 
     LOGD("scene loaded");
+    delete importer;
 }
