@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.MGObject3D
+import good.damn.engine.opengl.MGObject3d
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
@@ -296,6 +297,10 @@ MGIListenerOnIntersectPosition {
 
         val triggerAction = MGTriggerSimple(
             mDrawerLightDirectional
+        )
+
+        MGObject3d.createFromAssets(
+            "objs/test.fbx"
         )
 
         MGObject3D.createFromAssets(

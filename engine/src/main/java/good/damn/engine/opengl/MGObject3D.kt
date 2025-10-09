@@ -17,7 +17,6 @@ class MGObject3D(
     val indices: IntBuffer
 ) {
     companion object {
-
         fun createFromAssets(
             path: String
         ): MGObject3D {
