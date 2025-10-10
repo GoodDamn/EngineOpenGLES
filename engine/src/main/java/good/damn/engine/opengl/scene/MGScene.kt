@@ -57,7 +57,6 @@ import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.utils.MGUtilsAlgo
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsVertIndices
-import java.io.File
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -300,13 +299,11 @@ MGIListenerOnIntersectPosition {
             mDrawerLightDirectional
         )
 
-        MGObject3d.createFromAssets(
-            "objs/test.fbx"
-        )
 
-        MGObject3D.createFromAssets(
-            "objs/house.obj"
-        ).run {
+        MGObject3d.createFromAssets(
+            "objs/box.obj"
+        )?.get(4)?.run {
+            Log.d("MGObject3d", "onSurfaceCreated: ${vertices.capacity()}:::${vertices[0]}, ${indices.capacity()}:::${indices[0]}")
             mVerticesBatchObject.configure(
                 vertices,
                 indices
@@ -451,20 +448,20 @@ MGIListenerOnIntersectPosition {
         val t = System.currentTimeMillis() % 1000000L * 0.0007f
 
         mLight.position.run {
-            x = cos(t) * 1250f
+            x = 1250f
             y = -1850f
             z = -3250f
         }
 
         mLight2.position.run {
-            x = sin(t) * 1250f
+            x = 1250f
             y = -1850f
             z = -3250f
         }
 
         matrixMeshTrigger.run {
             val tt = cos(t)
-            val ab = abs(sin(t * 0.5f)) * 5f
+            val ab =5f
             setScale(
                 ab, ab, ab
             )
@@ -472,7 +469,7 @@ MGIListenerOnIntersectPosition {
             setPosition(
                 0f,
                 0f,
-                tt * 4000f
+                4000f
             )
 
             invalidateScale()

@@ -1,16 +1,23 @@
 package good.damn.engine.opengl;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import good.damn.engine.utils.MGUtilsBuffer;
 import good.damn.engine.utils.MGUtilsFile;
 
 public final class MGObject3d {
+
+    private static final Charset PATH_CHARSET = StandardCharsets.UTF_8;
 
     @NonNull
     public final FloatBuffer vertices;
@@ -18,7 +25,7 @@ public final class MGObject3d {
     @NonNull
     public final IntBuffer indices;
 
-    private MGObject3d(
+    public MGObject3d(
         @NonNull final float[] vertices,
         @NonNull final int[] indices
     ) {
@@ -37,7 +44,8 @@ public final class MGObject3d {
         );
     }
 
-    public static MGObject3d createFromAssets(
+    @Nullable
+    public static MGObject3d[] createFromAssets(
         @NonNull final String localPath
     ) throws Exception {
         @NonNull final File filePub = MGUtilsFile.Companion.getPublicFile(
@@ -47,13 +55,18 @@ public final class MGObject3d {
         if (!filePub.exists()) {
             throw new Exception("No such file: " + filePub.getPath());
         }
-        createFromStream(
-            filePub.getPath()
+        @NonNull final byte[] path = filePub.getPath().getBytes(
+            PATH_CHARSET
         );
-        return null;
+
+        Log.d("MGObject3d", "createFromAssets: SIZE: " + path.length + " CONTENT: " + Arrays.toString(path));
+
+        return createFromStream(
+            path
+        );
     }
 
-    private static native void createFromStream(
-        @NonNull String path
+    private static native MGObject3d[] createFromStream(
+        @NonNull byte[] path
     );
 }
