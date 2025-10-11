@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGArrayVertex
-import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGObject3d
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.MGVector
@@ -355,9 +354,9 @@ MGIListenerOnIntersectPosition {
             "textures/sky/night.png"
         )
 
-        MGObject3D.createFromAssets(
+        MGObject3d.createFromAssets(
             "objs/semi_sphere.obj"
-        ).run {
+        )?.get(0)?.run {
             mVerticesSky.configure(
                 vertices,
                 indices
