@@ -57,22 +57,23 @@ MGMesh* processMesh(
 
     for (int iVert = 0; iVert < mesh->mNumVertices; iVert++) {
         //LOGD("VERT: %i: %i", iVert, position);
-        const aiVector3D& v = mesh->mVertices[iVert];
+        aiVector3D& v = mesh->mVertices[iVert];
         bufferVert[position++] = v.x;
         bufferVert[position++] = v.y;
         bufferVert[position++] = v.z;
 
+        aiVector3D* vt = mesh->mTextureCoords[0];
+        if (vt) {
+            aiVector3D& vtt = vt[iVert];
+            bufferVert[position++] = vtt.x;
+            bufferVert[position++] = vtt.y;
+        }
+
         if (mesh->mNormals) {
-            const aiVector3D& vn = mesh->mNormals[iVert];
+            aiVector3D& vn = mesh->mNormals[iVert];
             bufferVert[position++] = vn.x;
             bufferVert[position++] = vn.y;
             bufferVert[position++] = vn.z;
-        }
-        const aiVector3D* vt = mesh->mTextureCoords[0];
-        if (vt) {
-            const aiVector3D& vtt = vt[iVert];
-            bufferVert[position++] = vtt.x;
-            bufferVert[position++] = vtt.y;
         }
     }
 
@@ -152,8 +153,9 @@ Java_good_damn_engine_opengl_MGObject3d_createFromStream(
     LOGD("set IO handler");
 
     const aiScene* scene = importer.ReadFile(
-        "storage/emulated/0/Documents/MGDirectory/objs/test.fbx",
+        "storage/emulated/0/Documents/MGDirectory/objs/box.obj",
         aiProcess_Triangulate |
+        aiProcess_OptimizeMeshes |
         aiProcess_FlipUVs
     );
 
