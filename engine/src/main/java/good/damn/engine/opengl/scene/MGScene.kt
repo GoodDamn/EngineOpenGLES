@@ -301,7 +301,7 @@ MGIListenerOnIntersectPosition {
 
 
         MGObject3d.createFromAssets(
-            "objs/box.obj"
+            "objs/test.fbx"
         )?.get(0)?.run {
             Log.d("MGObject3d", "onSurfaceCreated: ${vertices.capacity()}:::${vertices[0]}, ${indices.capacity()}:::${indices[0]}")
             mVerticesBatchObject.configure(

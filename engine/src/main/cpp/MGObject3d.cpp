@@ -130,32 +130,22 @@ Java_good_damn_engine_opengl_MGObject3d_createFromStream(
     jclass clazz,
     jbyteArray path
 ) {
-    const char* jPath = jStringToStd(
+    std::string jPath = jStringToStd(
         env,
         path
-    ).c_str();
-
-    LOGD("%s", jPath);
-
-    FILE* file = ::fopen(
-        jPath,
-        "r"
     );
+    const char* jPathC = jPath.c_str();
 
-    if (!file) {
-        LOGD("file do not exists");
-        return nullptr;
-    }
-    ::fclose(file);
+    LOGD("%s", jPathC);
 
     Assimp::Importer importer;
 
     LOGD("set IO handler");
 
     const aiScene* scene = importer.ReadFile(
-        "storage/emulated/0/Documents/MGDirectory/objs/box.obj",
+        jPath,
         aiProcess_Triangulate |
-        aiProcess_OptimizeMeshes |
+        aiProcess_JoinIdenticalVertices |
         aiProcess_FlipUVs
     );
 
