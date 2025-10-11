@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.MGObject3D
+import good.damn.engine.opengl.MGObject3d
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
@@ -298,9 +299,11 @@ MGIListenerOnIntersectPosition {
             mDrawerLightDirectional
         )
 
-        MGObject3D.createFromAssets(
-            "objs/house.obj"
-        ).run {
+
+        MGObject3d.createFromAssets(
+            "objs/test.fbx"
+        )?.get(0)?.run {
+            Log.d("MGObject3d", "onSurfaceCreated: ${vertices.capacity()}:::${vertices[0]}, ${indices.capacity()}:::${indices[0]}")
             mVerticesBatchObject.configure(
                 vertices,
                 indices
@@ -445,20 +448,20 @@ MGIListenerOnIntersectPosition {
         val t = System.currentTimeMillis() % 1000000L * 0.0007f
 
         mLight.position.run {
-            x = cos(t) * 1250f
+            x = 1250f
             y = -1850f
             z = -3250f
         }
 
         mLight2.position.run {
-            x = sin(t) * 1250f
+            x = 1250f
             y = -1850f
             z = -3250f
         }
 
         matrixMeshTrigger.run {
             val tt = cos(t)
-            val ab = abs(sin(t * 0.5f)) * 5f
+            val ab =5f
             setScale(
                 ab, ab, ab
             )
@@ -466,7 +469,7 @@ MGIListenerOnIntersectPosition {
             setPosition(
                 0f,
                 0f,
-                tt * 4000f
+                4000f
             )
 
             invalidateScale()

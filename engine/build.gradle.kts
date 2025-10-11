@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.cli.jvm.main
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -6,6 +8,12 @@ plugins {
 android {
     namespace = "good.damn.engine"
     compileSdk = 34
+
+    sourceSets.getByName(
+        "main"
+    ).jniLibs.setSrcDirs(
+        listOf("libs")
+    )
 
     defaultConfig {
         minSdk = 21
@@ -29,6 +37,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+    }
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
     }
 }
 
