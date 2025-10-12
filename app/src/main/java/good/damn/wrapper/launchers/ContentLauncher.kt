@@ -7,23 +7,22 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
+import good.damn.wrapper.contracts.APContractActivityGetContent
 
 class ContentLauncher(
     activity: AppCompatActivity,
-    callback: ActivityResultCallback<Uri?>)
-    : ActivityResultLauncher<String>(){
+    callback: ActivityResultCallback<Uri?>
+): ActivityResultLauncher<Array<String>>(){
 
-    private var mContentBrowser: ActivityResultLauncher<String>
-
-    init {
-        mContentBrowser = activity.registerForActivityResult(
-            ActivityResultContracts.GetContent(),
-            callback)
-    }
+    private val mContentBrowser = activity.registerForActivityResult(
+        APContractActivityGetContent(),
+        callback
+    )
 
     override fun launch(
-        input: String?,
-        options: ActivityOptionsCompat?) {
+        input: Array<String>?,
+        options: ActivityOptionsCompat?
+    ) {
         mContentBrowser.launch(input)
     }
 
@@ -31,8 +30,6 @@ class ContentLauncher(
         mContentBrowser.unregister()
     }
 
-    override fun getContract(): ActivityResultContract<String, *> {
-        return ActivityResultContracts.GetContent()
-    }
+    override fun getContract() = APContractActivityGetContent()
 
 }

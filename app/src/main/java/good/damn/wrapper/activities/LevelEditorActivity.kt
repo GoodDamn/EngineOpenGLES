@@ -145,7 +145,7 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
             return
         }
 
-        val extension = result.toString()
+        val uri = result.toString()
 
         val mimeType = contentResolver.getType(
             result
@@ -157,7 +157,8 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
 
         mCallbackRequestUserContent?.onGetUserContent(
             MGMUserContent(
-                extension,
+                uri,
+                mimeType,
                 stream
             )
         )
@@ -166,7 +167,7 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
 
     override fun requestUserContent(
         callback: MGIListenerOnGetUserContent,
-        mimeType: String
+        mimeType: Array<String>
     ) {
         mCallbackRequestUserContent = callback
         mContentLauncher?.launch(
