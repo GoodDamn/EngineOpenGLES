@@ -32,7 +32,6 @@ import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
-import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMDrawMode
@@ -43,25 +42,21 @@ import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
-import good.damn.engine.opengl.triggers.MGManagerTriggerState
 import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.ui.MGUILayerEditor
-import good.damn.engine.ui.clicks.MGClickGenerateLandscape
+import good.damn.engine.ui.clicks.MGClickImportMesh
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
-import good.damn.engine.utils.MGUtilsAlgo
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import kotlin.math.abs
 import kotlin.math.cos
-import kotlin.math.sin
 
 class MGScene(
     requesterUserContent: MGIRequestUserContent,
@@ -207,9 +202,8 @@ MGIListenerOnIntersectPosition {
     )
 
     private val mLayerEditor = MGUILayerEditor(
-        clickLoadUserContent = MGClickGenerateLandscape(
+        clickLoadUserContent = MGClickImportMesh(
             mHandler,
-            mGeneratorLandscape,
             requesterUserContent
         ),
         clickPlaceMesh = MGClickPlaceMesh(
