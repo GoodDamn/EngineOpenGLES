@@ -66,13 +66,18 @@ class MGCallbackModelSpawn(
             triggerMesh.triggerState
         )
 
+        bridgeRay.matrix = triggerMesh.matrix
         triggerMesh.matrix.run {
             setPosition(
                 bridgeRay.outPointLead.x,
                 bridgeRay.outPointLead.y,
                 bridgeRay.outPointLead.z
             )
+            invalidateScale()
             invalidatePosition()
+
+            calculateInvertTrigger()
+            calculateNormalsMesh()
         }
     }
 
