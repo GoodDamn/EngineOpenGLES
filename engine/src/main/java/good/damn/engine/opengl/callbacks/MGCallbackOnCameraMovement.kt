@@ -1,17 +1,17 @@
 package good.damn.engine.opengl.callbacks
 
 import good.damn.engine.opengl.MGVector
+import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.rays.MGRayIntersection
 import good.damn.engine.touch.MGIListenerDelta
 import good.damn.engine.touch.MGIListenerMove
 
 class MGCallbackOnCameraMovement(
-    private val camera: MGCameraFree
+    private val camera: MGCameraFree,
+    private val bridge: MGBridgeRayIntersect
 ): MGIListenerDelta,
 MGIListenerMove {
-
-    val outPointLead = MGVector(0f)
 
     private var mListenerIntersect: MGIListenerOnIntersectPosition? = null
 
@@ -59,11 +59,11 @@ MGIListenerMove {
         mRayIntersection.intersect(
             mPointCamera,
             camera.direction,
-            outPointLead
+            bridge.outPointLead
         )
 
         mListenerIntersect?.onIntersectPosition(
-            outPointLead
+            bridge.outPointLead
         )
     }
 

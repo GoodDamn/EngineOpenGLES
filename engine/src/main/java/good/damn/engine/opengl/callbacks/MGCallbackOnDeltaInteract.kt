@@ -1,12 +1,12 @@
 package good.damn.engine.opengl.callbacks
 
+import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.touch.MGIListenerDelta
 
-class MGCallbackOnDeltaInteract
-: MGIListenerDelta {
-
-    var currentMeshInteract: MGMatrixScale? = null
+class MGCallbackOnDeltaInteract(
+    private val bridge: MGBridgeRayIntersect
+): MGIListenerDelta {
 
     override fun onDelta(
         dx: Float,
