@@ -16,6 +16,7 @@ class MGEngine {
         private const val TAG = "MGEngine"
         internal lateinit var DIR_CACHE: File
         internal lateinit var DIR_PUBLIC: File
+        internal lateinit var DIR_PUBLIC_TEMP: File
 
         internal var drawMode = MGEnumDrawMode.OPAQUE
 
@@ -34,8 +35,17 @@ class MGEngine {
                 "MGDirectory"
             )
 
+            DIR_PUBLIC_TEMP = File(
+                DIR_PUBLIC,
+                "temp"
+            )
+
             createPublicDir(
                 DIR_PUBLIC
+            )
+
+            createPublicDir(
+                DIR_PUBLIC_TEMP
             )
         }
 

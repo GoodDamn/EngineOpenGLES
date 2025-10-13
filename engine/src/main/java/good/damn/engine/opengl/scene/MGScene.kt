@@ -46,6 +46,7 @@ import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
+import good.damn.engine.runnables.MGCallbackModelSpawn
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickImportMesh
@@ -204,6 +205,9 @@ MGIListenerOnIntersectPosition {
     private val mLayerEditor = MGUILayerEditor(
         clickLoadUserContent = MGClickImportMesh(
             mHandler,
+            MGCallbackModelSpawn(
+
+            ),
             requesterUserContent
         ),
         clickPlaceMesh = MGClickPlaceMesh(

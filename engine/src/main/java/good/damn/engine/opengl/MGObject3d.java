@@ -61,12 +61,24 @@ public final class MGObject3d {
 
         Log.d("MGObject3d", "createFromAssets: SIZE: " + path.length + " CONTENT: " + Arrays.toString(path));
 
-        return createFromStream(
+        return createFromPath(
             path
         );
     }
 
-    private static native MGObject3d[] createFromStream(
+    @Nullable
+    public static MGObject3d[] createFromPath(
+        @NonNull String path
+    ) {
+        return createFromPath(
+            path.getBytes(
+                PATH_CHARSET
+            )
+        );
+    }
+
+    @Nullable
+    private static native MGObject3d[] createFromPath(
         @NonNull byte[] path
     );
 }
