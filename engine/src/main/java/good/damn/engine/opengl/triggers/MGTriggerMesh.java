@@ -13,6 +13,7 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch;
 import good.damn.engine.opengl.entities.MGMesh;
 import good.damn.engine.opengl.matrices.MGMatrixScale;
+import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal;
 import good.damn.engine.opengl.shaders.MGIShaderNormal;
@@ -72,10 +73,10 @@ public final class MGTriggerMesh {
         @NonNull
         final MGMatrixTriggerMesh matrix = new MGMatrixTriggerMesh(
             new MGMatrixTransformationInvert<>(
-                new MGMatrixScale()
+                new MGMatrixScaleRotation()
             ),
             new MGMatrixTransformationNormal<>(
-                new MGMatrixScale(),
+                new MGMatrixScaleRotation(),
                 shaderDefault
             ),
             pointMinMax.first,

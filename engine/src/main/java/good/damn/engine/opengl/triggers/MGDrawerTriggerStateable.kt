@@ -6,13 +6,14 @@ import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.matrices.MGMatrixModel
 import good.damn.engine.opengl.matrices.MGMatrixScale
+import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.shaders.MGIShaderModel
 
 class MGDrawerTriggerStateable(
     val stateManager: MGManagerTriggerState,
     vertexArray: MGArrayVertex,
     shader: MGIShaderModel,
-    val modelMatrix: MGMatrixScale
+    val modelMatrix: MGMatrixScaleRotation
 ): MGIDrawer {
     private val mEntity = MGDrawerPositionEntity(
         MGDrawerVertexArray(

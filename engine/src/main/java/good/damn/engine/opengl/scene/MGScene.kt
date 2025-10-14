@@ -4,7 +4,6 @@ import android.opengl.GLES30.GL_CCW
 import android.opengl.GLES30.GL_CW
 import android.opengl.GLES30.GL_REPEAT
 import android.opengl.GLSurfaceView
-import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGArrayVertex
@@ -43,8 +42,6 @@ import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
-import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
-import good.damn.engine.opengl.triggers.MGTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGCallbackModelSpawn
@@ -58,7 +55,6 @@ import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import kotlin.math.cos
 
 class MGScene(
     requesterUserContent: MGIRequestUserContent,
@@ -240,7 +236,7 @@ MGIListenerOnIntersectPosition {
                             scale,
                             scale
                         )
-                        invalidateScale()
+                        invalidateScaleRotation()
                         calculateInvertTrigger()
                         calculateNormalsMesh()
                     }

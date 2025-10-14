@@ -3,21 +3,20 @@ package good.damn.engine.opengl.triggers;
 import androidx.annotation.NonNull;
 
 import good.damn.engine.opengl.MGVector;
-import good.damn.engine.opengl.matrices.MGMatrixScale;
+import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal;
-import good.damn.engine.opengl.matrices.MGMatrixTranslate;
 
 public final class MGMatrixTriggerMesh {
 
     @NonNull
     public final MGMatrixTransformationInvert<
-        MGMatrixScale
+        MGMatrixScaleRotation
     > matrixTrigger;
 
     @NonNull
     public final MGMatrixTransformationNormal<
-        MGMatrixScale
+        MGMatrixScaleRotation
     > matrixMesh;
 
     @NonNull
@@ -25,10 +24,10 @@ public final class MGMatrixTriggerMesh {
 
     public MGMatrixTriggerMesh(
         @NonNull final MGMatrixTransformationInvert<
-            MGMatrixScale
+            MGMatrixScaleRotation
         > matrixTrigger,
         @NonNull final MGMatrixTransformationNormal<
-            MGMatrixScale
+            MGMatrixScaleRotation
         > matrixMesh,
         @NonNull final MGVector min,
         @NonNull final MGVector max
@@ -49,9 +48,9 @@ public final class MGMatrixTriggerMesh {
         );
     }
 
-    public final void invalidateScale() {
-        matrixTrigger.model.invalidateScale();
-        matrixMesh.model.invalidateScale();
+    public final void invalidateScaleRotation() {
+        matrixTrigger.model.invalidateScaleRotation();
+        matrixMesh.model.invalidateScaleRotation();
     }
 
     public final void invalidatePosition() {
@@ -64,6 +63,7 @@ public final class MGMatrixTriggerMesh {
     }
 
     public final void calculateNormalsMesh() {
+        matrixMesh.normal.calculateInvertModel();
         matrixMesh.normal.calculateNormalMatrix();
     }
 
@@ -95,6 +95,20 @@ public final class MGMatrixTriggerMesh {
         matrixMesh.model.setPosition(
             x, y, z
         );
+    }
+
+    public final void addRotation(
+        final float x,
+        final float y,
+        final float z
+    ) {
+        matrixTrigger.model.mrx += x;
+        matrixTrigger.model.mry += y;
+        matrixTrigger.model.mrz += z;
+
+        matrixMesh.model.mrx += x;
+        matrixMesh.model.mry += y;
+        matrixMesh.model.mrz += z;
     }
 
 }

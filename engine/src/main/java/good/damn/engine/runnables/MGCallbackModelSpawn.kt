@@ -73,7 +73,7 @@ class MGCallbackModelSpawn(
                 bridgeRay.outPointLead.y,
                 bridgeRay.outPointLead.z
             )
-            invalidateScale()
+            invalidateScaleRotation()
             invalidatePosition()
 
             calculateInvertTrigger()

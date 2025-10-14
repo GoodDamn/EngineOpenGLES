@@ -1,7 +1,6 @@
 package good.damn.engine.opengl.callbacks
 
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
-import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.touch.MGIListenerDelta
 
 class MGCallbackOnDeltaInteract(
@@ -12,9 +11,15 @@ class MGCallbackOnDeltaInteract(
         dx: Float,
         dy: Float
     ) {
-        /*currentMeshInteract?.addRotation(
-            dx * 0.5f,
-            0.0f
-        )*/
+        bridge.matrix?.run {
+            addRotation(
+                0f,
+                dx * 0.5f,
+                0f
+            )
+            invalidateScaleRotation()
+            calculateInvertTrigger()
+            calculateNormalsMesh()
+        }
     }
 }
