@@ -15,7 +15,7 @@ class MGCallbackOnDeltaInteract(
             addRotation(
                 0f,
                 dx * 0.5f,
-                0f
+                dy * -0.5f
             )
             invalidateScaleRotation()
             calculateInvertTrigger()
