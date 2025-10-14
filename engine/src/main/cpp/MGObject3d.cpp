@@ -125,7 +125,7 @@ void processNode(
 
 extern "C"
 JNIEXPORT jobjectArray JNICALL
-Java_good_damn_engine_opengl_MGObject3d_createFromStream(
+Java_good_damn_engine_opengl_MGObject3d_createFromPath(
     JNIEnv *env,
     jclass clazz,
     jbyteArray path

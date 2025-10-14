@@ -4,14 +4,13 @@ import android.opengl.GLES30.GL_CCW
 import android.opengl.GLES30.GL_CW
 import android.opengl.GLES30.GL_REPEAT
 import android.opengl.GLSurfaceView
-import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGArrayVertex
-import good.damn.engine.opengl.MGObject3D
 import good.damn.engine.opengl.MGObject3d
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.MGVector
+import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
 import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
@@ -33,7 +32,6 @@ import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
-import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMDrawMode
@@ -44,25 +42,19 @@ import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
-import good.damn.engine.opengl.triggers.MGManagerTriggerState
-import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
-import good.damn.engine.opengl.triggers.MGTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
+import good.damn.engine.runnables.MGCallbackModelSpawn
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.ui.MGUILayerEditor
-import good.damn.engine.ui.clicks.MGClickGenerateLandscape
+import good.damn.engine.ui.clicks.MGClickImportMesh
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
-import good.damn.engine.utils.MGUtilsAlgo
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.sin
 
 class MGScene(
     requesterUserContent: MGIRequestUserContent,
@@ -89,10 +81,9 @@ MGIListenerOnIntersectPosition {
         shaderDefault
     )
 
-    private val mVerticesBatchObject = MGArrayVertex()
-
     private val mVerticesSky = MGArrayVertex()
     private val mVerticesLandscape = MGArrayVertex()
+    private val mVerticesBox = MGArrayVertex()
 
     private val mGeneratorLandscape = MGGeneratorLandscape(
         mVerticesLandscape
@@ -118,14 +109,7 @@ MGIListenerOnIntersectPosition {
         shaderDefault
     )
 
-    private val mDrawerSwitchBatch = MGDrawerModeSwitch(
-        mVerticesBatchObject,
-        MGDrawerMeshOpaque(
-            mVerticesBatchObject,
-            mTextureInteract,
-            materialInteract
-        )
-    )
+    private val mBridgeMatrix = MGBridgeRayIntersect()
 
     private val meshLandscape = MGMesh(
         MGDrawerModeSwitch(
@@ -160,9 +144,12 @@ MGIListenerOnIntersectPosition {
         modelMatrixCamera
     )
 
-    private val mCallbackOnDeltaInteract = MGCallbackOnDeltaInteract()
+    private val mCallbackOnDeltaInteract = MGCallbackOnDeltaInteract(
+        mBridgeMatrix
+    )
     private val mCallbackOnCameraMove = MGCallbackOnCameraMovement(
-        mCameraFree
+        mCameraFree,
+        mBridgeMatrix
     ).apply {
         setListenerIntersection(
             this@MGScene
@@ -208,17 +195,25 @@ MGIListenerOnIntersectPosition {
     )
 
     private val mLayerEditor = MGUILayerEditor(
-        clickLoadUserContent = MGClickGenerateLandscape(
+        clickLoadUserContent = MGClickImportMesh(
             mHandler,
-            mGeneratorLandscape,
+            MGCallbackModelSpawn(
+                mVerticesBox,
+                mBridgeMatrix,
+                mTextureInteract,
+                materialInteract,
+                MGTriggerSimple(
+                    mDrawerLightDirectional
+                ),
+                shaderDefault,
+                shaderWireframe,
+                mTriggers,
+                meshes
+            ),
             requesterUserContent
         ),
         clickPlaceMesh = MGClickPlaceMesh(
-            mCallbackOnDeltaInteract,
-            meshes,
-            mDrawerSwitchBatch,
-            shaderDefault,
-            mCallbackOnCameraMove
+            mBridgeMatrix
         ),
         clickSwitchDrawerMode = createDrawModeSwitcher()
     ).apply {
@@ -235,11 +230,16 @@ MGIListenerOnIntersectPosition {
                 override fun onScale(
                     scale: Float
                 ) {
-                    mCallbackOnDeltaInteract.currentMeshInteract?.setScale(
-                        scale,
-                        scale,
-                        scale
-                    )
+                    mBridgeMatrix.matrix?.run {
+                        setScale(
+                            scale,
+                            scale,
+                            scale
+                        )
+                        invalidateScaleRotation()
+                        calculateInvertTrigger()
+                        calculateNormalsMesh()
+                    }
                 }
             }
         )
@@ -274,13 +274,11 @@ MGIListenerOnIntersectPosition {
         )
     }
 
-    private lateinit var matrixMeshTrigger: MGMatrixTriggerMesh
-
     override fun onSurfaceCreated(
         gl: GL10?,
         config: EGLConfig?
     ) {
-        val arrayVertexBox = MGArrayVertex().apply {
+        mVerticesBox.apply {
             configure(
                 MGUtilsBuffer.createFloat(
                     MGUtilsVertIndices.createCubeVertices(
@@ -292,53 +290,6 @@ MGIListenerOnIntersectPosition {
                     MGUtilsVertIndices.createCubeIndices()
                 ),
                 stride = 3 * 4
-            )
-        }
-
-        val triggerAction = MGTriggerSimple(
-            mDrawerLightDirectional
-        )
-
-
-        MGObject3d.createFromAssets(
-            "objs/test.fbx"
-        )?.get(0)?.run {
-            Log.d("MGObject3d", "onSurfaceCreated: ${vertices.capacity()}:::${vertices[0]}, ${indices.capacity()}:::${indices[0]}")
-            mVerticesBatchObject.configure(
-                vertices,
-                indices
-            )
-
-            val triggerMesh = MGTriggerMesh.createFromVertexArray(
-                mVerticesBatchObject,
-                arrayVertexBox,
-                shaderDefault,
-                shaderWireframe,
-                MGDrawerModeSwitch(
-                    mVerticesBatchObject,
-                    MGDrawerMeshOpaque(
-                        mVerticesBatchObject,
-                        mTextureLandscape,
-                        materialLandscape
-                    )
-                ),
-                triggerAction
-            )
-
-            matrixMeshTrigger = triggerMesh.matrix
-
-            matrixMeshTrigger.invalidatePosition()
-            matrixMeshTrigger.invalidateScale()
-
-            matrixMeshTrigger.calculateNormalsMesh()
-            matrixMeshTrigger.calculateInvertTrigger()
-
-            meshes.add(
-                triggerMesh.mesh
-            )
-
-            mTriggers.add(
-                triggerMesh.triggerState
             )
         }
 
@@ -355,9 +306,9 @@ MGIListenerOnIntersectPosition {
             "textures/sky/night.png"
         )
 
-        MGObject3D.createFromAssets(
+        MGObject3d.createFromAssets(
             "objs/semi_sphere.obj"
-        ).run {
+        )?.get(0)?.run {
             mVerticesSky.configure(
                 vertices,
                 indices
@@ -459,26 +410,6 @@ MGIListenerOnIntersectPosition {
             z = -3250f
         }
 
-        matrixMeshTrigger.run {
-            val tt = cos(t)
-            val ab =5f
-            setScale(
-                ab, ab, ab
-            )
-
-            setPosition(
-                0f,
-                0f,
-                4000f
-            )
-
-            invalidateScale()
-            invalidatePosition()
-
-            calculateInvertTrigger()
-            calculateNormalsMesh()
-        }
-
         // 1. Camera point triggering needs to check only on self position changes
         // it doesn't need to check on each touch event
         // 2. For other entities who can trigger, check it inside infinite loop
@@ -509,7 +440,7 @@ MGIListenerOnIntersectPosition {
     override fun onIntersectPosition(
         p: MGVector
     ) {
-        mCallbackOnDeltaInteract.currentMeshInteract?.run {
+        mBridgeMatrix.matrix?.run {
             setPosition(
                 p.x,
                 p.y,

@@ -9,7 +9,7 @@ class MGTouchScale
 ) {
 
     companion object {
-        private const val SCALE_FACTOR = 0.0001f
+        private const val SCALE_FACTOR = 0.001f
     }
 
     var onScale: MGIListenerScale? = null
