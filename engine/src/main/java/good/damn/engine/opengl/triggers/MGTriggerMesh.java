@@ -1,22 +1,16 @@
 package good.damn.engine.opengl.triggers;
 
-import android.opengl.GLES30;
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
 import good.damn.engine.opengl.MGArrayVertex;
 import good.damn.engine.opengl.MGVector;
-import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque;
-import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch;
 import good.damn.engine.opengl.entities.MGMesh;
-import good.damn.engine.opengl.matrices.MGMatrixScale;
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal;
-import good.damn.engine.opengl.shaders.MGIShaderNormal;
 import good.damn.engine.opengl.shaders.MGShaderDefault;
 import good.damn.engine.opengl.shaders.MGShaderSingleMode;
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox;
@@ -93,7 +87,7 @@ public final class MGTriggerMesh {
 
         @NonNull
         final MGDrawerTriggerStateable triggerState = new MGDrawerTriggerStateable(
-            new MGManagerTriggerState(
+            new MGManagerTriggerStateCallback(
                 new MGTriggerMethodBox(
                     matrix.matrixTrigger.invert
                 ),

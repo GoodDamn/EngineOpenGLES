@@ -415,6 +415,19 @@ MGIListenerOnIntersectPosition {
         // 2. For other entities who can trigger, check it inside infinite loop
         val model = mCameraFree.modelMatrix
         mTriggers.forEach {
+            val state = it.stateManager.trigger(
+                model.x - it.modelMatrix.x,
+                model.y - it.modelMatrix.y,
+                model.z - it.modelMatrix.z,
+            )
+
+            when (state) {
+                // trigger begin -> managerLight.register(it.light)
+                // is inside
+                // trigger end -> managerLight.unregister(it.light)
+                // none
+            }
+
             it.stateManager.trigger(
                 model.x - it.modelMatrix.x,
                 model.y - it.modelMatrix.y,

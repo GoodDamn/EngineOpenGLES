@@ -2,7 +2,7 @@ package good.damn.engine.opengl.triggers
 
 import good.damn.engine.opengl.triggers.methods.MGITriggerMethod
 
-class MGManagerTriggerState(
+class MGManagerTriggerStateCallback(
     private val triggerMethod: MGITriggerMethod,
     private val triggerCallback: MGITrigger,
 ) {
