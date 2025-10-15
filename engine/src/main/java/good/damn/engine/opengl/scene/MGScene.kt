@@ -21,6 +21,7 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeSingleShader
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
+import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.entities.MGLight
 import good.damn.engine.opengl.entities.MGMaterial
@@ -42,6 +43,8 @@ import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
+import good.damn.engine.opengl.triggers.MGManagerTriggerState
+import good.damn.engine.opengl.triggers.MGManagerTriggerStateCallback
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGCallbackModelSpawn
@@ -84,6 +87,9 @@ MGIListenerOnIntersectPosition {
     private val mVerticesSky = MGArrayVertex()
     private val mVerticesLandscape = MGArrayVertex()
     private val mVerticesBox = MGArrayVertex()
+    private val mDrawerBox = MGDrawerVertexArray(
+        mVerticesBox
+    )
 
     private val mGeneratorLandscape = MGGeneratorLandscape(
         mVerticesLandscape
@@ -166,7 +172,7 @@ MGIListenerOnIntersectPosition {
 
     private val mTriggers = ConcurrentLinkedQueue<
         MGDrawerTriggerStateable
-        >()
+    >()
 
     private val mDrawerLightDirectional = MGDrawerLightDirectional(
         shaderDefault.lightDirectional
@@ -198,7 +204,7 @@ MGIListenerOnIntersectPosition {
         clickLoadUserContent = MGClickImportMesh(
             mHandler,
             MGCallbackModelSpawn(
-                mVerticesBox,
+                mDrawerBox,
                 mBridgeMatrix,
                 mTextureInteract,
                 materialInteract,

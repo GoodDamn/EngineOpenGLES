@@ -9,14 +9,12 @@ import good.damn.engine.opengl.shaders.MGIShaderModel
 
 class MGDrawerTriggerStateable(
     val stateManager: MGManagerTriggerStateCallback,
-    vertexArray: MGArrayVertex,
+    drawerVertexArray: MGDrawerVertexArray,
     shader: MGIShaderModel,
     val modelMatrix: MGMatrixScaleRotation
 ): MGIDrawer {
     private val mEntity = MGDrawerPositionEntity(
-        MGDrawerVertexArray(
-            vertexArray
-        ),
+        drawerVertexArray,
         shader,
         modelMatrix
     )

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import good.damn.engine.opengl.MGArrayVertex;
 import good.damn.engine.opengl.MGVector;
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch;
+import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMesh;
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
@@ -40,7 +41,7 @@ public final class MGTriggerMesh {
     @NonNull
     public static MGTriggerMesh createFromVertexArray(
         @NonNull final MGArrayVertex vertexArray,
-        @NonNull final MGArrayVertex vertexArrayBox,
+        @NonNull final MGDrawerVertexArray drawerVertArrayBox,
         @NonNull final MGShaderDefault shaderDefault,
         @NonNull final MGShaderSingleMode shaderWireframe,
         @NonNull final MGDrawerModeSwitch drawerModeSwitch,
@@ -93,7 +94,7 @@ public final class MGTriggerMesh {
                 ),
                 triggerAction
             ),
-            vertexArrayBox,
+            drawerVertArrayBox,
             shaderWireframe,
             matrix.matrixTrigger.model
         );

@@ -6,6 +6,7 @@ import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
+import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
@@ -16,7 +17,7 @@ import good.damn.engine.opengl.triggers.MGTriggerMesh
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGCallbackModelSpawn(
-    private val vertexArrayBox: MGArrayVertex,
+    private val drawerVertArrBox: MGDrawerVertexArray,
     private val bridgeRay: MGBridgeRayIntersect,
     private val texture: MGTexture,
     private val material: MGMaterial,
@@ -44,7 +45,7 @@ class MGCallbackModelSpawn(
 
         val triggerMesh = MGTriggerMesh.createFromVertexArray(
             vertexArray,
-            vertexArrayBox,
+            drawerVertArrBox,
             shaderDefault,
             shaderWireframe,
             MGDrawerModeSwitch(
