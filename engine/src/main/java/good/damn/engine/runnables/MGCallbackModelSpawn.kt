@@ -11,7 +11,7 @@ import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.textures.MGTexture
-import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
+import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable
 import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGTriggerMesh
 import java.util.concurrent.ConcurrentLinkedQueue

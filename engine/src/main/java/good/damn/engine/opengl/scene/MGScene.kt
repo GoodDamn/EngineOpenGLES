@@ -26,6 +26,7 @@ import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.entities.MGLight
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.entities.MGMesh
+import good.damn.engine.opengl.enums.MGEnumStateTrigger
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
@@ -42,9 +43,8 @@ import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
-import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
-import good.damn.engine.opengl.triggers.MGManagerTriggerState
-import good.damn.engine.opengl.triggers.MGManagerTriggerStateCallback
+import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable
+import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGCallbackModelSpawn
@@ -170,6 +170,10 @@ MGIListenerOnIntersectPosition {
         add(meshLandscape)
     }
 
+    private val mTriggersLight = ConcurrentLinkedQueue<
+        MGDrawerTriggerStateableLight
+    >()
+
     private val mTriggers = ConcurrentLinkedQueue<
         MGDrawerTriggerStateable
     >()
@@ -255,30 +259,6 @@ MGIListenerOnIntersectPosition {
         )
     }
 
-
-    private val mLight = MGLight(
-        MGVector(
-            1f, 1f, 0f
-        ),
-        MGVector(0f,0f,0f),
-        600f
-    ).apply {
-        managerLights.register(
-            this
-        )
-    }
-
-    private val mLight2 = MGLight(
-        MGVector(
-            1f, 0f, 1f
-        ),
-        MGVector(0f,0f,0f),
-        600f
-    ).apply {
-        managerLights.register(
-            this
-        )
-    }
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -404,7 +384,7 @@ MGIListenerOnIntersectPosition {
     ) {
         val t = System.currentTimeMillis() % 1000000L * 0.0007f
 
-        mLight.position.run {
+        /*mLight.position.run {
             x = 1250f
             y = -1850f
             z = -3250f
@@ -414,26 +394,32 @@ MGIListenerOnIntersectPosition {
             x = 1250f
             y = -1850f
             z = -3250f
-        }
+        }*/
 
         // 1. Camera point triggering needs to check only on self position changes
         // it doesn't need to check on each touch event
         // 2. For other entities who can trigger, check it inside infinite loop
         val model = mCameraFree.modelMatrix
-        mTriggers.forEach {
+        mTriggersLight.forEach {
+            val spos = it.modelMatrix.position
             val state = it.stateManager.trigger(
-                model.x - it.modelMatrix.x,
-                model.y - it.modelMatrix.y,
-                model.z - it.modelMatrix.z,
+                model.x - spos.x,
+                model.y - spos.y,
+                model.z - spos.z,
             )
 
             when (state) {
-                // trigger begin -> managerLight.register(it.light)
-                // is inside
-                // trigger end -> managerLight.unregister(it.light)
-                // none
+                MGEnumStateTrigger.BEGIN -> {
+                    managerLights.register(it)
+                }
+                MGEnumStateTrigger.END -> {
+                    managerLights.unregister(it)
+                }
+                else -> Unit
             }
+        }
 
+        mTriggers.forEach {
             it.stateManager.trigger(
                 model.x - it.modelMatrix.x,
                 model.y - it.modelMatrix.y,

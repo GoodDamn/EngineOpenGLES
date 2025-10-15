@@ -14,6 +14,9 @@ import good.damn.engine.opengl.entities.MGLight;
 import good.damn.engine.opengl.shaders.MGIShaderLight;
 import good.damn.engine.opengl.shaders.MGShaderDefault;
 import good.damn.engine.opengl.shaders.MGShaderLightPoint;
+import good.damn.engine.opengl.triggers.MGMatrixTriggerLight;
+import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
+import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight;
 
 public final class MGManagerLight
 implements MGIDrawer {
@@ -44,18 +47,25 @@ implements MGIDrawer {
             MGLightWrapper wrapper : mPullLights
         ) {
             final MGDrawerLightPoint drawer = wrapper.drawer;
-            @Nullable MGLight light = wrapper.light;
 
-            if (light == null) {
+            @Nullable
+            final MGDrawerTriggerStateableLight state = wrapper.state;
+            if (state == null) {
                 drawer.setActive(0);
                 drawer.draw();
                 continue;
             }
 
+            @NonNull
+            final MGLight light = state.getLight();
+
+            @NonNull
+            final MGMatrixTriggerLight matrix = state.getModelMatrix();
+
             drawer.setActive(1);
 
             drawer.setRadius(
-                light.getRadius()
+                matrix.getRadius()
             );
 
             drawer.getColor().copy(
@@ -63,7 +73,7 @@ implements MGIDrawer {
             );
 
             drawer.getPosition().copy(
-                light.getPosition()
+                matrix.getPosition()
             );
 
             drawer.draw();
@@ -71,7 +81,7 @@ implements MGIDrawer {
     }
 
     public final void register(
-        @NonNull final MGLight light
+        @NonNull final MGDrawerTriggerStateableLight state
     ) {
         final int foundIndex = findFreeIndex();
         if (foundIndex == -1) {
@@ -80,14 +90,14 @@ implements MGIDrawer {
 
         mPullLights[
             foundIndex
-        ].light = light;
+        ].state = state;
     }
 
     public final void unregister(
-        @NonNull final MGLight light
+        @NonNull final MGDrawerTriggerStateableLight state
     ) {
         final int lockIndex = findLockIndex(
-            light
+            state
         );
 
         if (lockIndex == -1) {
@@ -96,12 +106,12 @@ implements MGIDrawer {
 
         mPullLights[
             lockIndex
-        ].light = null;
+        ].state = null;
     }
 
     private final int findFreeIndex() {
         for (int i = 0; i < mPullLights.length; i++) {
-            if (mPullLights[i].light == null) {
+            if (mPullLights[i].state == null) {
                 return i;
             }
         }
@@ -109,16 +119,16 @@ implements MGIDrawer {
     }
 
     private final int findLockIndex(
-        @NonNull final MGLight target
+        @NonNull final MGDrawerTriggerStateableLight target
     ) {
         for (int i = 0; i < mPullLights.length; i++) {
             @Nullable
-            final MGLight foundLight = mPullLights[i].light;
-            if (foundLight == null) {
+            final MGDrawerTriggerStateableLight foundState = mPullLights[i].state;
+            if (foundState == null) {
                 continue;
             }
 
-            if (foundLight.hashCode() == target.hashCode()) {
+            if (foundState.hashCode() == target.hashCode()) {
                 return i;
             }
         }
@@ -128,7 +138,7 @@ implements MGIDrawer {
 
     private static class MGLightWrapper {
         @Nullable
-        MGLight light;
+        MGDrawerTriggerStateableLight state;
 
         @NonNull
         final MGDrawerLightPoint drawer;

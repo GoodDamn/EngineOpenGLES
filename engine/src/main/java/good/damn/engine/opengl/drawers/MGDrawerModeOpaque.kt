@@ -6,7 +6,7 @@ import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
-import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
+import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable
 import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGDrawerModeOpaque(

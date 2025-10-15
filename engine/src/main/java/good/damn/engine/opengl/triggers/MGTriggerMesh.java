@@ -14,7 +14,9 @@ import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal;
 import good.damn.engine.opengl.shaders.MGShaderDefault;
 import good.damn.engine.opengl.shaders.MGShaderSingleMode;
+import good.damn.engine.opengl.triggers.callbacks.MGManagerTriggerStateCallback;
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox;
+import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
 import good.damn.engine.utils.MGUtilsAlgo;
 
 public final class MGTriggerMesh {

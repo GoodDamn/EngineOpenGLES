@@ -1,10 +1,10 @@
-package good.damn.engine.opengl.triggers
+package good.damn.engine.opengl.triggers.callbacks
 
+import good.damn.engine.opengl.enums.MGEnumStateTrigger
 import good.damn.engine.opengl.triggers.methods.MGITriggerMethod
 
-class MGManagerTriggerStateCallback(
-    private val triggerMethod: MGITriggerMethod,
-    private val triggerCallback: MGITrigger,
+class MGManagerTriggerState(
+    private val triggerMethod: MGITriggerMethod
 ) {
     private var mIsInside = false
 
@@ -12,26 +12,24 @@ class MGManagerTriggerStateCallback(
         x: Float,
         y: Float,
         z: Float
-    ) {
+    ): MGEnumStateTrigger {
         if (mIsInside) {
             if (!triggerMethod.canTrigger(
                 x, y, z
             )) {
                 mIsInside = false
-                triggerCallback.onTriggerEnd()
-                return
+                return MGEnumStateTrigger.END
             }
-            return
+            return MGEnumStateTrigger.MOVE
         }
 
         if (triggerMethod.canTrigger(
             x, y, z
         )) {
             mIsInside = true
-            triggerCallback.onTriggerBegin()
-            return
+            return MGEnumStateTrigger.BEGIN
         }
 
-        return
+        return MGEnumStateTrigger.NONE
     }
 }
