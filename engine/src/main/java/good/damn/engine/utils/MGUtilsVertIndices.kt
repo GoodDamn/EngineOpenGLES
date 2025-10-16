@@ -10,79 +10,98 @@ import kotlin.math.sin
 class MGUtilsVertIndices {
     companion object {
 
+        private val PI2 = 3.14159f * 2
+
         fun createSphere(
-            countSteps: Int
+            countStepsHorizontal: Int,
+            countStepsVertical: Int,
         ): Pair<IntBuffer, FloatBuffer> {
-            val radianStep = 3.14159f * 2 / countSteps
+
+            val stepsVertical = countStepsVertical + 2
+
+            val radianStep = PI2 / countStepsHorizontal
             val output = MGUtilsBuffer.allocateFloat(
-                countSteps * 3
+                countStepsHorizontal * stepsVertical * 3 //+ 6 // 6 = 3 (top) + 3(bottom)
             )
 
-            val indRows = countSteps - 2
+            val indRows = countStepsHorizontal - 2
             val indices = MGUtilsBuffer.allocateInt(
-                (indRows + 1) * 3
+                (indRows + 1) * 3 * stepsVertical
             )
 
-            var currentRadian = 0f
-            var currentStep = 0
+            var currentStepVertical = 0
             var currentIndex = 0
 
-            while (currentStep < countSteps) {
-                Log.d("TAG", "createSphere: $currentStep -> $currentRadian")
-                // X
-                output.put(
-                    currentIndex++,
-                    sin(currentRadian)
-                )
-                // Y
-                output.put(
-                    currentIndex++,
-                    .0f
-                )
-                // Z
-                output.put(
-                    currentIndex++,
-                    cos(currentRadian)
-                )
-                currentRadian += radianStep
-                currentStep++
+            while (currentStepVertical < stepsVertical) {
+                val y = currentStepVertical.toFloat()
+                var currentRadian = 0f
+                var currentStepHorizontal = 0
+
+                while (currentStepHorizontal < countStepsHorizontal) {
+                    // X
+                    output.put(
+                        currentIndex++,
+                        sin(currentRadian)
+                    )
+                    // Y
+                    output.put(
+                        currentIndex++,
+                        y
+                    )
+                    // Z
+                    output.put(
+                        currentIndex++,
+                        cos(currentRadian)
+                    )
+                    currentRadian += radianStep
+                    currentStepHorizontal++
+                }
+                currentStepVertical++
             }
 
-            currentStep = 0
+            var dtIndices = 0
             currentIndex = 0
-            while (currentStep < indRows) {
+            currentStepVertical = 0
+            while (currentStepVertical < stepsVertical) {
+                var currentStepHorizontal = 0
+                while (currentStepHorizontal < indRows) {
+                    indices.put(
+                        currentIndex++,
+                        currentStepHorizontal + dtIndices
+                    )
+
+                    indices.put(
+                        currentIndex++,
+                        currentStepHorizontal + dtIndices + 1
+                    )
+
+                    indices.put(
+                        currentIndex++,
+                        currentStepHorizontal + dtIndices + 2
+                    )
+
+                    currentStepHorizontal++
+                }
+
                 indices.put(
                     currentIndex++,
-                    currentStep
+                    currentStepHorizontal + dtIndices
                 )
 
                 indices.put(
                     currentIndex++,
-                    currentStep + 1
+                    currentStepHorizontal + dtIndices + 1
                 )
 
                 indices.put(
                     currentIndex++,
-                    currentStep + 2
+                    dtIndices
                 )
+                currentStepHorizontal++
+                currentStepVertical++
 
-                currentStep++
+                dtIndices = currentStepHorizontal
             }
-
-            indices.put(
-                currentIndex,
-                currentStep
-            )
-
-            indices.put(
-                currentIndex + 1,
-                currentStep + 1
-            )
-
-            indices.put(
-                currentIndex + 2,
-                0
-            )
 
 
             return Pair(
