@@ -72,7 +72,7 @@ MGIListenerOnGetUserContent {
     private inline fun actWithUri(
         userContent: MGMUserContent
     ) {
-        val uri = userContent.uri
+        val uri = userContent.fileName
         if (uri.contains("fbx")) {
             processModel(
                 userContent,
