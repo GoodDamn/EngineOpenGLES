@@ -59,6 +59,7 @@ import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.random.Random
 
 class MGScene(
     requesterUserContent: MGIRequestUserContent,
@@ -298,50 +299,32 @@ MGIListenerOnIntersectPosition {
             )
         }
 
-        MGTriggerLight.createFromLight(
-            MGLight(
-                MGVector(1f,1f,0f)
-            ),
-            mDrawerDebugSphere,
-            shaderDefault
-        ).run {
-            matrix.setPosition(
-                2500f,
-                -1850f,
-                -3250f,
-            )
-            matrix.radius = 1250f
-            matrix.invalidatePosition()
-            matrix.invalidateRadius()
-            matrix.calculateInvertTrigger()
-
-            mTriggersLight.add(
-                triggerState
-            )
-        }
-
-        MGTriggerLight.createFromLight(
-            MGLight(
-                MGVector(
-                    0f,1f,1f
+        for (i in 0 until 10) {
+            MGTriggerLight.createFromLight(
+                MGLight(
+                    MGVector(
+                        0.5f + Random.nextFloat() * 0.5f,
+                        0.5f + Random.nextFloat() * 0.5f,
+                        0.5f + Random.nextFloat() * 0.5f
+                    )
+                ),
+                mDrawerDebugSphere,
+                shaderWireframe
+            ).run {
+                matrix.setPosition(
+                    1500f * (i + 1),
+                    -1850f,
+                    -3250f,
                 )
-            ),
-            mDrawerDebugSphere,
-            shaderDefault
-        ).run {
-            matrix.setPosition(
-                1250f,
-                -1850f,
-                -3250f
-            )
-            matrix.radius = 1250f
-            matrix.invalidatePosition()
-            matrix.invalidateRadius()
-            matrix.calculateInvertTrigger()
+                matrix.radius = 1250f
+                matrix.invalidatePosition()
+                matrix.invalidateRadius()
+                matrix.calculateInvertTrigger()
 
-            mTriggersLight.add(
-                triggerState
-            )
+                mTriggersLight.add(
+                    triggerState
+                )
+            }
         }
 
         mTextureInteract.setupTexture(

@@ -9,6 +9,7 @@ import good.damn.engine.opengl.matrices.MGMatrixInvert;
 import good.damn.engine.opengl.matrices.MGMatrixScale;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
 import good.damn.engine.opengl.shaders.MGShaderDefault;
+import good.damn.engine.opengl.shaders.MGShaderSingleMode;
 import good.damn.engine.opengl.triggers.callbacks.MGManagerTriggerState;
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodSphere;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
@@ -34,7 +35,7 @@ public final class MGTriggerLight {
     public static MGTriggerLight createFromLight(
         @NonNull final MGLight light,
         @NonNull final MGDrawerVertexArray drawerVertArrSphere,
-        @NonNull final MGShaderDefault shaderDefault
+        @NonNull final MGShaderSingleMode shaderWireframe
     ) {
         @NonNull
         final MGMatrixTriggerLight matrix = new MGMatrixTriggerLight(
@@ -52,7 +53,7 @@ public final class MGTriggerLight {
                 )
             ),
             drawerVertArrSphere,
-            shaderDefault,
+            shaderWireframe,
             matrix
         );
 

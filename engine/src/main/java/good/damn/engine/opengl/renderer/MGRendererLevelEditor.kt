@@ -4,6 +4,7 @@ import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
+import android.opengl.GLU
 import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.MGEngine
@@ -189,7 +190,7 @@ class MGRendererLevelEditor(
 
         val error = glGetError()
         if (error != GL_NO_ERROR) {
-            Log.d("TAG", "onDrawFrame: ERROR: ${error.toString(16)}")
+            Log.d("TAG", "onDrawFrame: ERROR: ${error.toString(16)}: ${GLU.gluErrorString(error)}")
             return
         }
 
