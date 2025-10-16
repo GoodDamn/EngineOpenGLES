@@ -289,13 +289,14 @@ MGIListenerOnIntersectPosition {
         }
 
         mVerticesDebugSphere.apply {
-            val obj = MGObject3d.createFromAssets(
-                "objs/sphere_low.obj"
-            )?.get(0) ?: return@apply
+            val obj = MGUtilsVertIndices.createSphere(
+                36
+            )
 
             configure(
-                obj.vertices,
-                obj.indices
+                obj.second,
+                obj.first,
+                stride = 3 * 4
             )
         }
 

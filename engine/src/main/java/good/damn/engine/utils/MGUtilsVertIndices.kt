@@ -1,9 +1,96 @@
 package good.damn.engine.utils
 
+import android.util.Log
 import good.damn.engine.opengl.MGVector
+import java.nio.FloatBuffer
+import java.nio.IntBuffer
+import kotlin.math.cos
+import kotlin.math.sin
 
 class MGUtilsVertIndices {
     companion object {
+
+        fun createSphere(
+            countSteps: Int
+        ): Pair<IntBuffer, FloatBuffer> {
+            val radianStep = 3.14159f * 2 / countSteps
+            val output = MGUtilsBuffer.allocateFloat(
+                countSteps * 3
+            )
+
+            val indRows = countSteps - 2
+            val indices = MGUtilsBuffer.allocateInt(
+                (indRows + 1) * 3
+            )
+
+            var currentRadian = 0f
+            var currentStep = 0
+            var currentIndex = 0
+
+            while (currentStep < countSteps) {
+                Log.d("TAG", "createSphere: $currentStep -> $currentRadian")
+                // X
+                output.put(
+                    currentIndex++,
+                    sin(currentRadian)
+                )
+                // Y
+                output.put(
+                    currentIndex++,
+                    .0f
+                )
+                // Z
+                output.put(
+                    currentIndex++,
+                    cos(currentRadian)
+                )
+                currentRadian += radianStep
+                currentStep++
+            }
+
+            currentStep = 0
+            currentIndex = 0
+            while (currentStep < indRows) {
+                indices.put(
+                    currentIndex++,
+                    currentStep
+                )
+
+                indices.put(
+                    currentIndex++,
+                    currentStep + 1
+                )
+
+                indices.put(
+                    currentIndex++,
+                    currentStep + 2
+                )
+
+                currentStep++
+            }
+
+            indices.put(
+                currentIndex,
+                currentStep
+            )
+
+            indices.put(
+                currentIndex + 1,
+                currentStep + 1
+            )
+
+            indices.put(
+                currentIndex + 2,
+                0
+            )
+
+
+            return Pair(
+                indices,
+                output
+            );
+        }
+
         fun createCubeVertices(
             min: MGVector,
             max: MGVector
