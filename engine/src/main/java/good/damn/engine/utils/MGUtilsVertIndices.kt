@@ -14,11 +14,9 @@ class MGUtilsVertIndices {
 
         fun createSphere(
             countStepsHorizontal: Int,
-            countStepsVertical: Int,
         ): Pair<IntBuffer, FloatBuffer> {
 
-            val stepsVertical = countStepsVertical + 2
-
+            val stepsVertical = 3
             val radianStep = PI2 / countStepsHorizontal
             val output = MGUtilsBuffer.allocateFloat(
                 countStepsHorizontal * stepsVertical * 3 //+ 6 // 6 = 3 (top) + 3(bottom)
@@ -32,27 +30,106 @@ class MGUtilsVertIndices {
             var currentStepVertical = 0
             var currentIndex = 0
 
+            fun drawCircleXY(
+                output: FloatBuffer,
+                cosRad: Float,
+                sinRad: Float
+            ) {
+                // X
+                output.put(
+                    currentIndex++,
+                    sinRad
+                )
+                // Y
+                output.put(
+                    currentIndex++,
+                    cosRad
+                )
+                // Z
+                output.put(
+                    currentIndex++,
+                    0f
+                )
+            }
+
+            fun drawCircleXZ(
+                output: FloatBuffer,
+                cosRad: Float,
+                sinRad: Float
+            ) {
+                // X
+                output.put(
+                    currentIndex++,
+                    sinRad
+                )
+                // Y
+                output.put(
+                    currentIndex++,
+                    0f
+                )
+                // Z
+                output.put(
+                    currentIndex++,
+                    cosRad
+                )
+            }
+
+            fun drawCircleYZ(
+                output: FloatBuffer,
+                cosRad: Float,
+                sinRad: Float
+            ) {
+                // X
+                output.put(
+                    currentIndex++,
+                    0f
+                )
+                // Y
+                output.put(
+                    currentIndex++,
+                    sinRad
+                )
+                // Z
+                output.put(
+                    currentIndex++,
+                    cosRad
+                )
+            }
+
             while (currentStepVertical < stepsVertical) {
-                val y = currentStepVertical.toFloat()
                 var currentRadian = 0f
                 var currentStepHorizontal = 0
 
                 while (currentStepHorizontal < countStepsHorizontal) {
-                    // X
-                    output.put(
-                        currentIndex++,
-                        sin(currentRadian)
-                    )
-                    // Y
-                    output.put(
-                        currentIndex++,
-                        y
-                    )
-                    // Z
-                    output.put(
-                        currentIndex++,
-                        cos(currentRadian)
-                    )
+                    val cos = cos(currentRadian)
+                    val sin = sin(currentRadian)
+
+                    when (currentStepVertical) {
+                        0 -> {
+                            drawCircleXY(
+                                output,
+                                cos,
+                                sin
+                            )
+                        }
+
+                        1 -> {
+                            drawCircleYZ(
+                                output,
+                                cos,
+                                sin
+                            )
+                        }
+
+                        2 -> {
+                            drawCircleXZ(
+                                output,
+                                cos,
+                                sin
+                            )
+                        }
+                    }
+
                     currentRadian += radianStep
                     currentStepHorizontal++
                 }
@@ -97,10 +174,9 @@ class MGUtilsVertIndices {
                     currentIndex++,
                     dtIndices
                 )
-                currentStepHorizontal++
                 currentStepVertical++
+                dtIndices += currentStepHorizontal + 1
 
-                dtIndices = currentStepHorizontal
             }
 
 

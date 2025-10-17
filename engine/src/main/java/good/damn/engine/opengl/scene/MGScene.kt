@@ -290,8 +290,7 @@ MGIListenerOnIntersectPosition {
 
         mVerticesDebugSphere.apply {
             val obj = MGUtilsVertIndices.createSphere(
-                36,
-                1
+                36
             )
 
             configure(
