@@ -1,25 +1,22 @@
 package good.damn.engine.opengl.triggers;
 
-import android.opengl.GLES30;
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
 import good.damn.engine.opengl.MGArrayVertex;
 import good.damn.engine.opengl.MGVector;
-import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque;
-import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch;
+import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMesh;
-import good.damn.engine.opengl.matrices.MGMatrixScale;
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal;
-import good.damn.engine.opengl.shaders.MGIShaderNormal;
 import good.damn.engine.opengl.shaders.MGShaderDefault;
 import good.damn.engine.opengl.shaders.MGShaderSingleMode;
+import good.damn.engine.opengl.triggers.callbacks.MGManagerTriggerStateCallback;
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox;
+import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
 import good.damn.engine.utils.MGUtilsAlgo;
 
 public final class MGTriggerMesh {
@@ -46,7 +43,7 @@ public final class MGTriggerMesh {
     @NonNull
     public static MGTriggerMesh createFromVertexArray(
         @NonNull final MGArrayVertex vertexArray,
-        @NonNull final MGArrayVertex vertexArrayBox,
+        @NonNull final MGDrawerVertexArray drawerVertArrayBox,
         @NonNull final MGShaderDefault shaderDefault,
         @NonNull final MGShaderSingleMode shaderWireframe,
         @NonNull final MGDrawerModeSwitch drawerModeSwitch,
@@ -93,13 +90,13 @@ public final class MGTriggerMesh {
 
         @NonNull
         final MGDrawerTriggerStateable triggerState = new MGDrawerTriggerStateable(
-            new MGManagerTriggerState(
+            new MGManagerTriggerStateCallback(
                 new MGTriggerMethodBox(
                     matrix.matrixTrigger.invert
                 ),
                 triggerAction
             ),
-            vertexArrayBox,
+            drawerVertArrayBox,
             shaderWireframe,
             matrix.matrixTrigger.model
         );

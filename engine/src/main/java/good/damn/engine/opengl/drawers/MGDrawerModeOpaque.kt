@@ -6,7 +6,8 @@ import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
-import good.damn.engine.opengl.triggers.MGDrawerTriggerStateable
+import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable
+import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGDrawerModeOpaque(
@@ -18,6 +19,7 @@ data class MGDrawerModeOpaque(
     var directionalLight: MGDrawerLightDirectional,
     var meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>,
     var triggers: ConcurrentLinkedQueue<MGDrawerTriggerStateable>,
+    var triggersLight: ConcurrentLinkedQueue<MGDrawerTriggerStateableLight>,
     var lights: MGManagerLight
 ): MGIDrawer {
 
@@ -50,6 +52,9 @@ data class MGDrawerModeOpaque(
             shaderTrigger
         )
         triggers.forEach {
+            it.draw()
+        }
+        triggersLight.forEach {
             it.draw()
         }
     }
