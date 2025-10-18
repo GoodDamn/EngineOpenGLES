@@ -6,7 +6,9 @@ import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
 
 public final class MGManagerTriggerMesh
-extends MGManagerTrigger<MGDrawerTriggerStateable> {
+extends MGManagerTrigger<
+    MGDrawerTriggerStateable
+> {
 
     @Override
     public synchronized void loopTriggers(

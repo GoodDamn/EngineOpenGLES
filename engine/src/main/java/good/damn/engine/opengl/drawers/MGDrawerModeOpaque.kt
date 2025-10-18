@@ -4,6 +4,7 @@ import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.entities.MGMesh
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTrigger
+import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
@@ -21,7 +22,7 @@ data class MGDrawerModeOpaque(
     var directionalLight: MGDrawerLightDirectional,
     var meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>,
     var triggers: MGManagerTriggerMesh,
-    var triggersLight: ConcurrentLinkedQueue<MGDrawerTriggerStateableLight>,
+    var triggersLight: MGManagerTriggerLight,
     var lights: MGManagerLight
 ): MGIDrawer {
 
@@ -53,9 +54,7 @@ data class MGDrawerModeOpaque(
             shaderTrigger
         )
         triggers.draw()
-        triggersLight.forEach {
-            it.draw()
-        }
+        triggersLight.draw()
     }
 
 }

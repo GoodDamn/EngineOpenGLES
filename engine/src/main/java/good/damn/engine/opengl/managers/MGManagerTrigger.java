@@ -10,7 +10,7 @@ import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
 
 public abstract class MGManagerTrigger<
     STATEABLE extends MGIDrawer
-> {
+> implements MGIManagerTrigger {
 
     protected final float[] position4;
 
@@ -51,6 +51,7 @@ public abstract class MGManagerTrigger<
         );
     }
 
+    @Override
     public final synchronized void draw() {
         for (
             @NonNull
@@ -59,10 +60,4 @@ public abstract class MGManagerTrigger<
             trigger.draw();
         }
     }
-
-    abstract void loopTriggers(
-        final float checkX,
-        final float checkY,
-        final float checkZ
-    );
 }
