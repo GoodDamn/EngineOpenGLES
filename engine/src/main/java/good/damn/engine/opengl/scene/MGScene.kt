@@ -31,6 +31,7 @@ import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
 import good.damn.engine.opengl.managers.MGManagerLight
+import good.damn.engine.opengl.managers.MGManagerTrigger
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
@@ -182,9 +183,7 @@ MGIListenerOnIntersectPosition {
         MGDrawerTriggerStateableLight
     >()
 
-    private val mTriggers = ConcurrentLinkedQueue<
-        MGDrawerTriggerStateable
-    >()
+    private val managerTrigger = MGManagerTrigger()
 
     private val mDrawerLightDirectional = MGDrawerLightDirectional(
         shaderDefault.lightDirectional
@@ -202,7 +201,7 @@ MGIListenerOnIntersectPosition {
         mCameraFree,
         mDrawerLightDirectional,
         meshes,
-        mTriggers,
+        managerTrigger,
         mTriggersLight,
         managerLights
     )
@@ -226,7 +225,7 @@ MGIListenerOnIntersectPosition {
                 ),
                 shaderDefault,
                 shaderWireframe,
-                mTriggers,
+                managerTrigger,
                 meshes
             ),
             requesterUserContent
@@ -450,13 +449,11 @@ MGIListenerOnIntersectPosition {
             }
         }
 
-        mTriggers.forEach {
-            it.stateManager.trigger(
-                model.x - it.modelMatrix.x,
-                model.y - it.modelMatrix.y,
-                model.z - it.modelMatrix.z
-            )
-        }
+        managerTrigger.loopTriggers(
+            model.x,
+            model.y,
+            model.z
+        )
 
         mSwitcherDrawMode
             .currentDrawerMode
