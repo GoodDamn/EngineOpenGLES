@@ -2,6 +2,7 @@ package good.damn.engine.runnables
 
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.MGObject3d
+import good.damn.engine.opengl.MGObject3dGroup
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
@@ -37,39 +38,28 @@ class MGCallbackModelSpawn(
             return
         }
 
-        val vertexArray = MGArrayVertex()
-        val obj = objs[0]
-        vertexArray.configure(
-            obj.vertices,
-            obj.indices
-        )
-
-        val triggerMesh = MGTriggerMesh.createFromVertexArray(
-            vertexArray,
+        val triggerMeshes = MGObject3dGroup.createFromObjects(
+            objs,
             drawerVertArrBox,
             shaderDefault,
             shaderWireframe,
-            MGDrawerModeSwitch(
-                vertexArray,
-                MGDrawerMeshOpaque(
-                    vertexArray,
-                    texture,
-                    material
-                )
-            ),
+            texture,
+            material,
             triggerAction
         )
 
-        listMeshes.add(
-            triggerMesh.mesh
-        )
+        triggerMeshes.forEach {
+            listMeshes.add(
+                it.mesh
+            )
 
-        managerTrigger.addTrigger(
-            triggerMesh.triggerState
-        )
+            managerTrigger.addTrigger(
+                it.triggerState
+            )
+        }
 
-        bridgeRay.matrix = triggerMesh.matrix
-        triggerMesh.matrix.run {
+        bridgeRay.matrix = triggerMeshes[0].matrix
+        triggerMeshes[0].matrix.run {
             setPosition(
                 bridgeRay.outPointLead.x,
                 bridgeRay.outPointLead.y,
