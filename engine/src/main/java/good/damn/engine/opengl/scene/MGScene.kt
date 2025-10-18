@@ -26,11 +26,12 @@ import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.entities.MGLight
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.entities.MGMesh
-import good.damn.engine.opengl.enums.MGEnumStateTrigger
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
 import good.damn.engine.opengl.managers.MGManagerLight
+import good.damn.engine.opengl.managers.MGManagerTriggerLight
+import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
@@ -44,8 +45,6 @@ import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.MGTriggerLight
-import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable
-import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGCallbackModelSpawn
@@ -59,6 +58,7 @@ import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.random.Random
 
 class MGScene(
     requesterUserContent: MGIRequestUserContent,
@@ -177,14 +177,6 @@ MGIListenerOnIntersectPosition {
         add(meshLandscape)
     }
 
-    private val mTriggersLight = ConcurrentLinkedQueue<
-        MGDrawerTriggerStateableLight
-    >()
-
-    private val mTriggers = ConcurrentLinkedQueue<
-        MGDrawerTriggerStateable
-    >()
-
     private val mDrawerLightDirectional = MGDrawerLightDirectional(
         shaderDefault.lightDirectional
     )
@@ -192,6 +184,12 @@ MGIListenerOnIntersectPosition {
     private val managerLights = MGManagerLight(
         shaderDefault
     )
+
+    private val managerTriggerLight = MGManagerTriggerLight(
+        managerLights
+    )
+
+    private val managerTrigger = MGManagerTriggerMesh()
 
     private val mDrawerModeOpaque = MGDrawerModeOpaque(
         shaderSky,
@@ -201,8 +199,10 @@ MGIListenerOnIntersectPosition {
         mCameraFree,
         mDrawerLightDirectional,
         meshes,
-        mTriggers,
-        mTriggersLight,
+        arrayOf(
+            managerTrigger,
+            managerTriggerLight
+        ),
         managerLights
     )
 
@@ -225,7 +225,7 @@ MGIListenerOnIntersectPosition {
                 ),
                 shaderDefault,
                 shaderWireframe,
-                mTriggers,
+                managerTrigger,
                 meshes
             ),
             requesterUserContent
@@ -288,60 +288,43 @@ MGIListenerOnIntersectPosition {
         }
 
         mVerticesDebugSphere.apply {
-            val obj = MGObject3d.createFromAssets(
-                "objs/sphere_low.obj"
-            )?.get(0) ?: return@apply
+            val obj = MGUtilsVertIndices.createSphere(
+                36
+            )
 
             configure(
-                obj.vertices,
-                obj.indices
+                obj.second,
+                obj.first,
+                stride = 3 * 4
             )
         }
 
-        MGTriggerLight.createFromLight(
-            MGLight(
-                MGVector(1f,1f,0f)
-            ),
-            mDrawerDebugSphere,
-            shaderDefault
-        ).run {
-            matrix.setPosition(
-                2500f,
-                -1850f,
-                -3250f,
-            )
-            matrix.radius = 1250f
-            matrix.invalidatePosition()
-            matrix.invalidateRadius()
-            matrix.calculateInvertTrigger()
-
-            mTriggersLight.add(
-                triggerState
-            )
-        }
-
-        MGTriggerLight.createFromLight(
-            MGLight(
-                MGVector(
-                    0f,1f,1f
+        for (i in 0 until 10) {
+            MGTriggerLight.createFromLight(
+                MGLight(
+                    MGVector(
+                        0.5f + Random.nextFloat() * 0.5f,
+                        0.5f + Random.nextFloat() * 0.5f,
+                        0.5f + Random.nextFloat() * 0.5f
+                    )
+                ),
+                mDrawerDebugSphere,
+                shaderWireframe
+            ).run {
+                matrix.setPosition(
+                    1500f * (i + 1),
+                    -1850f,
+                    -3250f,
                 )
-            ),
-            mDrawerDebugSphere,
-            shaderDefault
-        ).run {
-            matrix.setPosition(
-                1250f,
-                -1850f,
-                -3250f
-            )
-            matrix.radius = 1250f
-            matrix.invalidatePosition()
-            matrix.invalidateRadius()
-            matrix.calculateInvertTrigger()
+                matrix.radius = 1250f
+                matrix.invalidatePosition()
+                matrix.invalidateRadius()
+                matrix.calculateInvertTrigger()
 
-            mTriggersLight.add(
-                triggerState
-            )
+                managerTriggerLight.addTrigger(
+                    triggerState
+                )
+            }
         }
 
         mTextureInteract.setupTexture(
@@ -447,32 +430,17 @@ MGIListenerOnIntersectPosition {
         // it doesn't need to check on each touch event
         // 2. For other entities who can trigger, check it inside infinite loop
         val model = mCameraFree.modelMatrix
-        mTriggersLight.forEach {
-            val spos = it.modelMatrix.position
-            val state = it.stateManager.trigger(
-                model.x - spos.x,
-                model.y - spos.y,
-                model.z - spos.z,
-            )
+        managerTriggerLight.loopTriggers(
+            model.x,
+            model.y,
+            model.z,
+        )
 
-            when (state) {
-                MGEnumStateTrigger.BEGIN -> {
-                    managerLights.register(it)
-                }
-                MGEnumStateTrigger.END -> {
-                    managerLights.unregister(it)
-                }
-                else -> Unit
-            }
-        }
-
-        mTriggers.forEach {
-            it.stateManager.trigger(
-                model.x - it.modelMatrix.x,
-                model.y - it.modelMatrix.y,
-                model.z - it.modelMatrix.z
-            )
-        }
+        managerTrigger.loopTriggers(
+            model.x,
+            model.y,
+            model.z
+        )
 
         mSwitcherDrawMode
             .currentDrawerMode

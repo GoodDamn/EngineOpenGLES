@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.OpenableColumns
 import android.provider.Settings
 import android.view.WindowManager
 import androidx.activity.result.ActivityResultCallback
@@ -145,11 +146,23 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
             return
         }
 
-        val uri = result.toString()
-
         val mimeType = contentResolver.getType(
             result
         ) ?: return
+
+        val fileName = contentResolver.query(
+            result, null, null, null, null
+        )?.run {
+            val nameIndex = getColumnIndex(
+                OpenableColumns.DISPLAY_NAME
+            )
+            moveToFirst()
+            val name = getString(
+                nameIndex
+            )
+            close()
+            return@run name
+        } ?: return
 
         val stream = contentResolver.openInputStream(
             result
@@ -157,7 +170,7 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
 
         mCallbackRequestUserContent?.onGetUserContent(
             MGMUserContent(
-                uri,
+                fileName,
                 mimeType,
                 stream
             )

@@ -8,10 +8,11 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.managers.MGManagerTrigger
+import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.textures.MGTexture
-import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable
 import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGTriggerMesh
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -24,7 +25,7 @@ class MGCallbackModelSpawn(
     private val triggerAction: MGITrigger,
     private val shaderDefault: MGShaderDefault,
     private val shaderWireframe: MGShaderSingleMode,
-    private val listTriggers: ConcurrentLinkedQueue<MGDrawerTriggerStateable>,
+    private val managerTrigger: MGManagerTriggerMesh,
     private val listMeshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>
 ): MGICallbackModel {
 
@@ -63,7 +64,7 @@ class MGCallbackModelSpawn(
             triggerMesh.mesh
         )
 
-        listTriggers.add(
+        managerTrigger.addTrigger(
             triggerMesh.triggerState
         )
 

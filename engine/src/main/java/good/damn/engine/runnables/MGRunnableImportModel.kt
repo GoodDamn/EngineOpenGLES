@@ -21,6 +21,8 @@ class MGRunnableImportModel(
         modelsCallback.onGetObjects(
             arrModels
         )
+
+        fileTemp.delete()
     }
 
 }

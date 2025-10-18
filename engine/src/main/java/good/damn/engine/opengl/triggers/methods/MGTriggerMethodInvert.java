@@ -9,9 +9,6 @@ import good.damn.engine.opengl.matrices.MGMatrixInvert;
 public abstract class MGTriggerMethodInvert
 implements MGITriggerMethod {
 
-    protected final float[] mTransformedPosition = new float[4];
-    private final float[] mTriggerPosition = new float[4];
-
     @NonNull private final MGMatrixInvert matrixInvert;
 
     public MGTriggerMethodInvert(
@@ -20,30 +17,25 @@ implements MGITriggerMethod {
         matrixInvert = matrix;
     }
 
+    // position4 float array should contains only 4 values
+    // [x, y, z, 0.0f]
     @Override
     public final boolean canTrigger(
-        float x,
-        float y,
-        float z
+        @NonNull final float[] position4
     ) {
-        mTriggerPosition[0] = x;
-        mTriggerPosition[1] = y;
-        mTriggerPosition[2] = z;
-        mTriggerPosition[3] = 0.0f;
-
         Matrix.multiplyMV(
-            mTransformedPosition,
+            position4,
             0,
             matrixInvert.modelInverted,
             0,
-            mTriggerPosition,
+            position4,
             0
         );
 
         return canTriggerTransformed(
-            mTransformedPosition[0],
-            mTransformedPosition[1],
-            mTransformedPosition[2]
+            position4[0],
+            position4[1],
+            position4[2]
         );
     }
 

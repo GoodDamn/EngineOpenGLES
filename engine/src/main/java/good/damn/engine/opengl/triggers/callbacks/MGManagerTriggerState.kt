@@ -9,13 +9,11 @@ class MGManagerTriggerState(
     private var mIsInside = false
 
     fun trigger(
-        x: Float,
-        y: Float,
-        z: Float
+        position4: FloatArray
     ): MGEnumStateTrigger {
         if (mIsInside) {
             if (!triggerMethod.canTrigger(
-                x, y, z
+                position4
             )) {
                 mIsInside = false
                 return MGEnumStateTrigger.END
@@ -24,7 +22,7 @@ class MGManagerTriggerState(
         }
 
         if (triggerMethod.canTrigger(
-            x, y, z
+           position4
         )) {
             mIsInside = true
             return MGEnumStateTrigger.BEGIN
