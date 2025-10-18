@@ -2,6 +2,7 @@ package good.damn.engine.opengl.drawers
 
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.entities.MGMesh
+import good.damn.engine.opengl.managers.MGIManagerTrigger
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTrigger
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
@@ -21,8 +22,7 @@ data class MGDrawerModeOpaque(
     var camera: MGCamera,
     var directionalLight: MGDrawerLightDirectional,
     var meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>,
-    var triggers: MGManagerTriggerMesh,
-    var triggersLight: MGManagerTriggerLight,
+    var managersTrigger: Array<MGIManagerTrigger>,
     var lights: MGManagerLight
 ): MGIDrawer {
 
@@ -53,8 +53,9 @@ data class MGDrawerModeOpaque(
         camera.draw(
             shaderTrigger
         )
-        triggers.draw()
-        triggersLight.draw()
+        managersTrigger.forEach {
+            it.draw()
+        }
     }
 
 }

@@ -199,8 +199,10 @@ MGIListenerOnIntersectPosition {
         mCameraFree,
         mDrawerLightDirectional,
         meshes,
-        managerTrigger,
-        managerTriggerLight,
+        arrayOf(
+            managerTrigger,
+            managerTriggerLight
+        ),
         managerLights
     )
 
