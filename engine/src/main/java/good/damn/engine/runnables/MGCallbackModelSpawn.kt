@@ -9,6 +9,7 @@ import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.managers.MGManagerTrigger
+import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.textures.MGTexture
@@ -24,7 +25,7 @@ class MGCallbackModelSpawn(
     private val triggerAction: MGITrigger,
     private val shaderDefault: MGShaderDefault,
     private val shaderWireframe: MGShaderSingleMode,
-    private val managerTrigger: MGManagerTrigger,
+    private val managerTrigger: MGManagerTriggerMesh,
     private val listMeshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>
 ): MGICallbackModel {
 

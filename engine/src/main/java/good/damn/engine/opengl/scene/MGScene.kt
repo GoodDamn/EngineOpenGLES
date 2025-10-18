@@ -32,6 +32,7 @@ import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplac
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTrigger
+import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.maps.MGMapDisplace
 import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
@@ -183,7 +184,7 @@ MGIListenerOnIntersectPosition {
         MGDrawerTriggerStateableLight
     >()
 
-    private val managerTrigger = MGManagerTrigger()
+    private val managerTrigger = MGManagerTriggerMesh()
 
     private val mDrawerLightDirectional = MGDrawerLightDirectional(
         shaderDefault.lightDirectional

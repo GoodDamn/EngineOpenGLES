@@ -4,15 +4,18 @@ import androidx.annotation.NonNull;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import good.damn.engine.opengl.drawers.MGIDrawer;
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
 
-public final class MGManagerTrigger {
+public abstract class MGManagerTrigger<
+    STATEABLE extends MGIDrawer
+> {
 
-    private final float[] position4;
+    protected final float[] position4;
 
-    private final ConcurrentLinkedQueue<
-        MGDrawerTriggerStateable
+    protected final ConcurrentLinkedQueue<
+        STATEABLE
     > mTriggers = new ConcurrentLinkedQueue<>();
 
     public MGManagerTrigger(
@@ -33,7 +36,7 @@ public final class MGManagerTrigger {
     }
 
     public final void addTrigger(
-        @NonNull final MGDrawerTriggerStateable trigger
+        @NonNull final STATEABLE trigger
     ) {
         mTriggers.add(
             trigger
@@ -41,7 +44,7 @@ public final class MGManagerTrigger {
     }
 
     public final void removeTrigger(
-        @NonNull final MGDrawerTriggerStateable trigger
+        @NonNull final STATEABLE trigger
     ) {
         mTriggers.remove(
             trigger
@@ -51,33 +54,15 @@ public final class MGManagerTrigger {
     public final synchronized void draw() {
         for (
             @NonNull
-            final MGDrawerTriggerStateable trigger : mTriggers
+            final STATEABLE trigger : mTriggers
         ) {
             trigger.draw();
         }
     }
 
-    public final synchronized void loopTriggers(
+    abstract void loopTriggers(
         final float checkX,
         final float checkY,
         final float checkZ
-    ) {
-        @NonNull
-        MGMatrixScaleRotation matrix;
-
-        for (
-            @NonNull
-            final MGDrawerTriggerStateable trigger : mTriggers
-        ) {
-            matrix = trigger.getModelMatrix();
-            position4[0] = checkX - matrix.getX();
-            position4[1] = checkY - matrix.getY();
-            position4[2] = checkZ - matrix.getZ();
-
-            trigger.getStateManager().trigger(
-                position4
-            );
-        }
-    }
-
+    );
 }
