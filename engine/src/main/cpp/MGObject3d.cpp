@@ -9,11 +9,18 @@
 const char* TAG = "MGObject3d.cpp";
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
 
+struct MGTexture {
+    std::string fileName;
+};
+
 struct MGMesh {
     unsigned int numVertices;
     unsigned int numIndices;
+    unsigned int numTextures = 0;
+
     float* vertices;
     int* indices;
+    MGTexture* textures = nullptr;
 };
 
 std::string jStringToStd(
@@ -98,6 +105,60 @@ MGMesh* processMesh(
     return meshOut;
 }
 
+void loadTexturesTo(
+    MGMesh* mesh,
+    aiMaterial* material,
+    aiTextureType type
+) {
+    unsigned int countTexture = material->GetTextureCount(
+        type
+    );
+
+    if (countTexture == 0) {
+        return;
+    }
+
+    auto* textures = new MGTexture[
+        countTexture
+    ];
+    mesh->numTextures = countTexture;
+    mesh->textures = textures;
+
+    for (unsigned int i = 0; i < countTexture; i++) {
+        aiString fileName;
+        material->GetTexture(
+            type,
+            i,
+            &fileName
+        );
+
+        std::string initStr = std::string(
+            fileName.C_Str()
+        );
+
+        std::size_t pos = initStr.find_last_not_of("//") + 1;
+        std::size_t posWin = initStr.find_last_of("/\\") + 1;
+
+        LOGD("TEXTURE %i: POS: %i, POS_WIN: %i FOR %s", i, pos, posWin, fileName.C_Str());
+
+        if (pos == -1 && posWin == -1) {
+            textures[i].fileName = initStr;
+            continue;
+        }
+
+        if (posWin != -1) {
+            textures[i].fileName = initStr.substr(
+                posWin
+            );
+            continue;
+        }
+
+        textures[i].fileName = initStr.substr(
+            pos
+        );
+    }
+}
+
 void processNode(
     aiNode* node,
     const aiScene* scene,
@@ -107,11 +168,25 @@ void processNode(
         aiMesh* mesh = scene->mMeshes[
             node->mMeshes[i]
         ];
-        list.push_back(
-            processMesh(
-                mesh
-            )
+
+        MGMesh* outMesh = processMesh(
+            mesh
         );
+
+        list.push_back(
+            outMesh
+        );
+
+        if (mesh->mMaterialIndex >= 0) {
+            aiMaterial* material = scene->mMaterials[
+                mesh->mMaterialIndex
+            ];
+            loadTexturesTo(
+                outMesh,
+                material,
+                aiTextureType_DIFFUSE
+            );
+        }
     }
 
     for (unsigned int i = 0; i < node->mNumChildren; i++) {
@@ -178,13 +253,17 @@ Java_good_damn_engine_opengl_MGObject3d_createFromPath(
     jmethodID constructorElement = env->GetMethodID(
         classElement,
         "<init>",
-        "([F[I)V"
+        "([F[I[Ljava/lang/String;)V"
     );
 
     jobjectArray arrayObject = env->NewObjectArray(
         scene->mNumMeshes,
         classElement,
         nullptr
+    );
+
+    jclass classString = env->FindClass(
+        "java/lang/String"
     );
 
     // Copy content to java arrays
@@ -221,11 +300,38 @@ Java_good_damn_engine_opengl_MGObject3d_createFromPath(
 
         delete[] mesh->indices;
 
+        jobjectArray arrFileName = nullptr;
+        if (mesh->textures) {
+            arrFileName = env->NewObjectArray(
+                mesh->numTextures,
+                classString,
+                nullptr
+            );
+
+            for (
+                unsigned int textureIndex = 0;
+                textureIndex < mesh->numTextures;
+                textureIndex++
+            ) {
+                LOGD("TEXTURE_JNI: %i->%s", textureIndex, mesh->textures[textureIndex].fileName.c_str());
+                env->SetObjectArrayElement(
+                    arrFileName,
+                    textureIndex,
+                    env->NewStringUTF(
+                        mesh->textures[textureIndex].fileName.c_str()
+                    )
+                );
+            }
+
+            delete[] mesh->textures;
+        }
+
         jobject obj = env->NewObject(
             classElement,
             constructorElement,
             arrVert,
-            arrIndices
+            arrIndices,
+            arrFileName
         );
 
         env->SetObjectArrayElement(

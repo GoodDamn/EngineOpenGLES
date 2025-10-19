@@ -1,6 +1,7 @@
 package good.damn.engine.opengl;
 
 import android.opengl.GLES30;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -44,6 +45,15 @@ public final class MGObject3dGroup {
                 obj.indices,
                 MGArrayVertex.STRIDE
             );
+
+            if (obj.texturesDiffuseFileName != null) {
+                for (
+                    @NonNull final String fileName
+                    : obj.texturesDiffuseFileName
+                ) {
+                    Log.d("TAG", "createFromObjects: TEXTURE: " + fileName);
+                }
+            }
 
             triggerMeshes[i] = MGTriggerMesh.createFromVertexArray(
                 arrayVertex,
