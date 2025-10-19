@@ -23,7 +23,7 @@ public final class MGObject3dGroup {
         @NonNull final MGDrawerVertexArray drawVertBox,
         @NonNull final MGShaderDefault shaderDefault,
         @NonNull final MGShaderSingleMode shaderWireframe,
-        @NonNull final MGTexture texture,
+        @NonNull final MGTexture defaultTexture,
         @NonNull final MGMaterial material,
         @NonNull final MGITrigger triggerAction
     ) {
@@ -46,12 +46,15 @@ public final class MGObject3dGroup {
                 MGArrayVertex.STRIDE
             );
 
+            @NonNull MGTexture texture = defaultTexture;
             if (obj.texturesDiffuseFileName != null) {
-                for (
-                    @NonNull final String fileName
-                    : obj.texturesDiffuseFileName
-                ) {
-                    Log.d("TAG", "createFromObjects: TEXTURE: " + fileName);
+                try {
+                    texture = MGTexture.Companion.createDefaultAsset(
+                        obj.texturesDiffuseFileName[0],
+                        shaderDefault
+                    );
+                } catch (Exception e) {
+                    // file not found
                 }
             }
 

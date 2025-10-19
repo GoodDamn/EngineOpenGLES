@@ -20,6 +20,23 @@ class MGTexture(
 
     private var mTextureOffset = 1f
 
+    companion object {
+        fun createDefaultAsset(
+            fileName: String,
+            shader: MGIShaderTexture
+        ): MGTexture {
+            val texture = MGTexture(
+                shader
+            )
+
+            texture.setupTexture(
+                "textures/$fileName"
+            )
+
+            return texture
+        }
+    }
+
     fun setupTexture(
         assetPath: String,
         wrapMode: Int = GL_CLAMP_TO_EDGE
