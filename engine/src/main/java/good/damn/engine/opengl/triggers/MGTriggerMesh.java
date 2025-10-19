@@ -80,6 +80,17 @@ public final class MGTriggerMesh {
             pointMinMax.second
         );
 
+        matrix.setPosition(
+            pointMiddle.getX(),
+            pointMiddle.getY(),
+            pointMiddle.getZ()
+        );
+
+        matrix.invalidatePosition();
+        matrix.invalidateScaleRotation();
+        matrix.calculateInvertTrigger();
+        matrix.calculateNormalsMesh();
+
         @NonNull
         final MGMesh mesh = new MGMesh(
             drawerModeSwitch,
