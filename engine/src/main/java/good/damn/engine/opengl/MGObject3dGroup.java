@@ -2,14 +2,18 @@ package good.damn.engine.opengl;
 
 import android.opengl.GLES30;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMaterial;
+import good.damn.engine.opengl.enums.MGEnumTextureType;
+import good.damn.engine.opengl.pools.MGPoolTextures;
 import good.damn.engine.opengl.shaders.MGShaderDefault;
 import good.damn.engine.opengl.shaders.MGShaderSingleMode;
 import good.damn.engine.opengl.textures.MGTexture;
@@ -23,9 +27,8 @@ public final class MGObject3dGroup {
         @NonNull final MGDrawerVertexArray drawVertBox,
         @NonNull final MGShaderDefault shaderDefault,
         @NonNull final MGShaderSingleMode shaderWireframe,
-        @NonNull final MGTexture defaultTexture,
-        @NonNull final MGMaterial material,
-        @NonNull final MGITrigger triggerAction
+        @NonNull final MGITrigger triggerAction,
+        @NonNull final MGPoolTextures poolTextures
     ) {
         @NonNull
         final MGTriggerMesh[] triggerMeshes = new MGTriggerMesh[
@@ -46,17 +49,13 @@ public final class MGObject3dGroup {
                 MGArrayVertex.STRIDE
             );
 
-            @NonNull MGTexture texture = defaultTexture;
-            if (obj.texturesDiffuseFileName != null) {
-                try {
-                    texture = MGTexture.Companion.createDefaultAsset(
-                        obj.texturesDiffuseFileName[0],
-                        shaderDefault
-                    );
-                } catch (Exception e) {
-                    // file not found
-                }
-            }
+            @NonNull MGTexture texture = obj.texturesDiffuseFileName == null ?
+                poolTextures.getDefaultTexture()
+            : loadTextureCached(
+                poolTextures,
+                shaderDefault,
+                obj.texturesDiffuseFileName[0]
+            );
 
             triggerMeshes[i] = MGTriggerMesh.createFromVertexArray(
                 arrayVertex,
@@ -68,7 +67,9 @@ public final class MGObject3dGroup {
                     new MGDrawerMeshOpaque(
                         arrayVertex,
                         texture,
-                        material
+                        new MGMaterial(
+                            shaderDefault.getMaterial()
+                        )
                     ),
                     GLES30.GL_CW
                 ),
@@ -77,5 +78,38 @@ public final class MGObject3dGroup {
         }
 
         return triggerMeshes;
+    }
+
+    @NonNull
+    private static MGTexture loadTextureCached(
+        @NonNull final MGPoolTextures poolTextures,
+        @NonNull final MGShaderDefault shaderDefault,
+        @NonNull final String textureName
+    ) {
+        @Nullable MGTexture texture = poolTextures.get(
+            textureName
+        );
+
+        if (texture != null) {
+            return texture;
+        }
+
+        try {
+            texture = MGTexture.Companion.createDefaultAsset(
+                textureName,
+                shaderDefault
+            );
+
+            poolTextures.add(
+                textureName,
+                texture
+            );
+        } catch (Exception e) {
+            // file not found
+        }
+
+        return texture != null ?
+            texture
+        : poolTextures.getDefaultTexture();
     }
 }

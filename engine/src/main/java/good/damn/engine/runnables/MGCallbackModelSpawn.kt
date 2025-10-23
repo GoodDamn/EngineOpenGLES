@@ -11,6 +11,7 @@ import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.managers.MGManagerTrigger
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
+import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.textures.MGTexture
@@ -21,13 +22,12 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class MGCallbackModelSpawn(
     private val drawerVertArrBox: MGDrawerVertexArray,
     private val bridgeRay: MGBridgeRayIntersect,
-    private val texture: MGTexture,
-    private val material: MGMaterial,
     private val triggerAction: MGITrigger,
     private val shaderDefault: MGShaderDefault,
     private val shaderWireframe: MGShaderSingleMode,
     private val managerTrigger: MGManagerTriggerMesh,
-    private val listMeshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>
+    private val listMeshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>,
+    private val poolTextures: MGPoolTextures
 ): MGICallbackModel {
 
     override fun onGetObjects(
@@ -43,9 +43,8 @@ class MGCallbackModelSpawn(
             drawerVertArrBox,
             shaderDefault,
             shaderWireframe,
-            texture,
-            material,
-            triggerAction
+            triggerAction,
+            poolTextures
         )
 
         triggerMeshes.forEach {

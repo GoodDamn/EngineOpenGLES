@@ -1,12 +1,14 @@
 package good.damn.engine.opengl.textures
 
 import android.graphics.BitmapFactory
+import android.graphics.PathIterator
 import android.opengl.GLES30.*
 import android.opengl.GLUtils
 import android.util.Log
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.MGIUniform
+import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderTexture
 import good.damn.engine.utils.MGUtilsFile
@@ -21,6 +23,54 @@ class MGTexture(
     private var mTextureOffset = 1f
 
     companion object {
+
+        fun getNameAndTextureType(
+            textureName: String
+        ): Pair<String, MGEnumTextureType> {
+            val splitIndex = textureName.indexOf("_")
+
+            if (splitIndex == -1) {
+                val dotIndex = textureName.indexOf(".")
+                return Pair(
+                    if (
+                        dotIndex == -1
+                    ) textureName else textureName.substring(
+                        0,
+                        dotIndex
+                    ),
+                    MGEnumTextureType.DIFFUSE
+                )
+            }
+
+            if (splitIndex+2 < textureName.length) {
+                val textureType = when (
+                    textureName.substring(
+                        splitIndex+1,
+                        splitIndex+2
+                    )
+                ) {
+                    "s" -> MGEnumTextureType.SPECULAR
+                    else -> MGEnumTextureType.DIFFUSE
+                }
+
+                return Pair(
+                    textureName.substring(
+                        0,
+                        splitIndex
+                    ),
+                    textureType
+                )
+            }
+
+            return Pair(
+                textureName.substring(
+                    0,
+                    splitIndex
+                ),
+                MGEnumTextureType.DIFFUSE
+            )
+        }
+
         fun createDefaultAsset(
             fileName: String,
             shader: MGIShaderTexture
