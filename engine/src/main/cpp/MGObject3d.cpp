@@ -8,19 +8,23 @@
 
 const char* TAG = "MGObject3d.cpp";
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
+#define NUM_TEXTURE_TYPES 2
 
-struct MGTexture {
-    std::string fileName;
+struct MGTextures {
+    aiTextureType type;
+    unsigned int numTextures;
+    std::string* fileNames;
 };
 
 struct MGMesh {
     unsigned int numVertices;
     unsigned int numIndices;
-    unsigned int numTextures = 0;
 
     float* vertices;
     int* indices;
-    MGTexture* textures = nullptr;
+    MGTextures* textureTypes[
+        NUM_TEXTURE_TYPES
+    ];
 };
 
 std::string jStringToStd(
@@ -105,8 +109,7 @@ MGMesh* processMesh(
     return meshOut;
 }
 
-void loadTexturesTo(
-    MGMesh* mesh,
+MGTextures* loadTexturesTo(
     aiMaterial* material,
     aiTextureType type
 ) {
@@ -115,14 +118,15 @@ void loadTexturesTo(
     );
 
     if (countTexture == 0) {
-        return;
+        return nullptr;
     }
 
-    auto* textures = new MGTexture[
+    auto* textures = new MGTextures;
+    textures->type = type;
+    textures->numTextures = countTexture;
+    textures->fileNames = new std::string[
         countTexture
     ];
-    mesh->numTextures = countTexture;
-    mesh->textures = textures;
 
     for (unsigned int i = 0; i < countTexture; i++) {
         aiString fileName;
@@ -141,22 +145,25 @@ void loadTexturesTo(
 
         LOGD("TEXTURE %i: POS: %i, POS_WIN: %i FOR %s", i, pos, posWin, fileName.C_Str());
 
+        textures[i].type = type;
         if (pos == -1 && posWin == -1) {
-            textures[i].fileName = initStr;
+            textures->fileNames[i] = initStr;
             continue;
         }
 
         if (posWin != -1) {
-            textures[i].fileName = initStr.substr(
+            textures[i].fileNames[i] = initStr.substr(
                 posWin
             );
             continue;
         }
 
-        textures[i].fileName = initStr.substr(
+        textures[i].fileNames[i] = initStr.substr(
             pos
         );
     }
+
+    return textures;
 }
 
 void processNode(
@@ -181,10 +188,15 @@ void processNode(
             aiMaterial* material = scene->mMaterials[
                 mesh->mMaterialIndex
             ];
-            loadTexturesTo(
-                outMesh,
+
+            outMesh->textureTypes[0] = loadTexturesTo(
                 material,
                 aiTextureType_DIFFUSE
+            );
+
+            outMesh->textureTypes[1] = loadTexturesTo(
+                material,
+                aiTextureType_SPECULAR
             );
         }
     }
@@ -196,6 +208,41 @@ void processNode(
             list
         );
     }
+}
+
+jobjectArray processTextures(
+    JNIEnv* env,
+    jclass classString,
+    MGTextures* textures
+) {
+    if (textures == nullptr) {
+        return nullptr;
+    }
+
+    jobjectArray arrFileName = env->NewObjectArray(
+        textures->numTextures,
+        classString,
+        nullptr
+    );
+
+    std::string* fileNames = textures->fileNames;
+
+    for (
+        unsigned int textureIndex = 0;
+        textureIndex < textures->numTextures;
+        textureIndex++
+    ) {
+        LOGD("TEXTURE_JNI: %i->%s", textureIndex, fileNames[textureIndex].c_str());
+        env->SetObjectArrayElement(
+            arrFileName,
+            textureIndex,
+            env->NewStringUTF(
+                fileNames[textureIndex].c_str()
+            )
+        );
+    }
+
+    return arrFileName;
 }
 
 extern "C"
@@ -253,7 +300,7 @@ Java_good_damn_engine_opengl_MGObject3d_createFromPath(
     jmethodID constructorElement = env->GetMethodID(
         classElement,
         "<init>",
-        "([F[I[Ljava/lang/String;)V"
+        "([F[I[Ljava/lang/String;[Ljava/lang/String;)V"
     );
 
     jobjectArray arrayObject = env->NewObjectArray(
@@ -300,38 +347,22 @@ Java_good_damn_engine_opengl_MGObject3d_createFromPath(
 
         delete[] mesh->indices;
 
-        jobjectArray arrFileName = nullptr;
-        if (mesh->textures) {
-            arrFileName = env->NewObjectArray(
-                mesh->numTextures,
-                classString,
-                nullptr
-            );
-
-            for (
-                unsigned int textureIndex = 0;
-                textureIndex < mesh->numTextures;
-                textureIndex++
-            ) {
-                LOGD("TEXTURE_JNI: %i->%s", textureIndex, mesh->textures[textureIndex].fileName.c_str());
-                env->SetObjectArrayElement(
-                    arrFileName,
-                    textureIndex,
-                    env->NewStringUTF(
-                        mesh->textures[textureIndex].fileName.c_str()
-                    )
-                );
-            }
-
-            delete[] mesh->textures;
-        }
 
         jobject obj = env->NewObject(
             classElement,
             constructorElement,
             arrVert,
             arrIndices,
-            arrFileName
+            processTextures(
+                env,
+                classString,
+                mesh->textureTypes[0]
+            ),
+            processTextures(
+                env,
+                classString,
+                mesh->textureTypes[1]
+            )
         );
 
         env->SetObjectArrayElement(

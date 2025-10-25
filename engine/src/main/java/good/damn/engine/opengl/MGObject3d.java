@@ -28,10 +28,14 @@ public final class MGObject3d {
     @Nullable
     public final String[] texturesDiffuseFileName;
 
+    @Nullable
+    public final String[] texturesSpecularFileName;
+
     public MGObject3d(
         @NonNull final float[] vertices,
         @NonNull final int[] indices,
-        @Nullable final String[] texturesDiffuseFileName
+        @Nullable final String[] texturesDiffuseFileName,
+        @Nullable final String[] texturesSpecularFileName
     ) {
         this.vertices = MGUtilsBuffer.Companion.createFloat(
             vertices
@@ -42,6 +46,7 @@ public final class MGObject3d {
         );
 
         this.texturesDiffuseFileName = texturesDiffuseFileName;
+        this.texturesSpecularFileName = texturesSpecularFileName;
     }
 
     static {
