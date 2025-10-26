@@ -54,6 +54,7 @@ public final class MGObject3dGroup {
             : loadTextureCached(
                 poolTextures,
                 shaderDefault,
+                MGEnumTextureType.DIFFUSE,
                 obj.texturesDiffuseFileName[0]
             );
 
@@ -84,6 +85,7 @@ public final class MGObject3dGroup {
     private static MGTexture loadTextureCached(
         @NonNull final MGPoolTextures poolTextures,
         @NonNull final MGShaderDefault shaderDefault,
+        @NonNull final MGEnumTextureType textureType,
         @NonNull final String textureName
     ) {
         @Nullable MGTexture texture = poolTextures.get(
@@ -97,6 +99,7 @@ public final class MGObject3dGroup {
         try {
             texture = MGTexture.Companion.createDefaultAsset(
                 textureName,
+                textureType,
                 shaderDefault
             );
 

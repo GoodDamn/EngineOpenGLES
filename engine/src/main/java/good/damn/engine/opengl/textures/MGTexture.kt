@@ -1,26 +1,25 @@
 package good.damn.engine.opengl.textures
 
 import android.graphics.BitmapFactory
-import android.graphics.PathIterator
 import android.opengl.GLES30.*
 import android.opengl.GLUtils
 import android.util.Log
-import good.damn.engine.MGEngine
 import good.damn.engine.opengl.drawers.MGIDrawer
-import good.damn.engine.opengl.drawers.MGIUniform
 import good.damn.engine.opengl.enums.MGEnumTextureType
-import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderTexture
 import good.damn.engine.utils.MGUtilsFile
 import java.io.FileInputStream
 
 class MGTexture(
-    var shader: MGIShaderTexture
+    var shader: MGIShaderTexture,
+    type: MGEnumTextureType = MGEnumTextureType.DIFFUSE
 ): MGIDrawer {
 
     private var mId = intArrayOf(1)
 
     private var mTextureOffset = 1f
+
+    private val mActiveTexture = GL_TEXTURE0 + type.v
 
     companion object {
 
@@ -49,7 +48,7 @@ class MGTexture(
                         splitIndex+2
                     )
                 ) {
-                    "s" -> MGEnumTextureType.SPECULAR
+                    "s" -> MGEnumTextureType.METALLIC
                     else -> MGEnumTextureType.DIFFUSE
                 }
 
@@ -73,10 +72,12 @@ class MGTexture(
 
         fun createDefaultAsset(
             fileName: String,
+            type: MGEnumTextureType,
             shader: MGIShaderTexture
         ): MGTexture {
             val texture = MGTexture(
-                shader
+                shader,
+                type
             )
 
             texture.setupTexture(
@@ -185,7 +186,7 @@ class MGTexture(
 
     override fun draw() {
         glActiveTexture(
-            GL_TEXTURE0
+            mActiveTexture
         )
 
         glBindTexture(

@@ -1,6 +1,5 @@
 package good.damn.engine
 
-import android.util.Log
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.textures.MGTexture
 import org.junit.Test
@@ -52,7 +51,7 @@ class ExampleUnitTest {
 
         assertEquals(
             m.second,
-            MGEnumTextureType.SPECULAR
+            MGEnumTextureType.METALLIC
         )
     }
 
