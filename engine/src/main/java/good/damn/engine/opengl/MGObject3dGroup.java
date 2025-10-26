@@ -14,7 +14,9 @@ import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMaterial;
 import good.damn.engine.opengl.enums.MGEnumTextureType;
 import good.damn.engine.opengl.pools.MGPoolTextures;
+import good.damn.engine.opengl.shaders.MGIShaderTexture;
 import good.damn.engine.opengl.shaders.MGShaderDefault;
+import good.damn.engine.opengl.shaders.MGShaderMaterial;
 import good.damn.engine.opengl.shaders.MGShaderSingleMode;
 import good.damn.engine.opengl.textures.MGTexture;
 import good.damn.engine.opengl.triggers.MGITrigger;
@@ -49,11 +51,14 @@ public final class MGObject3dGroup {
                 MGArrayVertex.STRIDE
             );
 
-            @NonNull final MGTexture texture = obj.texturesDiffuseFileName == null ?
+            @NonNull final MGShaderMaterial mat = shaderDefault
+                .getMaterial();
+
+            @NonNull final MGTexture textureDiffuse = obj.texturesDiffuseFileName == null ?
                 poolTextures.getDefaultTexture()
             : loadTextureCached(
                 poolTextures,
-                shaderDefault,
+                mat.getTextureDiffuse(),
                 MGEnumTextureType.DIFFUSE,
                 obj.texturesDiffuseFileName[0]
             );
@@ -62,7 +67,7 @@ public final class MGObject3dGroup {
                 poolTextures.getDefaultTextureMetallic()
             : loadTextureCached(
                 poolTextures,
-                shaderDefault,
+                mat.getTextureMetallic(),
                 MGEnumTextureType.METALLIC,
                 obj.texturesMetallicFileName[0]
             );
@@ -76,9 +81,9 @@ public final class MGObject3dGroup {
                     arrayVertex,
                     new MGDrawerMeshOpaque(
                         arrayVertex,
-                        texture,
                         new MGMaterial(
                             shaderDefault.getMaterial(),
+                            textureDiffuse,
                             textureMetallic
                         )
                     ),
@@ -94,7 +99,7 @@ public final class MGObject3dGroup {
     @NonNull
     private static MGTexture loadTextureCached(
         @NonNull final MGPoolTextures poolTextures,
-        @NonNull final MGShaderDefault shaderDefault,
+        @NonNull final MGIShaderTexture shaderTexture,
         @NonNull final MGEnumTextureType textureType,
         @NonNull final String textureName
     ) {
@@ -110,7 +115,7 @@ public final class MGObject3dGroup {
             texture = MGTexture.Companion.createDefaultAsset(
                 textureName,
                 textureType,
-                shaderDefault
+                shaderTexture
             );
 
             poolTextures.add(

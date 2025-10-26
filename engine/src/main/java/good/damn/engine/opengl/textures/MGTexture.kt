@@ -12,7 +12,7 @@ import java.io.FileInputStream
 
 class MGTexture(
     var shader: MGIShaderTexture,
-    type: MGEnumTextureType = MGEnumTextureType.DIFFUSE
+    type: MGEnumTextureType
 ): MGIDrawer {
 
     private var mId = intArrayOf(1)
@@ -171,6 +171,10 @@ class MGTexture(
     }
 
     fun unbind() {
+        glActiveTexture(
+            mActiveTexture
+        )
+
         glBindTexture(
             GL_TEXTURE_2D,
             0

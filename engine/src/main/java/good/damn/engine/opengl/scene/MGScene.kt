@@ -26,6 +26,7 @@ import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.entities.MGLight
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.entities.MGMesh
+import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
@@ -104,29 +105,29 @@ MGIListenerOnIntersectPosition {
     )
 
     private val mTextureSky = MGTexture(
-        shaderSky
+        shaderSky.texture,
+        MGEnumTextureType.DIFFUSE
     )
 
     private val mTextureInteract = MGTexture(
-        shaderDefault
+        shaderDefault.material.textureDiffuse,
+        MGEnumTextureType.DIFFUSE
     )
 
     private val mTextureLandscape = MGTexture(
-        shaderDefault
+        shaderDefault.material.textureDiffuse,
+        MGEnumTextureType.DIFFUSE
     )
 
-    private val mTextureSpecNo = MGTexture(
-        shaderDefault
-    )
-
-    private val materialInteract = MGMaterial(
-        shaderDefault.material,
-        mTextureSpecNo
+    private val mTextureMetallicNo = MGTexture(
+        shaderDefault.material.textureMetallic,
+        MGEnumTextureType.METALLIC
     )
 
     private val materialLandscape = MGMaterial(
         shaderDefault.material,
-        mTextureSpecNo
+        mTextureLandscape,
+        mTextureMetallicNo
     )
 
     private val mBridgeMatrix = MGBridgeRayIntersect()
@@ -136,7 +137,6 @@ MGIListenerOnIntersectPosition {
             mVerticesLandscape,
             MGDrawerMeshOpaque(
                 mVerticesLandscape,
-                mTextureLandscape,
                 materialLandscape
             ),
             GL_CW
@@ -221,7 +221,7 @@ MGIListenerOnIntersectPosition {
 
     private val mPoolTextures = MGPoolTextures(
         mTextureInteract,
-        mTextureSpecNo
+        mTextureMetallicNo
     )
 
     private val mLayerEditor = MGUILayerEditor(
@@ -337,6 +337,10 @@ MGIListenerOnIntersectPosition {
                 )
             }
         }
+
+        mTextureMetallicNo.setupTexture(
+            "textures/metallic_0.jpg"
+        )
 
         mTextureInteract.setupTexture(
             "textures/rock.jpg"

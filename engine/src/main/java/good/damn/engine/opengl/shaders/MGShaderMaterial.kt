@@ -6,18 +6,23 @@ import good.damn.engine.opengl.drawers.MGIUniform
 class MGShaderMaterial
 : MGIUniform {
 
-    var uniformSpecular = 0
-        private set
-
     var uniformShininess = 0
         private set
+
+    val textureDiffuse = MGShaderTexture()
+    val textureMetallic = MGShaderTexture()
 
     override fun setupUniforms(
         program: Int
     ) {
-        uniformSpecular = glGetUniformLocation(
+        textureDiffuse.setupUniforms(
             program,
-            "material.textSpecular"
+            "material.textDiffuse"
+        )
+
+        textureMetallic.setupUniforms(
+            program,
+            "material.textMetallic"
         )
 
         uniformShininess = glGetUniformLocation(

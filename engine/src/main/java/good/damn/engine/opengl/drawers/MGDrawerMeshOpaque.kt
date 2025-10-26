@@ -7,15 +7,13 @@ import good.damn.engine.opengl.textures.MGTexture
 
 class MGDrawerMeshOpaque(
     override var vertexArray: MGArrayVertex,
-    var texture: MGTexture,
     var material: MGMaterial,
 ): MGIDrawerMesh {
 
     override fun draw() {
-        texture.draw()
         material.draw()
         vertexArray.draw()
-        texture.unbind()
+        material.unbind()
     }
 
 }
