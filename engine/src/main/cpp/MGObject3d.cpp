@@ -14,6 +14,10 @@ struct MGTextures {
     aiTextureType type;
     unsigned int numTextures;
     std::string* fileNames;
+
+    ~MGTextures() {
+        delete[] fileNames;
+    }
 };
 
 struct MGMesh {
@@ -196,7 +200,7 @@ void processNode(
 
             outMesh->textureTypes[1] = loadTexturesTo(
                 material,
-                aiTextureType_SPECULAR
+                aiTextureType_METALNESS
             );
         }
     }
@@ -364,6 +368,16 @@ Java_good_damn_engine_opengl_MGObject3d_createFromPath(
                 mesh->textureTypes[1]
             )
         );
+
+        for (
+            unsigned char ii = 0;
+            ii < NUM_TEXTURE_TYPES;
+            ii++
+        ) {
+            if (mesh->textureTypes[ii]) {
+                delete mesh->textureTypes[ii];
+            }
+        }
 
         env->SetObjectArrayElement(
             arrayObject,
