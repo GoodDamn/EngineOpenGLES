@@ -17,7 +17,7 @@ class MGShaderMaterial
     ) {
         uniformSpecular = glGetUniformLocation(
             program,
-            "material.specular"
+            "material.textSpecular"
         )
 
         uniformShininess = glGetUniformLocation(

@@ -103,14 +103,6 @@ MGIListenerOnIntersectPosition {
         mVerticesLandscape
     )
 
-    private val materialInteract = MGMaterial(
-        shaderDefault.material
-    )
-
-    private val materialLandscape = MGMaterial(
-        shaderDefault.material
-    )
-
     private val mTextureSky = MGTexture(
         shaderSky
     )
@@ -121,6 +113,20 @@ MGIListenerOnIntersectPosition {
 
     private val mTextureLandscape = MGTexture(
         shaderDefault
+    )
+
+    private val mTextureSpecNo = MGTexture(
+        shaderDefault
+    )
+
+    private val materialInteract = MGMaterial(
+        shaderDefault.material,
+        mTextureSpecNo
+    )
+
+    private val materialLandscape = MGMaterial(
+        shaderDefault.material,
+        mTextureSpecNo
     )
 
     private val mBridgeMatrix = MGBridgeRayIntersect()
@@ -214,7 +220,8 @@ MGIListenerOnIntersectPosition {
     )
 
     private val mPoolTextures = MGPoolTextures(
-        mTextureInteract
+        mTextureInteract,
+        mTextureSpecNo
     )
 
     private val mLayerEditor = MGUILayerEditor(

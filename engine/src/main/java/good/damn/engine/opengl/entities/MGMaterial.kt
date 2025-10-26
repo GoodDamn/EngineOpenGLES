@@ -4,12 +4,12 @@ import android.opengl.GLES30
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.MGIUniform
 import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.engine.opengl.textures.MGTexture
 
 class MGMaterial(
-    var shader: MGShaderMaterial
+    var shader: MGShaderMaterial,
+    var textureSpecular: MGTexture
 ): MGIDrawer {
-
-    var specular = 1f
     var shine = 1f
 
     override fun draw() {
@@ -18,10 +18,12 @@ class MGMaterial(
             shine
         )
 
-        GLES30.glUniform1f(
+        GLES30.glUniform1i(
             shader.uniformSpecular,
-            specular
+            1
         )
+
+        textureSpecular.draw()
     }
 
 }

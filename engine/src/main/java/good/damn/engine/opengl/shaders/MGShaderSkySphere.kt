@@ -17,15 +17,11 @@ MGIShaderModel {
     override var uniformModelView = 0
         private set
 
-    override var uniformTextureOffset = -1
-        private set
-
     override var uniformCameraProjection = 0
         private set
 
     override var uniformCameraView = 0
         private set
-
 
     override fun setupUniforms(
         program: Int
@@ -39,11 +35,6 @@ MGIShaderModel {
         uniformModelView = glGetUniformLocation(
             program,
             "model"
-        )
-
-        uniformTextureOffset = glGetUniformLocation(
-            program,
-            "textureOffset"
         )
 
         uniformCameraProjection = glGetUniformLocation(

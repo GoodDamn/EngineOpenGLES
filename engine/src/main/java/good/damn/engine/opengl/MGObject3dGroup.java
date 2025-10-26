@@ -49,13 +49,22 @@ public final class MGObject3dGroup {
                 MGArrayVertex.STRIDE
             );
 
-            @NonNull MGTexture texture = obj.texturesDiffuseFileName == null ?
+            @NonNull final MGTexture texture = obj.texturesDiffuseFileName == null ?
                 poolTextures.getDefaultTexture()
             : loadTextureCached(
                 poolTextures,
                 shaderDefault,
                 MGEnumTextureType.DIFFUSE,
                 obj.texturesDiffuseFileName[0]
+            );
+
+            @NonNull final MGTexture textureMetallic = obj.texturesMetallicFileName == null ?
+                poolTextures.getDefaultTextureMetallic()
+            : loadTextureCached(
+                poolTextures,
+                shaderDefault,
+                MGEnumTextureType.METALLIC,
+                obj.texturesMetallicFileName[0]
             );
 
             triggerMeshes[i] = MGTriggerMesh.createFromVertexArray(
@@ -69,7 +78,8 @@ public final class MGObject3dGroup {
                         arrayVertex,
                         texture,
                         new MGMaterial(
-                            shaderDefault.getMaterial()
+                            shaderDefault.getMaterial(),
+                            textureMetallic
                         )
                     ),
                     GLES30.GL_CW

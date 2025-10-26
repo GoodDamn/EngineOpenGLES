@@ -17,8 +17,6 @@ class MGTexture(
 
     private var mId = intArrayOf(1)
 
-    private var mTextureOffset = 1f
-
     private val mActiveTexture = GL_TEXTURE0 + type.v
 
     companion object {
@@ -197,11 +195,6 @@ class MGTexture(
         glUniform1i(
             shader.uniformTexture,
             0
-        )
-
-        glUniform1f(
-            shader.uniformTextureOffset,
-            mTextureOffset
         )
     }
 }

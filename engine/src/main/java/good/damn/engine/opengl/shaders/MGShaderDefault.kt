@@ -21,9 +21,6 @@ MGIShaderModel {
     override var uniformModelView = 0
         private set
 
-    override var uniformTextureOffset = 0
-        private set
-
     override var uniformCameraPosition = 0
         private set
 
@@ -70,12 +67,6 @@ MGIShaderModel {
             program,
             "model"
         )
-
-        uniformTextureOffset = glGetUniformLocation(
-            program,
-            "textureOffset"
-        )
-
 
         uniformCameraProjection = glGetUniformLocation(
             program,
