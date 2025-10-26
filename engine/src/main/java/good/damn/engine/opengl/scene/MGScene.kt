@@ -339,7 +339,8 @@ MGIListenerOnIntersectPosition {
         }
 
         mTextureMetallicNo.setupTexture(
-            "textures/metallic_0.jpg"
+            "textures/black.jpg",
+            GL_REPEAT
         )
 
         mTextureInteract.setupTexture(

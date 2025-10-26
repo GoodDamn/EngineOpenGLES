@@ -17,7 +17,7 @@ class MGTexture(
 
     private var mId = intArrayOf(1)
 
-    private val mActiveTexture = GL_TEXTURE0 + type.v
+    private val mActiveTexture = type.v
 
     companion object {
 
@@ -172,7 +172,7 @@ class MGTexture(
 
     fun unbind() {
         glActiveTexture(
-            mActiveTexture
+            GL_TEXTURE0 + mActiveTexture
         )
 
         glBindTexture(
@@ -182,13 +182,13 @@ class MGTexture(
 
         glUniform1i(
             shader.uniformTexture,
-            0
+            mActiveTexture
         )
     }
 
     override fun draw() {
         glActiveTexture(
-            mActiveTexture
+            GL_TEXTURE0 + mActiveTexture
         )
 
         glBindTexture(
@@ -198,7 +198,7 @@ class MGTexture(
 
         glUniform1i(
             shader.uniformTexture,
-            0
+            mActiveTexture
         )
     }
 }
