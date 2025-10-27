@@ -25,9 +25,9 @@ implements MGIMatrixTrigger {
             : matrices
         ) {
             matrix.matrix.setPosition(
-                x + matrix.groupX,
-                y + matrix.groupY,
-                z + matrix.groupZ
+                x + matrix.translateX,
+                y + matrix.translateY,
+                z + matrix.translateZ
             );
         }
     }
@@ -54,7 +54,18 @@ implements MGIMatrixTrigger {
         float y,
         float z
     ) {
+        for (
+            @NonNull final MGMWrapperMatrix matrix
+            : matrices
+        ) {
+            matrix.matrix.setScale(
+                x, y, z
+            );
 
+            matrix.translateX = x * matrix.groupX;
+            matrix.translateY = y * matrix.groupY;
+            matrix.translateZ = z * matrix.groupZ;
+        }
     }
 
     @Override
@@ -107,9 +118,13 @@ implements MGIMatrixTrigger {
     }
 
     private static class MGMWrapperMatrix {
-        float groupX;
-        float groupY;
-        float groupZ;
+       final float groupX;
+       final float groupY;
+       final float groupZ;
+
+        float translateX;
+        float translateY;
+        float translateZ;
 
         @NonNull
         final MGMatrixTriggerMesh matrix;
@@ -121,6 +136,10 @@ implements MGIMatrixTrigger {
             groupX = matrix.matrixMesh.model.getX();
             groupY = matrix.matrixMesh.model.getY();
             groupZ = matrix.matrixMesh.model.getZ();
+
+            translateX = groupX;
+            translateY = groupY;
+            translateZ = groupZ;
         }
     }
 
