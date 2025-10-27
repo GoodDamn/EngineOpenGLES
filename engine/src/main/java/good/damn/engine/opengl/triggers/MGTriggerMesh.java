@@ -89,7 +89,7 @@ public final class MGTriggerMesh {
         matrix.invalidatePosition();
         matrix.invalidateScaleRotation();
         matrix.calculateInvertTrigger();
-        matrix.calculateNormalsMesh();
+        matrix.calculateNormals();
 
         @NonNull
         final MGMesh mesh = new MGMesh(

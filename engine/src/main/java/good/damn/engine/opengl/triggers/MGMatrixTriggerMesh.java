@@ -7,7 +7,8 @@ import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal;
 
-public final class MGMatrixTriggerMesh {
+public final class MGMatrixTriggerMesh
+implements MGIMatrixTrigger {
 
     @NonNull
     public final MGMatrixTransformationInvert<
@@ -48,25 +49,30 @@ public final class MGMatrixTriggerMesh {
         );
     }
 
+    @Override
     public final void invalidateScaleRotation() {
         matrixTrigger.model.invalidateScaleRotation();
         matrixMesh.model.invalidateScaleRotation();
     }
 
+    @Override
     public final void invalidatePosition() {
         matrixTrigger.model.invalidatePosition();
         matrixMesh.model.invalidatePosition();
     }
 
+    @Override
     public final void calculateInvertTrigger() {
         matrixTrigger.invert.calculateInvertModel();
     }
 
-    public final void calculateNormalsMesh() {
+    @Override
+    public final void calculateNormals() {
         matrixMesh.normal.calculateInvertModel();
         matrixMesh.normal.calculateNormalMatrix();
     }
 
+    @Override
     public final void setScale(
         final float x,
         final float y,
@@ -83,6 +89,7 @@ public final class MGMatrixTriggerMesh {
         );
     }
 
+    @Override
     public final void addPosition(
         final float x,
         final float y,
@@ -97,6 +104,7 @@ public final class MGMatrixTriggerMesh {
         );
     }
 
+    @Override
     public final void setPosition(
         final float x,
         final float y,
@@ -111,6 +119,7 @@ public final class MGMatrixTriggerMesh {
         );
     }
 
+    @Override
     public final void addRotation(
         final float x,
         final float y,

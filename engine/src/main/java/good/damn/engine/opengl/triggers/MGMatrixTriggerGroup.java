@@ -113,7 +113,7 @@ implements MGIMatrixTrigger {
             @NonNull final MGMWrapperMatrix matrix
             : matrices
         ) {
-            matrix.matrix.calculateNormalsMesh();
+            matrix.matrix.calculateNormals();
         }
     }
 
