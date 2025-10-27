@@ -83,6 +83,20 @@ public final class MGMatrixTriggerMesh {
         );
     }
 
+    public final void addPosition(
+        final float x,
+        final float y,
+        final float z
+    ) {
+        matrixTrigger.model.addPosition(
+            x, y, z
+        );
+
+        matrixMesh.model.addPosition(
+            x, y, z
+        );
+    }
+
     public final void setPosition(
         final float x,
         final float y,

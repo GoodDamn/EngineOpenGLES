@@ -1,22 +1,15 @@
 package good.damn.engine.runnables
 
-import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.MGObject3d
-import good.damn.engine.opengl.MGObject3dGroup
+import good.damn.engine.opengl.MGTriggerMeshGroup
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
-import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
-import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
-import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.managers.MGManagerTrigger
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
-import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.triggers.MGITrigger
-import good.damn.engine.opengl.triggers.MGTriggerMesh
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGCallbackModelSpawn(
@@ -38,7 +31,7 @@ class MGCallbackModelSpawn(
             return
         }
 
-        val triggerMeshes = MGObject3dGroup.createFromObjects(
+        val meshGroup = MGTriggerMeshGroup.createFromObjects(
             objs,
             drawerVertArrBox,
             shaderDefault,
@@ -47,7 +40,7 @@ class MGCallbackModelSpawn(
             poolTextures
         )
 
-        triggerMeshes.forEach {
+        meshGroup.meshes.forEach {
             listMeshes.add(
                 it.mesh
             )
@@ -57,9 +50,9 @@ class MGCallbackModelSpawn(
             )
         }
 
-        bridgeRay.matrix = triggerMeshes[0].matrix
-        triggerMeshes[0].matrix.run {
-            setPosition(
+        bridgeRay.matrix = meshGroup.matrix
+        meshGroup.matrix.run {
+            addPosition(
                 bridgeRay.outPointLead.x,
                 bridgeRay.outPointLead.y,
                 bridgeRay.outPointLead.z
@@ -68,7 +61,7 @@ class MGCallbackModelSpawn(
             invalidatePosition()
 
             calculateInvertTrigger()
-            calculateNormalsMesh()
+            calculateNormals()
         }
     }
 

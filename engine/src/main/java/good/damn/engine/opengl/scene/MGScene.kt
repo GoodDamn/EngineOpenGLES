@@ -267,7 +267,7 @@ MGIListenerOnIntersectPosition {
                         )
                         invalidateScaleRotation()
                         calculateInvertTrigger()
-                        calculateNormalsMesh()
+                        calculateNormals()
                     }
                 }
             }

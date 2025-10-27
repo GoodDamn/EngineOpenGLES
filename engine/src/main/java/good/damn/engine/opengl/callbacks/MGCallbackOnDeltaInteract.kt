@@ -19,7 +19,7 @@ class MGCallbackOnDeltaInteract(
             )
             invalidateScaleRotation()
             calculateInvertTrigger()
-            calculateNormalsMesh()
+            calculateNormals()
         }
     }
 }

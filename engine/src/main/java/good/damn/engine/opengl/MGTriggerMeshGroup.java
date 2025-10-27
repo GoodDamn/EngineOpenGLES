@@ -1,14 +1,11 @@
 package good.damn.engine.opengl;
 
 import android.opengl.GLES30;
-import android.util.Log;
-import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque;
-import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMaterial;
@@ -20,11 +17,49 @@ import good.damn.engine.opengl.shaders.MGShaderMaterial;
 import good.damn.engine.opengl.shaders.MGShaderSingleMode;
 import good.damn.engine.opengl.textures.MGTexture;
 import good.damn.engine.opengl.triggers.MGITrigger;
+import good.damn.engine.opengl.triggers.MGMatrixTriggerGroup;
+import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh;
 import good.damn.engine.opengl.triggers.MGTriggerMesh;
 
-public final class MGObject3dGroup {
+public final class MGTriggerMeshGroup {
 
-    public static MGTriggerMesh[] createFromObjects(
+    @NonNull
+    public final MGMatrixTriggerGroup matrix;
+
+    @NonNull
+    public final MGTriggerMesh[] meshes;
+
+    public MGTriggerMeshGroup(
+        @NonNull final MGMatrixTriggerGroup matrix,
+        @NonNull final MGTriggerMesh[] meshes
+    ) {
+        this.matrix = matrix;
+        this.meshes = meshes;
+    }
+
+    public static MGTriggerMeshGroup createFromTriggerMeshes(
+        @NonNull final MGTriggerMesh[] meshes
+    ) {
+        @NonNull
+        final MGMatrixTriggerMesh[] matrices = new MGMatrixTriggerMesh[
+            meshes.length
+        ];
+
+        for (
+            int i = 0;
+            i < matrices.length;
+            i++
+        ) { matrices[i] = meshes[i].matrix; }
+
+        return new MGTriggerMeshGroup(
+            MGMatrixTriggerGroup.createFromMatrices(
+                matrices
+            ),
+            meshes
+        );
+    }
+
+    public static MGTriggerMeshGroup createFromObjects(
         @NonNull final MGObject3d[] objs,
         @NonNull final MGDrawerVertexArray drawVertBox,
         @NonNull final MGShaderDefault shaderDefault,
@@ -93,7 +128,9 @@ public final class MGObject3dGroup {
             );
         }
 
-        return triggerMeshes;
+        return createFromTriggerMeshes(
+            triggerMeshes
+        );
     }
 
     @NonNull
