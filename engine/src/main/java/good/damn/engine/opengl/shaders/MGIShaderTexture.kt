@@ -2,5 +2,9 @@ package good.damn.engine.opengl.shaders
 
 interface MGIShaderTexture {
     val uniformTexture: Int
-    val uniformTextureOffset: Int
+
+    fun setupUniforms(
+        program: Int,
+        name: String
+    )
 }

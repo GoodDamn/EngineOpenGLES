@@ -8,16 +8,9 @@ import android.util.Log
 class MGShaderSkySphere
 : MGShaderBase(),
 MGIShaderCamera,
-MGIShaderTexture,
 MGIShaderModel {
 
-    override var uniformTexture = 0
-        private set
-
     override var uniformModelView = 0
-        private set
-
-    override var uniformTextureOffset = -1
         private set
 
     override var uniformCameraProjection = 0
@@ -26,12 +19,13 @@ MGIShaderModel {
     override var uniformCameraView = 0
         private set
 
+    val texture = MGShaderTexture()
 
     override fun setupUniforms(
         program: Int
     ) {
         // Uniforms
-        uniformTexture = glGetUniformLocation(
+        texture.setupUniforms(
             program,
             "texture"
         )
@@ -39,11 +33,6 @@ MGIShaderModel {
         uniformModelView = glGetUniformLocation(
             program,
             "model"
-        )
-
-        uniformTextureOffset = glGetUniformLocation(
-            program,
-            "textureOffset"
         )
 
         uniformCameraProjection = glGetUniformLocation(

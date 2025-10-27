@@ -26,6 +26,7 @@ import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.entities.MGLight
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.entities.MGMesh
+import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
@@ -38,6 +39,7 @@ import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMDrawMode
+import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
@@ -102,24 +104,30 @@ MGIListenerOnIntersectPosition {
         mVerticesLandscape
     )
 
-    private val materialInteract = MGMaterial(
-        shaderDefault.material
-    )
-
-    private val materialLandscape = MGMaterial(
-        shaderDefault.material
-    )
-
     private val mTextureSky = MGTexture(
-        shaderSky
+        shaderSky.texture,
+        MGEnumTextureType.DIFFUSE
     )
 
     private val mTextureInteract = MGTexture(
-        shaderDefault
+        shaderDefault.material.textureDiffuse,
+        MGEnumTextureType.DIFFUSE
     )
 
     private val mTextureLandscape = MGTexture(
-        shaderDefault
+        shaderDefault.material.textureDiffuse,
+        MGEnumTextureType.DIFFUSE
+    )
+
+    private val mTextureMetallicNo = MGTexture(
+        shaderDefault.material.textureMetallic,
+        MGEnumTextureType.METALLIC
+    )
+
+    private val materialLandscape = MGMaterial(
+        shaderDefault.material,
+        mTextureLandscape,
+        mTextureMetallicNo
     )
 
     private val mBridgeMatrix = MGBridgeRayIntersect()
@@ -129,7 +137,6 @@ MGIListenerOnIntersectPosition {
             mVerticesLandscape,
             MGDrawerMeshOpaque(
                 mVerticesLandscape,
-                mTextureLandscape,
                 materialLandscape
             ),
             GL_CW
@@ -212,21 +219,25 @@ MGIListenerOnIntersectPosition {
         mDrawerModeOpaque
     )
 
+    private val mPoolTextures = MGPoolTextures(
+        mTextureInteract,
+        mTextureMetallicNo
+    )
+
     private val mLayerEditor = MGUILayerEditor(
         clickLoadUserContent = MGClickImportMesh(
             mHandler,
             MGCallbackModelSpawn(
                 mDrawerDebugBox,
                 mBridgeMatrix,
-                mTextureInteract,
-                materialInteract,
                 MGTriggerSimple(
                     mDrawerLightDirectional
                 ),
                 shaderDefault,
                 shaderWireframe,
                 managerTrigger,
-                meshes
+                meshes,
+                mPoolTextures
             ),
             requesterUserContent
         ),
@@ -256,7 +267,7 @@ MGIListenerOnIntersectPosition {
                         )
                         invalidateScaleRotation()
                         calculateInvertTrigger()
-                        calculateNormalsMesh()
+                        calculateNormals()
                     }
                 }
             }
@@ -326,6 +337,11 @@ MGIListenerOnIntersectPosition {
                 )
             }
         }
+
+        mTextureMetallicNo.setupTexture(
+            "textures/black.jpg",
+            GL_REPEAT
+        )
 
         mTextureInteract.setupTexture(
             "textures/rock.jpg"

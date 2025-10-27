@@ -1,32 +1,26 @@
 package good.damn.engine.runnables
 
-import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.MGObject3d
+import good.damn.engine.opengl.MGTriggerMeshGroup
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
-import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
-import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
-import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.managers.MGManagerTrigger
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
+import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
-import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.triggers.MGITrigger
-import good.damn.engine.opengl.triggers.MGTriggerMesh
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGCallbackModelSpawn(
     private val drawerVertArrBox: MGDrawerVertexArray,
     private val bridgeRay: MGBridgeRayIntersect,
-    private val texture: MGTexture,
-    private val material: MGMaterial,
     private val triggerAction: MGITrigger,
     private val shaderDefault: MGShaderDefault,
     private val shaderWireframe: MGShaderSingleMode,
     private val managerTrigger: MGManagerTriggerMesh,
-    private val listMeshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>
+    private val listMeshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>,
+    private val poolTextures: MGPoolTextures
 ): MGICallbackModel {
 
     override fun onGetObjects(
@@ -37,40 +31,28 @@ class MGCallbackModelSpawn(
             return
         }
 
-        val vertexArray = MGArrayVertex()
-        val obj = objs[0]
-        vertexArray.configure(
-            obj.vertices,
-            obj.indices
-        )
-
-        val triggerMesh = MGTriggerMesh.createFromVertexArray(
-            vertexArray,
+        val meshGroup = MGTriggerMeshGroup.createFromObjects(
+            objs,
             drawerVertArrBox,
             shaderDefault,
             shaderWireframe,
-            MGDrawerModeSwitch(
-                vertexArray,
-                MGDrawerMeshOpaque(
-                    vertexArray,
-                    texture,
-                    material
-                )
-            ),
-            triggerAction
+            triggerAction,
+            poolTextures
         )
 
-        listMeshes.add(
-            triggerMesh.mesh
-        )
+        meshGroup.meshes.forEach {
+            listMeshes.add(
+                it.mesh
+            )
 
-        managerTrigger.addTrigger(
-            triggerMesh.triggerState
-        )
+            managerTrigger.addTrigger(
+                it.triggerState
+            )
+        }
 
-        bridgeRay.matrix = triggerMesh.matrix
-        triggerMesh.matrix.run {
-            setPosition(
+        bridgeRay.matrix = meshGroup.matrix
+        meshGroup.matrix.run {
+            addPosition(
                 bridgeRay.outPointLead.x,
                 bridgeRay.outPointLead.y,
                 bridgeRay.outPointLead.z
@@ -79,7 +61,7 @@ class MGCallbackModelSpawn(
             invalidatePosition()
 
             calculateInvertTrigger()
-            calculateNormalsMesh()
+            calculateNormals()
         }
     }
 

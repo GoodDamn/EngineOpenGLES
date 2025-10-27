@@ -8,20 +8,13 @@ MGIShaderNormal,
 MGIShaderCamera,
 MGIShaderCameraPosition,
 MGIShaderLight,
-MGIShaderTexture,
 MGIShaderModel {
 
     companion object {
         private const val NUM_LIGHTS = 4
     }
 
-    override var uniformTexture = 0
-        private set
-
     override var uniformModelView = 0
-        private set
-
-    override var uniformTextureOffset = 0
         private set
 
     override var uniformCameraPosition = 0
@@ -61,21 +54,11 @@ MGIShaderModel {
 
 
         // Uniforms
-        uniformTexture = glGetUniformLocation(
-            program,
-            "texture"
-        )
 
         uniformModelView = glGetUniformLocation(
             program,
             "model"
         )
-
-        uniformTextureOffset = glGetUniformLocation(
-            program,
-            "textureOffset"
-        )
-
 
         uniformCameraProjection = glGetUniformLocation(
             program,

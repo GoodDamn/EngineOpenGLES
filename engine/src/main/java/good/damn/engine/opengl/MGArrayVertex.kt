@@ -7,7 +7,7 @@ import java.nio.IntBuffer
 class MGArrayVertex {
 
     companion object {
-        private const val STRIDE = 8 * 4
+        const val STRIDE = 8 * 4
         private const val INDEX_POSITION = 0
         private const val INDEX_TEX_COORD = 1
         private const val INDEX_NORMAL = 2
