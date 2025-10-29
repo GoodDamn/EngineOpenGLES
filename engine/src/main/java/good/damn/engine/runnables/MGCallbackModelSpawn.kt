@@ -9,7 +9,9 @@ import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
+import good.damn.engine.opengl.triggers.MGIMatrixTrigger
 import good.damn.engine.opengl.triggers.MGITrigger
+import good.damn.engine.opengl.triggers.MGTriggerMesh
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGCallbackModelSpawn(
@@ -31,6 +33,22 @@ class MGCallbackModelSpawn(
             return
         }
 
+        if (objs.size == 1) {
+            val mesh = MGTriggerMesh.createFromObject(
+                objs[0],
+                shaderDefault,
+                poolTextures,
+                drawerVertArrBox,
+                shaderWireframe,
+                triggerAction
+            )
+            addMesh(mesh)
+            setupMatrix(
+                mesh.matrix
+            )
+            return
+        }
+
         val meshGroup = MGTriggerMeshGroup.createFromObjects(
             objs,
             drawerVertArrBox,
@@ -41,17 +59,19 @@ class MGCallbackModelSpawn(
         )
 
         meshGroup.meshes.forEach {
-            listMeshes.add(
-                it.mesh
-            )
-
-            managerTrigger.addTrigger(
-                it.triggerState
-            )
+            addMesh(it)
         }
 
-        bridgeRay.matrix = meshGroup.matrix
-        meshGroup.matrix.run {
+        setupMatrix(
+            meshGroup.matrix
+        )
+    }
+
+    private inline fun setupMatrix(
+        matrix: MGIMatrixTrigger
+    ) {
+        bridgeRay.matrix = matrix
+        matrix.run {
             addPosition(
                 bridgeRay.outPointLead.x,
                 bridgeRay.outPointLead.y,
@@ -65,4 +85,15 @@ class MGCallbackModelSpawn(
         }
     }
 
+    private inline fun addMesh(
+        mesh: MGTriggerMesh
+    ) {
+        listMeshes.add(
+            mesh.mesh
+        )
+
+        managerTrigger.addTrigger(
+            mesh.triggerState
+        )
+    }
 }
