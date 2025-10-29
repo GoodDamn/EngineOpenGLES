@@ -266,6 +266,7 @@ MGIListenerOnIntersectPosition {
                             scale
                         )
                         invalidateScaleRotation()
+                        invalidatePosition()
                         calculateInvertTrigger()
                         calculateNormals()
                     }
