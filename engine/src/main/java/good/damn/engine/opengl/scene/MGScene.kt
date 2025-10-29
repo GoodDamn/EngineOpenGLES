@@ -13,6 +13,7 @@ import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
+import good.damn.engine.opengl.callbacks.MGCallbackOnScale
 import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
@@ -255,23 +256,9 @@ MGIListenerOnIntersectPosition {
         )
 
         setListenerTouchScaleInteract(
-            object: MGIListenerScale {
-                override fun onScale(
-                    scale: Float
-                ) {
-                    mBridgeMatrix.matrix?.run {
-                        setScale(
-                            scale,
-                            scale,
-                            scale
-                        )
-                        invalidateScaleRotation()
-                        invalidatePosition()
-                        calculateInvertTrigger()
-                        calculateNormals()
-                    }
-                }
-            }
+            MGCallbackOnScale(
+                mBridgeMatrix
+            )
         )
 
         setListenerTouchDeltaInteract(
