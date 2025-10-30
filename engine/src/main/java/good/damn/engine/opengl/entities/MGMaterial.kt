@@ -8,7 +8,8 @@ import good.damn.engine.opengl.textures.MGTexture
 class MGMaterial(
     var shader: MGShaderMaterial,
     var textureDiffuse: MGTexture,
-    var textureMetallic: MGTexture
+    var textureMetallic: MGTexture,
+    var textureEmissive: MGTexture
 ): MGIDrawer {
     var shine = 1f
 
@@ -20,11 +21,13 @@ class MGMaterial(
 
         textureDiffuse.draw()
         textureMetallic.draw()
+        textureEmissive.draw()
     }
 
     fun unbind() {
         textureDiffuse.unbind()
         textureMetallic.unbind()
+        textureEmissive.unbind()
     }
 
 }

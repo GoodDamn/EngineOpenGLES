@@ -1,6 +1,7 @@
 package good.damn.engine.opengl.triggers;
 
 import android.opengl.GLES30;
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -71,7 +72,7 @@ public final class MGTriggerMesh {
 
         @NonNull final MGTexture textureDiffuse = obj.texturesDiffuseFileName == null ?
             poolTextures.getDefaultTexture()
-            : loadTextureCached(
+        : loadTextureCached(
             poolTextures,
             mat.getTextureDiffuse(),
             MGEnumTextureType.DIFFUSE,
@@ -80,11 +81,20 @@ public final class MGTriggerMesh {
 
         @NonNull final MGTexture textureMetallic = obj.texturesMetallicFileName == null ?
             poolTextures.getDefaultTextureMetallic()
-            : loadTextureCached(
+        : loadTextureCached(
             poolTextures,
             mat.getTextureMetallic(),
             MGEnumTextureType.METALLIC,
             obj.texturesMetallicFileName[0]
+        );
+
+        @NonNull final MGTexture textureEmissive = obj.texturesEmissiveFileName == null ?
+            poolTextures.getDefaultTextureEmissive()
+        : loadTextureCached(
+            poolTextures,
+            mat.getTextureEmissive(),
+            MGEnumTextureType.EMISSIVE,
+            obj.texturesEmissiveFileName[0]
         );
 
         return createFromVertexArray(
@@ -99,7 +109,8 @@ public final class MGTriggerMesh {
                     new MGMaterial(
                         shaderDefault.getMaterial(),
                         textureDiffuse,
-                        textureMetallic
+                        textureMetallic,
+                        textureEmissive
                     )
                 ),
                 GLES30.GL_CW

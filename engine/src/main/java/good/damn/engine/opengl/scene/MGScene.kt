@@ -125,10 +125,16 @@ MGIListenerOnIntersectPosition {
         MGEnumTextureType.METALLIC
     )
 
+    private val mTextureEmissiveNo = MGTexture(
+        shaderDefault.material.textureEmissive,
+        MGEnumTextureType.EMISSIVE
+    )
+
     private val materialLandscape = MGMaterial(
         shaderDefault.material,
         mTextureLandscape,
-        mTextureMetallicNo
+        mTextureMetallicNo,
+        mTextureEmissiveNo
     )
 
     private val mBridgeMatrix = MGBridgeRayIntersect()
@@ -222,7 +228,8 @@ MGIListenerOnIntersectPosition {
 
     private val mPoolTextures = MGPoolTextures(
         mTextureInteract,
-        mTextureMetallicNo
+        mTextureMetallicNo,
+        mTextureEmissiveNo
     )
 
     private val mLayerEditor = MGUILayerEditor(
@@ -328,6 +335,11 @@ MGIListenerOnIntersectPosition {
 
         mTextureMetallicNo.setupTexture(
             "textures/black.jpg",
+            GL_REPEAT
+        )
+
+        mTextureEmissiveNo.setupTexture(
+            "textures/white.jpg",
             GL_REPEAT
         )
 

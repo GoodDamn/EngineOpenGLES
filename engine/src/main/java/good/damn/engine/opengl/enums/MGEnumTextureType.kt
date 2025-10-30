@@ -4,5 +4,6 @@ enum class MGEnumTextureType(
     val v: Int
 ) {
     DIFFUSE(0),
-    METALLIC(1)
+    METALLIC(1),
+    EMISSIVE(2)
 }
