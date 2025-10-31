@@ -339,7 +339,7 @@ MGIListenerOnIntersectPosition {
         )
 
         mTextureEmissiveNo.setupTexture(
-            "textures/white.jpg",
+            "textures/black.jpg",
             GL_REPEAT
         )
 
