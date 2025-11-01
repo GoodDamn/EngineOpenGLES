@@ -42,6 +42,7 @@ import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderDefault
+import good.damn.engine.opengl.shaders.MGShaderSingleMap
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
@@ -69,7 +70,8 @@ class MGScene(
     private val shaderSky: MGShaderSkySphere,
     private val shaderNormals: MGShaderSingleModeNormals,
     private val shaderTexCoords: MGShaderSingleMode,
-    private val shaderWireframe: MGShaderSingleMode
+    private val shaderWireframe: MGShaderSingleMode,
+    private val shaderMapEmissive: MGShaderSingleMap
 ): GLSurfaceView.Renderer,
 MGIListenerOnIntersectPosition {
 
