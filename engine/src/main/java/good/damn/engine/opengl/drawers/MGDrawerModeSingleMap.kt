@@ -1,23 +1,20 @@
 package good.damn.engine.opengl.drawers
 
 import good.damn.engine.opengl.camera.MGCamera
-import good.damn.engine.opengl.entities.MGMesh
-import good.damn.engine.opengl.shaders.MGShaderSingleMode
+import good.damn.engine.opengl.shaders.MGShaderSingleMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class MGDrawerModeSingleShader(
-    private val shaderSingle: MGShaderSingleMode,
-    private val sky: MGMesh,
+class MGDrawerModeSingleMap(
+    private val shaderMap: MGShaderSingleMap,
     private val camera: MGCamera,
     private val meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>
 ): MGIDrawer {
 
     override fun draw() {
-        shaderSingle.use()
+        shaderMap.use()
         camera.draw(
-            shaderSingle
+            shaderMap
         )
-        sky.draw()
         meshes.forEach {
             it.draw()
         }

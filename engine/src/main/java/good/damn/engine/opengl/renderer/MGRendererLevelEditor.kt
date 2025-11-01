@@ -11,6 +11,7 @@ import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.scene.MGScene
 import good.damn.engine.opengl.shaders.MGShaderDefault
+import good.damn.engine.opengl.shaders.MGShaderSingleMap
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
@@ -31,6 +32,7 @@ class MGRendererLevelEditor(
     private val mShaderNormals = MGShaderSingleModeNormals()
     private val mShaderTexCoords = MGShaderSingleMode()
     private val mShaderWireframe = MGShaderSingleMode()
+    private val mShaderMapEmissive = MGShaderSingleMap()
 
     private var mWidth = 0
     private var mHeight = 0
@@ -41,7 +43,8 @@ class MGRendererLevelEditor(
         mShaderSky,
         mShaderNormals,
         mShaderTexCoords,
-        mShaderWireframe
+        mShaderWireframe,
+        mShaderMapEmissive
     )
     
     override fun onSurfaceCreated(
@@ -133,6 +136,11 @@ class MGRendererLevelEditor(
         mShaderTexCoords.setup(
             "shaders/texCoords/vert.glsl",
             "shaders/texCoords/frag.glsl"
+        )
+
+        mShaderMapEmissive.setup(
+            "shaders/metallic/vert.glsl",
+            "shaders/metallic/frag.glsl"
         )
 
         mSceneTest.onSurfaceCreated(

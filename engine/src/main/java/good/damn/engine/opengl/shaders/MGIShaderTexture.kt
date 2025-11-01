@@ -1,8 +1,7 @@
 package good.damn.engine.opengl.shaders
 
-interface MGIShaderTexture {
-    val uniformTexture: Int
-
+interface MGIShaderTexture
+: MGIShaderTextureUniform {
     fun setupUniforms(
         program: Int,
         name: String

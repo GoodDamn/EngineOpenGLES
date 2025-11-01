@@ -7,6 +7,8 @@ import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.opengl.shaders.MGIShaderModel
 import good.damn.engine.opengl.shaders.MGIShaderNormal
+import good.damn.engine.opengl.shaders.MGIShaderTexture
+import good.damn.engine.opengl.shaders.MGIShaderTextureUniform
 
 open class MGDrawerMeshSwitch(
     private val drawSwitch: MGDrawerModeSwitch,
@@ -17,12 +19,14 @@ open class MGDrawerMeshSwitch(
     fun switchDrawMode(
         shader: MGIShaderModel,
         shaderNormals: MGIShaderNormal?,
+        shaderTexture: MGIShaderTextureUniform?,
         drawMode: MGEnumDrawMode
     ) {
         drawEntity.shader = shader
         normals?.shader = shaderNormals
         drawSwitch.switchDrawMode(
-            drawMode
+            drawMode,
+            shaderTexture
         )
     }
 

@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.scene
 
+import android.opengl.GLES30
 import android.opengl.GLES30.GL_CCW
 import android.opengl.GLES30.GL_CW
 import android.opengl.GLES30.GL_REPEAT
@@ -20,8 +21,10 @@ import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
+import good.damn.engine.opengl.drawers.MGDrawerModeSingleMap
 import good.damn.engine.opengl.drawers.MGDrawerModeSingleShader
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
+import good.damn.engine.opengl.drawers.MGDrawerModeTexture
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.entities.MGLight
@@ -42,6 +45,7 @@ import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderDefault
+import good.damn.engine.opengl.shaders.MGShaderSingleMap
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
@@ -69,7 +73,8 @@ class MGScene(
     private val shaderSky: MGShaderSkySphere,
     private val shaderNormals: MGShaderSingleModeNormals,
     private val shaderTexCoords: MGShaderSingleMode,
-    private val shaderWireframe: MGShaderSingleMode
+    private val shaderWireframe: MGShaderSingleMode,
+    private val shaderMapEmissive: MGShaderSingleMap
 ): GLSurfaceView.Renderer,
 MGIListenerOnIntersectPosition {
 
@@ -139,12 +144,28 @@ MGIListenerOnIntersectPosition {
 
     private val mBridgeMatrix = MGBridgeRayIntersect()
 
+    private val mDrawerVertexArrayLand = MGDrawerVertexArray(
+        mVerticesLandscape,
+        GLES30.GL_TRIANGLES
+    )
     private val meshLandscape = MGMesh(
         MGDrawerModeSwitch(
             mVerticesLandscape,
             MGDrawerMeshOpaque(
                 mVerticesLandscape,
                 materialLandscape
+            ),
+            MGDrawerModeTexture(
+                materialLandscape.textureDiffuse,
+                mDrawerVertexArrayLand
+            ),
+            MGDrawerModeTexture(
+                materialLandscape.textureMetallic,
+                mDrawerVertexArrayLand
+            ),
+            MGDrawerModeTexture(
+                materialLandscape.textureEmissive,
+                mDrawerVertexArrayLand
             ),
             GL_CW
         ),
@@ -159,6 +180,18 @@ MGIListenerOnIntersectPosition {
             MGDrawerSkyOpaque(
                 mVerticesSky,
                 mTextureSky
+            ),
+            MGDrawerModeTexture(
+                mTextureSky,
+                mDrawerVertexArrayLand
+            ),
+            MGDrawerModeTexture(
+                mTextureMetallicNo,
+                mDrawerVertexArrayLand
+            ),
+            MGDrawerModeTexture(
+                mTextureEmissiveNo,
+                mDrawerVertexArrayLand
             ),
             GL_CCW
         ),
@@ -526,6 +559,16 @@ MGIListenerOnIntersectPosition {
             ),
             shaderTexCoords,
             shaderTexCoords
+        ),
+        MGMDrawMode(
+            MGDrawerModeSingleMap(
+                shaderMapEmissive,
+                mCameraFree,
+                meshes
+            ),
+            shaderMapEmissive,
+            shaderMapEmissive,
+            shaderTexture = shaderMapEmissive
         )
     )
 }

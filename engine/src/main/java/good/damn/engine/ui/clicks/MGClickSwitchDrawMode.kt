@@ -5,11 +5,8 @@ import android.opengl.GLES30.glGetError
 import android.util.Log
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.MGSwitcherDrawMode
-import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.models.MGMDrawMode
-import good.damn.engine.opengl.shaders.MGIShaderCamera
-import good.damn.engine.opengl.shaders.MGIShaderNormal
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.ui.MGIClick
 
@@ -19,7 +16,8 @@ class MGClickSwitchDrawMode(
     private val modeOpaque: MGMDrawMode,
     private val modeWireframe: MGMDrawMode,
     private val modeNormals: MGMDrawMode,
-    private val modeTexCoords: MGMDrawMode
+    private val modeTexCoords: MGMDrawMode,
+    private val modeTextureMap: MGMDrawMode
 ): MGIClick,
 Runnable {
 
@@ -33,7 +31,7 @@ Runnable {
         when (MGEngine.drawMode) {
             MGEnumDrawMode.OPAQUE -> {
                 switcher.switchDrawMode(
-                    MGEnumDrawMode.OPAQUE,
+                    MGEnumDrawMode.WIREFRAME,
                     modeWireframe
                 )
                 MGEngine.drawMode = MGEnumDrawMode.WIREFRAME
@@ -41,7 +39,7 @@ Runnable {
 
             MGEnumDrawMode.WIREFRAME -> {
                 switcher.switchDrawMode(
-                    MGEnumDrawMode.WIREFRAME,
+                    MGEnumDrawMode.NORMALS,
                     modeNormals
                 )
                 MGEngine.drawMode = MGEnumDrawMode.NORMALS
@@ -49,7 +47,7 @@ Runnable {
 
             MGEnumDrawMode.NORMALS -> {
                 switcher.switchDrawMode(
-                    MGEnumDrawMode.NORMALS,
+                    MGEnumDrawMode.TEX_COORDS,
                     modeTexCoords
                 )
                 MGEngine.drawMode = MGEnumDrawMode.TEX_COORDS
@@ -57,9 +55,35 @@ Runnable {
 
             MGEnumDrawMode.TEX_COORDS -> {
                 switcher.switchDrawMode(
-                    MGEnumDrawMode.TEX_COORDS,
+                    MGEnumDrawMode.DIFFUSE,
+                    modeTextureMap
+                )
+                MGEngine.drawMode = MGEnumDrawMode.DIFFUSE
+            }
+
+            MGEnumDrawMode.DIFFUSE -> {
+                switcher.switchDrawMode(
+                    MGEnumDrawMode.METALLIC,
+                    modeTextureMap
+                )
+                MGEngine.drawMode = MGEnumDrawMode.METALLIC
+            }
+
+            MGEnumDrawMode.METALLIC -> {
+                switcher.switchDrawMode(
+                    MGEnumDrawMode.EMISSIVE,
+                    modeTextureMap
+                )
+
+                MGEngine.drawMode = MGEnumDrawMode.EMISSIVE
+            }
+
+            MGEnumDrawMode.EMISSIVE -> {
+                switcher.switchDrawMode(
+                    MGEnumDrawMode.OPAQUE,
                     modeOpaque
                 )
+
                 MGEngine.drawMode = MGEnumDrawMode.OPAQUE
             }
         }

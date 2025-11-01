@@ -7,11 +7,12 @@ import android.util.Log
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.shaders.MGIShaderTexture
+import good.damn.engine.opengl.shaders.MGIShaderTextureUniform
 import good.damn.engine.utils.MGUtilsFile
 import java.io.FileInputStream
 
 class MGTexture(
-    var shader: MGIShaderTexture,
+    var shader: MGIShaderTextureUniform,
     type: MGEnumTextureType
 ): MGIDrawer {
 
