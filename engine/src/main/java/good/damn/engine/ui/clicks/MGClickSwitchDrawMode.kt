@@ -5,11 +5,8 @@ import android.opengl.GLES30.glGetError
 import android.util.Log
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.MGSwitcherDrawMode
-import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.models.MGMDrawMode
-import good.damn.engine.opengl.shaders.MGIShaderCamera
-import good.damn.engine.opengl.shaders.MGIShaderNormal
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.ui.MGIClick
 
@@ -20,7 +17,7 @@ class MGClickSwitchDrawMode(
     private val modeWireframe: MGMDrawMode,
     private val modeNormals: MGMDrawMode,
     private val modeTexCoords: MGMDrawMode,
-    private val modeEmissive: MGMDrawMode
+    private val modeTextureMap: MGMDrawMode
 ): MGIClick,
 Runnable {
 
@@ -58,9 +55,26 @@ Runnable {
 
             MGEnumDrawMode.TEX_COORDS -> {
                 switcher.switchDrawMode(
-                    MGEnumDrawMode.EMISSIVE,
-                    modeEmissive
+                    MGEnumDrawMode.DIFFUSE,
+                    modeTextureMap
                 )
+                MGEngine.drawMode = MGEnumDrawMode.DIFFUSE
+            }
+
+            MGEnumDrawMode.DIFFUSE -> {
+                switcher.switchDrawMode(
+                    MGEnumDrawMode.METALLIC,
+                    modeTextureMap
+                )
+                MGEngine.drawMode = MGEnumDrawMode.METALLIC
+            }
+
+            MGEnumDrawMode.METALLIC -> {
+                switcher.switchDrawMode(
+                    MGEnumDrawMode.EMISSIVE,
+                    modeTextureMap
+                )
+
                 MGEngine.drawMode = MGEnumDrawMode.EMISSIVE
             }
 

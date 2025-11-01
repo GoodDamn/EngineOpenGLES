@@ -5,5 +5,7 @@ enum class MGEnumDrawMode {
     WIREFRAME,
     NORMALS,
     TEX_COORDS,
+    DIFFUSE,
+    METALLIC,
     EMISSIVE
 }

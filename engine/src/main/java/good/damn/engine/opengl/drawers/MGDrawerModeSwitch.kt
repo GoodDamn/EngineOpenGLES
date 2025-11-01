@@ -45,6 +45,12 @@ class MGDrawerModeSwitch(
             MGEnumDrawMode.WIREFRAME -> modeLines
             MGEnumDrawMode.NORMALS -> modeTriangles
             MGEnumDrawMode.TEX_COORDS -> modeTriangles
+            MGEnumDrawMode.DIFFUSE -> modeTextureDiffuse.apply {
+                texture.shader = shaderTexture!!
+            }
+            MGEnumDrawMode.METALLIC -> modeTextureMetallic.apply {
+                texture.shader = shaderTexture!!
+            }
             MGEnumDrawMode.EMISSIVE -> modeTextureEmissive.apply {
                 texture.shader = shaderTexture!!
             }
