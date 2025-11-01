@@ -56,6 +56,30 @@ implements MGIMatrixTrigger {
     }
 
     @Override
+    public void addScale(
+        float x,
+        float y,
+        float z
+    ) {
+        for (
+            @NonNull final MGMWrapperMatrix matrix
+            : matrices
+        ) {
+            matrix.matrix.addScale(
+                x, y, z
+            );
+
+            matrix.translateX += x * matrix.groupX;
+            matrix.translateY += y * matrix.groupY;
+            matrix.translateZ += z * matrix.groupZ;
+        }
+
+        setPosition(
+            mx, my, mz
+        );
+    }
+
+    @Override
     public void setScale(
         float x,
         float y,

@@ -7,16 +7,16 @@ class MGCallbackOnScale(
    private val bridgeMatrix: MGBridgeRayIntersect
 ): MGIListenerScale {
     override fun onScale(
-        scale: Float
+        dtScale: Float
     ) {
         bridgeMatrix.matrix?.run {
-            setScale(
-                scale,
-                scale,
-                scale
+            addScale(
+                dtScale,
+                dtScale,
+                dtScale
             )
-            invalidateScaleRotation()
             invalidatePosition()
+            invalidateScaleRotation()
             calculateInvertTrigger()
             calculateNormals()
         }
