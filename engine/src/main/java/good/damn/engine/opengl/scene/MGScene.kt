@@ -13,6 +13,7 @@ import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
+import good.damn.engine.opengl.callbacks.MGCallbackOnScale
 import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
@@ -124,10 +125,16 @@ MGIListenerOnIntersectPosition {
         MGEnumTextureType.METALLIC
     )
 
+    private val mTextureEmissiveNo = MGTexture(
+        shaderDefault.material.textureEmissive,
+        MGEnumTextureType.EMISSIVE
+    )
+
     private val materialLandscape = MGMaterial(
         shaderDefault.material,
         mTextureLandscape,
-        mTextureMetallicNo
+        mTextureMetallicNo,
+        mTextureEmissiveNo
     )
 
     private val mBridgeMatrix = MGBridgeRayIntersect()
@@ -221,7 +228,8 @@ MGIListenerOnIntersectPosition {
 
     private val mPoolTextures = MGPoolTextures(
         mTextureInteract,
-        mTextureMetallicNo
+        mTextureMetallicNo,
+        mTextureEmissiveNo
     )
 
     private val mLayerEditor = MGUILayerEditor(
@@ -255,22 +263,9 @@ MGIListenerOnIntersectPosition {
         )
 
         setListenerTouchScaleInteract(
-            object: MGIListenerScale {
-                override fun onScale(
-                    scale: Float
-                ) {
-                    mBridgeMatrix.matrix?.run {
-                        setScale(
-                            scale,
-                            scale,
-                            scale
-                        )
-                        invalidateScaleRotation()
-                        calculateInvertTrigger()
-                        calculateNormals()
-                    }
-                }
-            }
+            MGCallbackOnScale(
+                mBridgeMatrix
+            )
         )
 
         setListenerTouchDeltaInteract(
@@ -339,6 +334,11 @@ MGIListenerOnIntersectPosition {
         }
 
         mTextureMetallicNo.setupTexture(
+            "textures/black.jpg",
+            GL_REPEAT
+        )
+
+        mTextureEmissiveNo.setupTexture(
             "textures/black.jpg",
             GL_REPEAT
         )

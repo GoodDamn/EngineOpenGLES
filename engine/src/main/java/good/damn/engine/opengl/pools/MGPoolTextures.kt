@@ -4,7 +4,8 @@ import good.damn.engine.opengl.textures.MGTexture
 
 class MGPoolTextures(
     val defaultTexture: MGTexture,
-    val defaultTextureMetallic: MGTexture
+    val defaultTextureMetallic: MGTexture,
+    val defaultTextureEmissive: MGTexture
 ) {
     private val map = HashMap<
         String,

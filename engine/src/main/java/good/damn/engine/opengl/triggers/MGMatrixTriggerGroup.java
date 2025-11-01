@@ -14,20 +14,27 @@ implements MGIMatrixTrigger {
         this.matrices = matrices;
     }
 
+    private float mx = 0f;
+    private float my = 0f;
+    private float mz = 0f;
+
     @Override
     public void setPosition(
         float x,
         float y,
         float z
     ) {
+        mx = x;
+        my = y;
+        mz = z;
         for (
             @NonNull final MGMWrapperMatrix matrix
             : matrices
         ) {
             matrix.matrix.setPosition(
-                x + matrix.translateX,
-                y + matrix.translateY,
-                z + matrix.translateZ
+                mx + matrix.translateX,
+                my + matrix.translateY,
+                mz + matrix.translateZ
             );
         }
     }
@@ -66,6 +73,10 @@ implements MGIMatrixTrigger {
             matrix.translateY = y * matrix.groupY;
             matrix.translateZ = z * matrix.groupZ;
         }
+
+        setPosition(
+            mx, my, mz
+        );
     }
 
     @Override

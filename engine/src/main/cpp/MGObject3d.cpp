@@ -8,7 +8,7 @@
 
 const char* TAG = "MGObject3d.cpp";
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
-#define NUM_TEXTURE_TYPES 2
+#define NUM_TEXTURE_TYPES 3
 
 struct MGTextures {
     aiTextureType type;
@@ -202,6 +202,11 @@ void processNode(
                 material,
                 aiTextureType_METALNESS
             );
+
+            outMesh->textureTypes[2] = loadTexturesTo(
+                material,
+                aiTextureType_EMISSIVE
+            );
         }
     }
 
@@ -304,7 +309,7 @@ Java_good_damn_engine_opengl_MGObject3d_createFromPath(
     jmethodID constructorElement = env->GetMethodID(
         classElement,
         "<init>",
-        "([F[I[Ljava/lang/String;[Ljava/lang/String;)V"
+        "([F[I[Ljava/lang/String;[Ljava/lang/String;[Ljava/lang/String;)V"
     );
 
     jobjectArray arrayObject = env->NewObjectArray(
@@ -366,6 +371,11 @@ Java_good_damn_engine_opengl_MGObject3d_createFromPath(
                 env,
                 classString,
                 mesh->textureTypes[1]
+            ),
+            processTextures(
+                env,
+                classString,
+                mesh->textureTypes[2]
             )
         );
 

@@ -79,51 +79,12 @@ public final class MGTriggerMeshGroup {
             i++
         ) {
             obj = objs[i];
-            final MGArrayVertex arrayVertex = new MGArrayVertex();
-            arrayVertex.configure(
-                obj.vertices,
-                obj.indices,
-                MGArrayVertex.STRIDE
-            );
-
-            @NonNull final MGShaderMaterial mat = shaderDefault
-                .getMaterial();
-
-            @NonNull final MGTexture textureDiffuse = obj.texturesDiffuseFileName == null ?
-                poolTextures.getDefaultTexture()
-            : loadTextureCached(
-                poolTextures,
-                mat.getTextureDiffuse(),
-                MGEnumTextureType.DIFFUSE,
-                obj.texturesDiffuseFileName[0]
-            );
-
-            @NonNull final MGTexture textureMetallic = obj.texturesMetallicFileName == null ?
-                poolTextures.getDefaultTextureMetallic()
-            : loadTextureCached(
-                poolTextures,
-                mat.getTextureMetallic(),
-                MGEnumTextureType.METALLIC,
-                obj.texturesMetallicFileName[0]
-            );
-
-            triggerMeshes[i] = MGTriggerMesh.createFromVertexArray(
-                arrayVertex,
-                drawVertBox,
+            triggerMeshes[i] = MGTriggerMesh.createFromObject(
+                obj,
                 shaderDefault,
+                poolTextures,
+                drawVertBox,
                 shaderWireframe,
-                new MGDrawerModeSwitch(
-                    arrayVertex,
-                    new MGDrawerMeshOpaque(
-                        arrayVertex,
-                        new MGMaterial(
-                            shaderDefault.getMaterial(),
-                            textureDiffuse,
-                            textureMetallic
-                        )
-                    ),
-                    GLES30.GL_CW
-                ),
                 triggerAction
             );
         }
@@ -131,40 +92,5 @@ public final class MGTriggerMeshGroup {
         return createFromTriggerMeshes(
             triggerMeshes
         );
-    }
-
-    @NonNull
-    private static MGTexture loadTextureCached(
-        @NonNull final MGPoolTextures poolTextures,
-        @NonNull final MGIShaderTexture shaderTexture,
-        @NonNull final MGEnumTextureType textureType,
-        @NonNull final String textureName
-    ) {
-        @Nullable MGTexture texture = poolTextures.get(
-            textureName
-        );
-
-        if (texture != null) {
-            return texture;
-        }
-
-        try {
-            texture = MGTexture.Companion.createDefaultAsset(
-                textureName,
-                textureType,
-                shaderTexture
-            );
-
-            poolTextures.add(
-                textureName,
-                texture
-            );
-        } catch (Exception e) {
-            // file not found
-        }
-
-        return texture != null ?
-            texture
-        : poolTextures.getDefaultTexture();
     }
 }
