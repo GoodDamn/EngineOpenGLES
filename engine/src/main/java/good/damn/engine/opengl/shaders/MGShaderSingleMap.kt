@@ -3,9 +3,10 @@ package good.damn.engine.opengl.shaders
 import android.opengl.GLES30
 
 class MGShaderSingleMap
-: MGShaderSingleMode() {
+: MGShaderSingleMode(),
+MGIShaderTextureUniform {
 
-    var uniformTexture = -1
+    override var uniformTexture = -1
         private set
 
     override fun setupUniforms(

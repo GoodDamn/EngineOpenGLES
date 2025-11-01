@@ -19,7 +19,8 @@ class MGClickSwitchDrawMode(
     private val modeOpaque: MGMDrawMode,
     private val modeWireframe: MGMDrawMode,
     private val modeNormals: MGMDrawMode,
-    private val modeTexCoords: MGMDrawMode
+    private val modeTexCoords: MGMDrawMode,
+    private val modeEmissive: MGMDrawMode
 ): MGIClick,
 Runnable {
 
@@ -33,7 +34,7 @@ Runnable {
         when (MGEngine.drawMode) {
             MGEnumDrawMode.OPAQUE -> {
                 switcher.switchDrawMode(
-                    MGEnumDrawMode.OPAQUE,
+                    MGEnumDrawMode.WIREFRAME,
                     modeWireframe
                 )
                 MGEngine.drawMode = MGEnumDrawMode.WIREFRAME
@@ -41,7 +42,7 @@ Runnable {
 
             MGEnumDrawMode.WIREFRAME -> {
                 switcher.switchDrawMode(
-                    MGEnumDrawMode.WIREFRAME,
+                    MGEnumDrawMode.NORMALS,
                     modeNormals
                 )
                 MGEngine.drawMode = MGEnumDrawMode.NORMALS
@@ -49,7 +50,7 @@ Runnable {
 
             MGEnumDrawMode.NORMALS -> {
                 switcher.switchDrawMode(
-                    MGEnumDrawMode.NORMALS,
+                    MGEnumDrawMode.TEX_COORDS,
                     modeTexCoords
                 )
                 MGEngine.drawMode = MGEnumDrawMode.TEX_COORDS
@@ -57,9 +58,18 @@ Runnable {
 
             MGEnumDrawMode.TEX_COORDS -> {
                 switcher.switchDrawMode(
-                    MGEnumDrawMode.TEX_COORDS,
+                    MGEnumDrawMode.EMISSIVE,
+                    modeEmissive
+                )
+                MGEngine.drawMode = MGEnumDrawMode.EMISSIVE
+            }
+
+            MGEnumDrawMode.EMISSIVE -> {
+                switcher.switchDrawMode(
+                    MGEnumDrawMode.OPAQUE,
                     modeOpaque
                 )
+
                 MGEngine.drawMode = MGEnumDrawMode.OPAQUE
             }
         }

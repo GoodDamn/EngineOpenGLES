@@ -24,13 +24,15 @@ class MGSwitcherDrawMode(
         meshSky.switchDrawMode(
             model.shaderSky,
             model.shaderNormalsSky,
-            drawMode
+            model.shaderTexture,
+            drawMode,
         )
 
         meshes.forEach {
             it.switchDrawMode(
                 model.shaderDefault,
                 model.shaderNormals,
+                model.shaderTexture,
                 drawMode
             )
         }

@@ -12,6 +12,7 @@ import good.damn.engine.opengl.MGObject3d;
 import good.damn.engine.opengl.MGVector;
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque;
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch;
+import good.damn.engine.opengl.drawers.MGDrawerModeTexture;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMaterial;
 import good.damn.engine.opengl.entities.MGMesh;
@@ -97,6 +98,11 @@ public final class MGTriggerMesh {
             obj.texturesEmissiveFileName[0]
         );
 
+        @NonNull final MGDrawerVertexArray drawerVertexArray = new MGDrawerVertexArray(
+            arrayVertex,
+            GLES30.GL_TRIANGLES
+        );
+
         return createFromVertexArray(
             arrayVertex,
             drawVertBox,
@@ -112,6 +118,18 @@ public final class MGTriggerMesh {
                         textureMetallic,
                         textureEmissive
                     )
+                ),
+                new MGDrawerModeTexture(
+                    textureDiffuse,
+                    drawerVertexArray
+                ),
+                new MGDrawerModeTexture(
+                    textureMetallic,
+                    drawerVertexArray
+                ),
+                new MGDrawerModeTexture(
+                    textureEmissive,
+                    drawerVertexArray
                 ),
                 GLES30.GL_CW
             ),
