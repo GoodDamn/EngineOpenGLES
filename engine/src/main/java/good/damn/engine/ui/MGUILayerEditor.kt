@@ -15,7 +15,8 @@ import kotlin.math.min
 class MGUILayerEditor(
     clickLoadUserContent: MGIClick,
     clickSwitchDrawerMode: MGIClick,
-    clickPlaceMesh: MGIClick
+    clickPlaceMesh: MGIClick,
+    clickTriggerDrawing: MGIClick
 ): MGITouchable {
 
     private val mBtnLoadUserContent = MGButtonGL(
@@ -28,6 +29,10 @@ class MGUILayerEditor(
 
     private val mBtnPlaceMesh = MGButtonGL(
         click = clickPlaceMesh
+    )
+
+    private val mBtnTriggerDrawing = MGButtonGL(
+        click = clickTriggerDrawing
     )
 
     private val mTouchMove = MGTouchFreeMove()
@@ -62,7 +67,12 @@ class MGUILayerEditor(
             height
         )
 
-        val btnLen = width * 0.1f
+        val targetLen = min(
+            width,
+            height
+        )
+
+        val btnLen = targetLen * 0.1f
 
         mTouchMove.setBoundsDelta(
             width * 0.5f,
@@ -87,6 +97,13 @@ class MGUILayerEditor(
 
         mBtnPlaceMesh.bounds(
             (width - btnLen) * 0.5f,
+            height - btnLen,
+            btnLen,
+            btnLen
+        )
+
+        mBtnTriggerDrawing.bounds(
+            0f,
             height - btnLen,
             btnLen,
             btnLen
@@ -123,6 +140,7 @@ class MGUILayerEditor(
             mBtnLoadUserContent.intercept(x,y)
             mBtnSwitchWireframe.intercept(x,y)
             mBtnPlaceMesh.intercept(x,y)
+            mBtnTriggerDrawing.intercept(x,y)
 
             if (mTouchScale.onTouchEvent(
                 event

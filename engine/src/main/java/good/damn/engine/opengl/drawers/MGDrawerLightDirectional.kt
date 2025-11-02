@@ -11,9 +11,9 @@ class MGDrawerLightDirectional(
 ): MGIDrawer {
 
     val ambColor = MGVector(
-        0.05f,
-        0.05f,
-        0.05f
+        0.1f,
+        0.1f,
+        0.1f
     )
 
     private val mPosition = MGVector(
@@ -42,9 +42,9 @@ class MGDrawerLightDirectional(
     override fun draw() {
         glUniform3f(
             shader.uniformColor,
-            .149f,
-            .407f,
-            .631f
+            .119f,
+            .377f,
+            .601f
         )
 
         glUniform3f(

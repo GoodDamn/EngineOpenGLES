@@ -60,6 +60,7 @@ import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickImportMesh
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
+import good.damn.engine.ui.clicks.MGClickTriggerDrawingFlag
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -285,7 +286,10 @@ MGIListenerOnIntersectPosition {
         clickPlaceMesh = MGClickPlaceMesh(
             mBridgeMatrix
         ),
-        clickSwitchDrawerMode = createDrawModeSwitcher()
+        clickSwitchDrawerMode = createDrawModeSwitcher(),
+        clickTriggerDrawing = MGClickTriggerDrawingFlag(
+            mDrawerModeOpaque
+        )
     ).apply {
         setListenerTouchMove(
             mCallbackOnCameraMove

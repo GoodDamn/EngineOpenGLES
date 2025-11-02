@@ -1,6 +1,7 @@
 package good.damn.engine.opengl.matrices;
 
 import android.opengl.Matrix;
+import android.util.Log;
 
 public final class MGMatrixScaleRotation
 extends MGMatrixTranslate {
@@ -21,6 +22,16 @@ extends MGMatrixTranslate {
         msx = x;
         msy = y;
         msz = z;
+    }
+
+    public final void addScale(
+        float x,
+        float y,
+        float z
+    ) {
+        msx += x;
+        msy += y;
+        msz += z;
     }
 
     public final void setRotation(

@@ -26,6 +26,8 @@ data class MGDrawerModeOpaque(
     var lights: MGManagerLight
 ): MGIDrawer {
 
+    var canDrawTriggers = true
+
     override fun draw() {
         shaderSky.use()
         camera.draw(
@@ -48,6 +50,9 @@ data class MGDrawerModeOpaque(
         }
         lights.draw()
 
+        if (!canDrawTriggers) {
+            return
+        }
 
         shaderTrigger.use()
         camera.draw(

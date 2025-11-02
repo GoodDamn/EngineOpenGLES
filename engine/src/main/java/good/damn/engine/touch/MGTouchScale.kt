@@ -1,5 +1,6 @@
 package good.damn.engine.touch
 
+import android.util.Log
 import android.view.MotionEvent
 import kotlin.math.hypot
 
@@ -9,7 +10,7 @@ class MGTouchScale
 ) {
 
     companion object {
-        private const val SCALE_FACTOR = 0.001f
+        private const val SCALE_FACTOR = -0.0001f
     }
 
     var onScale: MGIListenerScale? = null
@@ -30,7 +31,6 @@ class MGTouchScale
     private var mTranslate2X = 0f
     private var mTranslate2Y = 0f
 
-    var scale = 1.0f
     private var mScaleDt = 0f
 
     private var mFirstTouchId = -1
@@ -148,7 +148,7 @@ class MGTouchScale
             )
 
             val x = event.getX(
-                mFirstTouchId
+                indexFirst
             )
 
             val y = event.getY(
@@ -167,17 +167,10 @@ class MGTouchScale
                 yy - y
             )
 
-            mScaleDt = (mPrevDistance - mCurrentDistance) * SCALE_FACTOR
-            scale -= mScaleDt
-            /*if (mScale > 7f) {
-                mScale = 7f
-            }
-            if (mScale < 0.4f) {
-                mScale = 0.4f
-            }*/
+            mScaleDt = mPrevDistance - mCurrentDistance
 
             onScale?.onScale(
-                scale
+                mScaleDt * SCALE_FACTOR
             )
 
             mPrevDistance = mCurrentDistance

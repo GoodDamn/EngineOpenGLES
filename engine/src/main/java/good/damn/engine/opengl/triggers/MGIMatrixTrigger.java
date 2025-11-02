@@ -13,6 +13,12 @@ public interface MGIMatrixTrigger {
         float z
     );
 
+    void addScale(
+        float x,
+        float y,
+        float z
+    );
+
     void setScale(
         float x,
         float y,
