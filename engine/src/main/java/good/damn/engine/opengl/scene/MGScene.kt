@@ -56,6 +56,7 @@ import good.damn.engine.opengl.triggers.MGTriggerLight
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGCallbackModelSpawn
+import good.damn.engine.threads.MGHandlerCollision
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickImportMesh
@@ -239,6 +240,12 @@ MGIListenerOnIntersectPosition {
     )
 
     private val managerTrigger = MGManagerTriggerMesh()
+
+    private val mHandlerCollision = MGHandlerCollision(
+        managerTrigger,
+        managerTriggerLight,
+        mCameraFree
+    )
 
     private val mDrawerModeOpaque = MGDrawerModeOpaque(
         shaderSky,
@@ -459,6 +466,8 @@ MGIListenerOnIntersectPosition {
             10.986f,
             -9.247298f
         )
+
+        mHandlerCollision.start()
     }
 
     override fun onSurfaceChanged(
@@ -484,22 +493,6 @@ MGIListenerOnIntersectPosition {
     override fun onDrawFrame(
         gl: GL10?
     ) {
-        // 1. Camera point triggering needs to check only on self position changes
-        // it doesn't need to check on each touch event
-        // 2. For other entities who can trigger, check it inside infinite loop
-        val model = mCameraFree.modelMatrix
-        managerTriggerLight.loopTriggers(
-            model.x,
-            model.y,
-            model.z,
-        )
-
-        managerTrigger.loopTriggers(
-            model.x,
-            model.y,
-            model.z
-        )
-
         mSwitcherDrawMode
             .currentDrawerMode
             .draw()
