@@ -71,14 +71,9 @@ public final class MGObject3d {
         if (!filePub.exists()) {
             throw new Exception("No such file: " + filePub.getPath());
         }
-        @NonNull final byte[] path = filePub.getPath().getBytes(
-            PATH_CHARSET
-        );
-
-        Log.d("MGObject3d", "createFromAssets: SIZE: " + path.length + " CONTENT: " + Arrays.toString(path));
 
         return createFromPath(
-            path
+            filePub.getPath()
         );
     }
 

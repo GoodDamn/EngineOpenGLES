@@ -6,6 +6,9 @@ import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
+import good.damn.engine.opengl.models.MGMPoolMesh
+import good.damn.engine.opengl.models.MGMPoolMeshMutable
+import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
@@ -22,10 +25,43 @@ class MGCallbackModelSpawn(
     private val shaderWireframe: MGShaderSingleMode,
     private val managerTrigger: MGManagerTriggerMesh,
     private val listMeshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>,
-    private val poolTextures: MGPoolTextures
+    private val poolTextures: MGPoolTextures,
+    private val poolMeshes: MGPoolMeshesStatic
 ): MGICallbackModel {
 
+    override fun onGetObjectsCached(
+        poolMesh: Array<MGMPoolMesh>
+    ) {
+        if (poolMesh.isEmpty()) {
+            return
+        }
+
+        if (poolMesh.size == 1) {
+            processMesh(
+                MGTriggerMesh.createFromMeshPool(
+                    shaderDefault,
+                    poolMesh[0],
+                    drawerVertArrBox,
+                    triggerAction,
+                    shaderWireframe
+                )
+            )
+            return
+        }
+
+        processGroupMesh(
+            MGTriggerMeshGroup.createFromPool(
+                poolMesh,
+                drawerVertArrBox,
+                shaderDefault,
+                shaderWireframe,
+                triggerAction
+            )
+        )
+    }
+
     override fun onGetObjects(
+        fileName: String,
         objs: Array<MGObject3d>?
     ) {
         objs ?: return
@@ -34,30 +70,59 @@ class MGCallbackModelSpawn(
         }
 
         if (objs.size == 1) {
-            val mesh = MGTriggerMesh.createFromObject(
+            val outPoolMesh = MGMPoolMeshMutable()
+            MGTriggerMesh.createFromObject(
                 objs[0],
                 shaderDefault,
                 poolTextures,
                 drawerVertArrBox,
                 shaderWireframe,
+                outPoolMesh,
                 triggerAction
-            )
-            addMesh(mesh)
-            setupMatrix(
-                mesh.matrix
-            )
+            ).run {
+                poolMeshes[fileName] = arrayOf(
+                    outPoolMesh.toImmutable()
+                )
+                processMesh(this)
+            }
             return
         }
 
-        val meshGroup = MGTriggerMeshGroup.createFromObjects(
+        val outPoolMeshes = Array(
+            objs.size
+        ) { MGMPoolMeshMutable() }
+
+        MGTriggerMeshGroup.createFromObjects(
             objs,
+            outPoolMeshes,
             drawerVertArrBox,
             shaderDefault,
             shaderWireframe,
             triggerAction,
             poolTextures
-        )
+        ).run {
+            poolMeshes[fileName] = Array(
+                outPoolMeshes.size
+            ) { outPoolMeshes[it].toImmutable() }
 
+            processGroupMesh(
+                this
+            )
+        }
+    }
+
+    private fun processMesh(
+        mesh: MGTriggerMesh
+    ) {
+        addMesh(mesh)
+        setupMatrix(
+            mesh.matrix
+        )
+    }
+
+    private fun processGroupMesh(
+        meshGroup: MGTriggerMeshGroup
+    ) {
         meshGroup.meshes.forEach {
             addMesh(it)
         }

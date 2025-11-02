@@ -10,6 +10,9 @@ import good.damn.engine.opengl.drawers.MGDrawerModeSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMaterial;
 import good.damn.engine.opengl.enums.MGEnumTextureType;
+import good.damn.engine.opengl.models.MGMPoolMesh;
+import good.damn.engine.opengl.models.MGMPoolMeshMutable;
+import good.damn.engine.opengl.pools.MGPoolMeshesStatic;
 import good.damn.engine.opengl.pools.MGPoolTextures;
 import good.damn.engine.opengl.shaders.MGIShaderTexture;
 import good.damn.engine.opengl.shaders.MGShaderDefault;
@@ -59,8 +62,41 @@ public final class MGTriggerMeshGroup {
         );
     }
 
+    @NonNull
+    public static MGTriggerMeshGroup createFromPool(
+        @NonNull final MGMPoolMesh[] poolMeshes,
+        @NonNull final MGDrawerVertexArray drawVertBox,
+        @NonNull final MGShaderDefault shaderDefault,
+        @NonNull final MGShaderSingleMode shaderWireframe,
+        @NonNull final MGITrigger triggerAction
+    ) {
+        @NonNull
+        final MGTriggerMesh[] triggerMeshes = new MGTriggerMesh[
+            poolMeshes.length
+        ];
+
+        for (
+            int i = 0;
+            i < triggerMeshes.length;
+            i++
+        ) {
+            triggerMeshes[i] = MGTriggerMesh.createFromMeshPool(
+                shaderDefault,
+                poolMeshes[i],
+                drawVertBox,
+                triggerAction,
+                shaderWireframe
+            );
+        }
+
+        return createFromTriggerMeshes(
+            triggerMeshes
+        );
+    }
+
     public static MGTriggerMeshGroup createFromObjects(
         @NonNull final MGObject3d[] objs,
+        @NonNull final MGMPoolMeshMutable[] outPoolMeshes,
         @NonNull final MGDrawerVertexArray drawVertBox,
         @NonNull final MGShaderDefault shaderDefault,
         @NonNull final MGShaderSingleMode shaderWireframe,
@@ -85,6 +121,7 @@ public final class MGTriggerMeshGroup {
                 poolTextures,
                 drawVertBox,
                 shaderWireframe,
+                outPoolMeshes[i],
                 triggerAction
             );
         }

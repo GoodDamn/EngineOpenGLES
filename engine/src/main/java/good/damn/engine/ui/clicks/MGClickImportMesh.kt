@@ -6,6 +6,7 @@ import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.extensions.copyTo
 import good.damn.engine.opengl.models.MGMUserContent
+import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.runnables.MGICallbackModel
 import good.damn.engine.runnables.MGRunnableImportModel
@@ -16,6 +17,7 @@ import java.io.FileInputStream
 class MGClickImportMesh(
     private val handler: MGHandlerGl,
     private val callbackModel: MGICallbackModel,
+    private val mPoolMeshes: MGPoolMeshesStatic,
     private val requester: MGIRequestUserContent
 ): MGIClick,
 MGIListenerOnGetUserContent {
@@ -41,12 +43,11 @@ MGIListenerOnGetUserContent {
     }
 
     private fun processModel(
-        userContent: MGMUserContent,
-        extension: String
+        userContent: MGMUserContent
     ) {
         val temp = File(
             MGEngine.DIR_PUBLIC_TEMP,
-            "${System.currentTimeMillis()}.$extension"
+            userContent.fileName
         )
 
         if (temp.exists()) {
@@ -64,6 +65,7 @@ MGIListenerOnGetUserContent {
         handler.post(
             MGRunnableImportModel(
                 callbackModel,
+                mPoolMeshes,
                 temp
             )
         )
@@ -73,26 +75,12 @@ MGIListenerOnGetUserContent {
         userContent: MGMUserContent
     ) {
         val uri = userContent.fileName
-        if (uri.contains("fbx")) {
+        if (uri.contains("fbx") ||
+            uri.contains("obj") ||
+            uri.contains("3ds")
+        ) {
             processModel(
-                userContent,
-                "fbx"
-            )
-            return
-        }
-
-        if (uri.contains("obj")) {
-            processModel(
-                userContent,
-                "obj"
-            )
-            return
-        }
-
-        if (uri.contains("3ds")) {
-            processModel(
-                userContent,
-                "3ds"
+                userContent
             )
             return
         }
