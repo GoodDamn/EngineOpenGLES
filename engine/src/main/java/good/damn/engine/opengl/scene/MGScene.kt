@@ -43,6 +43,7 @@ import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMDrawMode
+import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
@@ -266,6 +267,8 @@ MGIListenerOnIntersectPosition {
         mTextureEmissiveNo
     )
 
+    private val mPoolMeshes = MGPoolMeshesStatic()
+
     private val mLayerEditor = MGUILayerEditor(
         clickLoadUserContent = MGClickImportMesh(
             mHandler,
@@ -279,9 +282,11 @@ MGIListenerOnIntersectPosition {
                 shaderWireframe,
                 managerTrigger,
                 meshes,
-                mPoolTextures
+                mPoolTextures,
+                mPoolMeshes
             ),
-            requesterUserContent
+            mPoolMeshes,
+            requesterUserContent,
         ),
         clickPlaceMesh = MGClickPlaceMesh(
             mBridgeMatrix

@@ -10,7 +10,7 @@ class MGPoolTextures(
     private val map = HashMap<
         String,
         MGTexture
-    >()
+    >(50)
 
     fun get(
         name: String

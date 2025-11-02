@@ -7,7 +7,7 @@ class MGPoolMeshesStatic {
 
     private val map = HashMap<
         String,
-        MGMPoolMesh
+        Array<MGMPoolMesh>
     >()
 
     fun remove(
@@ -18,7 +18,7 @@ class MGPoolMeshesStatic {
 
     operator fun set(
         name: String,
-        arrayVertex: MGMPoolMesh
+        arrayVertex: Array<MGMPoolMesh>
     ) {
         map[name] = arrayVertex
     }
