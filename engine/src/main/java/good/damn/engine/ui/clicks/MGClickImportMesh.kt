@@ -41,12 +41,11 @@ MGIListenerOnGetUserContent {
     }
 
     private fun processModel(
-        userContent: MGMUserContent,
-        extension: String
+        userContent: MGMUserContent
     ) {
         val temp = File(
             MGEngine.DIR_PUBLIC_TEMP,
-            "${System.currentTimeMillis()}.$extension"
+            userContent.fileName
         )
 
         if (temp.exists()) {
@@ -73,26 +72,12 @@ MGIListenerOnGetUserContent {
         userContent: MGMUserContent
     ) {
         val uri = userContent.fileName
-        if (uri.contains("fbx")) {
+        if (uri.contains("fbx") ||
+            uri.contains("obj") ||
+            uri.contains("3ds")
+        ) {
             processModel(
-                userContent,
-                "fbx"
-            )
-            return
-        }
-
-        if (uri.contains("obj")) {
-            processModel(
-                userContent,
-                "obj"
-            )
-            return
-        }
-
-        if (uri.contains("3ds")) {
-            processModel(
-                userContent,
-                "3ds"
+                userContent
             )
             return
         }

@@ -1,7 +1,6 @@
 package good.damn.engine.opengl.triggers;
 
 import android.opengl.GLES30;
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -20,6 +19,8 @@ import good.damn.engine.opengl.enums.MGEnumTextureType;
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal;
+import good.damn.engine.opengl.models.MGMPoolMesh;
+import good.damn.engine.opengl.pools.MGPoolMeshesStatic;
 import good.damn.engine.opengl.pools.MGPoolTextures;
 import good.damn.engine.opengl.shaders.MGIShaderTexture;
 import good.damn.engine.opengl.shaders.MGShaderDefault;
@@ -59,6 +60,8 @@ public final class MGTriggerMesh {
         @NonNull final MGPoolTextures poolTextures,
         @NonNull final MGDrawerVertexArray drawVertBox,
         @NonNull final MGShaderSingleMode shaderWireframe,
+        @NonNull final MGPoolMeshesStatic poolMeshes,
+        @NonNull final String fileName,
         @NonNull final MGITrigger triggerAction
     ) {
         final MGArrayVertex arrayVertex = new MGArrayVertex();
@@ -133,6 +136,8 @@ public final class MGTriggerMesh {
                 ),
                 GLES30.GL_CW
             ),
+            poolMeshes,
+            fileName,
             triggerAction
         );
     }
@@ -144,6 +149,8 @@ public final class MGTriggerMesh {
         @NonNull final MGShaderDefault shaderDefault,
         @NonNull final MGShaderSingleMode shaderWireframe,
         @NonNull final MGDrawerModeSwitch drawerModeSwitch,
+        @NonNull final MGPoolMeshesStatic poolMeshes,
+        @NonNull final String fileName,
         @NonNull final MGITrigger triggerAction
     )  {
         @NonNull
@@ -163,6 +170,43 @@ public final class MGTriggerMesh {
             vertexArray,
             pointMiddle
         );
+
+        @NonNull
+        final MGMPoolMesh poolMesh = new MGMPoolMesh(
+            vertexArray,
+            pointMinMax,
+            drawerModeSwitch,
+            pointMiddle
+        );
+
+        poolMeshes.set(
+            fileName,
+            poolMesh
+        );
+
+        return createFromMeshPool(
+            shaderDefault,
+            poolMesh,
+            drawerVertArrayBox,
+            triggerAction,
+            shaderWireframe
+        );
+    }
+
+    @NonNull
+    private static MGTriggerMesh createFromMeshPool(
+        @NonNull final MGShaderDefault shaderDefault,
+        @NonNull final MGMPoolMesh poolMesh,
+        @NonNull final MGDrawerVertexArray drawerVertArrayBox,
+        @NonNull final MGITrigger triggerAction,
+        @NonNull final MGShaderSingleMode shaderWireframe
+    ) {
+        @NonNull final Pair<
+            MGVector, MGVector
+        > pointMinMax = poolMesh.getPointMinMax();
+
+        @NonNull final MGVector pointMiddle = poolMesh
+            .getPointMiddle();
 
         @NonNull
         final MGMatrixTriggerMesh matrix = new MGMatrixTriggerMesh(
@@ -190,7 +234,7 @@ public final class MGTriggerMesh {
 
         @NonNull
         final MGMesh mesh = new MGMesh(
-            drawerModeSwitch,
+            poolMesh.getDrawerMode(),
             shaderDefault,
             matrix.matrixMesh.model,
             matrix.matrixMesh.normal
