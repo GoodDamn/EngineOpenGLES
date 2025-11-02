@@ -32,18 +32,32 @@ class MGCallbackModelSpawn(
     override fun onGetObjectsCached(
         poolMesh: Array<MGMPoolMesh>
     ) {
-        poolMesh.forEach {
-            val mesh = MGTriggerMesh.createFromMeshPool(
-                shaderDefault,
-                it,
-                drawerVertArrBox,
-                triggerAction,
-                shaderWireframe
-            )
-
-            addMesh(mesh)
-            setupMatrix(mesh.matrix)
+        if (poolMesh.isEmpty()) {
+            return
         }
+
+        if (poolMesh.size == 1) {
+            processMesh(
+                MGTriggerMesh.createFromMeshPool(
+                    shaderDefault,
+                    poolMesh[0],
+                    drawerVertArrBox,
+                    triggerAction,
+                    shaderWireframe
+                )
+            )
+            return
+        }
+
+        processGroupMesh(
+            MGTriggerMeshGroup.createFromPool(
+                poolMesh,
+                drawerVertArrBox,
+                shaderDefault,
+                shaderWireframe,
+                triggerAction
+            )
+        )
     }
 
     override fun onGetObjects(
@@ -57,7 +71,7 @@ class MGCallbackModelSpawn(
 
         if (objs.size == 1) {
             val outPoolMesh = MGMPoolMeshMutable()
-            val mesh = MGTriggerMesh.createFromObject(
+            MGTriggerMesh.createFromObject(
                 objs[0],
                 shaderDefault,
                 poolTextures,
@@ -65,16 +79,12 @@ class MGCallbackModelSpawn(
                 shaderWireframe,
                 outPoolMesh,
                 triggerAction
-            )
-
-            poolMeshes[fileName] = arrayOf(
-                outPoolMesh.toImmutable()
-            )
-
-            addMesh(mesh)
-            setupMatrix(
-                mesh.matrix
-            )
+            ).run {
+                poolMeshes[fileName] = arrayOf(
+                    outPoolMesh.toImmutable()
+                )
+                processMesh(this)
+            }
             return
         }
 
@@ -82,7 +92,7 @@ class MGCallbackModelSpawn(
             objs.size
         ) { MGMPoolMeshMutable() }
 
-        val meshGroup = MGTriggerMeshGroup.createFromObjects(
+        MGTriggerMeshGroup.createFromObjects(
             objs,
             outPoolMeshes,
             drawerVertArrBox,
@@ -90,12 +100,29 @@ class MGCallbackModelSpawn(
             shaderWireframe,
             triggerAction,
             poolTextures
+        ).run {
+            poolMeshes[fileName] = Array(
+                outPoolMeshes.size
+            ) { outPoolMeshes[it].toImmutable() }
+
+            processGroupMesh(
+                this
+            )
+        }
+    }
+
+    private fun processMesh(
+        mesh: MGTriggerMesh
+    ) {
+        addMesh(mesh)
+        setupMatrix(
+            mesh.matrix
         )
+    }
 
-        poolMeshes[fileName] = Array(
-            outPoolMeshes.size
-        ) { outPoolMeshes[it].toImmutable() }
-
+    private fun processGroupMesh(
+        meshGroup: MGTriggerMeshGroup
+    ) {
         meshGroup.meshes.forEach {
             addMesh(it)
         }
