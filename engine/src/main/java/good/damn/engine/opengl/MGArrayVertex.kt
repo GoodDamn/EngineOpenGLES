@@ -11,6 +11,7 @@ class MGArrayVertex {
         private const val INDEX_POSITION = 0
         private const val INDEX_TEX_COORD = 1
         private const val INDEX_NORMAL = 2
+        private const val INDEX_MODEL_INSTANCE = 3
 
         const val INDEX_POSITION_X = 0
         const val INDEX_POSITION_Y = 1
@@ -83,22 +84,30 @@ class MGArrayVertex {
     }
 
     fun setupInstanceDrawing() {
-        bindVertexBuffer()
+        glBindVertexArray(
+            mVertexArray[0]
+        )
 
         val stride = 64
         val strideVector4 = 16
-        glEnableVertexAttribArray(3)
+        val pos0 = INDEX_MODEL_INSTANCE
+        val pos1 = INDEX_MODEL_INSTANCE + 1
+        val pos2 = INDEX_MODEL_INSTANCE + 2
+        val pos3 = INDEX_MODEL_INSTANCE + 3
+
+        glEnableVertexAttribArray(pos0)
         glVertexAttribPointer(
-            3,
+            pos0,
             4,
             GL_FLOAT,
             false,
             stride,
             0
         )
-        glEnableVertexAttribArray(4)
+
+        glEnableVertexAttribArray(pos1)
         glVertexAttribPointer(
-            4,
+            pos1,
             4,
             GL_FLOAT,
             false,
@@ -107,9 +116,11 @@ class MGArrayVertex {
         )
 
 
-        glEnableVertexAttribArray(5)
+        glEnableVertexAttribArray(
+            pos2
+        )
         glVertexAttribPointer(
-            5,
+            pos2,
             4,
             GL_FLOAT,
             false,
@@ -117,9 +128,9 @@ class MGArrayVertex {
             2*strideVector4
         )
 
-        glEnableVertexAttribArray(6)
+        glEnableVertexAttribArray(pos3)
         glVertexAttribPointer(
-            6,
+            pos3,
             4,
             GL_FLOAT,
             false,
@@ -128,22 +139,22 @@ class MGArrayVertex {
         )
 
         glVertexAttribDivisor(
-            3, 1
+            pos0, 1
         )
 
         glVertexAttribDivisor(
-            4, 1
+            pos1, 1
         )
 
         glVertexAttribDivisor(
-            5, 1
+            pos2, 1
         )
 
         glVertexAttribDivisor(
-            6, 1
+            pos3, 1
         )
 
-        unbindVertexBuffer()
+        glBindVertexArray(0)
     }
 
     fun getVertexBufferData(

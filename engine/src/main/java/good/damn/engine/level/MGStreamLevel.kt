@@ -55,6 +55,16 @@ class MGStreamLevel(
                         strPosition[1].toIntOrNull()?.toFloat() ?: 0f,
                         strPosition[2].toIntOrNull()?.toFloat() ?: 0f,
                     )
+                    val scale =
+                        strPosition[3].toFloatOrNull() ?: 1f
+                    setScale(
+                        scale,
+                        scale,
+                        scale
+                    )
+
+                    invalidatePosition()
+                    invalidateScaleRotation()
                 }
             }
 

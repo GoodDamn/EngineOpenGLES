@@ -11,6 +11,7 @@ import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.scene.MGScene
 import good.damn.engine.opengl.shaders.MGShaderDefault
+import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
@@ -28,6 +29,7 @@ class MGRendererLevelEditor(
     }
 
     private val mShaderDefault = MGShaderDefault()
+    private val mShaderOpaqueInstanced = MGShaderOpaque()
     private val mShaderSky = MGShaderSkySphere()
     private val mShaderNormals = MGShaderSingleModeNormals()
     private val mShaderTexCoords = MGShaderSingleMode()
@@ -40,6 +42,7 @@ class MGRendererLevelEditor(
     private val mSceneTest = MGScene(
         requesterUserContent,
         mShaderDefault,
+        mShaderOpaqueInstanced,
         mShaderSky,
         mShaderNormals,
         mShaderTexCoords,
@@ -120,6 +123,11 @@ class MGRendererLevelEditor(
 
         mShaderDefault.setup(
             "shaders/vert.glsl",
+            "shaders/frag.glsl"
+        )
+
+        mShaderOpaqueInstanced.setup(
+            "shaders/vert_instance.glsl",
             "shaders/frag.glsl"
         )
 

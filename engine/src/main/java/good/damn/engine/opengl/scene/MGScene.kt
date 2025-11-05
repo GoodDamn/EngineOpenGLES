@@ -47,6 +47,7 @@ import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderDefault
+import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
@@ -74,6 +75,7 @@ import kotlin.random.Random
 class MGScene(
     requesterUserContent: MGIRequestUserContent,
     private val shaderDefault: MGShaderDefault,
+    private val shaderOpaqueInstanced: MGShaderOpaque,
     private val shaderSky: MGShaderSkySphere,
     private val shaderNormals: MGShaderSingleModeNormals,
     private val shaderTexCoords: MGShaderSingleMode,
@@ -255,6 +257,7 @@ MGIListenerOnIntersectPosition {
     private val mDrawerModeOpaque = MGDrawerModeOpaque(
         shaderSky,
         shaderDefault,
+        shaderOpaqueInstanced,
         shaderWireframe,
         meshSky,
         mCameraFree,
