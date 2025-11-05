@@ -196,6 +196,25 @@ class MGArrayVertex {
         )*/
     }
 
+    fun drawInstanced(
+        mode: Int = GL_TRIANGLES,
+        count: Int
+    ) {
+        glBindVertexArray(
+            mVertexArray[0]
+        )
+
+        glDrawElementsInstanced(
+            mode,
+            mIndicesSize,
+            GL_UNSIGNED_INT,
+            0,
+            count
+        )
+
+        glBindVertexArray(0)
+    }
+
     fun draw(
         mode: Int = GL_TRIANGLES
     ) {

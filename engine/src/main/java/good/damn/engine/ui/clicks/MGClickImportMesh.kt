@@ -4,6 +4,7 @@ import android.util.Log
 import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.opengl.drawers.MGDrawerMeshInstanced
 import good.damn.engine.opengl.extensions.copyTo
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
@@ -14,10 +15,12 @@ import good.damn.engine.runnables.MGRunnableImportModel
 import good.damn.engine.ui.MGIClick
 import java.io.File
 import java.io.FileInputStream
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGClickImportMesh(
     private val handler: MGHandlerGl,
     private val callbackModel: MGICallbackModel,
+    private val meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>,
     private val mPoolMeshes: MGPoolMeshesStatic,
     private val requester: MGIRequestUserContent
 ): MGIClick,
@@ -82,7 +85,8 @@ MGIListenerOnGetUserContent {
     ) {
         handler.post(
             MGRunnableImportLevel(
-                temp
+                temp,
+                meshesInstanced
             )
         )
     }

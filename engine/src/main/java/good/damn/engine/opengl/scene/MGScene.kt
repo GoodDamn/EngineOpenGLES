@@ -18,6 +18,7 @@ import good.damn.engine.opengl.callbacks.MGCallbackOnScale
 import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
+import good.damn.engine.opengl.drawers.MGDrawerMeshInstanced
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
@@ -227,6 +228,10 @@ MGIListenerOnIntersectPosition {
         add(meshLandscape)
     }
 
+    private val meshesInstanced = ConcurrentLinkedQueue<
+        MGDrawerMeshInstanced
+    >()
+
     private val mDrawerLightDirectional = MGDrawerLightDirectional(
         shaderDefault.lightDirectional
     )
@@ -255,6 +260,7 @@ MGIListenerOnIntersectPosition {
         mCameraFree,
         mDrawerLightDirectional,
         meshes,
+        meshesInstanced,
         arrayOf(
             managerTrigger,
             managerTriggerLight
@@ -292,6 +298,7 @@ MGIListenerOnIntersectPosition {
                 mPoolTextures,
                 mPoolMeshes
             ),
+            meshesInstanced,
             mPoolMeshes,
             requesterUserContent,
         ),
