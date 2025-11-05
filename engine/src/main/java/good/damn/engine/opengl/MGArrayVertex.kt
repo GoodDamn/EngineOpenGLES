@@ -82,6 +82,70 @@ class MGArrayVertex {
         )
     }
 
+    fun setupInstanceDrawing() {
+        bindVertexBuffer()
+
+        val stride = 64
+        val strideVector4 = 16
+        glEnableVertexAttribArray(3)
+        glVertexAttribPointer(
+            3,
+            4,
+            GL_FLOAT,
+            false,
+            stride,
+            0
+        )
+        glEnableVertexAttribArray(4)
+        glVertexAttribPointer(
+            4,
+            4,
+            GL_FLOAT,
+            false,
+            stride,
+            strideVector4
+        )
+
+
+        glEnableVertexAttribArray(5)
+        glVertexAttribPointer(
+            5,
+            4,
+            GL_FLOAT,
+            false,
+            stride,
+            2*strideVector4
+        )
+
+        glEnableVertexAttribArray(6)
+        glVertexAttribPointer(
+            6,
+            4,
+            GL_FLOAT,
+            false,
+            stride,
+            3*strideVector4
+        )
+
+        glVertexAttribDivisor(
+            3, 1
+        )
+
+        glVertexAttribDivisor(
+            4, 1
+        )
+
+        glVertexAttribDivisor(
+            5, 1
+        )
+
+        glVertexAttribDivisor(
+            6, 1
+        )
+
+        unbindVertexBuffer()
+    }
+
     fun getVertexBufferData(
         iteration: Int,
         i: Int
