@@ -4,6 +4,7 @@ import good.damn.engine.opengl.MGObject3d
 import good.damn.engine.opengl.MGTriggerMeshGroup
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
+import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.models.MGMPoolMesh
@@ -24,7 +25,7 @@ class MGCallbackModelSpawn(
     private val shaderDefault: MGShaderDefault,
     private val shaderWireframe: MGShaderSingleMode,
     private val managerTrigger: MGManagerTriggerMesh,
-    private val listMeshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>,
+    private val listMeshes: ConcurrentLinkedQueue<MGDrawerMeshSwitchNormals>,
     private val poolTextures: MGPoolTextures,
     private val poolMeshes: MGPoolMeshesStatic
 ): MGICallbackModel {
@@ -41,7 +42,6 @@ class MGCallbackModelSpawn(
                 MGTriggerMesh.createFromMeshPool(
                     shaderDefault,
                     poolMesh[0],
-                    drawerVertArrBox,
                     triggerAction,
                     shaderWireframe
                 )
@@ -52,7 +52,6 @@ class MGCallbackModelSpawn(
         processGroupMesh(
             MGTriggerMeshGroup.createFromPool(
                 poolMesh,
-                drawerVertArrBox,
                 shaderDefault,
                 shaderWireframe,
                 triggerAction
@@ -75,7 +74,6 @@ class MGCallbackModelSpawn(
                 objs[0],
                 shaderDefault,
                 poolTextures,
-                drawerVertArrBox,
                 shaderWireframe,
                 outPoolMesh,
                 triggerAction
@@ -95,7 +93,6 @@ class MGCallbackModelSpawn(
         MGTriggerMeshGroup.createFromObjects(
             objs,
             outPoolMeshes,
-            drawerVertArrBox,
             shaderDefault,
             shaderWireframe,
             triggerAction,

@@ -13,17 +13,14 @@ import good.damn.engine.opengl.shaders.MGIShaderTextureUniform
 open class MGDrawerMeshSwitch(
     private val drawSwitch: MGDrawerModeSwitch,
     private val drawEntity: MGDrawerPositionEntity,
-    private val normals: MGMatrixNormal?
 ): MGIDrawer {
 
     fun switchDrawMode(
         shader: MGIShaderModel,
-        shaderNormals: MGIShaderNormal?,
         shaderTexture: MGIShaderTextureUniform?,
         drawMode: MGEnumDrawMode
     ) {
         drawEntity.shader = shader
-        normals?.shader = shaderNormals
         drawSwitch.switchDrawMode(
             drawMode,
             shaderTexture
@@ -31,7 +28,7 @@ open class MGDrawerMeshSwitch(
     }
 
     override fun draw() {
-        normals?.draw()
+        drawSwitch.draw()
         drawEntity.draw()
     }
 }

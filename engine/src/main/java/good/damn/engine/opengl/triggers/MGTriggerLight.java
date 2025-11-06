@@ -34,7 +34,6 @@ public final class MGTriggerLight {
     @NonNull
     public static MGTriggerLight createFromLight(
         @NonNull final MGLight light,
-        @NonNull final MGDrawerVertexArray drawerVertArrSphere,
         @NonNull final MGShaderSingleMode shaderWireframe
     ) {
         @NonNull
@@ -52,7 +51,6 @@ public final class MGTriggerLight {
                     matrix.matrixTrigger.invert
                 )
             ),
-            drawerVertArrSphere,
             shaderWireframe,
             matrix
         );

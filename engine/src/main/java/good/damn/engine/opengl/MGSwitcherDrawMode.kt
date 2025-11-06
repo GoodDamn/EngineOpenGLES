@@ -1,15 +1,15 @@
 package good.damn.engine.opengl
 
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
+import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
 import good.damn.engine.opengl.drawers.MGIDrawer
-import good.damn.engine.opengl.entities.MGMesh
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.models.MGMDrawMode
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGSwitcherDrawMode(
-    private val meshSky: MGMesh,
-    private val meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>,
+    private val meshSky: MGDrawerMeshSwitch,
+    private val meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitchNormals>,
     initDrawerMode: MGIDrawer
 ) {
     var currentDrawerMode = initDrawerMode
@@ -23,15 +23,16 @@ class MGSwitcherDrawMode(
 
         meshSky.switchDrawMode(
             model.shaderSky,
-            model.shaderNormalsSky,
             model.shaderTexture,
-            drawMode,
+            drawMode
         )
 
         meshes.forEach {
             it.switchDrawMode(
+                model.shaderNormals
+            )
+            it.switchDrawMode(
                 model.shaderDefault,
-                model.shaderNormals,
                 model.shaderTexture,
                 drawMode
             )

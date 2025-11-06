@@ -10,11 +10,13 @@ import good.damn.engine.opengl.MGArrayVertex;
 import good.damn.engine.opengl.MGObject3d;
 import good.damn.engine.opengl.MGVector;
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque;
+import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch;
+import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals;
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerModeTexture;
+import good.damn.engine.opengl.drawers.MGDrawerPositionEntity;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMaterial;
-import good.damn.engine.opengl.entities.MGMesh;
 import good.damn.engine.opengl.enums.MGEnumTextureType;
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
@@ -39,14 +41,14 @@ public final class MGTriggerMesh {
     public final MGMatrixTriggerMesh matrix;
 
     @NonNull
-    public final MGMesh mesh;
+    public final MGDrawerMeshSwitchNormals mesh;
 
     @NonNull
     public final MGDrawerTriggerStateable triggerState;
 
     private MGTriggerMesh(
         @NonNull final MGMatrixTriggerMesh matrix,
-        @NonNull final MGMesh mesh,
+        @NonNull final MGDrawerMeshSwitchNormals mesh,
         @NonNull final MGDrawerTriggerStateable triggerState
     ) {
         this.matrix = matrix;
@@ -59,7 +61,6 @@ public final class MGTriggerMesh {
         @NonNull final MGObject3d obj,
         @NonNull final MGShaderDefault shaderDefault,
         @NonNull final MGPoolTextures poolTextures,
-        @NonNull final MGDrawerVertexArray drawVertBox,
         @NonNull final MGShaderSingleMode shaderWireframe,
         @NonNull final MGMPoolMeshMutable outPoolMesh,
         @NonNull final MGITrigger triggerAction
@@ -89,7 +90,6 @@ public final class MGTriggerMesh {
 
         return createFromVertexArray(
             arrayVertex,
-            drawVertBox,
             shaderDefault,
             shaderWireframe,
             new MGDrawerModeSwitch(
@@ -120,7 +120,6 @@ public final class MGTriggerMesh {
     @NonNull
     public static MGTriggerMesh createFromVertexArray(
         @NonNull final MGArrayVertex vertexArray,
-        @NonNull final MGDrawerVertexArray drawerVertArrayBox,
         @NonNull final MGShaderDefault shaderDefault,
         @NonNull final MGShaderSingleMode shaderWireframe,
         @NonNull final MGDrawerModeSwitch drawerModeSwitch,
@@ -147,7 +146,6 @@ public final class MGTriggerMesh {
         return createFromMeshPool(
             shaderDefault,
             outPoolMesh.toImmutable(),
-            drawerVertArrayBox,
             triggerAction,
             shaderWireframe
         );
@@ -157,7 +155,6 @@ public final class MGTriggerMesh {
     public static MGTriggerMesh createFromMeshPool(
         @NonNull final MGShaderDefault shaderDefault,
         @NonNull final MGMPoolMesh poolMesh,
-        @NonNull final MGDrawerVertexArray drawerVertArrayBox,
         @NonNull final MGITrigger triggerAction,
         @NonNull final MGShaderSingleMode shaderWireframe
     ) {
@@ -193,10 +190,12 @@ public final class MGTriggerMesh {
         matrix.calculateNormals();
 
         @NonNull
-        final MGMesh mesh = new MGMesh(
+        final MGDrawerMeshSwitchNormals mesh = new MGDrawerMeshSwitchNormals(
             poolMesh.getDrawerMode(),
-            shaderDefault,
-            matrix.matrixMesh.model,
+            new MGDrawerPositionEntity(
+                shaderDefault,
+                matrix.matrixMesh.model
+            ),
             matrix.matrixMesh.normal
         );
 
@@ -208,7 +207,6 @@ public final class MGTriggerMesh {
                 ),
                 triggerAction
             ),
-            drawerVertArrayBox,
             shaderWireframe,
             matrix.matrixTrigger.model
         );

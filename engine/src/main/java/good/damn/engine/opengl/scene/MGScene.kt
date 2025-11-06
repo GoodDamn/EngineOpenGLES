@@ -23,16 +23,17 @@ import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerMeshInstanced
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
+import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeSingleMap
 import good.damn.engine.opengl.drawers.MGDrawerModeSingleShader
 import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeTexture
+import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.entities.MGLight
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.entities.MGMesh
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.generators.MGGeneratorLandscape
 import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
@@ -155,7 +156,7 @@ MGIListenerOnIntersectPosition {
         mVerticesLandscape,
         GLES30.GL_TRIANGLES
     )
-    private val meshLandscape = MGMesh(
+    private val meshLandscape = MGDrawerMeshSwitchNormals(
         MGDrawerModeSwitch(
             mVerticesLandscape,
             MGDrawerMeshOpaque(
@@ -176,12 +177,14 @@ MGIListenerOnIntersectPosition {
             ),
             GL_CW
         ),
-        shaderDefault,
-        modelMatrixLandscape.model,
+        MGDrawerPositionEntity(
+            shaderDefault,
+            modelMatrixLandscape.model
+        ),
         modelMatrixLandscape.normal
     )
 
-    private val meshSky = MGMesh(
+    private val meshSky = MGDrawerMeshSwitch(
         MGDrawerModeSwitch(
             mVerticesSky,
             MGDrawerSkyOpaque(
@@ -202,9 +205,10 @@ MGIListenerOnIntersectPosition {
             ),
             GL_CCW
         ),
-        shaderSky,
-        modelMatrixSky,
-        normals = null
+        MGDrawerPositionEntity(
+            shaderSky,
+            modelMatrixSky
+        )
     )
 
     private val mCameraFree = MGCameraFree(
@@ -226,8 +230,8 @@ MGIListenerOnIntersectPosition {
     private val mHandler = MGHandlerGl()
 
     private val meshes = ConcurrentLinkedQueue<
-        MGDrawerMeshSwitch
-        >().apply {
+        MGDrawerMeshSwitchNormals
+    >().apply {
         add(meshLandscape)
     }
 
@@ -378,7 +382,6 @@ MGIListenerOnIntersectPosition {
                         0.5f + Random.nextFloat() * 0.5f
                     )
                 ),
-                mDrawerDebugSphere,
                 shaderWireframe
             ).run {
                 matrix.setPosition(

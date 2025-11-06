@@ -6,7 +6,6 @@ import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.shaders.MGIShaderModel
 
 class MGDrawerPositionEntity(
-    private val drawer: MGIDrawer,
     var shader: MGIShaderModel,
     var modelMatrix: MGMatrixModel
 ): MGIDrawer {
@@ -19,7 +18,6 @@ class MGDrawerPositionEntity(
             modelMatrix.model,
             0
         )
-        drawer.draw()
     }
 
 }

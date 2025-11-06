@@ -65,7 +65,6 @@ public final class MGTriggerMeshGroup {
     @NonNull
     public static MGTriggerMeshGroup createFromPool(
         @NonNull final MGMPoolMesh[] poolMeshes,
-        @NonNull final MGDrawerVertexArray drawVertBox,
         @NonNull final MGShaderDefault shaderDefault,
         @NonNull final MGShaderSingleMode shaderWireframe,
         @NonNull final MGITrigger triggerAction
@@ -83,7 +82,6 @@ public final class MGTriggerMeshGroup {
             triggerMeshes[i] = MGTriggerMesh.createFromMeshPool(
                 shaderDefault,
                 poolMeshes[i],
-                drawVertBox,
                 triggerAction,
                 shaderWireframe
             );
@@ -97,7 +95,6 @@ public final class MGTriggerMeshGroup {
     public static MGTriggerMeshGroup createFromObjects(
         @NonNull final MGObject3d[] objs,
         @NonNull final MGMPoolMeshMutable[] outPoolMeshes,
-        @NonNull final MGDrawerVertexArray drawVertBox,
         @NonNull final MGShaderDefault shaderDefault,
         @NonNull final MGShaderSingleMode shaderWireframe,
         @NonNull final MGITrigger triggerAction,
@@ -119,7 +116,6 @@ public final class MGTriggerMeshGroup {
                 obj,
                 shaderDefault,
                 poolTextures,
-                drawVertBox,
                 shaderWireframe,
                 outPoolMeshes[i],
                 triggerAction
