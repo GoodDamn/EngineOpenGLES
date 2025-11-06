@@ -290,7 +290,9 @@ MGIListenerOnIntersectPosition {
         clickLoadUserContent = MGClickImport(
             mHandler,
             MGImportLevel(
-                meshesInstanced
+                meshesInstanced,
+                shaderDefault,
+                mPoolTextures
             ),
             MGImportMesh(
                 mPoolMeshes,
