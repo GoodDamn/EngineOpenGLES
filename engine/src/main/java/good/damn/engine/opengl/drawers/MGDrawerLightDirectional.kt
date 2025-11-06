@@ -6,9 +6,7 @@ import android.util.Log
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.shaders.MGShaderLightDirectional
 
-class MGDrawerLightDirectional(
-    var shader: MGShaderLightDirectional
-): MGIDrawer {
+class MGDrawerLightDirectional {
 
     val ambColor = MGVector(
         0.1f,
@@ -38,8 +36,9 @@ class MGDrawerLightDirectional(
         Log.d("TAG", "setPosition: $mPosition")
     }
 
-
-    override fun draw() {
+    fun draw(
+        shader: MGShaderLightDirectional
+    ) {
         glUniform3f(
             shader.uniformColor,
             .119f,

@@ -8,6 +8,7 @@ import good.damn.engine.opengl.managers.MGManagerTrigger
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.shaders.MGShaderDefault
+import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable
@@ -17,11 +18,13 @@ import java.util.concurrent.ConcurrentLinkedQueue
 data class MGDrawerModeOpaque(
     var shaderSky: MGShaderSkySphere,
     var shaderOpaque: MGShaderDefault,
+    var shaderOpaqueInstanced: MGShaderOpaque,
     var shaderTrigger: MGShaderSingleMode,
     var sky: MGMesh,
     var camera: MGCamera,
     var directionalLight: MGDrawerLightDirectional,
     var meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>,
+    var meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>,
     var managersTrigger: Array<MGIManagerTrigger>,
     var lights: MGManagerLight
 ): MGIDrawer {
@@ -44,11 +47,39 @@ data class MGDrawerModeOpaque(
         camera.drawPosition(
             shaderOpaque
         )
-        directionalLight.draw()
+        directionalLight.draw(
+            shaderOpaque.lightDirectional
+        )
         meshes.forEach {
             it.draw()
         }
-        lights.draw()
+        lights.draw(
+            shaderOpaque.lightPoints
+        )
+
+
+
+
+        shaderOpaqueInstanced.use()
+        camera.draw(
+            shaderOpaqueInstanced
+        )
+        camera.drawPosition(
+            shaderOpaqueInstanced
+        )
+        directionalLight.draw(
+            shaderOpaqueInstanced.lightDirectional
+        )
+
+        meshesInstanced.forEach {
+            it.draw()
+        }
+
+        lights.draw(
+            shaderOpaqueInstanced.lightPoints
+        )
+
+
 
         if (!canDrawTriggers) {
             return

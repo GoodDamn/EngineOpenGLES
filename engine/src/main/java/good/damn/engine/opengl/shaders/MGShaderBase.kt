@@ -95,5 +95,10 @@ abstract class MGShaderBase
             "normal"
         )
 
+        glBindAttribLocation(
+            program,
+            3,
+            "modelInstance"
+        )
     }
 }

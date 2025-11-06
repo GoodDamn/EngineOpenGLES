@@ -6,6 +6,8 @@ import android.opengl.GLES30.GL_CW
 import android.opengl.GLES30.GL_REPEAT
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
+import good.damn.engine.imports.MGImportLevel
+import good.damn.engine.imports.MGImportMesh
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.MGObject3d
@@ -18,6 +20,7 @@ import good.damn.engine.opengl.callbacks.MGCallbackOnScale
 import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
+import good.damn.engine.opengl.drawers.MGDrawerMeshInstanced
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
@@ -46,6 +49,7 @@ import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderDefault
+import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
@@ -56,9 +60,9 @@ import good.damn.engine.opengl.triggers.MGTriggerLight
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGCallbackModelSpawn
-import good.damn.engine.touch.MGIListenerScale
+import good.damn.engine.threads.MGHandlerCollision
 import good.damn.engine.ui.MGUILayerEditor
-import good.damn.engine.ui.clicks.MGClickImportMesh
+import good.damn.engine.ui.clicks.MGClickImport
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.ui.clicks.MGClickTriggerDrawingFlag
@@ -72,6 +76,7 @@ import kotlin.random.Random
 class MGScene(
     requesterUserContent: MGIRequestUserContent,
     private val shaderDefault: MGShaderDefault,
+    private val shaderOpaqueInstanced: MGShaderOpaque,
     private val shaderSky: MGShaderSkySphere,
     private val shaderNormals: MGShaderSingleModeNormals,
     private val shaderTexCoords: MGShaderSingleMode,
@@ -226,9 +231,11 @@ MGIListenerOnIntersectPosition {
         add(meshLandscape)
     }
 
-    private val mDrawerLightDirectional = MGDrawerLightDirectional(
-        shaderDefault.lightDirectional
-    )
+    private val meshesInstanced = ConcurrentLinkedQueue<
+        MGDrawerMeshInstanced
+    >()
+
+    private val mDrawerLightDirectional = MGDrawerLightDirectional()
 
     private val managerLights = MGManagerLight(
         shaderDefault
@@ -240,14 +247,22 @@ MGIListenerOnIntersectPosition {
 
     private val managerTrigger = MGManagerTriggerMesh()
 
+    private val mHandlerCollision = MGHandlerCollision(
+        managerTrigger,
+        managerTriggerLight,
+        mCameraFree
+    )
+
     private val mDrawerModeOpaque = MGDrawerModeOpaque(
         shaderSky,
         shaderDefault,
+        shaderOpaqueInstanced,
         shaderWireframe,
         meshSky,
         mCameraFree,
         mDrawerLightDirectional,
         meshes,
+        meshesInstanced,
         arrayOf(
             managerTrigger,
             managerTriggerLight
@@ -270,22 +285,29 @@ MGIListenerOnIntersectPosition {
     private val mPoolMeshes = MGPoolMeshesStatic()
 
     private val mLayerEditor = MGUILayerEditor(
-        clickLoadUserContent = MGClickImportMesh(
+        clickLoadUserContent = MGClickImport(
             mHandler,
-            MGCallbackModelSpawn(
-                mDrawerDebugBox,
-                mBridgeMatrix,
-                MGTriggerSimple(
-                    mDrawerLightDirectional
-                ),
+            MGImportLevel(
+                meshesInstanced,
                 shaderDefault,
-                shaderWireframe,
-                managerTrigger,
-                meshes,
-                mPoolTextures,
-                mPoolMeshes
+                mPoolTextures
             ),
-            mPoolMeshes,
+            MGImportMesh(
+                mPoolMeshes,
+                MGCallbackModelSpawn(
+                    mDrawerDebugBox,
+                    mBridgeMatrix,
+                    MGTriggerSimple(
+                        mDrawerLightDirectional
+                    ),
+                    shaderDefault,
+                    shaderWireframe,
+                    managerTrigger,
+                    meshes,
+                    mPoolTextures,
+                    mPoolMeshes
+                )
+            ),
             requesterUserContent,
         ),
         clickPlaceMesh = MGClickPlaceMesh(
@@ -459,6 +481,8 @@ MGIListenerOnIntersectPosition {
             10.986f,
             -9.247298f
         )
+
+        mHandlerCollision.start()
     }
 
     override fun onSurfaceChanged(
@@ -484,22 +508,6 @@ MGIListenerOnIntersectPosition {
     override fun onDrawFrame(
         gl: GL10?
     ) {
-        // 1. Camera point triggering needs to check only on self position changes
-        // it doesn't need to check on each touch event
-        // 2. For other entities who can trigger, check it inside infinite loop
-        val model = mCameraFree.modelMatrix
-        managerTriggerLight.loopTriggers(
-            model.x,
-            model.y,
-            model.z,
-        )
-
-        managerTrigger.loopTriggers(
-            model.x,
-            model.y,
-            model.z
-        )
-
         mSwitcherDrawMode
             .currentDrawerMode
             .draw()

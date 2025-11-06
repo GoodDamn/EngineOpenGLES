@@ -18,8 +18,7 @@ import good.damn.engine.opengl.triggers.MGMatrixTriggerLight;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight;
 
-public final class MGManagerLight
-implements MGIDrawer {
+public final class MGManagerLight {
 
     private final MGLightWrapper[] mPullLights;
 
@@ -35,24 +34,29 @@ implements MGIDrawer {
         ];
 
         for (int i = 0; i < mPullLights.length; i++) {
-            mPullLights[i] = new MGLightWrapper(
-                lightPoints[i]
-            );
+            mPullLights[i] = new MGLightWrapper();
         }
     }
 
-    @Override
-    public final void draw() {
+    public final void draw(
+        @NonNull final MGShaderLightPoint[] lightPoints
+    ) {
         for (
-            MGLightWrapper wrapper : mPullLights
+            short i = 0;
+            i < lightPoints.length;
+            i++
         ) {
+            final MGLightWrapper wrapper = mPullLights[i];
             final MGDrawerLightPoint drawer = wrapper.drawer;
+            final MGShaderLightPoint shaderLightPoint = lightPoints[i];
 
             @Nullable
             final MGDrawerTriggerStateableLight state = wrapper.state;
             if (state == null) {
                 drawer.setActive(0);
-                drawer.draw();
+                drawer.draw(
+                    shaderLightPoint
+                );
                 continue;
             }
 
@@ -76,7 +80,9 @@ implements MGIDrawer {
                 matrix.getPosition()
             );
 
-            drawer.draw();
+            drawer.draw(
+                shaderLightPoint
+            );
         }
     }
 
@@ -141,14 +147,6 @@ implements MGIDrawer {
         MGDrawerTriggerStateableLight state;
 
         @NonNull
-        final MGDrawerLightPoint drawer;
-
-        MGLightWrapper(
-            @NonNull final MGShaderLightPoint shader
-        ) {
-            drawer = new MGDrawerLightPoint(
-                shader
-            );
-        }
+        final MGDrawerLightPoint drawer = new MGDrawerLightPoint();
     }
 }

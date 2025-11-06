@@ -4,7 +4,7 @@ import android.opengl.GLES30.*
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
-class MGArrayVertex {
+open class MGArrayVertex {
 
     companion object {
         const val STRIDE = 8 * 4
@@ -19,14 +19,14 @@ class MGArrayVertex {
         const val MAX_VALUES_PER_VERTICES = 8
     }
 
-    private val mVertexArray = intArrayOf(1)
+    protected val mVertexArray = intArrayOf(1)
     private val mVertexArrayBuffer = intArrayOf(1)
     private val mIndicesArrayBuffer = intArrayOf(1)
 
     private lateinit var mBufferVertex: FloatBuffer
     private lateinit var mBufferIndices: IntBuffer
 
-    private var mIndicesSize = 0
+    protected var mIndicesSize = 0
 
     val sizeVertexArray: Int
         get() = mBufferVertex.capacity()
