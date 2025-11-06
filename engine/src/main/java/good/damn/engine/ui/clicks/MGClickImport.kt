@@ -2,6 +2,7 @@ package good.damn.engine.ui.clicks
 
 import good.damn.engine.MGEngine
 import good.damn.engine.imports.MGImportLevel
+import good.damn.engine.imports.MGImportMesh
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.extensions.copyTo
@@ -9,20 +10,25 @@ import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.runnables.MGICallbackModel
-import good.damn.engine.runnables.MGRunnableImportLevel
-import good.damn.engine.runnables.MGRunnableImportModel
+import good.damn.engine.runnables.MGRunnableImportFileTemp
 import good.damn.engine.ui.MGIClick
 import java.io.File
 
 class MGClickImport(
     private val handler: MGHandlerGl,
-    private val callbackModel: MGICallbackModel,
-    private val importLevel: MGImportLevel,
-    private val mPoolMeshes: MGPoolMeshesStatic,
+    importLevel: MGImportLevel,
+    importMesh: MGImportMesh,
     private val requester: MGIRequestUserContent
 ): MGIClick,
 MGIListenerOnGetUserContent {
 
+    private val runnableImportMesh = MGRunnableImportFileTemp(
+        importLevel
+    )
+
+    private val runnableImportLevel = MGRunnableImportFileTemp(
+        importMesh
+    )
 
     override fun onClick() {
         requester.requestUserContent(
@@ -68,23 +74,18 @@ MGIListenerOnGetUserContent {
     private inline fun processModel(
         temp: File
     ) {
+        runnableImportMesh.fileTemp = temp
         handler.post(
-            MGRunnableImportModel(
-                callbackModel,
-                mPoolMeshes,
-                temp
-            )
+            runnableImportMesh
         )
     }
 
     private inline fun processLevel(
         temp: File
     ) {
+        runnableImportLevel.fileTemp = temp
         handler.post(
-            MGRunnableImportLevel(
-                temp,
-                importLevel
-            )
+            runnableImportLevel
         )
     }
 

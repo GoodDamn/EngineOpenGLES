@@ -1,25 +1,21 @@
-package good.damn.engine.runnables
+package good.damn.engine.imports
 
-import androidx.lifecycle.viewmodel.viewModelFactory
 import good.damn.engine.opengl.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
+import good.damn.engine.runnables.MGICallbackModel
 import java.io.File
 
-class MGRunnableImportModel(
-    private val modelsCallback: MGICallbackModel,
+class MGImportMesh(
     private val poolMeshes: MGPoolMeshesStatic,
-    private val fileTemp: File
-): Runnable {
+    private val modelsCallback: MGICallbackModel
+): MGImportFile {
 
-    override fun run() {
-        if (!fileTemp.exists()) {
-            return
-        }
-
+    override fun onImportFile(
+        it: File
+    ) {
         poolMeshes[
-            fileTemp.name
+            it.name
         ]?.run {
-            fileTemp.delete()
             modelsCallback.onGetObjectsCached(
                 this
             )
@@ -27,15 +23,13 @@ class MGRunnableImportModel(
         }
 
         val arrModels = MGObject3d.createFromPath(
-            fileTemp.path
+            it.path
         )
 
         modelsCallback.onGetObjects(
-            fileTemp.name,
+            it.name,
             arrModels
         )
-
-        fileTemp.delete()
     }
 
 }

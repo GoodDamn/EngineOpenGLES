@@ -7,6 +7,7 @@ import android.opengl.GLES30.GL_REPEAT
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import good.damn.engine.imports.MGImportLevel
+import good.damn.engine.imports.MGImportMesh
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.MGObject3d
@@ -285,28 +286,28 @@ MGIListenerOnIntersectPosition {
 
     private val mPoolMeshes = MGPoolMeshesStatic()
 
-    private val mImportLevel = MGImportLevel(
-        meshesInstanced
-    )
-
     private val mLayerEditor = MGUILayerEditor(
         clickLoadUserContent = MGClickImport(
             mHandler,
-            MGCallbackModelSpawn(
-                mDrawerDebugBox,
-                mBridgeMatrix,
-                MGTriggerSimple(
-                    mDrawerLightDirectional
-                ),
-                shaderDefault,
-                shaderWireframe,
-                managerTrigger,
-                meshes,
-                mPoolTextures,
-                mPoolMeshes
+            MGImportLevel(
+                meshesInstanced
             ),
-            mImportLevel,
-            mPoolMeshes,
+            MGImportMesh(
+                mPoolMeshes,
+                MGCallbackModelSpawn(
+                    mDrawerDebugBox,
+                    mBridgeMatrix,
+                    MGTriggerSimple(
+                        mDrawerLightDirectional
+                    ),
+                    shaderDefault,
+                    shaderWireframe,
+                    managerTrigger,
+                    meshes,
+                    mPoolTextures,
+                    mPoolMeshes
+                )
+            ),
             requesterUserContent,
         ),
         clickPlaceMesh = MGClickPlaceMesh(
