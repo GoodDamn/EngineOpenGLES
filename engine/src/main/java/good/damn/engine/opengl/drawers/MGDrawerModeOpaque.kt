@@ -47,8 +47,9 @@ data class MGDrawerModeOpaque(
         camera.drawPosition(
             shaderOpaque
         )
-        directionalLight.shader = shaderOpaque.lightDirectional
-        directionalLight.draw()
+        directionalLight.draw(
+            shaderOpaque.lightDirectional
+        )
         meshes.forEach {
             it.draw()
         }
@@ -66,8 +67,9 @@ data class MGDrawerModeOpaque(
         camera.drawPosition(
             shaderOpaqueInstanced
         )
-        directionalLight.shader = shaderOpaqueInstanced.lightDirectional
-        directionalLight.draw()
+        directionalLight.draw(
+            shaderOpaqueInstanced.lightDirectional
+        )
 
         meshesInstanced.forEach {
             it.draw()

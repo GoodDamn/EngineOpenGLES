@@ -235,9 +235,7 @@ MGIListenerOnIntersectPosition {
         MGDrawerMeshInstanced
     >()
 
-    private val mDrawerLightDirectional = MGDrawerLightDirectional(
-        shaderDefault.lightDirectional
-    )
+    private val mDrawerLightDirectional = MGDrawerLightDirectional()
 
     private val managerLights = MGManagerLight(
         shaderDefault
