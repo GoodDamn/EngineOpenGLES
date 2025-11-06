@@ -74,31 +74,12 @@ public final class MGTriggerMesh {
         @NonNull final MGShaderMaterial mat = shaderDefault
             .getMaterial();
 
-        @NonNull final MGTexture textureDiffuse = obj.texturesDiffuseFileName == null ?
-            poolTextures.getDefaultTexture()
-        : loadTextureCached(
+        @NonNull final MGMaterial material = MGMaterial.Companion.createWithPath(
+            mat,
             poolTextures,
-            mat.getTextureDiffuse(),
-            MGEnumTextureType.DIFFUSE,
-            obj.texturesDiffuseFileName[0]
-        );
-
-        @NonNull final MGTexture textureMetallic = obj.texturesMetallicFileName == null ?
-            poolTextures.getDefaultTextureMetallic()
-        : loadTextureCached(
-            poolTextures,
-            mat.getTextureMetallic(),
-            MGEnumTextureType.METALLIC,
-            obj.texturesMetallicFileName[0]
-        );
-
-        @NonNull final MGTexture textureEmissive = obj.texturesEmissiveFileName == null ?
-            poolTextures.getDefaultTextureEmissive()
-        : loadTextureCached(
-            poolTextures,
-            mat.getTextureEmissive(),
-            MGEnumTextureType.EMISSIVE,
-            obj.texturesEmissiveFileName[0]
+            obj.texturesDiffuseFileName == null ? null : obj.texturesDiffuseFileName[0],
+            obj.texturesMetallicFileName == null ? null : obj.texturesMetallicFileName[0],
+            obj.texturesEmissiveFileName == null ? null : obj.texturesEmissiveFileName[0]
         );
 
         @NonNull final MGDrawerVertexArray drawerVertexArray = new MGDrawerVertexArray(
@@ -115,23 +96,18 @@ public final class MGTriggerMesh {
                 arrayVertex,
                 new MGDrawerMeshOpaque(
                     arrayVertex,
-                    new MGMaterial(
-                        shaderDefault.getMaterial(),
-                        textureDiffuse,
-                        textureMetallic,
-                        textureEmissive
-                    )
+                    material
                 ),
                 new MGDrawerModeTexture(
-                    textureDiffuse,
+                    material.getTextureDiffuse(),
                     drawerVertexArray
                 ),
                 new MGDrawerModeTexture(
-                    textureMetallic,
+                    material.getTextureMetallic(),
                     drawerVertexArray
                 ),
                 new MGDrawerModeTexture(
-                    textureEmissive,
+                    material.getTextureEmissive(),
                     drawerVertexArray
                 ),
                 GLES30.GL_CW
@@ -242,40 +218,5 @@ public final class MGTriggerMesh {
             mesh,
             triggerState
         );
-    }
-
-    @NonNull
-    private static MGTexture loadTextureCached(
-        @NonNull final MGPoolTextures poolTextures,
-        @NonNull final MGIShaderTexture shaderTexture,
-        @NonNull final MGEnumTextureType textureType,
-        @NonNull final String textureName
-    ) {
-        @Nullable MGTexture texture = poolTextures.get(
-            textureName
-        );
-
-        if (texture != null) {
-            return texture;
-        }
-
-        try {
-            texture = MGTexture.Companion.createDefaultAsset(
-                textureName,
-                textureType,
-                shaderTexture
-            );
-
-            poolTextures.add(
-                textureName,
-                texture
-            );
-        } catch (Exception e) {
-            // file not found
-        }
-
-        return texture != null ?
-            texture
-            : poolTextures.getDefaultTexture();
     }
 }
