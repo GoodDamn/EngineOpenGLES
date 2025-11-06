@@ -5,6 +5,7 @@ import android.opengl.GLES30.*
 import android.opengl.GLUtils
 import android.util.Log
 import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.engine.opengl.drawers.MGIDrawerTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.shaders.MGIShaderTexture
 import good.damn.engine.opengl.shaders.MGIShaderTextureUniform
@@ -14,7 +15,7 @@ import java.io.FileInputStream
 class MGTexture(
     var shader: MGIShaderTextureUniform,
     type: MGEnumTextureType
-): MGIDrawer {
+): MGIDrawerTexture {
 
     private var mId = intArrayOf(1)
 
@@ -171,7 +172,7 @@ class MGTexture(
         }
     }
 
-    fun unbind() {
+    override fun unbind() {
         glActiveTexture(
             GL_TEXTURE0 + mActiveTexture
         )

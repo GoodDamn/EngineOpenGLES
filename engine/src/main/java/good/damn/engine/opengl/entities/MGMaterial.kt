@@ -2,6 +2,7 @@ package good.damn.engine.opengl.entities
 
 import android.opengl.GLES30
 import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.engine.opengl.drawers.MGIDrawerTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGIShaderTexture
@@ -13,7 +14,7 @@ class MGMaterial(
     var textureDiffuse: MGTexture,
     var textureMetallic: MGTexture,
     var textureEmissive: MGTexture
-): MGIDrawer {
+): MGIDrawerTexture {
     var shine = 1f
 
     companion object {
@@ -95,7 +96,7 @@ class MGMaterial(
         textureEmissive.draw()
     }
 
-    fun unbind() {
+    override fun unbind() {
         textureDiffuse.unbind()
         textureMetallic.unbind()
         textureEmissive.unbind()

@@ -19,10 +19,10 @@ data class MGDrawerModeOpaque(
     var shaderOpaque: MGShaderDefault,
     var shaderOpaqueInstanced: MGShaderOpaque,
     var shaderTrigger: MGShaderSingleMode,
-    var sky: MGDrawerMeshSwitch,
+    var sky: MGDrawerMeshTexture,
     var camera: MGCamera,
     var directionalLight: MGDrawerLightDirectional,
-    var meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitchNormals>,
+    var meshes: ConcurrentLinkedQueue<MGDrawerMeshTexture>,
     var meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>,
     var managersTrigger: Array<MGIManagerTrigger>,
     var lights: MGManagerLight

@@ -1,17 +1,21 @@
 package good.damn.engine.opengl.drawers
 
+import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.matrices.MGMatrixNormal
 import good.damn.engine.opengl.shaders.MGIShaderNormal
 
 class MGDrawerMeshSwitchNormals(
-    drawSwitch: MGDrawerModeSwitch,
+    vertexArray: MGArrayVertex,
     drawEntity: MGDrawerPositionEntity,
+    frontFace: Int,
     private val matrixNormal: MGMatrixNormal
 ): MGDrawerMeshSwitch(
-    drawSwitch,
-    drawEntity
+    vertexArray,
+    drawEntity,
+    frontFace
 ) {
-    fun switchDrawMode(
+
+    override fun switchDrawMode(
         shader: MGIShaderNormal?
     ) {
         matrixNormal.shader = shader

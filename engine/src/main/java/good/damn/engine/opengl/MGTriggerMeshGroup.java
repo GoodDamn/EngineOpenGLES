@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque;
-import good.damn.engine.opengl.drawers.MGDrawerModeSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMaterial;
 import good.damn.engine.opengl.enums.MGEnumTextureType;

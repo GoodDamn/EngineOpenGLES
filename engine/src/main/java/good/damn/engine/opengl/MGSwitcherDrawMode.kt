@@ -2,14 +2,15 @@ package good.damn.engine.opengl
 
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
+import good.damn.engine.opengl.drawers.MGDrawerMeshTexture
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.models.MGMDrawMode
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGSwitcherDrawMode(
-    private val meshSky: MGDrawerMeshSwitch,
-    private val meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitchNormals>,
+    private val meshSky: MGDrawerMeshTexture,
+    private val meshes: ConcurrentLinkedQueue<MGDrawerMeshTexture>,
     initDrawerMode: MGIDrawer
 ) {
     var currentDrawerMode = initDrawerMode
@@ -31,6 +32,7 @@ class MGSwitcherDrawMode(
             it.switchDrawMode(
                 model.shaderNormals
             )
+
             it.switchDrawMode(
                 model.shaderDefault,
                 model.shaderTexture,

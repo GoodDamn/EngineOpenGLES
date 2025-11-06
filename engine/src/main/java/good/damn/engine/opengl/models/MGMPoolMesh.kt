@@ -4,11 +4,12 @@ import android.util.Pair
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
-import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
+import good.damn.engine.opengl.drawers.MGDrawerMeshTexture
+import good.damn.engine.opengl.entities.MGMaterial
 
 data class MGMPoolMesh(
     val vertexArray: MGArrayVertex,
     val pointMinMax: Pair<MGVector, MGVector>,
-    val drawerMode: MGDrawerModeSwitch,
+    val material: MGMaterial,
     val pointMiddle: MGVector
 )

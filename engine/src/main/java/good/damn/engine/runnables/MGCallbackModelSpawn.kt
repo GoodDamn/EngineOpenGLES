@@ -5,6 +5,7 @@ import good.damn.engine.opengl.MGTriggerMeshGroup
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
+import good.damn.engine.opengl.drawers.MGDrawerMeshTexture
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.models.MGMPoolMesh
@@ -25,7 +26,7 @@ class MGCallbackModelSpawn(
     private val shaderDefault: MGShaderDefault,
     private val shaderWireframe: MGShaderSingleMode,
     private val managerTrigger: MGManagerTriggerMesh,
-    private val listMeshes: ConcurrentLinkedQueue<MGDrawerMeshSwitchNormals>,
+    private val listMeshes: ConcurrentLinkedQueue<MGDrawerMeshTexture>,
     private val poolTextures: MGPoolTextures,
     private val poolMeshes: MGPoolMeshesStatic
 ): MGICallbackModel {

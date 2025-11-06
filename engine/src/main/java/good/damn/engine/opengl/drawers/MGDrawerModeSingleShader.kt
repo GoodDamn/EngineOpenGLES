@@ -6,9 +6,9 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGDrawerModeSingleShader(
     private val shaderSingle: MGShaderSingleMode,
-    private val sky: MGDrawerMeshSwitch,
+    private val sky: MGDrawerMeshTexture,
     private val camera: MGCamera,
-    private val meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitchNormals>
+    private val meshes: ConcurrentLinkedQueue<MGDrawerMeshTexture>
 ): MGIDrawer {
 
     override fun draw() {

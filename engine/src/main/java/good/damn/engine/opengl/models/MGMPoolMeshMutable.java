@@ -7,19 +7,20 @@ import androidx.annotation.Nullable;
 
 import good.damn.engine.opengl.MGArrayVertex;
 import good.damn.engine.opengl.MGVector;
-import good.damn.engine.opengl.drawers.MGDrawerModeSwitch;
+import good.damn.engine.opengl.drawers.MGDrawerMeshTexture;
+import good.damn.engine.opengl.entities.MGMaterial;
 
 public final class MGMPoolMeshMutable {
     @NonNull public MGArrayVertex vertexArray;
     @NonNull public Pair<MGVector, MGVector> pointMinMax;
-    @NonNull public MGDrawerModeSwitch drawerMode;
+    @NonNull public MGMaterial material;
     @NonNull public MGVector pointMiddle;
 
     public final MGMPoolMesh toImmutable() {
         return new MGMPoolMesh(
             vertexArray,
             pointMinMax,
-            drawerMode,
+            material,
             pointMiddle
         );
     }
