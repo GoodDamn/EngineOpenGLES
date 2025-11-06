@@ -27,7 +27,8 @@ class MGImportLevel(
         )?.forEach {
             meshesInstanced.add(
                 MGDrawerMeshInstanced(
-                    it.vertexArray
+                    it.vertexArray,
+                    it.material
                 )
             )
         }

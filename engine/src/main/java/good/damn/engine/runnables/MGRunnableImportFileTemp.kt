@@ -10,6 +10,7 @@ class MGRunnableImportFileTemp(
 
     override fun run() {
         fileTemp?.run {
+            fileTemp = null
             if (!exists()) {
                 return
             }
@@ -20,7 +21,5 @@ class MGRunnableImportFileTemp(
 
             delete()
         }
-
-        fileTemp = null
     }
 }

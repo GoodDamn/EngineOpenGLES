@@ -23,11 +23,11 @@ class MGClickImport(
 MGIListenerOnGetUserContent {
 
     private val runnableImportMesh = MGRunnableImportFileTemp(
-        importLevel
+        importMesh
     )
 
     private val runnableImportLevel = MGRunnableImportFileTemp(
-        importMesh
+        importLevel
     )
 
     override fun onClick() {
