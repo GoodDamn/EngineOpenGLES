@@ -1,5 +1,6 @@
 package good.damn.engine.runnables
 
+import good.damn.engine.imports.MGImportLevel
 import good.damn.engine.level.MGStreamLevel
 import good.damn.engine.opengl.drawers.MGDrawerMeshInstanced
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
@@ -10,7 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGRunnableImportLevel(
     private val file: File,
-    private val meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>
+    private val levelImport: MGImportLevel
 ): Runnable {
 
     override fun run() {
@@ -23,13 +24,10 @@ class MGRunnableImportLevel(
                 file
             )
         )
-
-        stream.read()?.forEach {
-            meshesInstanced.add(
-                MGDrawerMeshInstanced(
-                    it.vertexArray,
-                    it.matrices
-                )
+        file.delete()
+        stream.read()?.run {
+            levelImport.onImport(
+                this
             )
         }
     }

@@ -2,6 +2,7 @@ package good.damn.engine.ui.clicks
 
 import android.util.Log
 import good.damn.engine.MGEngine
+import good.damn.engine.imports.MGImportLevel
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.drawers.MGDrawerMeshInstanced
@@ -20,7 +21,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class MGClickImportMesh(
     private val handler: MGHandlerGl,
     private val callbackModel: MGICallbackModel,
-    private val meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>,
+    private val importLevel: MGImportLevel,
     private val mPoolMeshes: MGPoolMeshesStatic,
     private val requester: MGIRequestUserContent
 ): MGIClick,
@@ -86,7 +87,7 @@ MGIListenerOnGetUserContent {
         handler.post(
             MGRunnableImportLevel(
                 temp,
-                meshesInstanced
+                importLevel
             )
         )
     }
