@@ -52,7 +52,9 @@ data class MGDrawerModeOpaque(
         meshes.forEach {
             it.draw()
         }
-        lights.draw()
+        lights.draw(
+            shaderOpaque.lightPoints
+        )
 
 
 
@@ -71,7 +73,9 @@ data class MGDrawerModeOpaque(
             it.draw()
         }
 
-        //lights.draw()
+        lights.draw(
+            shaderOpaqueInstanced.lightPoints
+        )
 
 
 

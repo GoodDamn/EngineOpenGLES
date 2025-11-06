@@ -5,9 +5,7 @@ import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.shaders.MGShaderLightPoint
 
-class MGDrawerLightPoint(
-    var shader: MGShaderLightPoint
-): MGIDrawer {
+class MGDrawerLightPoint {
 
     var isActive = 1
     var constant = 1.0f
@@ -17,7 +15,9 @@ class MGDrawerLightPoint(
     val position = MGVector(0f)
     val color = MGVector(0f)
 
-    override fun draw() {
+    fun draw(
+        shader: MGShaderLightPoint
+    ) {
         GLES30.glUniform1i(
             shader.uniformActive,
             isActive
