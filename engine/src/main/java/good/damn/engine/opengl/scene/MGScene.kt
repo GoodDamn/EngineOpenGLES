@@ -246,10 +246,13 @@ MGIListenerOnIntersectPosition {
     )
 
     private val managerTriggerLight = MGManagerTriggerLight(
-        managerLights
+        managerLights,
+        mDrawerDebugSphere
     )
 
-    private val managerTrigger = MGManagerTriggerMesh()
+    private val managerTrigger = MGManagerTriggerMesh(
+        mDrawerDebugBox
+    )
 
     private val mHandlerCollision = MGHandlerCollision(
         managerTrigger,

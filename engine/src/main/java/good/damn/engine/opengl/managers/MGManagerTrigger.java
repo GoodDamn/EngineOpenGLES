@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.drawers.MGIDrawer;
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
@@ -18,8 +19,12 @@ public abstract class MGManagerTrigger<
         STATEABLE
     > mTriggers = new ConcurrentLinkedQueue<>();
 
+    @NonNull
+    private final MGDrawerVertexArray mDrawerTrigger;
+
     public MGManagerTrigger(
-        @NonNull final float[] position4
+        @NonNull final float[] position4,
+        @NonNull final MGDrawerVertexArray drawerTrigger
     ) {
         if (position4.length != 4) {
             throw new IllegalArgumentException(
@@ -28,11 +33,15 @@ public abstract class MGManagerTrigger<
         }
         position4[3] = 0.0f;
         this.position4 = position4;
+        mDrawerTrigger = drawerTrigger;
     }
 
-    public MGManagerTrigger() {
+    public MGManagerTrigger(
+        @NonNull final MGDrawerVertexArray drawerTrigger
+    ) {
         position4 = new float[4];
         position4[3] = 0.0f;
+        mDrawerTrigger = drawerTrigger;
     }
 
     public final void addTrigger(
@@ -58,6 +67,7 @@ public abstract class MGManagerTrigger<
             final STATEABLE trigger : mTriggers
         ) {
             trigger.draw();
+            mDrawerTrigger.draw();
         }
     }
 }
