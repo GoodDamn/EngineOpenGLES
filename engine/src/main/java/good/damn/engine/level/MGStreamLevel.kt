@@ -3,6 +3,7 @@ package good.damn.engine.level
 import android.opengl.GLES30
 import good.damn.engine.models.MGMMeshInstance
 import good.damn.engine.opengl.MGArrayVertex
+import good.damn.engine.opengl.MGArrayVertexInstanced
 import good.damn.engine.opengl.MGObject3d
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert
@@ -72,31 +73,17 @@ class MGStreamLevel(
                 "objs/$meshName"
             )?.get(0)!!
 
-            val vertexArray = MGArrayVertex()
+            val vertexArray = MGArrayVertexInstanced()
             vertexArray.configure(
                 obj.vertices,
                 obj.indices
             )
 
-            val buffers = intArrayOf(1)
-            GLES30.glGenBuffers(
-                1,
-                buffers,
-                0
-            )
-
-            GLES30.glBindBuffer(
-                GLES30.GL_ARRAY_BUFFER,
-                buffers[0]
-            )
-
-            GLES30.glBufferData(
-                GLES30.GL_ARRAY_BUFFER,
-                meshCount * 64,
+            vertexArray.setupMatrixBuffer(
+                meshCount,
                 convertMatricesToBuffer(
                     modelMatrices
-                ),
-                GLES30.GL_STATIC_DRAW
+                )
             )
             vertexArray.setupInstanceDrawing()
 

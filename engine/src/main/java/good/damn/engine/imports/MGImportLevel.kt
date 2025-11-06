@@ -23,8 +23,7 @@ class MGImportLevel(
         stream.read()?.forEach {
             meshesInstanced.add(
                 MGDrawerMeshInstanced(
-                    it.vertexArray,
-                    it.matrices
+                    it.vertexArray
                 )
             )
         }
