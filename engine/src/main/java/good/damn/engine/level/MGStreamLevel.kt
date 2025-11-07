@@ -1,19 +1,12 @@
 package good.damn.engine.level
 
-import android.opengl.GLES30
 import good.damn.engine.models.MGMMeshInstance
-import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.MGArrayVertexInstanced
 import good.damn.engine.opengl.MGObject3d
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
-import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
-import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.shaders.MGIShaderNormal
-import good.damn.engine.opengl.shaders.MGShaderMaterial
-import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
 import good.damn.engine.utils.MGUtilsBuffer
 import java.io.BufferedReader
 import java.io.InputStream
@@ -51,32 +44,41 @@ class MGStreamLevel {
                 val modelMatrices = Array(
                     meshCount
                 ) {
-                    MGMatrixScaleRotation().apply {
-                        val strPosition = bufferedReader
-                            .readLine()!!
-                            .split("\\s+".toRegex())
+                    MGMatrixTransformationNormal(
+                        MGMatrixScaleRotation()
+                    ).apply {
+                        model.run {
+                            val strPosition = bufferedReader
+                                .readLine()!!
+                                .split("\\s+".toRegex())
 
-                        setPosition(
-                            strPosition.getOrNull(0)?.toFloatOrNull() ?: 0f,
-                            strPosition.getOrNull(1)?.toFloatOrNull() ?: 0f,
-                            strPosition.getOrNull(2)?.toFloatOrNull() ?: 0f,
-                        )
+                            setPosition(
+                                strPosition.getOrNull(0)?.toFloatOrNull() ?: 0f,
+                                strPosition.getOrNull(1)?.toFloatOrNull() ?: 0f,
+                                strPosition.getOrNull(2)?.toFloatOrNull() ?: 0f,
+                            )
 
-                        val scale = strPosition.getOrNull(3)?.toFloatOrNull() ?: 0f
-                        setScale(
-                            scale,
-                            scale,
-                            scale
-                        )
+                            val scale = strPosition.getOrNull(3)?.toFloatOrNull() ?: 0f
+                            setScale(
+                                scale,
+                                scale,
+                                scale
+                            )
 
-                        setRotation(
-                            strPosition.getOrNull(4)?.toFloatOrNull() ?: 0f,
-                            strPosition.getOrNull(5)?.toFloatOrNull() ?: 0f,
-                            strPosition.getOrNull(6)?.toFloatOrNull() ?: 0f,
-                        )
+                            setRotation(
+                                strPosition.getOrNull(4)?.toFloatOrNull() ?: 0f,
+                                strPosition.getOrNull(5)?.toFloatOrNull() ?: 0f,
+                                strPosition.getOrNull(6)?.toFloatOrNull() ?: 0f,
+                            )
 
-                        invalidatePosition()
-                        invalidateScaleRotation()
+                            invalidatePosition()
+                            invalidateScaleRotation()
+                        }
+
+                        normal.run {
+                            calculateInvertModel()
+                            calculateNormalMatrix()
+                        }
                     }
                 }
 
@@ -97,13 +99,25 @@ class MGStreamLevel {
                     obj.indices
                 )
 
+                val matrices = convertMatricesToBuffer(
+                    modelMatrices
+                )
+
                 vertexArray.setupMatrixBuffer(
                     meshCount,
-                    convertMatricesToBuffer(
-                        modelMatrices
-                    )
+                    matrices.model,
+                    matrices.rotation
                 )
-                vertexArray.setupInstanceDrawing()
+
+                vertexArray.setupInstanceDrawing(
+                    MGArrayVertexInstanced.INDEX_ATTRIB_INSTANCE_MODEL,
+                    MGArrayVertexInstanced.INDEX_BUFFER_MODEL
+                )
+
+                vertexArray.setupInstanceDrawing(
+                    MGArrayVertexInstanced.INDEX_ATTRIB_INSTANCE_ROTATION,
+                    MGArrayVertexInstanced.INDEX_BUFFER_ROTATION
+                )
 
                 return@Array MGMMeshInstance(
                     vertexArray,
@@ -120,23 +134,41 @@ class MGStreamLevel {
             readLine().toIntOrNull()
 
         private inline fun convertMatricesToBuffer(
-            v: Array<MGMatrixScaleRotation>
-        ): FloatBuffer {
+            v: Array<
+                MGMatrixTransformationNormal<
+                    MGMatrixScaleRotation
+                >
+            >
+        ): MGMatrixBuffer {
             var i = 0
-            val output = FloatArray(
+            val outputModel = FloatArray(
                 v.size * 16
+            )
+            val outputRotation = FloatArray(
+                outputModel.size
             )
 
             v.forEach {
-                it.model.forEach { vv ->
-                    output[i] = vv
+                for (indexMat in it.model.model.indices) {
+                    outputModel[i] = it.model.model[indexMat]
+                    outputRotation[i] = it.normal.normalMatrix[indexMat]
                     i++
                 }
             }
 
-            return MGUtilsBuffer.createFloat(
-                output
+            return MGMatrixBuffer(
+                MGUtilsBuffer.createFloat(
+                    outputModel
+                ),
+                MGUtilsBuffer.createFloat(
+                    outputRotation
+                )
             )
         }
+
+        private data class MGMatrixBuffer(
+            val model: FloatBuffer,
+            val rotation: FloatBuffer
+        )
     }
 }

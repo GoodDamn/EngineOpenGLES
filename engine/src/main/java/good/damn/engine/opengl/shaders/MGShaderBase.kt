@@ -100,5 +100,11 @@ abstract class MGShaderBase
             3,
             "modelInstance"
         )
+
+        glBindAttribLocation(
+            program,
+            4,
+            "instanceRotation"
+        )
     }
 }

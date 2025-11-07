@@ -1,9 +1,11 @@
 package good.damn.engine.opengl
 
 import android.opengl.GLES30
+import android.opengl.GLES30.GL_ARRAY_BUFFER
 import android.opengl.GLES30.GL_FLOAT
 import android.opengl.GLES30.GL_TRIANGLES
 import android.opengl.GLES30.GL_UNSIGNED_INT
+import android.opengl.GLES30.glBindBuffer
 import android.opengl.GLES30.glBindVertexArray
 import android.opengl.GLES30.glDrawElementsInstanced
 import android.opengl.GLES30.glEnableVertexAttribArray
@@ -15,47 +17,73 @@ class MGArrayVertexInstanced
 : MGArrayVertex() {
 
     companion object {
-        private const val INDEX_MODEL_INSTANCE = 3
+        const val INDEX_ATTRIB_INSTANCE_MODEL = 3
+        const val INDEX_ATTRIB_INSTANCE_ROTATION = 4
+
+        const val INDEX_BUFFER_MODEL = 0
+        const val INDEX_BUFFER_ROTATION = 1
         private const val STRIDE = 64
     }
 
     private var meshCount = 0
+    private val mBuffers = intArrayOf(1, 1)
 
     fun setupMatrixBuffer(
         meshCount: Int,
-        buffer: FloatBuffer
+        modelBuffer: FloatBuffer,
+        rotationBuffer: FloatBuffer
     ) {
         this.meshCount = meshCount
-        val buffers = intArrayOf(1)
+        val size = meshCount * STRIDE
         GLES30.glGenBuffers(
-            1,
-            buffers,
+            mBuffers.size,
+            mBuffers,
             0
         )
 
-        GLES30.glBindBuffer(
-            GLES30.GL_ARRAY_BUFFER,
-            buffers[0]
+        glBindBuffer(
+            GL_ARRAY_BUFFER,
+            mBuffers[INDEX_BUFFER_MODEL]
         )
 
         GLES30.glBufferData(
-            GLES30.GL_ARRAY_BUFFER,
-            meshCount * STRIDE,
-            buffer,
+            GL_ARRAY_BUFFER,
+            size,
+            modelBuffer,
+            GLES30.GL_STATIC_DRAW
+        )
+
+        glBindBuffer(
+            GL_ARRAY_BUFFER,
+            mBuffers[INDEX_BUFFER_ROTATION]
+        )
+
+        GLES30.glBufferData(
+            GL_ARRAY_BUFFER,
+            size,
+            rotationBuffer,
             GLES30.GL_STATIC_DRAW
         )
     }
 
-    fun setupInstanceDrawing() {
+    fun setupInstanceDrawing(
+        indexAttrib: Int,
+        indexBuffer: Int
+    ) {
+        glBindBuffer(
+            GL_ARRAY_BUFFER,
+            mBuffers[indexBuffer]
+        )
+
         glBindVertexArray(
             mVertexArray[0]
         )
 
         val strideVector4 = 16
-        val pos0 = INDEX_MODEL_INSTANCE
-        val pos1 = INDEX_MODEL_INSTANCE + 1
-        val pos2 = INDEX_MODEL_INSTANCE + 2
-        val pos3 = INDEX_MODEL_INSTANCE + 3
+        val pos0 = indexAttrib
+        val pos1 = indexAttrib + 1
+        val pos2 = indexAttrib + 2
+        val pos3 = indexAttrib + 3
 
         attributePointer(
             pos0,
