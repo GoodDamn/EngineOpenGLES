@@ -46,6 +46,7 @@ public class MGDrawerMeshTextureSwitch {
         @NonNull final MGEnumDrawMode drawMode
     ) {
         switch (drawMode) {
+            case OPAQUE:
             case DIFFUSE:
                 mDrawerTexture = mTextureDiffuse;
                 break;
