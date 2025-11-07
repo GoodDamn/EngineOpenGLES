@@ -10,7 +10,14 @@ abstract class MGShaderBase
 : MGIShader {
     companion object {
         private const val TAG = "MGShaderBase"
+
+        const val INDEX_ATTRIB_POSITION = 0
+        const val INDEX_ATTRIB_TEXTURE_COORDS = 1
+        const val INDEX_ATTRIB_NORMALS = 2
+        const val INDEX_ATTRIB_INSTANCE_MODEL = 3
+        const val INDEX_ATTRIB_INSTANCE_ROTATION = 7
     }
+
     private var mProgram = 0
 
     override fun use() {
@@ -79,31 +86,31 @@ abstract class MGShaderBase
     ) {
         glBindAttribLocation(
             program,
-            0,
+            INDEX_ATTRIB_POSITION,
             "position"
         )
 
         glBindAttribLocation(
             program,
-            1,
+            INDEX_ATTRIB_TEXTURE_COORDS,
             "texCoord"
         )
 
         glBindAttribLocation(
             program,
-            2,
+            INDEX_ATTRIB_NORMALS,
             "normal"
         )
 
         glBindAttribLocation(
             program,
-            3,
+            INDEX_ATTRIB_INSTANCE_MODEL,
             "modelInstance"
         )
 
         glBindAttribLocation(
             program,
-            4,
+            INDEX_ATTRIB_INSTANCE_ROTATION,
             "instanceRotation"
         )
     }

@@ -78,7 +78,7 @@ class MGScene(
     requesterUserContent: MGIRequestUserContent,
     shaderOpaque: MGMShader<MGShaderDefault, MGShaderOpaque>,
     shaderSky: MGShaderSkySphere,
-    private val shaderNormals: MGShaderSingleModeNormals,
+    private val shaderNormals: MGMShader<MGShaderSingleModeNormals, MGShaderSingleModeInstanced>,
     private val shaderTexCoords: MGMShader<MGShaderSingleMode, MGShaderSingleModeInstanced>,
     private val shaderWireframe: MGMShader<MGShaderSingleMode, MGShaderSingleModeInstanced>,
     private val shaderMapEmissive: MGMShader<MGShaderSingleMap, MGShaderSingleMapInstanced>
@@ -514,7 +514,8 @@ MGIListenerOnIntersectPosition {
             shaderNormals,
             meshSky,
             mCameraFree,
-            meshes
+            meshes,
+            meshesInstanced
         ),
         MGDrawModeSingleShader(
             shaderTexCoords,

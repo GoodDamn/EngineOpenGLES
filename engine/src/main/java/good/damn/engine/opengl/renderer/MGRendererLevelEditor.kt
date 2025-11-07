@@ -37,7 +37,10 @@ class MGRendererLevelEditor(
     )
 
     private val mShaderSky = MGShaderSkySphere()
-    private val mShaderNormals = MGShaderSingleModeNormals()
+    private val mShaderNormals = MGMShader(
+        MGShaderSingleModeNormals(),
+        MGShaderSingleModeInstanced()
+    )
 
     private val mShaderTexCoords = MGMShader(
         MGShaderSingleMode(),
@@ -180,14 +183,21 @@ class MGRendererLevelEditor(
             )
         }
 
+        mShaderNormals.run {
+            single.setup(
+                "shaders/normals/vert.glsl",
+                "shaders/normals/frag.glsl"
+            )
+
+            instanced.setup(
+                "shaders/normals/vert_i.glsl",
+                "shaders/normals/frag.glsl"
+            )
+        }
+
         mShaderSky.setup(
             "shaders/sky/vert.glsl",
             "shaders/sky/frag.glsl"
-        )
-
-        mShaderNormals.setup(
-            "shaders/normals/vert.glsl",
-            "shaders/normals/frag.glsl"
         )
 
 

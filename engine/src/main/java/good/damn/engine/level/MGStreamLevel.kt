@@ -1,5 +1,6 @@
 package good.damn.engine.level
 
+import android.util.Log
 import good.damn.engine.models.MGMMeshInstance
 import good.damn.engine.opengl.MGArrayVertexInstanced
 import good.damn.engine.opengl.MGObject3d

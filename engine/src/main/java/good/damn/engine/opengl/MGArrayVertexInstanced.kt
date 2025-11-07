@@ -11,14 +11,15 @@ import android.opengl.GLES30.glDrawElementsInstanced
 import android.opengl.GLES30.glEnableVertexAttribArray
 import android.opengl.GLES30.glVertexAttribDivisor
 import android.opengl.GLES30.glVertexAttribPointer
+import good.damn.engine.opengl.shaders.MGShaderBase
 import java.nio.FloatBuffer
 
 class MGArrayVertexInstanced
 : MGArrayVertex() {
 
     companion object {
-        const val INDEX_ATTRIB_INSTANCE_MODEL = 3
-        const val INDEX_ATTRIB_INSTANCE_ROTATION = 4
+        const val INDEX_ATTRIB_INSTANCE_MODEL = MGShaderBase.INDEX_ATTRIB_INSTANCE_MODEL
+        const val INDEX_ATTRIB_INSTANCE_ROTATION = MGShaderBase.INDEX_ATTRIB_INSTANCE_ROTATION
 
         const val INDEX_BUFFER_MODEL = 0
         const val INDEX_BUFFER_ROTATION = 1
@@ -39,6 +40,10 @@ class MGArrayVertexInstanced
             mBuffers.size,
             mBuffers,
             0
+        )
+
+        glBindVertexArray(
+            mVertexArray[0]
         )
 
         glBindBuffer(
@@ -70,13 +75,13 @@ class MGArrayVertexInstanced
         indexAttrib: Int,
         indexBuffer: Int
     ) {
+        glBindVertexArray(
+            mVertexArray[0]
+        )
+
         glBindBuffer(
             GL_ARRAY_BUFFER,
             mBuffers[indexBuffer]
-        )
-
-        glBindVertexArray(
-            mVertexArray[0]
         )
 
         val strideVector4 = 16
@@ -119,6 +124,11 @@ class MGArrayVertexInstanced
 
         glVertexAttribDivisor(
             pos3, 1
+        )
+
+        glBindBuffer(
+            GL_ARRAY_BUFFER,
+            0
         )
 
         glBindVertexArray(0)
