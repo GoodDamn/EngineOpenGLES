@@ -81,7 +81,7 @@ data class MGDrawModeOpaque(
 
         meshesInstanced.forEach {
             it.draw(
-                shaderOpaque.material
+                shaderOpaqueInstanced.material
             )
         }
 
