@@ -9,12 +9,11 @@ import androidx.annotation.NonNull;
 import good.damn.engine.opengl.MGArrayVertex;
 import good.damn.engine.opengl.MGObject3d;
 import good.damn.engine.opengl.MGVector;
-import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque;
+import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals;
+import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity;
-import good.damn.engine.opengl.drawers.MGDrawerMeshTexture;
-import good.damn.engine.opengl.drawers.MGDrawerTexture;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMaterial;
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
@@ -37,14 +36,14 @@ public final class MGTriggerMesh {
     public final MGMatrixTriggerMesh matrix;
 
     @NonNull
-    public final MGDrawerMeshTexture mesh;
+    public final MGDrawerMeshMaterialSwitch mesh;
 
     @NonNull
     public final MGDrawerTriggerStateable triggerState;
 
     private MGTriggerMesh(
         @NonNull final MGMatrixTriggerMesh matrix,
-        @NonNull final MGDrawerMeshTexture mesh,
+        @NonNull final MGDrawerMeshMaterialSwitch mesh,
         @NonNull final MGDrawerTriggerStateable triggerState
     ) {
         this.matrix = matrix;
@@ -55,9 +54,7 @@ public final class MGTriggerMesh {
     @NonNull
     public static MGTriggerMesh createFromObject(
         @NonNull final MGObject3d obj,
-        @NonNull final MGShaderDefault shaderDefault,
         @NonNull final MGPoolTextures poolTextures,
-        @NonNull final MGShaderSingleMode shaderWireframe,
         @NonNull final MGMPoolMeshMutable outPoolMesh,
         @NonNull final MGITrigger triggerAction
     ) {
@@ -68,11 +65,7 @@ public final class MGTriggerMesh {
             MGArrayVertex.STRIDE
         );
 
-        @NonNull final MGShaderMaterial mat = shaderDefault
-            .getMaterial();
-
         @NonNull final MGMaterial material = MGMaterial.Companion.createWithPath(
-            mat,
             poolTextures,
             obj.texturesDiffuseFileName == null ? null : obj.texturesDiffuseFileName[0],
             obj.texturesMetallicFileName == null ? null : obj.texturesMetallicFileName[0],
@@ -81,8 +74,6 @@ public final class MGTriggerMesh {
 
         return createFromVertexArray(
             arrayVertex,
-            shaderDefault,
-            shaderWireframe,
             material,
             outPoolMesh,
             triggerAction
@@ -92,8 +83,6 @@ public final class MGTriggerMesh {
     @NonNull
     public static MGTriggerMesh createFromVertexArray(
         @NonNull final MGArrayVertex vertexArray,
-        @NonNull final MGShaderDefault shaderDefault,
-        @NonNull final MGShaderSingleMode shaderWireframe,
         @NonNull final MGMaterial material,
         @NonNull final MGMPoolMeshMutable outPoolMesh,
         @NonNull final MGITrigger triggerAction
@@ -116,19 +105,15 @@ public final class MGTriggerMesh {
         outPoolMesh.vertexArray = vertexArray;
 
         return createFromMeshPool(
-            shaderDefault,
             outPoolMesh.toImmutable(),
-            triggerAction,
-            shaderWireframe
+            triggerAction
         );
     }
 
     @NonNull
     public static MGTriggerMesh createFromMeshPool(
-        @NonNull final MGShaderDefault shaderDefault,
         @NonNull final MGMPoolMesh poolMesh,
-        @NonNull final MGITrigger triggerAction,
-        @NonNull final MGShaderSingleMode shaderWireframe
+        @NonNull final MGITrigger triggerAction
     ) {
         @NonNull final Pair<
             MGVector, MGVector
@@ -143,8 +128,7 @@ public final class MGTriggerMesh {
                 new MGMatrixScaleRotation()
             ),
             new MGMatrixTransformationNormal<>(
-                new MGMatrixScaleRotation(),
-                shaderDefault
+                new MGMatrixScaleRotation()
             ),
             pointMinMax.first,
             pointMinMax.second
@@ -168,7 +152,6 @@ public final class MGTriggerMesh {
         final MGDrawerMeshSwitchNormals drawerMeshSwitchNormals = new MGDrawerMeshSwitchNormals(
             poolMesh.getVertexArray(),
             new MGDrawerPositionEntity(
-                shaderDefault,
                 matrix.matrixMesh.model
             ),
             GLES30.GL_CW,
@@ -176,14 +159,8 @@ public final class MGTriggerMesh {
         );
 
         @NonNull
-        final MGDrawerMeshTexture meshTexture = new MGDrawerMeshTexture(
-            new MGDrawerTexture(
-                material,
-                material.getTextureDiffuse(),
-                material.getTextureMetallic(),
-                material.getTextureEmissive(),
-                drawerMeshSwitchNormals
-            ),
+        final MGDrawerMeshMaterialSwitch meshTexture = new MGDrawerMeshMaterialSwitch(
+            material,
             drawerMeshSwitchNormals
         );
 
@@ -195,7 +172,6 @@ public final class MGTriggerMesh {
                 ),
                 triggerAction
             ),
-            shaderWireframe,
             matrix.matrixTrigger.model
         );
 

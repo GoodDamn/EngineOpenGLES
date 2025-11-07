@@ -14,15 +14,11 @@ class MGDrawerMeshSwitchNormals(
     drawEntity,
     frontFace
 ) {
-
-    override fun switchDrawMode(
-        shader: MGIShaderNormal?
+    override fun drawNormals(
+        shader: MGIShaderNormal
     ) {
-        matrixNormal.shader = shader
-    }
-
-    override fun draw() {
-        matrixNormal.draw()
-        super.draw()
+        matrixNormal.draw(
+            shader
+        )
     }
 }

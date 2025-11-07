@@ -5,7 +5,6 @@ import android.opengl.GLES30;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMaterial;
 import good.damn.engine.opengl.enums.MGEnumTextureType;
@@ -64,8 +63,6 @@ public final class MGTriggerMeshGroup {
     @NonNull
     public static MGTriggerMeshGroup createFromPool(
         @NonNull final MGMPoolMesh[] poolMeshes,
-        @NonNull final MGShaderDefault shaderDefault,
-        @NonNull final MGShaderSingleMode shaderWireframe,
         @NonNull final MGITrigger triggerAction
     ) {
         @NonNull
@@ -79,10 +76,8 @@ public final class MGTriggerMeshGroup {
             i++
         ) {
             triggerMeshes[i] = MGTriggerMesh.createFromMeshPool(
-                shaderDefault,
                 poolMeshes[i],
-                triggerAction,
-                shaderWireframe
+                triggerAction
             );
         }
 
@@ -94,8 +89,6 @@ public final class MGTriggerMeshGroup {
     public static MGTriggerMeshGroup createFromObjects(
         @NonNull final MGObject3d[] objs,
         @NonNull final MGMPoolMeshMutable[] outPoolMeshes,
-        @NonNull final MGShaderDefault shaderDefault,
-        @NonNull final MGShaderSingleMode shaderWireframe,
         @NonNull final MGITrigger triggerAction,
         @NonNull final MGPoolTextures poolTextures
     ) {
@@ -113,9 +106,7 @@ public final class MGTriggerMeshGroup {
             obj = objs[i];
             triggerMeshes[i] = MGTriggerMesh.createFromObject(
                 obj,
-                shaderDefault,
                 poolTextures,
-                shaderWireframe,
                 outPoolMeshes[i],
                 triggerAction
             );

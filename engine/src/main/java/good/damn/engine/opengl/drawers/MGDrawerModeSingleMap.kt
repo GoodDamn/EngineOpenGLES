@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class MGDrawerModeSingleMap(
     private val shaderMap: MGShaderSingleMap,
     private val camera: MGCamera,
-    private val meshes: ConcurrentLinkedQueue<MGDrawerMeshTexture>
+    private val meshes: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>
 ): MGIDrawer {
 
     override fun draw() {
@@ -16,7 +16,10 @@ class MGDrawerModeSingleMap(
             shaderMap
         )
         meshes.forEach {
-            it.draw()
+            it.drawSingleTexture(
+                shaderMap,
+                shaderMap
+            )
         }
     }
 }

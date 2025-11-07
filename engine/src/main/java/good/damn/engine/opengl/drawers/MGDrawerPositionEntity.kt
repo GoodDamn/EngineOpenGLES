@@ -6,11 +6,12 @@ import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.shaders.MGIShaderModel
 
 class MGDrawerPositionEntity(
-    var shader: MGIShaderModel,
     var modelMatrix: MGMatrixModel
-): MGIDrawer {
+): MGIDrawerShader<MGIShaderModel> {
 
-    override fun draw() {
+    override fun draw(
+        shader: MGIShaderModel
+    ) {
         glUniformMatrix4fv(
             shader.uniformModelView,
             1,

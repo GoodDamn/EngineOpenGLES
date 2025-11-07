@@ -19,10 +19,10 @@ data class MGDrawerModeOpaque(
     var shaderOpaque: MGShaderDefault,
     var shaderOpaqueInstanced: MGShaderOpaque,
     var shaderTrigger: MGShaderSingleMode,
-    var sky: MGDrawerMeshTexture,
+    var sky: MGDrawerMeshTextureSwitch,
     var camera: MGCamera,
     var directionalLight: MGDrawerLightDirectional,
-    var meshes: ConcurrentLinkedQueue<MGDrawerMeshTexture>,
+    var meshes: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>,
     var meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>,
     var managersTrigger: Array<MGIManagerTrigger>,
     var lights: MGManagerLight
@@ -35,7 +35,10 @@ data class MGDrawerModeOpaque(
         camera.draw(
             shaderSky
         )
-        sky.draw()
+        sky.drawSingleTexture(
+            shaderSky.texture,
+            shaderSky
+        )
 
 
 
@@ -50,7 +53,13 @@ data class MGDrawerModeOpaque(
             shaderOpaque.lightDirectional
         )
         meshes.forEach {
-            it.draw()
+            it.drawNormals(
+                shaderOpaque
+            )
+            it.drawMaterial(
+                shaderOpaque.material,
+                shaderOpaque
+            )
         }
         lights.draw(
             shaderOpaque.lightPoints
@@ -71,7 +80,9 @@ data class MGDrawerModeOpaque(
         )
 
         meshesInstanced.forEach {
-            it.draw()
+            it.draw(
+                shaderOpaque.material
+            )
         }
 
         lights.draw(
@@ -89,7 +100,9 @@ data class MGDrawerModeOpaque(
             shaderTrigger
         )
         managersTrigger.forEach {
-            it.draw()
+            it.draw(
+                shaderTrigger
+            )
         }
     }
 

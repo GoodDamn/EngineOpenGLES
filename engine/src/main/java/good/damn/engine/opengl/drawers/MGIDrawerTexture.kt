@@ -1,6 +1,10 @@
 package good.damn.engine.opengl.drawers
 
-interface MGIDrawerTexture
-: MGIDrawer {
-    fun unbind()
+import good.damn.engine.opengl.shaders.MGIShaderTextureUniform
+
+interface MGIDrawerTexture<T>
+: MGIDrawerShader<T> {
+    fun unbind(
+        shader: T
+    )
 }

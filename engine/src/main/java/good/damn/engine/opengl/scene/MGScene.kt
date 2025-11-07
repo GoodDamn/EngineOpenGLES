@@ -21,17 +21,15 @@ import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerMeshInstanced
-import good.damn.engine.opengl.drawers.MGDrawerMeshOpaque
+import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
-import good.damn.engine.opengl.drawers.MGDrawerMeshTexture
+import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
 import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
 import good.damn.engine.opengl.drawers.MGDrawerModeSingleMap
 import good.damn.engine.opengl.drawers.MGDrawerModeSingleShader
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
-import good.damn.engine.opengl.drawers.MGDrawerTexture
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
-import good.damn.engine.opengl.drawers.sky.MGDrawerSkyOpaque
 import good.damn.engine.opengl.entities.MGLight
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumTextureType
@@ -97,8 +95,7 @@ MGIListenerOnIntersectPosition {
     }
     private val modelMatrixCamera = MGMatrixTranslate()
     private val modelMatrixLandscape = MGMatrixTransformationNormal(
-        MGMatrixTranslate(),
-        shaderDefault
+        MGMatrixTranslate()
     )
 
     private val mVerticesSky = MGArrayVertex()
@@ -119,32 +116,26 @@ MGIListenerOnIntersectPosition {
     )
 
     private val mTextureSky = MGTexture(
-        shaderSky.texture,
         MGEnumTextureType.DIFFUSE
     )
 
     private val mTextureInteract = MGTexture(
-        shaderDefault.material.textureDiffuse,
         MGEnumTextureType.DIFFUSE
     )
 
     private val mTextureLandscape = MGTexture(
-        shaderDefault.material.textureDiffuse,
         MGEnumTextureType.DIFFUSE
     )
 
     private val mTextureMetallicNo = MGTexture(
-        shaderDefault.material.textureMetallic,
         MGEnumTextureType.METALLIC
     )
 
     private val mTextureEmissiveNo = MGTexture(
-        shaderDefault.material.textureEmissive,
         MGEnumTextureType.EMISSIVE
     )
 
     private val materialLandscape = MGMaterial(
-        shaderDefault.material,
         mTextureLandscape,
         mTextureMetallicNo,
         mTextureEmissiveNo
@@ -155,20 +146,13 @@ MGIListenerOnIntersectPosition {
     private val meshLandscape = MGDrawerMeshSwitchNormals(
         mVerticesLandscape,
         MGDrawerPositionEntity(
-            shaderDefault,
             modelMatrixLandscape.model
         ),
         GL_CW,
         modelMatrixLandscape.normal
     ).run {
-        MGDrawerMeshTexture(
-            MGDrawerTexture(
-                materialLandscape,
-                materialLandscape.textureDiffuse,
-                materialLandscape.textureMetallic,
-                materialLandscape.textureEmissive,
-                this
-            ),
+        MGDrawerMeshMaterialSwitch(
+            materialLandscape,
             this
         )
     }
@@ -176,47 +160,17 @@ MGIListenerOnIntersectPosition {
     private val meshSky = MGDrawerMeshSwitch(
         mVerticesSky,
         MGDrawerPositionEntity(
-            shaderSky,
             modelMatrixSky
         ),
         GL_CCW
     ).run {
-        MGDrawerMeshTexture(
-            MGDrawerTexture(
-                mTextureSky,
-                mTextureSky,
-                mTextureMetallicNo,
-                mTextureEmissiveNo,
-                this
-            ),
+        MGDrawerMeshTextureSwitch(
+            mTextureSky,
+            mTextureMetallicNo,
+            mTextureEmissiveNo,
             this
         )
     }
-    /*
-    * MGDrawerModeSwitch(
-            mVerticesSky,
-            MGDrawerSkyOpaque(
-                mVerticesSky,
-                mTextureSky
-            ),
-            MGDrawerModeTexture(
-                mTextureSky,
-                mDrawerVertexArrayLand
-            ),
-            MGDrawerModeTexture(
-                mTextureMetallicNo,
-                mDrawerVertexArrayLand
-            ),
-            MGDrawerModeTexture(
-                mTextureEmissiveNo,
-                mDrawerVertexArrayLand
-            ),
-            GL_CCW
-        ),
-        MGDrawerPositionEntity(
-            shaderSky,
-            modelMatrixSky
-        )*/
 
     private val mCameraFree = MGCameraFree(
         modelMatrixCamera
@@ -237,7 +191,7 @@ MGIListenerOnIntersectPosition {
     private val mHandler = MGHandlerGl()
 
     private val meshes = ConcurrentLinkedQueue<
-        MGDrawerMeshTexture
+        MGDrawerMeshMaterialSwitch
     >().apply {
         add(meshLandscape)
     }
@@ -309,13 +263,10 @@ MGIListenerOnIntersectPosition {
             MGImportMesh(
                 mPoolMeshes,
                 MGCallbackModelSpawn(
-                    mDrawerDebugBox,
                     mBridgeMatrix,
                     MGTriggerSimple(
                         mDrawerLightDirectional
                     ),
-                    shaderDefault,
-                    shaderWireframe,
                     managerTrigger,
                     meshes,
                     mPoolTextures,
@@ -391,8 +342,7 @@ MGIListenerOnIntersectPosition {
                         0.5f + Random.nextFloat() * 0.5f,
                         0.5f + Random.nextFloat() * 0.5f
                     )
-                ),
-                shaderWireframe
+                )
             ).run {
                 matrix.setPosition(
                     1500f * (i + 1),

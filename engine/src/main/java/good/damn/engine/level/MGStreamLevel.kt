@@ -80,7 +80,6 @@ class MGStreamLevel {
                 )?.get(0)!!
 
                 val material = MGMaterial.createWithPath(
-                    shaderMaterial,
                     poolTextures,
                     obj.texturesDiffuseFileName?.get(0),
                     obj.texturesMetallicFileName?.get(0),

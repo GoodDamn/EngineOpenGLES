@@ -10,39 +10,33 @@ import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.textures.MGTexture
 
 class MGMaterial(
-    var shader: MGShaderMaterial,
     var textureDiffuse: MGTexture,
     var textureMetallic: MGTexture,
     var textureEmissive: MGTexture
-): MGIDrawerTexture {
+): MGIDrawerTexture<MGShaderMaterial> {
     var shine = 1f
 
     companion object {
         fun createWithPath(
-            shader: MGShaderMaterial,
             poolTextures: MGPoolTextures,
             textureNameDiffuse: String?,
             textureNameMetallic: String?,
             textureNameEmissive: String?
         ) = MGMaterial(
-            shader,
             loadTextureCached(
                 poolTextures,
-                shader.textureDiffuse,
                 MGEnumTextureType.DIFFUSE,
                 textureNameDiffuse,
                 poolTextures.defaultTexture
             ),
             loadTextureCached(
                 poolTextures,
-                shader.textureMetallic,
                 MGEnumTextureType.METALLIC,
                 textureNameMetallic,
                 poolTextures.defaultTextureMetallic
             ),
             loadTextureCached(
                 poolTextures,
-                shader.textureEmissive,
                 MGEnumTextureType.EMISSIVE,
                 textureNameEmissive,
                 poolTextures.defaultTextureEmissive
@@ -51,7 +45,6 @@ class MGMaterial(
 
         private fun loadTextureCached(
             poolTextures: MGPoolTextures,
-            shaderTextures: MGIShaderTexture,
             textureType: MGEnumTextureType,
             textureName: String?,
             defaultTexture: MGTexture
@@ -71,8 +64,7 @@ class MGMaterial(
             try {
                 texture = MGTexture.createDefaultAsset(
                     textureName,
-                    textureType,
-                    shaderTextures
+                    textureType
                 )
 
                 poolTextures.add(
@@ -85,21 +77,37 @@ class MGMaterial(
         }
     }
 
-    override fun draw() {
+    override fun draw(
+        shader: MGShaderMaterial
+    ) {
         GLES30.glUniform1f(
             shader.uniformShininess,
             shine
         )
 
-        textureDiffuse.draw()
-        textureMetallic.draw()
-        textureEmissive.draw()
+        textureDiffuse.draw(
+            shader.textureDiffuse
+        )
+        textureMetallic.draw(
+            shader.textureMetallic
+        )
+        textureEmissive.draw(
+            shader.textureEmissive
+        )
     }
 
-    override fun unbind() {
-        textureDiffuse.unbind()
-        textureMetallic.unbind()
-        textureEmissive.unbind()
+    override fun unbind(
+        shader: MGShaderMaterial
+    ) {
+        textureDiffuse.unbind(
+            shader.textureDiffuse
+        )
+        textureMetallic.unbind(
+            shader.textureMetallic
+        )
+        textureEmissive.unbind(
+            shader.textureEmissive
+        )
     }
 
 }

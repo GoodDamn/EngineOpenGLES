@@ -6,11 +6,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.drawers.MGIDrawer;
+import good.damn.engine.opengl.drawers.MGIDrawerShader;
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
+import good.damn.engine.opengl.shaders.MGIShaderModel;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
 
 public abstract class MGManagerTrigger<
-    STATEABLE extends MGIDrawer
+    STATEABLE extends MGIDrawerShader<MGIShaderModel>
 > implements MGIManagerTrigger {
 
     protected final float[] position4;
@@ -60,13 +62,18 @@ public abstract class MGManagerTrigger<
         );
     }
 
+
     @Override
-    public final synchronized void draw() {
+    public final synchronized void draw(
+        @NonNull final MGIShaderModel shader
+    ) {
         for (
             @NonNull
             final STATEABLE trigger : mTriggers
         ) {
-            trigger.draw();
+            trigger.draw(
+                shader
+            );
             mDrawerTrigger.draw();
         }
     }

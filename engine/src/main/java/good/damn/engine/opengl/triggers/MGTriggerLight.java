@@ -33,8 +33,7 @@ public final class MGTriggerLight {
 
     @NonNull
     public static MGTriggerLight createFromLight(
-        @NonNull final MGLight light,
-        @NonNull final MGShaderSingleMode shaderWireframe
+        @NonNull final MGLight light
     ) {
         @NonNull
         final MGMatrixTriggerLight matrix = new MGMatrixTriggerLight(
@@ -51,7 +50,6 @@ public final class MGTriggerLight {
                     matrix.matrixTrigger.invert
                 )
             ),
-            shaderWireframe,
             matrix
         );
 

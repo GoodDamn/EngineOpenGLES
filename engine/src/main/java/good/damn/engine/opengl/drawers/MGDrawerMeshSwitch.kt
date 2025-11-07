@@ -20,19 +20,13 @@ open class MGDrawerMeshSwitch(
     private val vertexArray: MGArrayVertex,
     private val drawEntity: MGDrawerPositionEntity,
     private val frontFace: Int = GL_CW,
-): MGIDrawer {
+): MGIDrawerShader<MGIShaderModel> {
 
     private var modeVertex = GL_TRIANGLES
 
-    open fun switchDrawMode(
-        shader: MGIShaderNormal?
-    ) = Unit
-
     fun switchDrawMode(
-        shader: MGIShaderModel,
         drawMode: MGEnumDrawMode
     ) {
-        drawEntity.shader = shader
         modeVertex = when (
             drawMode
         ) {
@@ -41,11 +35,21 @@ open class MGDrawerMeshSwitch(
         }
     }
 
-    override fun draw() {
+    open fun drawNormals(
+        shader: MGIShaderNormal
+    ) = Unit
+
+    override fun draw(
+        shader: MGIShaderModel
+    ) {
         glFrontFace(
             frontFace
         )
-        drawEntity.draw()
+
+        drawEntity.draw(
+            shader
+        )
+
         vertexArray.draw(
             modeVertex
         )

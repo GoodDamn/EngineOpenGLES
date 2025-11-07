@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 
 import good.damn.engine.opengl.MGArrayVertex;
 import good.damn.engine.opengl.MGVector;
-import good.damn.engine.opengl.drawers.MGDrawerMeshTexture;
 import good.damn.engine.opengl.entities.MGMaterial;
 
 public final class MGMPoolMeshMutable {

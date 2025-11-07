@@ -13,9 +13,8 @@ import good.damn.engine.utils.MGUtilsFile
 import java.io.FileInputStream
 
 class MGTexture(
-    var shader: MGIShaderTextureUniform,
     type: MGEnumTextureType
-): MGIDrawerTexture {
+): MGIDrawerTexture<MGIShaderTextureUniform> {
 
     private var mId = intArrayOf(1)
 
@@ -72,11 +71,9 @@ class MGTexture(
 
         fun createDefaultAsset(
             fileName: String,
-            type: MGEnumTextureType,
-            shader: MGIShaderTexture
+            type: MGEnumTextureType
         ): MGTexture {
             val texture = MGTexture(
-                shader,
                 type
             )
 
@@ -172,7 +169,9 @@ class MGTexture(
         }
     }
 
-    override fun unbind() {
+    override fun unbind(
+        shader: MGIShaderTextureUniform
+    ) {
         glActiveTexture(
             GL_TEXTURE0 + mActiveTexture
         )
@@ -188,7 +187,9 @@ class MGTexture(
         )
     }
 
-    override fun draw() {
+    override fun draw(
+        shader: MGIShaderTextureUniform
+    ) {
         glActiveTexture(
             GL_TEXTURE0 + mActiveTexture
         )
