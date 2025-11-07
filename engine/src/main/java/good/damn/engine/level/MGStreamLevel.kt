@@ -58,16 +58,22 @@ class MGStreamLevel {
                             .split("\\s+".toRegex())
 
                         setPosition(
-                            strPosition[0].toIntOrNull()?.toFloat() ?: 0f,
-                            strPosition[1].toIntOrNull()?.toFloat() ?: 0f,
-                            strPosition[2].toIntOrNull()?.toFloat() ?: 0f,
+                            strPosition[0].toFloatOrNull() ?: 0f,
+                            strPosition[1].toFloatOrNull() ?: 0f,
+                            strPosition[2].toFloatOrNull() ?: 0f,
                         )
-                        val scale =
-                            strPosition[3].toFloatOrNull() ?: 1f
+
+                        val scale = strPosition[3].toFloatOrNull() ?: 1f
                         setScale(
                             scale,
                             scale,
                             scale
+                        )
+
+                        setRotation(
+                            strPosition[4].toFloatOrNull() ?: 0f,
+                            strPosition[5].toFloatOrNull() ?: 0f,
+                            strPosition[6].toFloatOrNull() ?: 0f
                         )
 
                         invalidatePosition()
