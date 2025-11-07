@@ -8,7 +8,6 @@ import android.opengl.GLES30.glFrontFace
 import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.matrices.MGMatrixNormal
-import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.shaders.MGIShader
 import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.opengl.shaders.MGIShaderModel

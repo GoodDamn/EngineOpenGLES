@@ -6,7 +6,6 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
 import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.enums.MGEnumDrawMode
-import good.damn.engine.opengl.models.MGMDrawMode
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGSwitcherDrawMode(
@@ -19,9 +18,9 @@ class MGSwitcherDrawMode(
 
     fun switchDrawMode(
         drawMode: MGEnumDrawMode,
-        model: MGMDrawMode
+        currentDrawer: MGIDrawer
     ) {
-        currentDrawerMode = model.drawer
+        currentDrawerMode = currentDrawer
 
         meshSky.switchDrawMode(
             drawMode

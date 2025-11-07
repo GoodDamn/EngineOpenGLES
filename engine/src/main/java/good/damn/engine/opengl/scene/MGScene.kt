@@ -30,6 +30,7 @@ import good.damn.engine.opengl.drawers.MGDrawerModeSingleMap
 import good.damn.engine.opengl.drawers.MGDrawerModeSingleShader
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
+import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShaderNormals
 import good.damn.engine.opengl.entities.MGLight
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumTextureType
@@ -44,7 +45,6 @@ import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
-import good.damn.engine.opengl.models.MGMDrawMode
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderDefault
@@ -502,53 +502,29 @@ MGIListenerOnIntersectPosition {
     private inline fun createDrawModeSwitcher() = MGClickSwitchDrawMode(
         mHandler,
         mSwitcherDrawMode,
-        MGMDrawMode(
-            mDrawerModeOpaque,
-            shaderDefault,
-            shaderSky,
-            shaderDefault
-        ),
-        MGMDrawMode(
-            MGDrawerModeSingleShader(
-                shaderWireframe,
-                meshSky,
-                mCameraFree,
-                meshes
-            ),
+        mDrawerModeOpaque,
+        MGDrawerModeSingleShader(
             shaderWireframe,
-            shaderWireframe
+            meshSky,
+            mCameraFree,
+            meshes
         ),
-        MGMDrawMode(
-            MGDrawerModeSingleShader(
-                shaderNormals,
-                meshSky,
-                mCameraFree,
-                meshes
-            ),
+        MGDrawModeSingleShaderNormals(
             shaderNormals,
-            shaderNormals,
-            shaderNormals,
-            shaderNormals
+            meshSky,
+            mCameraFree,
+            meshes
         ),
-        MGMDrawMode(
-            MGDrawerModeSingleShader(
-                shaderTexCoords,
-                meshSky,
-                mCameraFree,
-                meshes
-            ),
+        MGDrawerModeSingleShader(
             shaderTexCoords,
-            shaderTexCoords
+            meshSky,
+            mCameraFree,
+            meshes
         ),
-        MGMDrawMode(
-            MGDrawerModeSingleMap(
-                shaderMapEmissive,
-                mCameraFree,
-                meshes
-            ),
+        MGDrawerModeSingleMap(
             shaderMapEmissive,
-            shaderMapEmissive,
-            shaderTexture = shaderMapEmissive
+            mCameraFree,
+            meshes
         )
     )
 }
