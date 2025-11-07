@@ -256,7 +256,6 @@ MGIListenerOnIntersectPosition {
             mHandler,
             MGImportLevel(
                 meshesInstanced,
-                shaderDefault,
                 mPoolTextures
             ),
             MGImportMesh(

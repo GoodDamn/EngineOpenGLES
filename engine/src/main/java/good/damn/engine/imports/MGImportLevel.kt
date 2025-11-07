@@ -11,7 +11,6 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGImportLevel(
     private val meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>,
-    private val shaderDefault: MGShaderDefault,
     private val poolTextures: MGPoolTextures
 ): MGImportFile {
 
@@ -22,7 +21,6 @@ class MGImportLevel(
             FileInputStream(
                 it
             ),
-            shaderDefault.material,
             poolTextures
         )?.forEach {
             meshesInstanced.add(

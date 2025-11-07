@@ -25,7 +25,6 @@ class MGStreamLevel {
     companion object {
         fun read(
             input: InputStream,
-            shaderMaterial: MGShaderMaterial,
             poolTextures: MGPoolTextures
         ): Array<MGMMeshInstance>? {
             val bufferedReader = BufferedReader(
