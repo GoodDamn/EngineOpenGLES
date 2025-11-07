@@ -5,11 +5,13 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
+import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
+import good.damn.engine.opengl.shaders.MGShaderSingleModeInstanced
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGDrawModeSingleShader(
-    private val shaderSingle: MGShaderSingleMode,
+    private val shader: MGMShader<MGShaderSingleMode, MGShaderSingleModeInstanced>,
     private val sky: MGDrawerMeshTextureSwitch,
     private val camera: MGCamera,
     private val meshes: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>,
@@ -17,21 +19,31 @@ class MGDrawModeSingleShader(
 ): MGIDrawer {
 
     override fun draw() {
-        shaderSingle.use()
-        camera.draw(
-            shaderSingle
-        )
-        sky.drawVertices(
-            shaderSingle
-        )
-        meshes.forEach {
-            it.drawVertices(
-                shaderSingle
+        shader.single.run {
+            use()
+            camera.draw(
+                this
             )
+
+            sky.drawVertices(
+                this
+            )
+
+            meshes.forEach {
+                it.drawVertices(
+                    this
+                )
+            }
         }
 
-        meshesInstanced.forEach {
-            it.drawVertices()
+        shader.instanced.run {
+            use()
+            camera.draw(
+                this
+            )
+            meshesInstanced.forEach {
+                it.drawVertices()
+            }
         }
     }
 }

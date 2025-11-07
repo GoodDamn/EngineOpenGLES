@@ -1,25 +1,23 @@
 package good.damn.engine.opengl.shaders
 
 import android.opengl.GLES30
-import android.opengl.GLES30.glGetUniformLocation
 
-class MGShaderSingleMap
-: MGShaderSingleMapInstanced(),
-MGIShaderModel {
+open class MGShaderSingleMapInstanced
+: MGShaderSingleModeInstanced(),
+MGIShaderTextureUniform {
 
-    final override var uniformModelView = 0
+    final override var uniformTexture = -1
         private set
 
     override fun setupUniforms(
         program: Int
     ) {
-        uniformModelView = glGetUniformLocation(
+        uniformTexture = GLES30.glGetUniformLocation(
             program,
-            "model"
+            "texture"
         )
         super.setupUniforms(
             program
         )
     }
-
 }

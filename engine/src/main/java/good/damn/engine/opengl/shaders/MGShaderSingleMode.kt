@@ -7,38 +7,24 @@ import android.util.Log
 import androidx.annotation.CallSuper
 
 open class MGShaderSingleMode
-: MGShaderBase(),
-MGIShaderCamera,
+: MGShaderSingleModeInstanced(),
 MGIShaderModel {
 
     final override var uniformModelView = 0
         private set
 
-    final override var uniformCameraProjection = 0
-        private set
-
-    final override var uniformCameraView = 0
-        private set
-
-
     @CallSuper
     override fun setupUniforms(
         program: Int
     ) {
+        super.setupUniforms(
+            program
+        )
+
         // Uniforms
         uniformModelView = glGetUniformLocation(
             program,
             "model"
-        )
-
-        uniformCameraProjection = glGetUniformLocation(
-            program,
-            "projection"
-        )
-
-        uniformCameraView = glGetUniformLocation(
-            program,
-            "view"
         )
     }
 }

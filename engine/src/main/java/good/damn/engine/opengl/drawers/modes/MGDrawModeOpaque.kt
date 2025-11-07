@@ -8,6 +8,7 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.managers.MGIManagerTrigger
 import good.damn.engine.opengl.managers.MGManagerLight
+import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
@@ -16,8 +17,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGDrawModeOpaque(
     var shaderSky: MGShaderSkySphere,
-    var shaderOpaque: MGShaderDefault,
-    var shaderOpaqueInstanced: MGShaderOpaque,
+    var shaderOpaque: MGMShader<MGShaderDefault, MGShaderOpaque>,
     var shaderTrigger: MGShaderSingleMode,
     var sky: MGDrawerMeshTextureSwitch,
     var camera: MGCamera,
@@ -41,53 +41,56 @@ data class MGDrawModeOpaque(
         )
 
 
-
-        shaderOpaque.use()
-        camera.draw(
-            shaderOpaque
-        )
-        camera.drawPosition(
-            shaderOpaque
-        )
-        directionalLight.draw(
-            shaderOpaque.lightDirectional
-        )
-        meshes.forEach {
-            it.drawNormals(
-                shaderOpaque
+        shaderOpaque.single.run {
+            use()
+            camera.draw(
+                this
             )
-            it.drawMaterial(
-                shaderOpaque.material,
-                shaderOpaque
+            camera.drawPosition(
+                this
             )
-        }
-        lights.draw(
-            shaderOpaque.lightPoints
-        )
-
-
-
-
-        shaderOpaqueInstanced.use()
-        camera.draw(
-            shaderOpaqueInstanced
-        )
-        camera.drawPosition(
-            shaderOpaqueInstanced
-        )
-        directionalLight.draw(
-            shaderOpaqueInstanced.lightDirectional
-        )
-
-        meshesInstanced.forEach {
-            it.draw(
-                shaderOpaqueInstanced.material
+            directionalLight.draw(
+                lightDirectional
+            )
+            meshes.forEach {
+                it.drawNormals(
+                    this
+                )
+                it.drawMaterial(
+                    material,
+                    this
+                )
+            }
+            lights.draw(
+                lightPoints
             )
         }
 
-        lights.draw(
-            shaderOpaqueInstanced.lightPoints
-        )
+
+
+        shaderOpaque.instanced.run {
+            use()
+            camera.draw(
+                this
+            )
+            camera.drawPosition(
+                this
+            )
+            directionalLight.draw(
+                lightDirectional
+            )
+
+            meshesInstanced.forEach {
+                it.draw(
+                    material
+                )
+            }
+
+            lights.draw(
+                lightPoints
+            )
+        }
+
 
 
 

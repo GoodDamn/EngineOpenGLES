@@ -44,12 +44,15 @@ import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
+import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
+import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
+import good.damn.engine.opengl.shaders.MGShaderSingleModeInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.textures.MGTexture
@@ -73,13 +76,12 @@ import kotlin.random.Random
 
 class MGScene(
     requesterUserContent: MGIRequestUserContent,
-    private val shaderDefault: MGShaderDefault,
-    private val shaderOpaqueInstanced: MGShaderOpaque,
-    private val shaderSky: MGShaderSkySphere,
+    shaderOpaque: MGMShader<MGShaderDefault, MGShaderOpaque>,
+    shaderSky: MGShaderSkySphere,
     private val shaderNormals: MGShaderSingleModeNormals,
-    private val shaderTexCoords: MGShaderSingleMode,
-    private val shaderWireframe: MGShaderSingleMode,
-    private val shaderMapEmissive: MGShaderSingleMap
+    private val shaderTexCoords: MGMShader<MGShaderSingleMode, MGShaderSingleModeInstanced>,
+    private val shaderWireframe: MGMShader<MGShaderSingleMode, MGShaderSingleModeInstanced>,
+    private val shaderMapEmissive: MGMShader<MGShaderSingleMap, MGShaderSingleMapInstanced>
 ): GLSurfaceView.Renderer,
 MGIListenerOnIntersectPosition {
 
@@ -202,7 +204,7 @@ MGIListenerOnIntersectPosition {
     private val mDrawerLightDirectional = MGDrawerLightDirectional()
 
     private val managerLights = MGManagerLight(
-        shaderDefault
+        shaderOpaque.single
     )
 
     private val managerTriggerLight = MGManagerTriggerLight(
@@ -222,9 +224,8 @@ MGIListenerOnIntersectPosition {
 
     private val mDrawerModeOpaque = MGDrawModeOpaque(
         shaderSky,
-        shaderDefault,
-        shaderOpaqueInstanced,
-        shaderWireframe,
+        shaderOpaque,
+        shaderWireframe.single,
         meshSky,
         mCameraFree,
         mDrawerLightDirectional,
