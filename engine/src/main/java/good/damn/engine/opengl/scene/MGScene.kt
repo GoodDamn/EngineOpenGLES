@@ -1,6 +1,5 @@
 package good.damn.engine.opengl.scene
 
-import android.opengl.GLES30
 import android.opengl.GLES30.GL_CCW
 import android.opengl.GLES30.GL_CW
 import android.opengl.GLES30.GL_REPEAT
@@ -25,9 +24,9 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
 import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
-import good.damn.engine.opengl.drawers.MGDrawerModeOpaque
-import good.damn.engine.opengl.drawers.MGDrawerModeSingleMap
-import good.damn.engine.opengl.drawers.MGDrawerModeSingleShader
+import good.damn.engine.opengl.drawers.modes.MGDrawModeOpaque
+import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleMap
+import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShader
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShaderNormals
@@ -221,7 +220,7 @@ MGIListenerOnIntersectPosition {
         mCameraFree
     )
 
-    private val mDrawerModeOpaque = MGDrawerModeOpaque(
+    private val mDrawerModeOpaque = MGDrawModeOpaque(
         shaderSky,
         shaderDefault,
         shaderOpaqueInstanced,
@@ -503,7 +502,7 @@ MGIListenerOnIntersectPosition {
         mHandler,
         mSwitcherDrawMode,
         mDrawerModeOpaque,
-        MGDrawerModeSingleShader(
+        MGDrawModeSingleShader(
             shaderWireframe,
             meshSky,
             mCameraFree,
@@ -515,13 +514,13 @@ MGIListenerOnIntersectPosition {
             mCameraFree,
             meshes
         ),
-        MGDrawerModeSingleShader(
+        MGDrawModeSingleShader(
             shaderTexCoords,
             meshSky,
             mCameraFree,
             meshes
         ),
-        MGDrawerModeSingleMap(
+        MGDrawModeSingleMap(
             shaderMapEmissive,
             mCameraFree,
             meshes

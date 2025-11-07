@@ -1,20 +1,20 @@
-package good.damn.engine.opengl.drawers
+package good.damn.engine.opengl.drawers.modes
 
 import good.damn.engine.opengl.camera.MGCamera
+import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
+import good.damn.engine.opengl.drawers.MGDrawerMeshInstanced
+import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
+import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
+import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.managers.MGIManagerTrigger
 import good.damn.engine.opengl.managers.MGManagerLight
-import good.damn.engine.opengl.managers.MGManagerTrigger
-import good.damn.engine.opengl.managers.MGManagerTriggerLight
-import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
-import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable
-import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import java.util.concurrent.ConcurrentLinkedQueue
 
-data class MGDrawerModeOpaque(
+data class MGDrawModeOpaque(
     var shaderSky: MGShaderSkySphere,
     var shaderOpaque: MGShaderDefault,
     var shaderOpaqueInstanced: MGShaderOpaque,
