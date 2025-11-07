@@ -2,7 +2,7 @@ package good.damn.engine.opengl.drawers.modes
 
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
-import good.damn.engine.opengl.drawers.MGDrawerMeshInstanced
+import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
 import good.damn.engine.opengl.drawers.MGIDrawer

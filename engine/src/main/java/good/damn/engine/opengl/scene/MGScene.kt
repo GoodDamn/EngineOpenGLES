@@ -19,7 +19,7 @@ import good.damn.engine.opengl.callbacks.MGCallbackOnScale
 import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
-import good.damn.engine.opengl.drawers.MGDrawerMeshInstanced
+import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
@@ -240,6 +240,7 @@ MGIListenerOnIntersectPosition {
     private val mSwitcherDrawMode = MGSwitcherDrawMode(
         meshSky,
         meshes,
+        meshesInstanced,
         mDrawerModeOpaque
     )
 
@@ -505,7 +506,8 @@ MGIListenerOnIntersectPosition {
             shaderWireframe,
             meshSky,
             mCameraFree,
-            meshes
+            meshes,
+            meshesInstanced
         ),
         MGDrawModeSingleShaderNormals(
             shaderNormals,
@@ -517,12 +519,14 @@ MGIListenerOnIntersectPosition {
             shaderTexCoords,
             meshSky,
             mCameraFree,
-            meshes
+            meshes,
+            meshesInstanced
         ),
         MGDrawModeSingleMap(
             shaderMapEmissive,
             mCameraFree,
-            meshes
+            meshes,
+            meshesInstanced
         )
     )
 }
