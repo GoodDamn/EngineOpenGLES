@@ -1,20 +1,13 @@
 package good.damn.wrapper.activities
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.OpenableColumns
-import android.provider.Settings
 import android.view.WindowManager
 import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -23,6 +16,7 @@ import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.wrapper.callbacks.APCallbackResultAllFiles
+import good.damn.wrapper.callbacks.APCallbackResultAllFilesApi30
 import good.damn.wrapper.launchers.ContentLauncher
 import good.damn.wrapper.viewmodels.APIViewModelFileAccess
 import good.damn.wrapper.viewmodels.APViewModelFileAccessApi30
@@ -91,8 +85,15 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
 
         val viewModel = if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-        ) APViewModelFileAccessApi30()
-        else APViewModelFileAccessImpl()
+        ) APViewModelFileAccessApi30(
+            APCallbackResultAllFilesApi30(
+                this
+            )
+        ) else APViewModelFileAccessImpl(
+            APCallbackResultAllFiles(
+                this
+            )
+        )
 
         if (viewModel.isExternalStorageManager(
             context
@@ -107,9 +108,7 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
             this
         )
 
-        viewModel.requestPermissionAllFiles(
-            application.packageName
-        )
+        requestPermissionAllFiles()
     }
 
     override fun onDestroy() {
@@ -167,7 +166,13 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
         )
     }
 
-    private fun initContentView() {
+    fun requestPermissionAllFiles() {
+        mViewModelAllFiles?.requestPermissionAllFiles(
+            application.packageName
+        )
+    }
+
+    fun initContentView() {
         setContentView(
             LevelEditorView(
                 this,

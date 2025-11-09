@@ -3,14 +3,15 @@ package good.damn.wrapper.viewmodels
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import good.damn.wrapper.callbacks.APCallbackResultAllFiles
 
-class APViewModelFileAccessImpl
-: APIViewModelFileAccess {
+class APViewModelFileAccessImpl(
+    private val callback: ActivityResultCallback<Map<String,Boolean>>
+): APIViewModelFileAccess {
 
     private val mPermissions = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -25,8 +26,9 @@ class APViewModelFileAccessImpl
         activity: AppCompatActivity
     ) {
         mLauncher = activity.registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) {}
+            ActivityResultContracts.RequestMultiplePermissions(),
+            callback
+        )
     }
 
     override fun unregisterLauncher() {

@@ -6,16 +6,19 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.Settings
+import android.util.Log
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import good.damn.wrapper.callbacks.APCallbackResultAllFiles
 
 @RequiresApi(
     value = Build.VERSION_CODES.R
-) class APViewModelFileAccessApi30
-: APIViewModelFileAccess {
+) class APViewModelFileAccessApi30(
+    private val callback: ActivityResultCallback<ActivityResult>
+): APIViewModelFileAccess {
 
     private var mLauncher: ActivityResultLauncher<Intent>? = null
 
@@ -24,7 +27,7 @@ import good.damn.wrapper.callbacks.APCallbackResultAllFiles
     ) {
         mLauncher = activity.registerForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
-            APCallbackResultAllFiles()
+            callback
         )
     }
 
@@ -37,8 +40,9 @@ import good.damn.wrapper.callbacks.APCallbackResultAllFiles
     ) {
         mLauncher?.run {
             val intent = Intent().apply {
+                Log.d("TAG", "requestPermissionAllFiles: $packageName")
                 setData(
-                    Uri.parse("package: $packageName")
+                    Uri.parse("package:$packageName")
                 )
             }
 

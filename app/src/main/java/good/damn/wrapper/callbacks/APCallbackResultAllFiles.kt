@@ -1,19 +1,32 @@
 package good.damn.wrapper.callbacks
 
-import android.os.Build
-import android.os.Environment
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
-import androidx.annotation.RequiresApi
 import good.damn.wrapper.activities.LevelEditorActivity
+import good.damn.wrapper.viewmodels.APIViewModelFileAccess
 
-class APCallbackResultAllFiles
-: ActivityResultCallback<
-    ActivityResult
-> {
+class APCallbackResultAllFiles(
+    private val activity: LevelEditorActivity
+): ActivityResultCallback<Map<String,Boolean>> {
+
     override fun onActivityResult(
-        result: ActivityResult
+        result: Map<String, Boolean>
     ) {
+        var isNotGrantedAll = false
 
+        result.forEach {
+            if (it.value) {
+                return@forEach
+            }
+
+            isNotGrantedAll = true
+        }
+
+        if (isNotGrantedAll) {
+            // repeat permissions
+            activity.requestPermissionAllFiles()
+            return
+        }
+        activity.initContentView()
     }
+
 }
