@@ -22,7 +22,11 @@ import androidx.core.view.WindowInsetsControllerCompat
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.models.MGMUserContent
+import good.damn.wrapper.callbacks.APCallbackResultAllFiles
 import good.damn.wrapper.launchers.ContentLauncher
+import good.damn.wrapper.viewmodels.APIViewModelFileAccess
+import good.damn.wrapper.viewmodels.APViewModelFileAccessApi30
+import good.damn.wrapper.viewmodels.APViewModelFileAccessImpl
 import good.damn.wrapper.views.LevelEditorView
 
 class LevelEditorActivity
@@ -34,7 +38,7 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
     }
 
     private var mContentLauncher: ContentLauncher? = null
-
+    private var mViewModelAllFiles: APIViewModelFileAccess? = null
     private var mCallbackRequestUserContent: MGIListenerOnGetUserContent? = null
 
     @SuppressLint("ClickableViewAccessibility")
@@ -66,7 +70,8 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
         )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams
+                .LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(
@@ -84,58 +89,32 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
                 )
         }
 
-       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-           if (Environment.isExternalStorageManager()) {
-               initContentView()
-               return
-           }
+        val viewModel = if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+        ) APViewModelFileAccessApi30()
+        else APViewModelFileAccessImpl()
 
-           val intent = Intent()
-           try {
-               intent.setAction(
-                   Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-               )
-               startActivity(intent)
-           } catch (e: Exception) {
-               intent.setAction(
-                   Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
-               )
-               startActivity(intent)
-           }
-           return
-       }
-
-        val permissions = arrayOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-
-        var isNotGrantedAll = false
-        permissions.forEach {
-            if (ContextCompat.checkSelfPermission(
-               context,
-               it
-            ) != PackageManager.PERMISSION_GRANTED) {
-                isNotGrantedAll = true
-            }
-        }
-
-        if (!isNotGrantedAll) {
+        if (viewModel.isExternalStorageManager(
+            context
+        )) {
             initContentView()
             return
         }
 
-        val launcher = registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) {}
+        mViewModelAllFiles = viewModel
 
-        launcher.launch(
-            permissions
+        viewModel.registerLauncher(
+            this
+        )
+
+        viewModel.requestPermissionAllFiles(
+            application.packageName
         )
     }
 
     override fun onDestroy() {
         mContentLauncher?.unregister()
+        mViewModelAllFiles?.unregisterLauncher()
         super.onDestroy()
     }
 
