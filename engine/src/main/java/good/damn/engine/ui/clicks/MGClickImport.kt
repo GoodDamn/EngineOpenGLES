@@ -59,7 +59,7 @@ MGIListenerOnGetUserContent {
             return
         }
 
-        if (uri.contains("txt")) {
+        if (uri.contains("map")) {
             createTempFile(
                 userContent
             )?.run {

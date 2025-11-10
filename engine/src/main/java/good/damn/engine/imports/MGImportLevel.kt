@@ -15,19 +15,19 @@ class MGImportLevel(
     final override fun onImportFile(
         it: File
     ) {
-        MGStreamLevel.read(
+        MGStreamLevel.readBin(
             FileInputStream(
                 it
-            ),
-            poolTextures
-        )?.forEach {
+            )/*,
+            poolTextures*/
+        )/*?.forEach {
             meshesInstanced.add(
                 MGDrawerMeshInstanced(
                     it.vertexArray,
                     it.material
                 )
             )
-        }
+        }*/
     }
 
 }

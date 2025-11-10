@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import good.damn.mapimporter.creators.MICreatorAtlas;
+import good.damn.mapimporter.creators.MICreatorAtlasRect;
 import good.damn.mapimporter.creators.MICreatorBatch;
 import good.damn.mapimporter.creators.MICreatorCollisionGeometry;
 import good.damn.mapimporter.creators.MICreatorMaterial;
 import good.damn.mapimporter.creators.MICreatorProp;
 import good.damn.mapimporter.creators.MICreatorSpawnPoint;
 import good.damn.mapimporter.models.MIMAtlas;
+import good.damn.mapimporter.models.MIMAtlasRect;
 import good.damn.mapimporter.models.MIMBatch;
 import good.damn.mapimporter.models.MIMCollisionGeometry;
 import good.damn.mapimporter.models.MIMMap;
@@ -38,22 +40,20 @@ public final class MIImportMap {
         );
 
         final List<MIMAtlas> atlases = optionalMasks.removeLast()
-            ? new ArrayList<>()
-        : MIUtilsIO.readObjectsArray(
+        ? MIUtilsIO.readObjectsArray(
             stream,
             new MICreatorAtlas(),
             optionalMasks,
             buffer
-        );
+        ): new ArrayList<>();
 
         final List<MIMBatch> batches = optionalMasks.removeLast()
-            ? new ArrayList<>()
-        : MIUtilsIO.readObjectsArray(
+        ? MIUtilsIO.readObjectsArray(
             stream,
             new MICreatorBatch(),
             optionalMasks,
             buffer
-        );
+        ): new ArrayList<>();
 
         final MIMCollisionGeometry geometry = new MICreatorCollisionGeometry().create(
             stream,
@@ -75,13 +75,12 @@ public final class MIImportMap {
         );
 
         final List<MIMSpawnPoint> spawnPoints = optionalMasks.removeLast()
-            ? new ArrayList<>()
-        : MIUtilsIO.readObjectsArray(
+        ? MIUtilsIO.readObjectsArray(
             stream,
             new MICreatorSpawnPoint(),
             optionalMasks,
             buffer
-        );
+        ): new ArrayList<>();
 
         final List<MIMProp> props = MIUtilsIO.readObjectsArray(
             stream,

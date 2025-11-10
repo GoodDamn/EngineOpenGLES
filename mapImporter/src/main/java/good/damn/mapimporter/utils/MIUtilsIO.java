@@ -60,7 +60,7 @@ public final class MIUtilsIO {
                     i--
                 ) {
                     masks.add(
-                        (exByte & ((int)Math.pow(2, i))) == 0
+                        (exByte & ((byte)Math.pow(2, i))) == 0
                     );
                 }
             }
@@ -73,7 +73,8 @@ public final class MIUtilsIO {
         if (lenType == 0) {
             exByteCount = flags & 0b00111111;
         } else {
-            exByteCount = (flags & 0b00111111) << 16;
+            int b = flags & 0b00111111;
+            exByteCount = b << 16;
             exByteCount += stream.readShort();
         }
 
@@ -94,7 +95,7 @@ public final class MIUtilsIO {
                 i--
             ) {
                 masks.add(
-                    (exByte & ((int)Math.pow(2, i))) == 0
+                    (exByte & ((byte)Math.pow(2, i))) == 0
                 );
             }
         }
@@ -121,29 +122,16 @@ public final class MIUtilsIO {
             fileLen += (flags & 0b00111111) << 24;
         }
 
-        byte[] data = new byte[
-            fileLen
-        ];
-
-        stream.read(
-            data
-        );
 
         if (hasCompression) {
             return new DataInputStream(
                 new GZIPInputStream(
-                    new ByteArrayInputStream(
-                        data
-                    )
+                    stream
                 )
             );
         }
 
-        return new DataInputStream(
-            new ByteArrayInputStream(
-                data
-            )
-        );
+        return stream;
     }
 
     public static int readArrayLength(
@@ -159,11 +147,14 @@ public final class MIUtilsIO {
         // Long array
         arrLenType = (byte) (arrFlags & 0b01000000);
         byte len6 = (byte) (arrFlags & 0b00111111);
+        int shiftLen;
         if (arrLenType == 0) {
-            return len6 << 8 + stream.readUnsignedByte();
+            shiftLen = len6 << 8;
+            return shiftLen + (stream.readByte() & 0xff);
         }
+        shiftLen = len6 << 16;
 
-        return len6 << 16 + stream.readUnsignedShort();
+        return shiftLen + stream.readUnsignedShort();
     }
 
     public static String readString(

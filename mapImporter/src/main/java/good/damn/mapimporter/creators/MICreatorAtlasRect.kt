@@ -1,29 +1,32 @@
 package good.damn.mapimporter.creators
 
-import good.damn.mapimporter.models.MIMAtlas
 import good.damn.mapimporter.models.MIMAtlasRect
 import good.damn.mapimporter.utils.MIUtilsIO
 import java.io.DataInputStream
 
-class MICreatorAtlas
-: MIICreatorObject<MIMAtlas> {
+class MICreatorAtlasRect
+: MIICreatorObject<MIMAtlasRect> {
+
+    companion object {
+        val INSTANCE = MICreatorAtlasRect()
+    }
+
     override fun create(
         stream: DataInputStream,
         optionalMask: MutableList<Boolean>,
         buffer: ByteArray
-    ) = MIMAtlas(
+    ) = MIMAtlasRect(
         stream.readInt(),
         MIUtilsIO.readString(
             stream,
             buffer
         ),
-        stream.readInt(),
-        MIUtilsIO.readObjectsArray(
+        MIUtilsIO.readString(
             stream,
-            MICreatorAtlasRect.INSTANCE,
-            optionalMask,
             buffer
         ),
+        stream.readInt(),
+        stream.readInt(),
         stream.readInt()
     )
 }

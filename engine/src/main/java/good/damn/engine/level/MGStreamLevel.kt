@@ -9,7 +9,9 @@ import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.utils.MGUtilsBuffer
+import good.damn.mapimporter.MIImportMap
 import java.io.BufferedReader
+import java.io.DataInputStream
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.FloatBuffer
@@ -17,6 +19,22 @@ import java.nio.FloatBuffer
 class MGStreamLevel {
 
     companion object {
+        fun readBin(
+            input: InputStream
+        ) {
+            val stream = DataInputStream(
+                input
+            )
+            val buffer = ByteArray(
+                8192
+            )
+
+            val map = MIImportMap.createFromStream(
+                stream,
+                buffer
+            )
+        }
+
         fun read(
             input: InputStream,
             poolTextures: MGPoolTextures
