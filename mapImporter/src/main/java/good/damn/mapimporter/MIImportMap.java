@@ -89,6 +89,8 @@ public final class MIImportMap {
             buffer
         );
 
+        stream.close();
+
         return new MIMMap(
             atlases,
             batches,
