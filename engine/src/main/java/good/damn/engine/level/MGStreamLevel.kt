@@ -33,6 +33,15 @@ class MGStreamLevel {
                 stream,
                 buffer
             )
+            val TAG = "MGStreamLevel"
+            Log.d(TAG, "readBin: ${map.props.size}===${map.batches.size}")
+            for (i in map.props) {
+                Log.d(TAG, "read_prop: ${i.name} ${i.libName} ${i.position} ${i.scale} ${i.id} ${i.materialId} ${i.groupName}")
+            }
+
+            for (j in map.batches) {
+                Log.d(TAG, "read_batch: ${j.name} ${j.position} ${j.materialId} ${j.propIds}")
+            }
         }
 
         fun read(
