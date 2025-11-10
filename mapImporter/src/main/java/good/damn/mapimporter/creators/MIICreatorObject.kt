@@ -5,7 +5,7 @@ import java.io.DataInputStream
 interface MIICreatorObject<T> {
     fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Byte>,
+        optionalMask: MutableList<Boolean>,
         buffer: ByteArray
     ): T
 }

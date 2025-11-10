@@ -2,12 +2,15 @@ package good.damn.mapimporter.utils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 import good.damn.mapimporter.creators.MIICreatorObject;
 import kotlin.jvm.internal.markers.KMutableList;
@@ -15,6 +18,133 @@ import kotlin.jvm.internal.markers.KMutableList;
 public final class MIUtilsIO {
 
     public static Charset UTF_8 = StandardCharsets.UTF_8;
+
+    public static List<Boolean> readOptionalMask(
+        @NotNull final DataInputStream stream
+    ) throws IOException {
+        final List<Boolean> masks = new LinkedList<>();
+        final byte flags = stream.readByte();
+        byte lenType = (byte) (flags & 0b10000000);
+
+        if (lenType == 0) {
+            final byte integratedOptionalBits = (byte) (flags << 3);
+
+            for (
+                byte i = 7;
+                i > 2;
+                i--
+            ) {
+                masks.add(
+                    (integratedOptionalBits & ((int)Math.pow(2, i))) == 0
+                );
+            }
+
+            final byte externalByteCount = (byte) (
+                (flags & 0b01100000) >> 5
+            );
+
+            final byte[] externalBytes = new byte[
+                externalByteCount
+            ];
+
+            stream.read(
+                externalBytes
+            );
+
+            for (
+                byte exByte : externalBytes
+            ) {
+                for (
+                    byte i = 7;
+                    i > -1;
+                    i--
+                ) {
+                    masks.add(
+                        (exByte & ((int)Math.pow(2, i))) == 0
+                    );
+                }
+            }
+
+            return masks.reversed();
+        }
+
+        lenType = (byte) (flags & 0b01000000);
+        int exByteCount;
+        if (lenType == 0) {
+            exByteCount = flags & 0b00111111;
+        } else {
+            exByteCount = (flags & 0b00111111) << 16;
+            exByteCount += stream.readShort();
+        }
+
+        final byte[] exBytes = new byte[
+            exByteCount
+        ];
+
+        stream.read(
+            exBytes
+        );
+
+        for (
+            byte exByte : exBytes
+        ) {
+            for (
+                byte i = 7;
+                i > -1;
+                i--
+            ) {
+                masks.add(
+                    (exByte & ((int)Math.pow(2, i))) == 0
+                );
+            }
+        }
+
+        return masks.reversed();
+    }
+
+    public static DataInputStream decompressFile(
+        @NotNull final DataInputStream stream
+    ) throws IOException {
+        byte flags = stream.readByte();
+        boolean hasCompression = (flags & 0b01000000) > 0;
+
+        int fileLen;
+        byte lenType = (byte) (flags & 0b10000000);
+
+        if (lenType == 0) {
+            fileLen = stream.readByte();
+            fileLen += (flags & 0b00111111) << 8;
+        } else {
+            byte[] len3 = new byte[3];
+            stream.read(len3);
+            fileLen = MIUtilsBytes.fromBytes3(len3);
+            fileLen += (flags & 0b00111111) << 24;
+        }
+
+        byte[] data = new byte[
+            fileLen
+        ];
+
+        stream.read(
+            data
+        );
+
+        if (hasCompression) {
+            return new DataInputStream(
+                new GZIPInputStream(
+                    new ByteArrayInputStream(
+                        data
+                    )
+                )
+            );
+        }
+
+        return new DataInputStream(
+            new ByteArrayInputStream(
+                data
+            )
+        );
+    }
 
     public static int readArrayLength(
         @NotNull final DataInputStream stream
@@ -61,7 +191,7 @@ public final class MIUtilsIO {
     public static <T> List<T> readObjectsArray(
         @NotNull final DataInputStream stream,
         @NotNull final MIICreatorObject<T> creator,
-        @NotNull final List<Byte> optionalMask,
+        @NotNull final List<Boolean> optionalMask,
         @NotNull final byte[] buffer
     ) throws IOException {
         final int arrLen = readArrayLength(

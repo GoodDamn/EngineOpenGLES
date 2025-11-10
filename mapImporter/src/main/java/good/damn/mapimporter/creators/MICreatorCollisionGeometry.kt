@@ -12,7 +12,7 @@ class MICreatorCollisionGeometry
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Byte>,
+        optionalMask: MutableList<Boolean>,
         buffer: ByteArray
     ) = MIMCollisionGeometry(
         MIUtilsIO.readObjectsArray(

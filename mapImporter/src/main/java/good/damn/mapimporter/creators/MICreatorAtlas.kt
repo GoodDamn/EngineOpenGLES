@@ -8,7 +8,7 @@ class MICreatorAtlas
 : MIICreatorObject<MIMAtlas> {
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Byte>,
+        optionalMask: MutableList<Boolean>,
         buffer: ByteArray
     ) = MIMAtlas(
         stream.readInt(),

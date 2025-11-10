@@ -9,7 +9,7 @@ class MICreatorSpawnPoint
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Byte>,
+        optionalMask: MutableList<Boolean>,
         buffer: ByteArray
     ) = MIMSpawnPoint(
         MIMVector3.read(stream),

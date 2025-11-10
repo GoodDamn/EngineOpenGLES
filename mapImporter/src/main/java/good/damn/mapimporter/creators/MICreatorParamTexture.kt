@@ -13,12 +13,12 @@ class MICreatorParamTexture
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Byte>,
+        optionalMask: MutableList<Boolean>,
         buffer: ByteArray
     ) = MIMParamTexture(
-        optionalMask.removeLastOrNull()?.run {
+        if (optionalMask.removeLast())
             MIUtilsIO.readString(stream, buffer)
-        },
+        else null,
         MIUtilsIO.readString(stream,buffer),
         MIUtilsIO.readString(stream,buffer)
     )

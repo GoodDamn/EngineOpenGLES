@@ -10,15 +10,13 @@ class MICreatorProp
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Byte>,
+        optionalMask: MutableList<Boolean>,
         buffer: ByteArray
     ) = MIMProp(
-        optionalMask.removeLastOrNull()?.run {
-            MIUtilsIO.readString(
-                stream,
-                buffer
-            )
-        },
+        if (optionalMask.removeLast()) MIUtilsIO.readString(
+            stream,
+            buffer
+        ) else null,
         stream.readInt(),
         MIUtilsIO.readString(
             stream,
@@ -30,11 +28,11 @@ class MICreatorProp
             buffer
         ),
         MIMVector3.read(stream),
-        optionalMask.removeLastOrNull()?.run {
+        if (optionalMask.removeLast())
             MIMVector3.read(stream)
-        },
-        optionalMask.removeLastOrNull()?.run {
+        else null,
+        if (optionalMask.removeLast())
             MIMVector3.read(stream)
-        }
+        else null
     )
 }

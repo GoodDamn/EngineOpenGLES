@@ -10,7 +10,7 @@ class MICreatorBatch
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Byte>,
+        optionalMask: MutableList<Boolean>,
         buffer: ByteArray
     ) = MIMBatch(
         stream.readInt(),

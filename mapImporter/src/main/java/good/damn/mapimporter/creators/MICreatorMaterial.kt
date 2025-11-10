@@ -9,7 +9,7 @@ class MICreatorMaterial
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Byte>,
+        optionalMask: MutableList<Boolean>,
         buffer: ByteArray
     ) = MIMMaterial(
         stream.readInt(),
@@ -17,14 +17,12 @@ class MICreatorMaterial
             stream,
             buffer
         ),
-        optionalMask.removeLastOrNull()?.run {
-            MIUtilsIO.readObjectsArray(
-                stream,
-                MICreatorParamScalar.INSTANCE,
-                optionalMask,
-                buffer
-            )
-        },
+        if (optionalMask.removeLast()) MIUtilsIO.readObjectsArray(
+            stream,
+            MICreatorParamScalar.INSTANCE,
+            optionalMask,
+            buffer
+        ) else null,
         MIUtilsIO.readString(
             stream,
             buffer
@@ -35,30 +33,24 @@ class MICreatorMaterial
             optionalMask,
             buffer
         ),
-        optionalMask.removeLastOrNull()?.run {
-            MIUtilsIO.readObjectsArray(
-                stream,
-                MICreatorParamVector2.INSTANCE,
-                optionalMask,
-                buffer
-            )
-        },
-        optionalMask.removeLastOrNull()?.run {
-            MIUtilsIO.readObjectsArray(
-                stream,
-                MICreatorParamVector3.INSTANCE,
-                optionalMask,
-                buffer
-            )
-        },
-        optionalMask.removeLastOrNull()?.run {
-            MIUtilsIO.readObjectsArray(
-                stream,
-                MICreatorParamVector4.INSTANCE,
-                optionalMask,
-                buffer
-            )
-        }
+        if (optionalMask.removeLast()) MIUtilsIO.readObjectsArray(
+            stream,
+            MICreatorParamVector2.INSTANCE,
+            optionalMask,
+            buffer
+        ) else null,
+        if (optionalMask.removeLast()) MIUtilsIO.readObjectsArray(
+            stream,
+            MICreatorParamVector3.INSTANCE,
+            optionalMask,
+            buffer
+        ) else null,
+        if (optionalMask.removeLast()) MIUtilsIO.readObjectsArray(
+            stream,
+            MICreatorParamVector4.INSTANCE,
+            optionalMask,
+            buffer
+        ) else null
     )
 
 }

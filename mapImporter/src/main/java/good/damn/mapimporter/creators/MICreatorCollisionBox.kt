@@ -13,7 +13,7 @@ class MICreatorCollisionBox
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Byte>,
+        optionalMask: MutableList<Boolean>,
         buffer: ByteArray
     ) = MIMCollisionBox(
         MIMVector3.read(stream),

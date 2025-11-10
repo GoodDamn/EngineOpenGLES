@@ -13,7 +13,7 @@ class MICreatorCollisionPlane
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Byte>,
+        optionalMask: MutableList<Boolean>,
         buffer: ByteArray
     ) = MIMCollisionPlane(
         stream.readDouble(),
