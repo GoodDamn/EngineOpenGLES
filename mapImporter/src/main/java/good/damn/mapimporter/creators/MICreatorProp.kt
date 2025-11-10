@@ -4,16 +4,17 @@ import good.damn.mapimporter.misc.MIMVector3
 import good.damn.mapimporter.models.MIMProp
 import good.damn.mapimporter.utils.MIUtilsIO
 import java.io.DataInputStream
+import java.util.Queue
 
 class MICreatorProp
 : MIICreatorObject<MIMProp> {
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Boolean>,
+        optionalMask: Queue<Boolean>,
         buffer: ByteArray
     ) = MIMProp(
-        if (optionalMask.removeLast()) MIUtilsIO.readString(
+        if (optionalMask.remove()) MIUtilsIO.readString(
             stream,
             buffer
         ) else null,
@@ -28,10 +29,10 @@ class MICreatorProp
             buffer
         ),
         MIMVector3.read(stream),
-        if (optionalMask.removeLast())
+        if (optionalMask.remove())
             MIMVector3.read(stream)
         else null,
-        if (optionalMask.removeLast())
+        if (optionalMask.remove())
             MIMVector3.read(stream)
         else null
     )

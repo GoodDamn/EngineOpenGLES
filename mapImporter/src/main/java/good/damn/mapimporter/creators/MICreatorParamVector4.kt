@@ -4,6 +4,7 @@ import good.damn.mapimporter.models.MIMParamVector4
 import good.damn.mapimporter.misc.MIMVector4
 import good.damn.mapimporter.utils.MIUtilsIO
 import java.io.DataInputStream
+import java.util.Queue
 
 class MICreatorParamVector4
 : MIICreatorObject<MIMParamVector4> {
@@ -14,7 +15,7 @@ class MICreatorParamVector4
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Boolean>,
+        optionalMask: Queue<Boolean>,
         buffer: ByteArray
     ) = MIMParamVector4(
         MIUtilsIO.readString(

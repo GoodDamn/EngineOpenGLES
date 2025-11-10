@@ -3,6 +3,7 @@ package good.damn.mapimporter.creators
 import good.damn.mapimporter.models.MIMCollisionBox
 import good.damn.mapimporter.misc.MIMVector3
 import java.io.DataInputStream
+import java.util.Queue
 
 class MICreatorCollisionBox
 : MIICreatorObject<MIMCollisionBox> {
@@ -13,7 +14,7 @@ class MICreatorCollisionBox
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Boolean>,
+        optionalMask: Queue<Boolean>,
         buffer: ByteArray
     ) = MIMCollisionBox(
         MIMVector3.read(stream),

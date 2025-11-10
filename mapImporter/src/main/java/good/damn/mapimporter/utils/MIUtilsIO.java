@@ -10,6 +10,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.zip.GZIPInputStream;
 
 import good.damn.mapimporter.creators.MIICreatorObject;
@@ -19,10 +22,10 @@ public final class MIUtilsIO {
 
     public static Charset UTF_8 = StandardCharsets.UTF_8;
 
-    public static List<Boolean> readOptionalMask(
+    public static ConcurrentLinkedQueue<Boolean> readOptionalMask(
         @NotNull final DataInputStream stream
     ) throws IOException {
-        final List<Boolean> masks = new LinkedList<>();
+        final ConcurrentLinkedQueue<Boolean> masks = new ConcurrentLinkedQueue<>();
         final byte flags = stream.readByte();
         byte lenType = (byte) (flags & 0b10000000);
 
@@ -65,7 +68,7 @@ public final class MIUtilsIO {
                 }
             }
 
-            return masks.reversed();
+            return masks;
         }
 
         lenType = (byte) (flags & 0b01000000);
@@ -100,7 +103,7 @@ public final class MIUtilsIO {
             }
         }
 
-        return masks.reversed();
+        return masks;
     }
 
     public static DataInputStream decompressFile(
@@ -182,7 +185,7 @@ public final class MIUtilsIO {
     public static <T> List<T> readObjectsArray(
         @NotNull final DataInputStream stream,
         @NotNull final MIICreatorObject<T> creator,
-        @NotNull final List<Boolean> optionalMask,
+        @NotNull final Queue<Boolean> optionalMask,
         @NotNull final byte[] buffer
     ) throws IOException {
         final int arrLen = readArrayLength(

@@ -4,13 +4,14 @@ import good.damn.mapimporter.models.MIMBatch
 import good.damn.mapimporter.misc.MIMVector3
 import good.damn.mapimporter.utils.MIUtilsIO
 import java.io.DataInputStream
+import java.util.Queue
 
 class MICreatorBatch
 : MIICreatorObject<MIMBatch> {
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Boolean>,
+        optionalMask: Queue<Boolean>,
         buffer: ByteArray
     ) = MIMBatch(
         stream.readInt(),

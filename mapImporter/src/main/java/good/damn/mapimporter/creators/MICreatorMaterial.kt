@@ -3,13 +3,14 @@ package good.damn.mapimporter.creators
 import good.damn.mapimporter.models.MIMMaterial
 import good.damn.mapimporter.utils.MIUtilsIO
 import java.io.DataInputStream
+import java.util.Queue
 
 class MICreatorMaterial
 : MIICreatorObject<MIMMaterial> {
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Boolean>,
+        optionalMask: Queue<Boolean>,
         buffer: ByteArray
     ) = MIMMaterial(
         stream.readInt(),
@@ -17,7 +18,7 @@ class MICreatorMaterial
             stream,
             buffer
         ),
-        if (optionalMask.removeLast()) MIUtilsIO.readObjectsArray(
+        if (optionalMask.remove()) MIUtilsIO.readObjectsArray(
             stream,
             MICreatorParamScalar.INSTANCE,
             optionalMask,
@@ -33,19 +34,19 @@ class MICreatorMaterial
             optionalMask,
             buffer
         ),
-        if (optionalMask.removeLast()) MIUtilsIO.readObjectsArray(
+        if (optionalMask.remove()) MIUtilsIO.readObjectsArray(
             stream,
             MICreatorParamVector2.INSTANCE,
             optionalMask,
             buffer
         ) else null,
-        if (optionalMask.removeLast()) MIUtilsIO.readObjectsArray(
+        if (optionalMask.remove()) MIUtilsIO.readObjectsArray(
             stream,
             MICreatorParamVector3.INSTANCE,
             optionalMask,
             buffer
         ) else null,
-        if (optionalMask.removeLast()) MIUtilsIO.readObjectsArray(
+        if (optionalMask.remove()) MIUtilsIO.readObjectsArray(
             stream,
             MICreatorParamVector4.INSTANCE,
             optionalMask,

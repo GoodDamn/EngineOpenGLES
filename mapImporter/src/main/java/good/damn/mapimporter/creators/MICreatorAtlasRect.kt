@@ -3,6 +3,7 @@ package good.damn.mapimporter.creators
 import good.damn.mapimporter.models.MIMAtlasRect
 import good.damn.mapimporter.utils.MIUtilsIO
 import java.io.DataInputStream
+import java.util.Queue
 
 class MICreatorAtlasRect
 : MIICreatorObject<MIMAtlasRect> {
@@ -13,7 +14,7 @@ class MICreatorAtlasRect
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Boolean>,
+        optionalMask: Queue<Boolean>,
         buffer: ByteArray
     ) = MIMAtlasRect(
         stream.readInt(),

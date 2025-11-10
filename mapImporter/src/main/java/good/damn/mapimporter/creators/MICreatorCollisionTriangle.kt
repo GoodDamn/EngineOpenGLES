@@ -3,6 +3,7 @@ package good.damn.mapimporter.creators
 import good.damn.mapimporter.models.MIMCollisionTriangle
 import good.damn.mapimporter.misc.MIMVector3
 import java.io.DataInputStream
+import java.util.Queue
 
 class MICreatorCollisionTriangle
 : MIICreatorObject<MIMCollisionTriangle> {
@@ -13,7 +14,7 @@ class MICreatorCollisionTriangle
 
     override fun create(
         stream: DataInputStream,
-        optionalMask: MutableList<Boolean>,
+        optionalMask: Queue<Boolean>,
         buffer: ByteArray
     ) = MIMCollisionTriangle(
         stream.readDouble(),
