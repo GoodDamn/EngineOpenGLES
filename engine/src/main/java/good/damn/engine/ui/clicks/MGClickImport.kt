@@ -1,5 +1,6 @@
 package good.damn.engine.ui.clicks
 
+import android.util.Log
 import good.damn.engine.MGEngine
 import good.damn.engine.imports.MGImportLevel
 import good.damn.engine.imports.MGImportMesh
@@ -12,6 +13,8 @@ import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.runnables.MGICallbackModel
 import good.damn.engine.runnables.MGRunnableImportFileTemp
 import good.damn.engine.ui.MGIClick
+import good.damn.ia3d.A3DImport
+import java.io.DataInputStream
 import java.io.File
 
 class MGClickImport(
@@ -45,9 +48,9 @@ MGIListenerOnGetUserContent {
         userContent: MGMUserContent
     ) {
         val uri = userContent.fileName
-        if (uri.contains("fbx") ||
-            uri.contains("obj") ||
-            uri.contains("3ds")
+        if (uri.contains(".fbx") ||
+            uri.contains(".obj") ||
+            uri.contains(".3ds")
         ) {
             createTempFile(
                 userContent
@@ -59,7 +62,21 @@ MGIListenerOnGetUserContent {
             return
         }
 
-        if (uri.contains("map")) {
+        if (uri.contains(".a3d")) {
+            val buffer = ByteArray(8192)
+            val asset = A3DImport.createFromStream(
+                DataInputStream(
+                    userContent.stream
+                ),
+                buffer
+            ) ?: return
+
+            Log.d("MGClickImport", "onGetUserContent: A3D_VERS: ${asset.version}")
+
+            return
+        }
+
+        if (uri.contains(".map")) {
             createTempFile(
                 userContent
             )?.run {

@@ -42,6 +42,12 @@ class MGStreamLevel {
             for (j in map.batches) {
                 Log.d(TAG, "read_batch: ${j.name} ${j.position} ${j.materialId} ${j.propIds}")
             }
+
+            for (j in map.atlases) {
+                for (r in j.rects) {
+                    Log.d(TAG, "read_atlas: ${j.name} ${r.name} ${r.libraryName}")
+                }
+            }
         }
 
         fun read(

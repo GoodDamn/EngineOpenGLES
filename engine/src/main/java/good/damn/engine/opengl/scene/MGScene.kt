@@ -120,7 +120,7 @@ MGIListenerOnIntersectPosition {
         MGEnumTextureType.DIFFUSE
     )
 
-    private val mTextureInteract = MGTexture(
+    private val mTextureDefault = MGTexture(
         MGEnumTextureType.DIFFUSE
     )
 
@@ -246,7 +246,7 @@ MGIListenerOnIntersectPosition {
     )
 
     private val mPoolTextures = MGPoolTextures(
-        mTextureInteract,
+        mTextureDefault,
         mTextureMetallicNo,
         mTextureEmissiveNo
     )
@@ -370,8 +370,8 @@ MGIListenerOnIntersectPosition {
             GL_REPEAT
         )
 
-        mTextureInteract.setupTexture(
-            "textures/rock.jpg"
+        mTextureDefault.setupTexture(
+            "textures/white.jpg"
         )
 
         mTextureLandscape.setupTexture(
