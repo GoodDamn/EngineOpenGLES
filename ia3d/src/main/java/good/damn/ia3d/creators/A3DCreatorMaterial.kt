@@ -20,9 +20,9 @@ object A3DCreatorMaterial {
             return null
         }
 
-        val materialCount = stream.readByte()
+        val materialCount = stream.readByte().toInt() and 0xff
         return Array(
-            materialCount.toInt()
+            materialCount
         ) {
             A3DMMaterial(
                 A3DUtils.readNullTerminatedString(

@@ -14,12 +14,19 @@ object A3DCreator {
     ): A3DMAsset? {
         val sig = stream.readLUShort()
 
-        if (sig != SIGNATURE) {
+        if (sig.toShort() != SIGNATURE) {
             return null
         }
 
-        A3DCreatorMaterial.createFromStream(
+        val materials = A3DCreatorMaterial.createFromStream(
+            stream,
+            buffer
+        )
+
+        val meshes = A3DCreatorMesh.createFromStream(
             stream
         )
+
+
     }
 }

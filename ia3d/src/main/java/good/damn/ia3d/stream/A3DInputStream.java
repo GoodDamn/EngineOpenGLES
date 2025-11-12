@@ -28,7 +28,7 @@ extends DataInputStream {
         mBuffer = new byte[16];
     }
 
-    public short readLUShort() throws IOException {
+    public int readLUShort() throws IOException {
         read(
             mBuffer,
             0, 2
