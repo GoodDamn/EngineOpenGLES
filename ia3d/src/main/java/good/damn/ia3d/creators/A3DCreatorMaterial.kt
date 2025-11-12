@@ -8,19 +8,20 @@ import java.io.DataInputStream
 
 object A3DCreatorMaterial {
 
-    private val SIGNATURE = 4.toShort()
+    private val SIGNATURE = 4
 
     fun createFromStream(
         stream: A3DInputStream,
         buffer: ByteArray
     ): Array<A3DMMaterial>? {
-        val sig = stream.readLUShort()
+        val sig = stream.readLInt()
+        val sig2 = stream.readLInt()
 
         if (sig != SIGNATURE) {
             return null
         }
 
-        val materialCount = stream.readByte().toInt() and 0xff
+        val materialCount = stream.readLInt()
         return Array(
             materialCount
         ) {

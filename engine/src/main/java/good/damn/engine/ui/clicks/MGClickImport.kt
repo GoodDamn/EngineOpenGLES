@@ -14,8 +14,10 @@ import good.damn.engine.runnables.MGICallbackModel
 import good.damn.engine.runnables.MGRunnableImportFileTemp
 import good.damn.engine.ui.MGIClick
 import good.damn.ia3d.A3DImport
+import good.damn.ia3d.stream.A3DInputStream
 import java.io.DataInputStream
 import java.io.File
+import kotlin.experimental.or
 
 class MGClickImport(
     private val handler: MGHandlerGl,
@@ -65,13 +67,13 @@ MGIListenerOnGetUserContent {
         if (uri.contains(".a3d")) {
             val buffer = ByteArray(8192)
             val asset = A3DImport.createFromStream(
-                DataInputStream(
+                A3DInputStream(
                     userContent.stream
                 ),
                 buffer
             ) ?: return
 
-            Log.d("MGClickImport", "onGetUserContent: A3D_VERS: ${asset.version}")
+            Log.d("MGClickImport", "onGetUserContent: A3D_VERS: ${asset}")
 
             return
         }

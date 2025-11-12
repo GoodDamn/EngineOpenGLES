@@ -12,13 +12,13 @@ object A3DCreatorMesh {
     fun createFromStream(
         stream: A3DInputStream
     ): Array<A3DMMesh>? {
-        val sign = stream.readLUShort()
+        val sign = stream.readLInt()
+        stream.readLInt()
         if (sign.toShort() != SIGNATURE) {
             return null
         }
 
-        val meshCount = stream.readByte()
-            .toInt() and 0xff
+        val meshCount = stream.readLInt()
 
         return Array(
             meshCount

@@ -29,10 +29,10 @@ object A3DCreatorBufferVertex {
             vertexCount * targetBuffer.vertexSize
         )
 
-        for (i in 0 until vertexCount) {
-            for (j in 0 until targetBuffer.vertexSize) {
-                vertices[i] = stream.readLFloat()
-            }
+        var ii = 0
+        while (ii < vertices.size) {
+            vertices[ii] = stream.readLFloat()
+            ii++
         }
 
         return A3DMBufferVertex(

@@ -10,14 +10,6 @@ public final class A3DUtils {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    public static int readUnsignedShortL(
-        byte[] buffer,
-        int offset
-    ) {
-        return buffer[offset+1] & 0xff << 8 |
-            buffer[offset] & 0xff;
-    }
-
     public static String readNullTerminatedString(
         @NotNull final InputStream stream,
         byte[] buffer

@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import good.damn.ia3d.utils.A3DUtils;
 
@@ -34,10 +35,10 @@ extends DataInputStream {
             0, 2
         );
 
-        return A3DUtils.readUnsignedShortL(
-            mBuffer,
-            0
-        );
+        int a0 = mBuffer[0] & 0xff;
+        int a1 = mBuffer[1] & 0xff;
+
+        return a0 | a1 << 8;
     }
 
     public int readLInt() throws IOException {
@@ -45,11 +46,12 @@ extends DataInputStream {
             mBuffer,
             0, 4
         );
+        int a0 = mBuffer[0] & 0xff;
+        int a1 = mBuffer[1] & 0xff;
+        int a2 = mBuffer[2] & 0xff;
+        int a3 = mBuffer[3] & 0xff;
 
-        return (mBuffer[3] & 0xff) << 24 |
-            (mBuffer[2] & 0xff) << 16 |
-            (mBuffer[1] & 0xff) << 8 |
-            (mBuffer[0] & 0xff);
+        return a0 | a1 << 8 | a2 << 16 | a3 << 24;
     }
 
     public float readLFloat() throws IOException {

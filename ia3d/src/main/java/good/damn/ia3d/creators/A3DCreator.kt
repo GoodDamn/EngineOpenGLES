@@ -6,33 +6,42 @@ import java.io.DataInputStream
 
 object A3DCreator {
 
-    private val SIGNATURE = 1.toShort()
+    private val SIGNATURE = 1
 
     fun readRootBlock(
         stream: A3DInputStream,
         buffer: ByteArray
     ): A3DMAsset? {
-        val sig = stream.readLUShort()
+        val sig = stream.readLInt()
+        val sig2 = stream.readLInt()
 
-        if (sig.toShort() != SIGNATURE) {
+        if (sig != SIGNATURE) {
             return null
         }
 
         val materials = A3DCreatorMaterial.createFromStream(
             stream,
             buffer
-        )
+        ) ?: return null
 
         val meshes = A3DCreatorMesh.createFromStream(
             stream
-        )
+        ) ?: return null
 
         val transforms = A3DCreatorTransform.createFromStream(
             stream
-        )
+        ) ?: return null
+
+        val objects = A3DCreatorObject.createFromStream(
+            stream,
+            buffer
+        ) ?: return null
 
         return A3DMAsset(
-
+            materials,
+            meshes,
+            transforms,
+            objects
         )
     }
 }

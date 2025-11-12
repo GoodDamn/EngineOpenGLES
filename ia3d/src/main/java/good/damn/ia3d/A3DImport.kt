@@ -1,5 +1,7 @@
 package good.damn.ia3d
 
+import good.damn.ia3d.creators.A3DCreator
+import good.damn.ia3d.creators.A3DCreatorMaterial
 import good.damn.ia3d.models.A3DMAsset
 import good.damn.ia3d.stream.A3DInputStream
 import good.damn.ia3d.utils.A3DUtils
@@ -35,17 +37,19 @@ object A3DImport {
             return null
         }
 
-        val version = stream.readLUShort()
+        val version = stream.readLInt()
 
-        if (version != VERSION_2) {
+        if (version.toShort() != VERSION_2) {
             stream.close()
             return null
         }
+        val rootBlock = A3DCreator.readRootBlock(
+            stream,
+            buffer
+        )
 
         stream.close()
-        return A3DMAsset(
-            version
-        )
+        return rootBlock
     }
 
 }
