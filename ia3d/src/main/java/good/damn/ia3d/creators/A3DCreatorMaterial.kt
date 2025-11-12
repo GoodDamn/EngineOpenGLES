@@ -15,7 +15,7 @@ object A3DCreatorMaterial {
         buffer: ByteArray
     ): Array<A3DMMaterial>? {
         val sig = stream.readLInt()
-        val sig2 = stream.readLInt()
+        stream.readLInt()
 
         if (sig != SIGNATURE) {
             return null

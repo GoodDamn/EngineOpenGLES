@@ -10,7 +10,7 @@ object A3DCreatorTransform {
 
     private val SIGNATURE = 3
 
-    fun     createFromStream(
+    fun createFromStream(
         stream: A3DInputStream
     ): A3DMCreatorTransform? {
         val sig = stream.readLInt()
