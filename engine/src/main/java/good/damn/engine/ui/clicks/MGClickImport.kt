@@ -2,6 +2,7 @@ package good.damn.engine.ui.clicks
 
 import android.util.Log
 import good.damn.engine.MGEngine
+import good.damn.engine.imports.MGImportA3D
 import good.damn.engine.imports.MGImportLevel
 import good.damn.engine.imports.MGImportMesh
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
@@ -11,6 +12,7 @@ import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.runnables.MGICallbackModel
+import good.damn.engine.runnables.MGRunnableImportA3D
 import good.damn.engine.runnables.MGRunnableImportFileTemp
 import good.damn.engine.ui.MGIClick
 import good.damn.ia3d.A3DImport
@@ -23,6 +25,7 @@ class MGClickImport(
     private val handler: MGHandlerGl,
     importLevel: MGImportLevel,
     importMesh: MGImportMesh,
+    importA3D: MGImportA3D,
     private val requester: MGIRequestUserContent
 ): MGIClick,
 MGIListenerOnGetUserContent {
@@ -34,6 +37,12 @@ MGIListenerOnGetUserContent {
     private val runnableImportLevel = MGRunnableImportFileTemp(
         importLevel
     )
+
+    private val runnableImportA3D = MGRunnableImportA3D(
+        importA3D
+    )
+
+    private val mBuffer = ByteArray(8192)
 
     override fun onClick() {
         requester.requestUserContent(
@@ -65,15 +74,18 @@ MGIListenerOnGetUserContent {
         }
 
         if (uri.contains(".a3d")) {
-            val buffer = ByteArray(8192)
             val asset = A3DImport.createFromStream(
                 A3DInputStream(
                     userContent.stream
                 ),
-                buffer
+                mBuffer
             ) ?: return
 
-            Log.d("MGClickImport", "onGetUserContent: A3D_VERS: ${asset}")
+            runnableImportA3D.asset = asset
+            runnableImportA3D.fileName = userContent.fileName
+            handler.post(
+                runnableImportA3D
+            )
 
             return
         }
