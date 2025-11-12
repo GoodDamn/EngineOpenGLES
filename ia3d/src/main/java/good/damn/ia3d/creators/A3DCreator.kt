@@ -27,6 +27,12 @@ object A3DCreator {
             stream
         )
 
+        val transforms = A3DCreatorTransform.createFromStream(
+            stream
+        )
 
+        return A3DMAsset(
+
+        )
     }
 }
