@@ -35,6 +35,23 @@ public final class MGObject3d {
     public final String[] texturesEmissiveFileName;
 
     public MGObject3d(
+        @NonNull final FloatBuffer vertices,
+        @NonNull final int[] indices,
+        @Nullable final String[] texturesDiffuseFileName,
+        @Nullable final String[] texturesMetallicFileName,
+        @Nullable final String[] texturesEmissiveFileName
+    ) {
+        this.vertices = vertices;
+        this.indices = MGUtilsBuffer.Companion.createInt(
+            indices
+        );
+
+        this.texturesDiffuseFileName = texturesDiffuseFileName;
+        this.texturesMetallicFileName = texturesMetallicFileName;
+        this.texturesEmissiveFileName = texturesEmissiveFileName;
+    }
+
+    public MGObject3d(
         @NonNull final float[] vertices,
         @NonNull final int[] indices,
         @Nullable final String[] texturesDiffuseFileName,
