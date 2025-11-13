@@ -24,7 +24,7 @@ open class MGCamera(
             85.0f,
             width.toFloat() / height.toFloat(),
             0.1f,
-            1000000f
+            Float.MAX_VALUE / 2
         )
     }
 

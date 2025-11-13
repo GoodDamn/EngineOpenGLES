@@ -20,16 +20,12 @@ import good.damn.mapimporter.MIImportMap
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.DataInputStream
-import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.FloatBuffer
 import java.nio.charset.Charset
 import java.util.LinkedList
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
 
 class MGStreamLevel {
 
@@ -50,7 +46,6 @@ class MGStreamLevel {
                 buffer
             )
             val TAG = "MGStreamLevel"
-            Log.d(TAG, "readBin: ${map.props.size}===${map.batches.size}")
             val libName = map.atlases[0].rects[0].libraryName
 
             for (j in map.atlases) {
@@ -218,18 +213,16 @@ class MGStreamLevel {
                 val mesh = obj.meshes[0]
                 val vertexArray = MGArrayVertexInstanced()
                 vertexArray.configure(
-                    MGUtilsBuffer.createFloat(
-                        MGUtilsArray.createMergedVertexArray(
-                            mesh.vertexBuffers[
-                                A3DEnumTypeBufferVertex.POSITION.type - 1
-                            ]!!.vertices,
-                            mesh.vertexBuffers[
-                                A3DEnumTypeBufferVertex.UV1.type - 1
-                            ]!!.vertices,
-                            mesh.vertexBuffers[
-                                A3DEnumTypeBufferVertex.NORMAL1.type - 1
-                            ]!!.vertices
-                        )
+                    MGUtilsArray.createMergedVertexBuffer(
+                        mesh.vertexBuffers[
+                            A3DEnumTypeBufferVertex.POSITION.type - 1
+                        ]!!.vertices,
+                        mesh.vertexBuffers[
+                            A3DEnumTypeBufferVertex.UV1.type - 1
+                        ]!!.vertices,
+                        mesh.vertexBuffers[
+                            A3DEnumTypeBufferVertex.NORMAL1.type - 1
+                        ]!!.vertices
                     ),
                     MGUtilsBuffer.createInt(
                         mesh.subMeshes[0].indices

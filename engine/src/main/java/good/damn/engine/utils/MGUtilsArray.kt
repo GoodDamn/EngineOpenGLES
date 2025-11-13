@@ -1,15 +1,18 @@
 package good.damn.engine.utils
 
+import java.nio.FloatBuffer
+
 object MGUtilsArray {
 
-    fun createMergedVertexArray(
+    fun createMergedVertexBuffer(
         position: FloatArray,
         uv: FloatArray,
         normal: FloatArray
-    ): FloatArray {
+    ): FloatBuffer {
         val vertexCount = position.size / 3
-        val output = FloatArray(
-            8 * vertexCount
+        val outSize = 8 * vertexCount
+        val output = MGUtilsBuffer.allocateFloat(
+            outSize
         )
 
         var iUv = 0
@@ -17,21 +20,56 @@ object MGUtilsArray {
         var iPosition = 0
 
         var ii = 0
-        while (ii < output.size) {
-            output[ii++] = position[iPosition++]
-            output[ii++] = position[iPosition+1]
-            output[ii++] = position[iPosition]
+        while (ii < outSize) {
+            // Position
+            output.put(
+                ii++,
+                position[iPosition++]
+            )
+
+            output.put(
+                ii++,
+                position[iPosition+1]
+            )
+
+            output.put(
+                ii++,
+                position[iPosition]
+            )
             iPosition += 2
 
-            output[ii++] = uv[iUv++]
-            output[ii++] = uv[iUv++]
 
-            output[ii++] = normal[iNormal++]
-            output[ii++] = normal[iNormal+1]
-            output[ii++] = normal[iNormal]
+            // UVs
+            output.put(
+                ii++,
+                uv[iUv++]
+            )
+            output.put(
+                ii++,
+                uv[iUv++]
+            )
+
+
+            // Normals
+            output.put(
+                ii++,
+                normal[iNormal++]
+            )
+
+            output.put(
+                ii++,
+                normal[iNormal+1]
+            )
+
+            output.put(
+                ii++,
+                normal[iNormal]
+            )
+
             iNormal += 2
         }
 
+        output.position(0)
         return output
     }
 }

@@ -4,7 +4,6 @@ import good.damn.engine.opengl.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.runnables.MGICallbackModel
 import good.damn.engine.utils.MGUtilsArray
-import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.ia3d.enums.A3DEnumTypeBufferVertex
 import good.damn.ia3d.models.A3DMAsset
 
@@ -31,7 +30,7 @@ class MGImportA3D(
             fileName,
             arrayOf(
                 MGObject3d(
-                    MGUtilsArray.createMergedVertexArray(
+                    MGUtilsArray.createMergedVertexBuffer(
                         mesh.vertexBuffers[
                             A3DEnumTypeBufferVertex.POSITION.type - 1
                         ]!!.vertices,
