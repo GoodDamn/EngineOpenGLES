@@ -1,6 +1,6 @@
 package good.damn.engine.imports
 
-import good.damn.engine.opengl.MGObject3d
+import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.runnables.MGICallbackModel
 import java.io.File

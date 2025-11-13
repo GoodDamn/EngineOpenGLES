@@ -32,6 +32,19 @@ class MGUtilsBuffer {
             MGEngine.BYTE_ORDER
         ).asShortBuffer()
 
+        fun createByte(
+            i: ByteArray
+        ): ByteBuffer {
+            val b = ByteBuffer
+                .allocateDirect(
+                    i.size * 4
+                ).order(
+                    MGEngine.BYTE_ORDER
+                ).put(i)
+            b.position(0)
+            return b
+        }
+
         fun createFloat(
             i: FloatArray
         ): FloatBuffer {

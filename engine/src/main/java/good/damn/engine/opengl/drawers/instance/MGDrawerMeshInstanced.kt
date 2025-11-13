@@ -1,7 +1,7 @@
 package good.damn.engine.opengl.drawers.instance
 
 import android.opengl.GLES30
-import good.damn.engine.opengl.MGArrayVertexInstanced
+import good.damn.engine.opengl.arrays.MGArrayVertexInstanced
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.shaders.MGIShaderTextureUniform

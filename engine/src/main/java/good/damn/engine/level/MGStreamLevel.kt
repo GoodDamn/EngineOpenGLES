@@ -1,9 +1,11 @@
 package good.damn.engine.level
 
+import android.opengl.GLES30
 import android.util.Log
 import good.damn.engine.models.MGMMeshInstance
-import good.damn.engine.opengl.MGArrayVertexInstanced
-import good.damn.engine.opengl.MGObject3d
+import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
+import good.damn.engine.opengl.arrays.MGArrayVertexInstanced
+import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
@@ -211,8 +213,11 @@ class MGStreamLevel {
                 )
 
                 val mesh = obj.meshes[0]
-                val vertexArray = MGArrayVertexInstanced()
-                vertexArray.configure(
+                val configurator = MGArrayVertexConfigurator(
+                    GLES30.GL_UNSIGNED_SHORT
+                )
+
+                configurator.configure(
                     MGUtilsArray.createMergedVertexBuffer(
                         mesh.vertexBuffers[
                             A3DEnumTypeBufferVertex.POSITION.type - 1
@@ -224,10 +229,14 @@ class MGStreamLevel {
                             A3DEnumTypeBufferVertex.NORMAL1.type - 1
                         ]!!.vertices
                     ),
-                    MGUtilsBuffer.createInt(
-                        mesh.subMeshes[0].indices
-                    )
+                    mesh.subMeshes[0].indices,
+                    2
                 )
+
+                val vertexArray = MGArrayVertexInstanced(
+                    configurator
+                )
+
 
                 val modelMatrices = it.value.matrices
                     .toTypedArray()
@@ -354,10 +363,18 @@ class MGStreamLevel {
                     "textures"
                 )
 
-                val vertexArray = MGArrayVertexInstanced()
-                vertexArray.configure(
+                val configurator = MGArrayVertexConfigurator(
+                    GLES30.GL_UNSIGNED_INT
+                )
+
+                configurator.configure(
                     obj.vertices,
-                    obj.indices
+                    obj.indices,
+                    4
+                )
+
+                val vertexArray = MGArrayVertexInstanced(
+                    configurator
                 )
 
                 val matrices = convertMatricesToBuffer(

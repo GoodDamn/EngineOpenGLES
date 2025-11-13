@@ -1,5 +1,7 @@
 package good.damn.engine.opengl.managers;
 
+import android.opengl.GLES30;
+
 import androidx.annotation.NonNull;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -74,7 +76,9 @@ public abstract class MGManagerTrigger<
             trigger.draw(
                 shader
             );
-            mDrawerTrigger.draw();
+            mDrawerTrigger.draw(
+                GLES30.GL_LINES
+            );
         }
     }
 }

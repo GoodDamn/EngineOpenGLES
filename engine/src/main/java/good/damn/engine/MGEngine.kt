@@ -14,6 +14,8 @@ import java.nio.charset.Charset
 class MGEngine {
     companion object {
         private const val TAG = "MGEngine"
+        private val CHARSET = Charset.forName("UTF-8")
+
         internal lateinit var DIR_CACHE: File
         internal lateinit var DIR_PUBLIC: File
         internal lateinit var DIR_PUBLIC_TEMP: File
@@ -22,8 +24,9 @@ class MGEngine {
 
         internal val BYTE_ORDER = ByteOrder.nativeOrder()
         internal val BUFFER_MB = ByteArray(1024*1024)
-        internal val CHARSET = Charset.forName("UTF-8")
         internal val CHARSET_ASCII = Charset.forName("US-ASCII")
+
+        fun getCharsetUTF8() = CHARSET
 
         fun init(
             applicationContext: Context

@@ -1,51 +1,54 @@
-package good.damn.engine.opengl
+package good.damn.engine.opengl.arrays
 
-import android.opengl.GLES30.*
+import android.opengl.GLES30.GL_ARRAY_BUFFER
+import android.opengl.GLES30.GL_ELEMENT_ARRAY_BUFFER
+import android.opengl.GLES30.GL_FLOAT
+import android.opengl.GLES30.GL_STATIC_DRAW
+import android.opengl.GLES30.glBindBuffer
+import android.opengl.GLES30.glBindVertexArray
+import android.opengl.GLES30.glBufferData
+import android.opengl.GLES30.glEnableVertexAttribArray
+import android.opengl.GLES30.glGenBuffers
+import android.opengl.GLES30.glGenVertexArrays
+import android.opengl.GLES30.glVertexAttribPointer
+import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
-open class MGArrayVertex {
+open class MGArrayVertexConfigurator(
+    // GL_UNSIGNED_*
+    val type: Int
+) {
 
     companion object {
         const val STRIDE = 8 * 4
+
+        const val MAX_VALUES_PER_VERTICES = 8
+
         private const val INDEX_POSITION = 0
         private const val INDEX_TEX_COORD = 1
         private const val INDEX_NORMAL = 2
-
-        const val INDEX_POSITION_X = 0
-        const val INDEX_POSITION_Y = 1
-        const val INDEX_POSITION_Z = 2
-
-        const val MAX_VALUES_PER_VERTICES = 8
     }
 
-    protected val mVertexArray = intArrayOf(1)
-    private val mVertexArrayBuffer = intArrayOf(1)
+    val vertexArrayId: Int
+        get() = mVertexArray[0]
+
+    val indicesCount: Int
+        get() = mIndicesSize
+
+    protected val mVertexArrayBuffer = intArrayOf(1)
+
+    private val mVertexArray = intArrayOf(1)
     private val mIndicesArrayBuffer = intArrayOf(1)
 
-    private lateinit var mBufferVertex: FloatBuffer
-    private lateinit var mBufferIndices: IntBuffer
+    private var mIndicesSize = 0
 
-    protected var mIndicesSize = 0
-
-    val sizeVertexArray: Int
-        get() = mBufferVertex.capacity()
-
-    val countVertices: Int
-        get() = mBufferVertex.capacity() / MAX_VALUES_PER_VERTICES
-
-    operator fun get(
-        i: Int
-    ) = mBufferVertex[i]
-
-
-    fun configure(
+    open fun configure(
         vertices: FloatBuffer,
-        indices: IntBuffer,
+        indices: Buffer,
+        indexSize: Int,
         stride: Int = STRIDE
     ) {
-        mBufferVertex = vertices
-        mBufferIndices = indices
         mIndicesSize = indices.capacity()
         glGenVertexArrays(
             mVertexArray.size,
@@ -57,10 +60,13 @@ open class MGArrayVertex {
             mVertexArray[0]
         )
 
-        generateVertexBuffer()
+        generateVertexBuffer(
+            vertices
+        )
 
         generateIndexBuffer(
-            indices
+            indices,
+            indexSize
         )
 
         enableAttrs(
@@ -82,74 +88,20 @@ open class MGArrayVertex {
         )
     }
 
-    fun getVertexBufferData(
-        iteration: Int,
-        i: Int
-    ) = mBufferVertex[i + iteration * MAX_VALUES_PER_VERTICES]
-
-    fun bindVertexBuffer() {
-        glBindVertexArray(
-            mVertexArray[0]
-        )
-
-        glBindBuffer(
-            GL_ARRAY_BUFFER,
-            mVertexArrayBuffer[0]
-        )
-    }
-
-    fun unbindVertexBuffer() {
-        glBindVertexArray(0)
-
-        glBindBuffer(
-            GL_ARRAY_BUFFER,
-            0
-        )
-    }
-
-    fun sendVertexBufferData() {
+    protected fun sendVertexBufferData(
+        vertices: FloatBuffer
+    ) {
         glBufferData(
             GL_ARRAY_BUFFER,
-            mBufferVertex.capacity() * 4,
-            mBufferVertex,
+            vertices.capacity() * 4,
+            vertices,
             GL_STATIC_DRAW
         )
     }
 
-    fun writeVertexBufferData(
-        at: Int,
-        data: Float
+    private inline fun generateVertexBuffer(
+        vertices: FloatBuffer
     ) {
-        mBufferVertex.put(
-            at,
-            data
-        )
-        /*glBufferSubData(
-            GL_ARRAY_BUFFER,
-            at * 4,
-            data.capacity() * 4,
-            data
-        )*/
-    }
-
-    fun draw(
-        mode: Int = GL_TRIANGLES
-    ) {
-        glBindVertexArray(
-            mVertexArray[0]
-        )
-
-        glDrawElements(
-            mode,
-            mIndicesSize,
-            GL_UNSIGNED_INT,
-            0
-        )
-
-        glBindVertexArray(0)
-    }
-
-    private inline fun generateVertexBuffer() {
         glGenBuffers(
             mVertexArrayBuffer.size,
             mVertexArrayBuffer,
@@ -161,11 +113,14 @@ open class MGArrayVertex {
             mVertexArrayBuffer[0]
         )
 
-        sendVertexBufferData()
+        sendVertexBufferData(
+            vertices
+        )
     }
 
     private inline fun generateIndexBuffer(
-        indices: IntBuffer
+        indices: Buffer,
+        indexSize: Int
     ) {
         glGenBuffers(
             mIndicesArrayBuffer.size,
@@ -180,7 +135,7 @@ open class MGArrayVertex {
 
         glBufferData(
             GL_ELEMENT_ARRAY_BUFFER,
-            indices.capacity() * 4,
+            indices.capacity() * indexSize,
             indices,
             GL_STATIC_DRAW
         )
@@ -232,7 +187,5 @@ open class MGArrayVertex {
             stride,
             offset
         )
-
     }
-
 }

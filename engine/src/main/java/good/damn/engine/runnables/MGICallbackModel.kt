@@ -1,7 +1,7 @@
 package good.damn.engine.runnables
 
-import good.damn.engine.opengl.MGObject3d
 import good.damn.engine.opengl.models.MGMPoolMesh
+import good.damn.engine.opengl.objects.MGObject3d
 
 interface MGICallbackModel {
     fun onGetObjectsCached(

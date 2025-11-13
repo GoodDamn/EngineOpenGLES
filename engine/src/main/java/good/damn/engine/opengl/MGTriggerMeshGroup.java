@@ -1,22 +1,11 @@
 package good.damn.engine.opengl;
 
-import android.opengl.GLES30;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
-import good.damn.engine.opengl.entities.MGMaterial;
-import good.damn.engine.opengl.enums.MGEnumTextureType;
 import good.damn.engine.opengl.models.MGMPoolMesh;
 import good.damn.engine.opengl.models.MGMPoolMeshMutable;
-import good.damn.engine.opengl.pools.MGPoolMeshesStatic;
+import good.damn.engine.opengl.objects.MGObject3d;
 import good.damn.engine.opengl.pools.MGPoolTextures;
-import good.damn.engine.opengl.shaders.MGIShaderTexture;
-import good.damn.engine.opengl.shaders.MGShaderDefault;
-import good.damn.engine.opengl.shaders.MGShaderMaterial;
-import good.damn.engine.opengl.shaders.MGShaderSingleMode;
-import good.damn.engine.opengl.textures.MGTexture;
 import good.damn.engine.opengl.triggers.MGITrigger;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerGroup;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh;

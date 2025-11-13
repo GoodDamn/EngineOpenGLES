@@ -1,4 +1,4 @@
-package good.damn.engine.opengl
+package good.damn.engine.opengl.arrays
 
 import android.opengl.GLES30
 import android.opengl.GLES30.GL_ARRAY_BUFFER
@@ -13,9 +13,11 @@ import android.opengl.GLES30.glVertexAttribDivisor
 import android.opengl.GLES30.glVertexAttribPointer
 import good.damn.engine.opengl.shaders.MGShaderBase
 import java.nio.FloatBuffer
+import java.nio.ShortBuffer
 
-class MGArrayVertexInstanced
-: MGArrayVertex() {
+class MGArrayVertexInstanced(
+    private val configurator: MGArrayVertexConfigurator
+) {
 
     companion object {
         const val INDEX_ATTRIB_INSTANCE_MODEL = MGShaderBase.INDEX_ATTRIB_INSTANCE_MODEL
@@ -43,7 +45,7 @@ class MGArrayVertexInstanced
         )
 
         glBindVertexArray(
-            mVertexArray[0]
+            configurator.vertexArrayId
         )
 
         glBindBuffer(
@@ -76,7 +78,7 @@ class MGArrayVertexInstanced
         indexBuffer: Int
     ) {
         glBindVertexArray(
-            mVertexArray[0]
+            configurator.vertexArrayId
         )
 
         glBindBuffer(
@@ -138,13 +140,13 @@ class MGArrayVertexInstanced
         mode: Int = GL_TRIANGLES
     ) {
         glBindVertexArray(
-            mVertexArray[0]
+            configurator.vertexArrayId
         )
 
         glDrawElementsInstanced(
             mode,
-            mIndicesSize,
-            GL_UNSIGNED_INT,
+            configurator.indicesCount,
+            configurator.type,
             0,
             meshCount
         )

@@ -4,6 +4,7 @@ import android.util.Log
 import good.damn.engine.opengl.MGVector
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
+import java.nio.ShortBuffer
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -14,7 +15,7 @@ class MGUtilsVertIndices {
 
         fun createSphere(
             countStepsHorizontal: Int,
-        ): Pair<IntBuffer, FloatBuffer> {
+        ): Pair<ShortBuffer, FloatBuffer> {
 
             val stepsVertical = 3
             val radianStep = PI2 / countStepsHorizontal
@@ -23,7 +24,7 @@ class MGUtilsVertIndices {
             )
 
             val indRows = countStepsHorizontal - 2
-            val indices = MGUtilsBuffer.allocateInt(
+            val indices = MGUtilsBuffer.allocateShort(
                 (indRows + 1) * 3 * stepsVertical
             )
 
@@ -144,17 +145,17 @@ class MGUtilsVertIndices {
                 while (currentStepHorizontal < indRows) {
                     indices.put(
                         currentIndex++,
-                        currentStepHorizontal + dtIndices
+                        (currentStepHorizontal + dtIndices).toShort()
                     )
 
                     indices.put(
                         currentIndex++,
-                        currentStepHorizontal + dtIndices + 1
+                        (currentStepHorizontal + dtIndices + 1).toShort()
                     )
 
                     indices.put(
                         currentIndex++,
-                        currentStepHorizontal + dtIndices + 2
+                        (currentStepHorizontal + dtIndices + 2).toShort()
                     )
 
                     currentStepHorizontal++
@@ -162,17 +163,17 @@ class MGUtilsVertIndices {
 
                 indices.put(
                     currentIndex++,
-                    currentStepHorizontal + dtIndices
+                    (currentStepHorizontal + dtIndices).toShort()
                 )
 
                 indices.put(
                     currentIndex++,
-                    currentStepHorizontal + dtIndices + 1
+                    (currentStepHorizontal + dtIndices + 1).toShort()
                 )
 
                 indices.put(
                     currentIndex++,
-                    dtIndices
+                    dtIndices.toShort()
                 )
                 currentStepVertical++
                 dtIndices += currentStepHorizontal + 1
@@ -207,7 +208,7 @@ class MGUtilsVertIndices {
             max.x, max.y, max.z, // up 7
         )
 
-        fun createCubeIndices() = intArrayOf(
+        fun createCubeIndices() = byteArrayOf(
             // Left
             0, 1, 4,
             4, 5, 1,

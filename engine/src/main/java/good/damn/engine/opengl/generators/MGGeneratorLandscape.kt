@@ -1,12 +1,13 @@
 package good.damn.engine.opengl.generators
 
 import android.util.Log
-import good.damn.engine.opengl.MGArrayVertex
+import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
+import good.damn.engine.opengl.arrays.MGArrayVertexManager
 import good.damn.engine.opengl.iterators.vertex.MGIVertexIterator
 import good.damn.engine.utils.MGUtilsBuffer
 
 class MGGeneratorLandscape(
-    val vertexArray: MGArrayVertex
+    val vertexArray: MGArrayVertexManager
 ) {
 
     val actualWidth: Int
@@ -110,7 +111,8 @@ class MGGeneratorLandscape(
         time = System.currentTimeMillis()
         vertexArray.configure(
             bufferVertex,
-            bufferIndices
+            bufferIndices,
+            4
         )
         Log.d(TAG, "setResolution: CONFIGURE: ${System.currentTimeMillis() - time}")
     }

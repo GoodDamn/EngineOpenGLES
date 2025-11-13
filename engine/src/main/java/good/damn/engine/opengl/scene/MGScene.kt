@@ -1,6 +1,6 @@
 package good.damn.engine.opengl.scene
 
-import android.opengl.GLES30.GL_CCW
+import android.opengl.GLES30
 import android.opengl.GLES30.GL_CW
 import android.opengl.GLES30.GL_REPEAT
 import android.opengl.GLSurfaceView
@@ -9,10 +9,10 @@ import good.damn.engine.imports.MGImportA3D
 import good.damn.engine.imports.MGImportLevel
 import good.damn.engine.imports.MGImportMesh
 import good.damn.engine.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.MGArrayVertex
-import good.damn.engine.opengl.MGObject3d
+import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.MGVector
+import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
@@ -23,7 +23,6 @@ import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
-import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
 import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
 import good.damn.engine.opengl.drawers.modes.MGDrawModeOpaque
 import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleMap
@@ -32,18 +31,11 @@ import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShaderNormals
 import good.damn.engine.opengl.entities.MGLight
-import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumTextureType
-import good.damn.engine.opengl.generators.MGGeneratorLandscape
-import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
-import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
-import good.damn.engine.opengl.maps.MGMapDisplace
-import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
-import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
@@ -97,9 +89,17 @@ MGIListenerOnIntersectPosition {
     }
     private val modelMatrixCamera = MGMatrixTranslate()
 
-    private val mVerticesSky = MGArrayVertex()
-    private val mVerticesDebugBox = MGArrayVertex()
-    private val mVerticesDebugSphere = MGArrayVertex()
+    private val mVerticesSky = MGArrayVertexConfigurator(
+        GLES30.GL_UNSIGNED_INT
+    )
+
+    private val mVerticesDebugBox = MGArrayVertexConfigurator(
+        GLES30.GL_UNSIGNED_BYTE
+    )
+
+    private val mVerticesDebugSphere = MGArrayVertexConfigurator(
+        GLES30.GL_UNSIGNED_SHORT
+    )
 
     private val mDrawerDebugBox = MGDrawerVertexArray(
         mVerticesDebugBox
@@ -128,7 +128,9 @@ MGIListenerOnIntersectPosition {
     private val mBridgeMatrix = MGBridgeRayIntersect()
 
     private val meshSky = MGDrawerMeshSwitch(
-        mVerticesSky,
+        MGDrawerVertexArray(
+            mVerticesSky
+        ),
         MGDrawerPositionEntity(
             modelMatrixSky
         ),
@@ -287,9 +289,10 @@ MGIListenerOnIntersectPosition {
                         MGTriggerMethodBox.MAX
                     )
                 ),
-                MGUtilsBuffer.createInt(
+                MGUtilsBuffer.createByte(
                     MGUtilsVertIndices.createCubeIndices()
                 ),
+                1,
                 stride = 3 * 4
             )
         }
@@ -302,7 +305,8 @@ MGIListenerOnIntersectPosition {
             configure(
                 obj.second,
                 obj.first,
-                stride = 3 * 4
+                2,
+                stride = 3 * 4,
             )
         }
 
@@ -355,7 +359,8 @@ MGIListenerOnIntersectPosition {
         )?.get(0)?.run {
             mVerticesSky.configure(
                 vertices,
-                indices
+                indices,
+                4
             )
         }
 
