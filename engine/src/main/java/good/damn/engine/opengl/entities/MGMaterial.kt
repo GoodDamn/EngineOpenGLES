@@ -21,25 +21,29 @@ class MGMaterial(
             poolTextures: MGPoolTextures,
             textureNameDiffuse: String?,
             textureNameMetallic: String?,
-            textureNameEmissive: String?
+            textureNameEmissive: String?,
+            localPath: String
         ) = MGMaterial(
             loadTextureCached(
                 poolTextures,
                 MGEnumTextureType.DIFFUSE,
                 textureNameDiffuse,
-                poolTextures.defaultTexture
+                poolTextures.defaultTexture,
+                localPath
             ),
             loadTextureCached(
                 poolTextures,
                 MGEnumTextureType.METALLIC,
                 textureNameMetallic,
-                poolTextures.defaultTextureMetallic
+                poolTextures.defaultTextureMetallic,
+                localPath
             ),
             loadTextureCached(
                 poolTextures,
                 MGEnumTextureType.EMISSIVE,
                 textureNameEmissive,
-                poolTextures.defaultTextureEmissive
+                poolTextures.defaultTextureEmissive,
+                localPath
             )
         )
 
@@ -47,7 +51,8 @@ class MGMaterial(
             poolTextures: MGPoolTextures,
             textureType: MGEnumTextureType,
             textureName: String?,
-            defaultTexture: MGTexture
+            defaultTexture: MGTexture,
+            localPath: String,
         ): MGTexture {
             if (textureName == null) {
                 return defaultTexture
@@ -63,7 +68,7 @@ class MGMaterial(
 
             try {
                 texture = MGTexture.createDefaultAsset(
-                    textureName,
+                    "$localPath/$textureName",
                     textureType
                 )
 

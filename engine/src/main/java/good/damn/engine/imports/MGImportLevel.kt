@@ -18,16 +18,18 @@ class MGImportLevel(
         MGStreamLevel.readBin(
             FileInputStream(
                 it
-            )/*,
-            poolTextures*/
-        )/*?.forEach {
-            meshesInstanced.add(
-                MGDrawerMeshInstanced(
-                    it.vertexArray,
-                    it.material
+            ),
+            poolTextures
+        )?.forEach {
+            it?.run {
+                meshesInstanced.add(
+                    MGDrawerMeshInstanced(
+                        vertexArray,
+                        material
+                    )
                 )
-            )
-        }*/
+            }
+        }
     }
 
 }

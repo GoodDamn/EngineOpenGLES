@@ -214,7 +214,7 @@ class MGRendererLevelEditor(
         )
 
         glCullFace(
-            GL_FRONT
+            GL_BACK
         )
     }
 

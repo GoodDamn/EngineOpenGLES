@@ -96,12 +96,8 @@ MGIListenerOnIntersectPosition {
         invalidatePosition()
     }
     private val modelMatrixCamera = MGMatrixTranslate()
-    private val modelMatrixLandscape = MGMatrixTransformationNormal(
-        MGMatrixTranslate()
-    )
 
     private val mVerticesSky = MGArrayVertex()
-    private val mVerticesLandscape = MGArrayVertex()
     private val mVerticesDebugBox = MGArrayVertex()
     private val mVerticesDebugSphere = MGArrayVertex()
 
@@ -113,19 +109,11 @@ MGIListenerOnIntersectPosition {
         mVerticesDebugSphere
     )
 
-    private val mGeneratorLandscape = MGGeneratorLandscape(
-        mVerticesLandscape
-    )
-
     private val mTextureSky = MGTexture(
         MGEnumTextureType.DIFFUSE
     )
 
     private val mTextureDefault = MGTexture(
-        MGEnumTextureType.DIFFUSE
-    )
-
-    private val mTextureLandscape = MGTexture(
         MGEnumTextureType.DIFFUSE
     )
 
@@ -137,34 +125,14 @@ MGIListenerOnIntersectPosition {
         MGEnumTextureType.EMISSIVE
     )
 
-    private val materialLandscape = MGMaterial(
-        mTextureLandscape,
-        mTextureMetallicNo,
-        mTextureEmissiveNo
-    )
-
     private val mBridgeMatrix = MGBridgeRayIntersect()
-
-    private val meshLandscape = MGDrawerMeshSwitchNormals(
-        mVerticesLandscape,
-        MGDrawerPositionEntity(
-            modelMatrixLandscape.model
-        ),
-        GL_CW,
-        modelMatrixLandscape.normal
-    ).run {
-        MGDrawerMeshMaterialSwitch(
-            materialLandscape,
-            this
-        )
-    }
 
     private val meshSky = MGDrawerMeshSwitch(
         mVerticesSky,
         MGDrawerPositionEntity(
             modelMatrixSky
         ),
-        GL_CCW
+        GL_CW
     ).run {
         MGDrawerMeshTextureSwitch(
             mTextureSky,
@@ -194,9 +162,7 @@ MGIListenerOnIntersectPosition {
 
     private val meshes = ConcurrentLinkedQueue<
         MGDrawerMeshMaterialSwitch
-    >().apply {
-        add(meshLandscape)
-    }
+    >()
 
     private val meshesInstanced = ConcurrentLinkedQueue<
         MGDrawerMeshInstanced
@@ -380,11 +346,6 @@ MGIListenerOnIntersectPosition {
             "textures/white.jpg"
         )
 
-        mTextureLandscape.setupTexture(
-            "textures/terrain.png",
-            GL_REPEAT
-        )
-
         mTextureSky.setupTexture(
             "textures/sky/night.png"
         )
@@ -397,49 +358,6 @@ MGIListenerOnIntersectPosition {
                 indices
             )
         }
-
-        val landSize = 1024
-        mGeneratorLandscape.apply {
-            setResolution(
-                landSize,
-                landSize
-            )
-
-            val mapNormal = MGMapNormal.createFromAssets(
-                "maps/normal/terrain_normal.png"
-            )
-
-            forEachVertex(
-                MGVertexIteratorLandscapeNormal(
-                    mapNormal
-                )
-            )
-            mapNormal.destroy()
-
-            val mapHeight = MGMapDisplace.createFromAssets(
-                "maps/terrain_height.png"
-            )
-
-            forEachVertex(
-                MGVertexIteratorLandscapeDisplace(
-                    mapHeight,
-                    255 * 50,
-                    landSize,
-                    landSize
-                )
-            )
-            mapHeight.destroy()
-        }
-
-        val off = mGeneratorLandscape.actualWidth / -2f
-
-        modelMatrixLandscape.model.setPosition(
-            off,
-            -5500f,
-            off
-        )
-
-        modelMatrixLandscape.model.invalidatePosition()
 
         modelMatrixCamera.setPosition(
             0f, 0f, 0f

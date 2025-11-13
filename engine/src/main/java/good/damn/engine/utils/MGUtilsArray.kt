@@ -19,15 +19,17 @@ object MGUtilsArray {
         var ii = 0
         while (ii < output.size) {
             output[ii++] = position[iPosition++]
-            output[ii++] = position[iPosition++]
-            output[ii++] = position[iPosition++]
+            output[ii++] = position[iPosition+1]
+            output[ii++] = position[iPosition]
+            iPosition += 2
 
             output[ii++] = uv[iUv++]
             output[ii++] = uv[iUv++]
 
             output[ii++] = normal[iNormal++]
-            output[ii++] = normal[iNormal++]
-            output[ii++] = normal[iNormal++]
+            output[ii++] = normal[iNormal+1]
+            output[ii++] = normal[iNormal]
+            iNormal += 2
         }
 
         return output

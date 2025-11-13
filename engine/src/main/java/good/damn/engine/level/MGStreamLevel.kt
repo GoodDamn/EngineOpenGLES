@@ -5,28 +5,44 @@ import good.damn.engine.models.MGMMeshInstance
 import good.damn.engine.opengl.MGArrayVertexInstanced
 import good.damn.engine.opengl.MGObject3d
 import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.utils.MGUtilsArray
 import good.damn.engine.utils.MGUtilsBuffer
+import good.damn.engine.utils.MGUtilsFile
+import good.damn.ia3d.A3DImport
+import good.damn.ia3d.enums.A3DEnumTypeBufferVertex
+import good.damn.ia3d.stream.A3DInputStream
 import good.damn.mapimporter.MIImportMap
+import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.DataInputStream
+import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.FloatBuffer
+import java.nio.charset.Charset
+import java.util.LinkedList
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
 class MGStreamLevel {
 
     companion object {
         fun readBin(
-            input: InputStream
-        ) {
+            input: InputStream,
+            poolTextures: MGPoolTextures
+        ): Array<MGMMeshInstance?>? {
             val stream = DataInputStream(
                 input
             )
             val buffer = ByteArray(
-                8192
+                2048
             )
 
             val map = MIImportMap.createFromStream(
@@ -35,20 +51,237 @@ class MGStreamLevel {
             )
             val TAG = "MGStreamLevel"
             Log.d(TAG, "readBin: ${map.props.size}===${map.batches.size}")
-            for (i in map.props) {
-                Log.d(TAG, "read_prop: ${i.name} ${i.libName} ${i.position} ${i.scale} ${i.id} ${i.materialId} ${i.groupName}")
-            }
-
-            for (j in map.batches) {
-                Log.d(TAG, "read_batch: ${j.name} ${j.position} ${j.materialId} ${j.propIds}")
-            }
+            val libName = map.atlases[0].rects[0].libraryName
 
             for (j in map.atlases) {
                 for (r in j.rects) {
-                    Log.d(TAG, "read_atlas: ${j.name} ${r.name} ${r.libraryName}")
+                    if (poolTextures.get(r.name) == null) {
+                        poolTextures.add(
+                            r.name,
+                            MGTexture.createDefaultAsset(
+                                "textures/$libName/${r.name}.png",
+                                MGEnumTextureType.DIFFUSE
+                            )
+                        )
+                    }
                 }
             }
+
+            val libJson = MGUtilsFile.getPublicFile(
+                "textures/$libName/library.txt"
+            )
+
+            if (!libJson.exists()) {
+                return null
+            }
+
+            val json = JSONObject(
+                String(
+                    libJson.inputStream().run {
+                        val b = readBytes()
+                        close()
+                        return@run b
+                    },
+                    Charset.forName("UTF-8")
+                )
+            ).getJSONArray(
+                "groups"
+            ).getJSONObject(
+                0
+            ).getJSONArray(
+                "props"
+            )
+
+            Log.d(TAG, "readBin: JSON_LIB: ${json.length()}")
+
+            val meshes = HashMap<
+                String, MGProp
+            >(json.length())
+
+            for (i in 0 until json.length()) {
+                val lJson = json.getJSONObject(i)
+                val name = lJson.getString(
+                    "name"
+                )
+
+                val mesh = lJson.getJSONObject(
+                    "mesh"
+                )
+
+                meshes[name] = MGProp(
+                    mesh.getString(
+                        "file"
+                    ),
+                    mesh.getJSONArray(
+                        "textures"
+                    ).getJSONObject(0).getString(
+                        "diffuseMap"
+                    ),
+                    LinkedList()
+                )
+            }
+
+            for (i in map.props) {
+                meshes[
+                    i.name
+                ]?.run {
+                    matrices.add(
+                        MGMatrixTransformationNormal(
+                            MGMatrixScaleRotation()
+                        ).apply { 
+                            model.apply {
+                                var roll = 0f
+                                var yaw = 0f
+                                var pitch = 0f
+
+                                i.rotation?.let {
+                                    roll += Math.toDegrees(it.x.toDouble()).toFloat()
+                                    yaw += Math.toDegrees(it.y.toDouble()).toFloat()
+                                    pitch += Math.toDegrees(it.z.toDouble()).toFloat()
+                                }
+
+                                setRotation(
+                                    roll,
+                                    pitch,
+                                    yaw
+                                )
+
+                                setPosition(
+                                    i.position.x,
+                                    i.position.z,
+                                    i.position.y,
+                                )
+                                
+                                i.scale?.let { 
+                                    setScale(
+                                        it.x,
+                                        it.z,
+                                        it.y
+                                    )
+                                }
+                                
+                                invalidatePosition()
+                                invalidateScaleRotation()
+                            }
+                            
+                            normal.apply {
+                                calculateInvertModel()
+                                calculateNormalMatrix()
+                            }
+                        }
+                    )
+                }
+            }
+
+            val localPathLib = "textures/$libName"
+            val arrayInstanced = Array<MGMMeshInstance?>(
+                meshes.size
+            ) { null }
+
+            var currentInstance = 0
+
+            meshes.forEach {
+                val folderName = it.value.fileNameA3d.run {
+                    val i = indexOf(".")
+                    return@run if (
+                        i == -1
+                    ) null else substring(
+                        0, i
+                    )
+                }
+
+                val file = MGUtilsFile.getPublicFile(
+                    "$localPathLib/$folderName/${it.value.fileNameA3d}"
+                )
+
+                if (!file.exists()) {
+                    return@forEach
+                }
+                
+                val obj = A3DImport.createFromStream(
+                    A3DInputStream(
+                        FileInputStream(
+                            file
+                        )
+                    ),
+                    buffer
+                ) ?: return@forEach
+
+                val material = MGMaterial.createWithPath(
+                    poolTextures,
+                    it.value.fileNameDiffuse,
+                    null,
+                    null,
+                    localPathLib
+                )
+
+                val mesh = obj.meshes[0]
+                val vertexArray = MGArrayVertexInstanced()
+                vertexArray.configure(
+                    MGUtilsBuffer.createFloat(
+                        MGUtilsArray.createMergedVertexArray(
+                            mesh.vertexBuffers[
+                                A3DEnumTypeBufferVertex.POSITION.type - 1
+                            ]!!.vertices,
+                            mesh.vertexBuffers[
+                                A3DEnumTypeBufferVertex.UV1.type - 1
+                            ]!!.vertices,
+                            mesh.vertexBuffers[
+                                A3DEnumTypeBufferVertex.NORMAL1.type - 1
+                            ]!!.vertices
+                        )
+                    ),
+                    MGUtilsBuffer.createInt(
+                        mesh.subMeshes[0].indices
+                    )
+                )
+
+                val modelMatrices = it.value.matrices
+                    .toTypedArray()
+
+                val matrices = convertMatricesToBuffer(
+                    modelMatrices
+                )
+
+                vertexArray.setupMatrixBuffer(
+                    modelMatrices.size,
+                    matrices.model,
+                    matrices.rotation
+                )
+
+                vertexArray.setupInstanceDrawing(
+                    MGArrayVertexInstanced.INDEX_ATTRIB_INSTANCE_MODEL,
+                    MGArrayVertexInstanced.INDEX_BUFFER_MODEL
+                )
+
+                vertexArray.setupInstanceDrawing(
+                    MGArrayVertexInstanced.INDEX_ATTRIB_INSTANCE_ROTATION,
+                    MGArrayVertexInstanced.INDEX_BUFFER_ROTATION
+                )
+
+                arrayInstanced[
+                    currentInstance
+                ] = MGMMeshInstance(
+                    vertexArray,
+                    material,
+                    modelMatrices
+                )
+
+                currentInstance++
+            }
+
+            return arrayInstanced
         }
+
+        private data class MGProp(
+            val fileNameA3d: String,
+            val fileNameDiffuse: String,
+            val matrices: LinkedList<
+                MGMatrixTransformationNormal<
+                    MGMatrixScaleRotation
+                >
+            >
+        )
 
         fun read(
             input: InputStream,
@@ -124,7 +357,8 @@ class MGStreamLevel {
                     poolTextures,
                     obj.texturesDiffuseFileName?.get(0),
                     obj.texturesMetallicFileName?.get(0),
-                    obj.texturesEmissiveFileName?.get(0)
+                    obj.texturesEmissiveFileName?.get(0),
+                    "textures"
                 )
 
                 val vertexArray = MGArrayVertexInstanced()
@@ -167,7 +401,7 @@ class MGStreamLevel {
         private fun BufferedReader.readLineValueInt() =
             readLine().toIntOrNull()
 
-        private inline fun convertMatricesToBuffer(
+        private fun convertMatricesToBuffer(
             v: Array<
                 MGMatrixTransformationNormal<
                     MGMatrixScaleRotation

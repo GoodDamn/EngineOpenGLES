@@ -70,7 +70,7 @@ class MGTexture(
         }
 
         fun createDefaultAsset(
-            fileName: String,
+            assetPath: String,
             type: MGEnumTextureType
         ): MGTexture {
             val texture = MGTexture(
@@ -78,7 +78,7 @@ class MGTexture(
             )
 
             texture.setupTexture(
-                "textures/$fileName"
+                assetPath
             )
 
             return texture

@@ -69,7 +69,8 @@ public final class MGTriggerMesh {
             poolTextures,
             obj.texturesDiffuseFileName == null ? null : obj.texturesDiffuseFileName[0],
             obj.texturesMetallicFileName == null ? null : obj.texturesMetallicFileName[0],
-            obj.texturesEmissiveFileName == null ? null : obj.texturesEmissiveFileName[0]
+            obj.texturesEmissiveFileName == null ? null : obj.texturesEmissiveFileName[0],
+            "textures"
         );
 
         return createFromVertexArray(
