@@ -7,9 +7,13 @@ import good.damn.ia3d.stream.A3DInputStream
 import good.damn.ia3d.utils.A3DUtils
 import java.io.DataInputStream
 import java.io.IOException
+import java.nio.ByteOrder
 import kotlin.jvm.Throws
 
 object A3DImport {
+
+    internal val BYTE_ORDER = ByteOrder
+        .nativeOrder()
 
     private val SIGNATURE = byteArrayOf(
         0x41, 0x33, 0x44, 0 // A3D\0
