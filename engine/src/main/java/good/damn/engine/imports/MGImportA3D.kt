@@ -5,6 +5,7 @@ import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.runnables.MGICallbackModel
+import good.damn.engine.utils.MGUtilsA3D
 import good.damn.engine.utils.MGUtilsArray
 import good.damn.ia3d.enums.A3DEnumTypeBufferVertex
 import good.damn.ia3d.models.A3DMAsset
@@ -27,24 +28,19 @@ class MGImportA3D(
         }
 
         val mesh = asset.meshes[0]
+        val configIndices = mesh.subMeshes[0].indices
 
         modelsCallback.onGetObjects(
             fileName,
             arrayOf(
                 MGObject3d(
-                    MGUtilsArray.createMergedVertexBuffer(
-                        mesh.vertexBuffers[
-                            A3DEnumTypeBufferVertex.POSITION.type - 1
-                        ]!!.vertices,
-                        mesh.vertexBuffers[
-                            A3DEnumTypeBufferVertex.UV1.type - 1
-                        ]!!.vertices,
-                        mesh.vertexBuffers[
-                            A3DEnumTypeBufferVertex.NORMAL1.type - 1
-                        ]!!.vertices
+                    MGUtilsA3D.createMergedVertexBuffer(
+                        mesh
                     ),
-                    mesh.subMeshes[0].indices,
-                    MGEnumArrayVertexConfiguration.SHORT,
+                    configIndices.buffer,
+                    MGUtilsA3D.createConfigurationArrayVertex(
+                        configIndices
+                    ),
                     null,
                     null,
                     null

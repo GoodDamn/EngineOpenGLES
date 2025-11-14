@@ -14,6 +14,7 @@ import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.utils.MGUtilsA3D
 import good.damn.engine.utils.MGUtilsArray
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsFile
@@ -215,23 +216,18 @@ class MGStreamLevel {
                 )
 
                 val mesh = obj.meshes[0]
+                val configIndices = mesh.subMeshes[0].indices
                 val configurator = MGArrayVertexConfigurator(
-                    MGEnumArrayVertexConfiguration.SHORT
+                    MGUtilsA3D.createConfigurationArrayVertex(
+                        configIndices
+                    )
                 )
 
                 configurator.configure(
-                    MGUtilsArray.createMergedVertexBuffer(
-                        mesh.vertexBuffers[
-                            A3DEnumTypeBufferVertex.POSITION.type - 1
-                        ]!!.vertices,
-                        mesh.vertexBuffers[
-                            A3DEnumTypeBufferVertex.UV1.type - 1
-                        ]!!.vertices,
-                        mesh.vertexBuffers[
-                            A3DEnumTypeBufferVertex.NORMAL1.type - 1
-                        ]!!.vertices
+                    MGUtilsA3D.createMergedVertexBuffer(
+                        mesh
                     ),
-                    mesh.subMeshes[0].indices,
+                    configIndices.buffer,
                     MGArrayVertexConfigurator.STRIDE
                 )
 
