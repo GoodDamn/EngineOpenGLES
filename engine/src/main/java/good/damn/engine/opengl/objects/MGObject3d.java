@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import good.damn.engine.MGEngine;
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration;
 import good.damn.engine.utils.MGUtilsBuffer;
 import good.damn.engine.utils.MGUtilsFile;
 
@@ -25,6 +26,9 @@ public final class MGObject3d {
     @NonNull
     public final Buffer indices;
 
+    @NonNull
+    public final MGEnumArrayVertexConfiguration config;
+
     @Nullable
     public final String[] texturesDiffuseFileName;
 
@@ -34,19 +38,17 @@ public final class MGObject3d {
     @Nullable
     public final String[] texturesEmissiveFileName;
 
-    public final int unsignedType;
-
     public MGObject3d(
         @NonNull final FloatBuffer vertices,
         @NonNull final Buffer indices,
-        final int glUnsignedType,
+        @NonNull final MGEnumArrayVertexConfiguration config,
         @Nullable final String[] texturesDiffuseFileName,
         @Nullable final String[] texturesMetallicFileName,
         @Nullable final String[] texturesEmissiveFileName
     ) {
-        unsignedType = glUnsignedType;
         this.vertices = vertices;
         this.indices = indices;
+        this.config = config;
 
         this.texturesDiffuseFileName = texturesDiffuseFileName;
         this.texturesMetallicFileName = texturesMetallicFileName;
@@ -71,7 +73,7 @@ public final class MGObject3d {
         this.texturesDiffuseFileName = texturesDiffuseFileName;
         this.texturesMetallicFileName = texturesMetallicFileName;
         this.texturesEmissiveFileName = texturesEmissiveFileName;
-        unsignedType = GLES30.GL_UNSIGNED_INT;
+        config = MGEnumArrayVertexConfiguration.INT;
     }
 
     static {

@@ -3,11 +3,12 @@ package good.damn.engine.opengl.arrays
 import android.opengl.GLES30.GL_ARRAY_BUFFER
 import android.opengl.GLES30.glBindBuffer
 import android.opengl.GLES30.glBindVertexArray
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import java.nio.Buffer
 import java.nio.FloatBuffer
 
 class MGArrayVertexManager(
-    type: Int
+    type: MGEnumArrayVertexConfiguration
 ): MGArrayVertexConfigurator(
     type
 ) {
@@ -38,13 +39,11 @@ class MGArrayVertexManager(
     override fun configure(
         vertices: FloatBuffer,
         indices: Buffer,
-        indexSize: Int,
         stride: Int
     ) {
         super.configure(
             vertices,
             indices,
-            indexSize,
             stride
         )
         mBufferVertex = vertices

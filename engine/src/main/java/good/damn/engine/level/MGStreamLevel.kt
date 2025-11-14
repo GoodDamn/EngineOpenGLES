@@ -5,8 +5,10 @@ import android.util.Log
 import good.damn.engine.models.MGMMeshInstance
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.MGArrayVertexInstanced
+import good.damn.engine.opengl.arrays.MGArrayVertexManager
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
@@ -214,7 +216,7 @@ class MGStreamLevel {
 
                 val mesh = obj.meshes[0]
                 val configurator = MGArrayVertexConfigurator(
-                    GLES30.GL_UNSIGNED_SHORT
+                    MGEnumArrayVertexConfiguration.SHORT
                 )
 
                 configurator.configure(
@@ -230,7 +232,7 @@ class MGStreamLevel {
                         ]!!.vertices
                     ),
                     mesh.subMeshes[0].indices,
-                    2
+                    MGArrayVertexConfigurator.STRIDE
                 )
 
                 val vertexArray = MGArrayVertexInstanced(
@@ -364,13 +366,13 @@ class MGStreamLevel {
                 )
 
                 val configurator = MGArrayVertexConfigurator(
-                    GLES30.GL_UNSIGNED_INT
+                    MGEnumArrayVertexConfiguration.INT
                 )
 
                 configurator.configure(
                     obj.vertices,
                     obj.indices,
-                    4
+                    MGArrayVertexConfigurator.STRIDE
                 )
 
                 val vertexArray = MGArrayVertexInstanced(

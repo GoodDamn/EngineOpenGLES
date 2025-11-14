@@ -11,13 +11,13 @@ import android.opengl.GLES30.glEnableVertexAttribArray
 import android.opengl.GLES30.glGenBuffers
 import android.opengl.GLES30.glGenVertexArrays
 import android.opengl.GLES30.glVertexAttribPointer
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
 open class MGArrayVertexConfigurator(
-    // GL_UNSIGNED_*
-    val type: Int
+    val config: MGEnumArrayVertexConfiguration
 ) {
 
     companion object {
@@ -46,8 +46,7 @@ open class MGArrayVertexConfigurator(
     open fun configure(
         vertices: FloatBuffer,
         indices: Buffer,
-        indexSize: Int,
-        stride: Int = STRIDE
+        stride: Int
     ) {
         mIndicesSize = indices.capacity()
         glGenVertexArrays(
@@ -65,8 +64,7 @@ open class MGArrayVertexConfigurator(
         )
 
         generateIndexBuffer(
-            indices,
-            indexSize
+            indices
         )
 
         enableAttrs(
@@ -93,7 +91,7 @@ open class MGArrayVertexConfigurator(
     ) {
         glBufferData(
             GL_ARRAY_BUFFER,
-            vertices.capacity() * 4,
+            vertices.capacity() * Float.SIZE_BYTES,
             vertices,
             GL_STATIC_DRAW
         )
@@ -119,8 +117,7 @@ open class MGArrayVertexConfigurator(
     }
 
     private inline fun generateIndexBuffer(
-        indices: Buffer,
-        indexSize: Int
+        indices: Buffer
     ) {
         glGenBuffers(
             mIndicesArrayBuffer.size,
@@ -135,7 +132,7 @@ open class MGArrayVertexConfigurator(
 
         glBufferData(
             GL_ELEMENT_ARRAY_BUFFER,
-            indices.capacity() * indexSize,
+            indices.capacity() * config.indicesSize,
             indices,
             GL_STATIC_DRAW
         )

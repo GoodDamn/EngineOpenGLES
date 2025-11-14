@@ -31,6 +31,7 @@ import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShaderNormals
 import good.damn.engine.opengl.entities.MGLight
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
@@ -90,15 +91,15 @@ MGIListenerOnIntersectPosition {
     private val modelMatrixCamera = MGMatrixTranslate()
 
     private val mVerticesSky = MGArrayVertexConfigurator(
-        GLES30.GL_UNSIGNED_INT
+        MGEnumArrayVertexConfiguration.INT
     )
 
     private val mVerticesDebugBox = MGArrayVertexConfigurator(
-        GLES30.GL_UNSIGNED_BYTE
+        MGEnumArrayVertexConfiguration.BYTE
     )
 
     private val mVerticesDebugSphere = MGArrayVertexConfigurator(
-        GLES30.GL_UNSIGNED_SHORT
+        MGEnumArrayVertexConfiguration.BYTE
     )
 
     private val mDrawerDebugBox = MGDrawerVertexArray(
@@ -292,20 +293,18 @@ MGIListenerOnIntersectPosition {
                 MGUtilsBuffer.createByte(
                     MGUtilsVertIndices.createCubeIndices()
                 ),
-                1,
                 stride = 3 * 4
             )
         }
 
         mVerticesDebugSphere.apply {
             val obj = MGUtilsVertIndices.createSphere(
-                36
+                23
             )
 
             configure(
                 obj.second,
                 obj.first,
-                2,
                 stride = 3 * 4,
             )
         }
@@ -360,7 +359,7 @@ MGIListenerOnIntersectPosition {
             mVerticesSky.configure(
                 vertices,
                 indices,
-                4
+                MGArrayVertexConfigurator.STRIDE
             )
         }
 

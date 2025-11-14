@@ -1,6 +1,7 @@
 package good.damn.engine.imports
 
 import android.opengl.GLES30
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.runnables.MGICallbackModel
@@ -43,7 +44,7 @@ class MGImportA3D(
                         ]!!.vertices
                     ),
                     mesh.subMeshes[0].indices,
-                    GLES30.GL_UNSIGNED_SHORT,
+                    MGEnumArrayVertexConfiguration.SHORT,
                     null,
                     null,
                     null

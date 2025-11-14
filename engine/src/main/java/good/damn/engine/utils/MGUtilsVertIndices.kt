@@ -2,6 +2,7 @@ package good.damn.engine.utils
 
 import android.util.Log
 import good.damn.engine.opengl.MGVector
+import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import java.nio.ShortBuffer
@@ -15,7 +16,7 @@ class MGUtilsVertIndices {
 
         fun createSphere(
             countStepsHorizontal: Int,
-        ): Pair<ShortBuffer, FloatBuffer> {
+        ): Pair<ByteBuffer, FloatBuffer> {
 
             val stepsVertical = 3
             val radianStep = PI2 / countStepsHorizontal
@@ -24,7 +25,7 @@ class MGUtilsVertIndices {
             )
 
             val indRows = countStepsHorizontal - 2
-            val indices = MGUtilsBuffer.allocateShort(
+            val indices = MGUtilsBuffer.allocateByte(
                 (indRows + 1) * 3 * stepsVertical
             )
 
@@ -145,17 +146,17 @@ class MGUtilsVertIndices {
                 while (currentStepHorizontal < indRows) {
                     indices.put(
                         currentIndex++,
-                        (currentStepHorizontal + dtIndices).toShort()
+                        (currentStepHorizontal + dtIndices).toByte()
                     )
 
                     indices.put(
                         currentIndex++,
-                        (currentStepHorizontal + dtIndices + 1).toShort()
+                        (currentStepHorizontal + dtIndices + 1).toByte()
                     )
 
                     indices.put(
                         currentIndex++,
-                        (currentStepHorizontal + dtIndices + 2).toShort()
+                        (currentStepHorizontal + dtIndices + 2).toByte()
                     )
 
                     currentStepHorizontal++
@@ -163,17 +164,17 @@ class MGUtilsVertIndices {
 
                 indices.put(
                     currentIndex++,
-                    (currentStepHorizontal + dtIndices).toShort()
+                    (currentStepHorizontal + dtIndices).toByte()
                 )
 
                 indices.put(
                     currentIndex++,
-                    (currentStepHorizontal + dtIndices + 1).toShort()
+                    (currentStepHorizontal + dtIndices + 1).toByte()
                 )
 
                 indices.put(
                     currentIndex++,
-                    dtIndices.toShort()
+                    dtIndices.toByte()
                 )
                 currentStepVertical++
                 dtIndices += currentStepHorizontal + 1

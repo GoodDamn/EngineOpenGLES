@@ -8,6 +8,15 @@ import java.nio.ShortBuffer
 
 class MGUtilsBuffer {
     companion object {
+
+        fun allocateByte(
+            size: Int
+        ) = ByteBuffer.allocateDirect(
+            size
+        ).order(
+            MGEngine.BYTE_ORDER
+        )
+
         fun allocateFloat(
             size: Int
         ) = ByteBuffer.allocateDirect(

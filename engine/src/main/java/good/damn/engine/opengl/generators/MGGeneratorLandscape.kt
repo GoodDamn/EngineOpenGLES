@@ -112,7 +112,7 @@ class MGGeneratorLandscape(
         vertexArray.configure(
             bufferVertex,
             bufferIndices,
-            4
+            MGArrayVertexConfigurator.STRIDE
         )
         Log.d(TAG, "setResolution: CONFIGURE: ${System.currentTimeMillis() - time}")
     }

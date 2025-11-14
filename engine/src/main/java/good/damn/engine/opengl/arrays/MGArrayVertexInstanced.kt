@@ -146,7 +146,7 @@ class MGArrayVertexInstanced(
         glDrawElementsInstanced(
             mode,
             configurator.indicesCount,
-            configurator.type,
+            configurator.config.type,
             0,
             meshCount
         )

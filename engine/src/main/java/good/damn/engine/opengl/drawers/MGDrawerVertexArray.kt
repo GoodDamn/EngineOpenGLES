@@ -21,7 +21,7 @@ class MGDrawerVertexArray(
         glDrawElements(
             method,
             configurator.indicesCount,
-            configurator.type,
+            configurator.config.type,
             0
         )
 

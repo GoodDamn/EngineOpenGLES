@@ -10,6 +10,7 @@ import java.nio.IntBuffer;
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration;
 import good.damn.engine.opengl.objects.MGObject3d;
 import good.damn.engine.opengl.MGVector;
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch;
@@ -56,13 +57,12 @@ public final class MGTriggerMesh {
         @NonNull final MGITrigger triggerAction
     ) {
         final MGArrayVertexManager arrayVertex = new MGArrayVertexManager(
-            GLES30.GL_UNSIGNED_INT
+            obj.config
         );
 
         arrayVertex.configure(
             obj.vertices,
             obj.indices,
-            4,
             MGArrayVertexConfigurator.STRIDE
         );
 
