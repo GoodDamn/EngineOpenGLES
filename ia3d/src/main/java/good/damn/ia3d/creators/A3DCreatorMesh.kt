@@ -39,7 +39,8 @@ object A3DCreatorMesh {
                 buffers,
                 Array(subMeshCount) {
                     A3DCreatorSubMesh.createFromStream(
-                        stream
+                        stream,
+                        vertexCount
                     )
                 }
             )
