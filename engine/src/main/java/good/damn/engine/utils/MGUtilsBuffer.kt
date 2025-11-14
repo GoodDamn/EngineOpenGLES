@@ -1,6 +1,11 @@
 package good.damn.engine.utils
 
+import android.util.Pair
 import good.damn.engine.MGEngine
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
+import good.damn.ia3d.models.A3DMConfigIndices
+import good.damn.ia3d.stream.A3DInputStream
+import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -94,6 +99,57 @@ class MGUtilsBuffer {
                 .put(i)
             b.position(0)
             return b
+        }
+
+        inline fun createBufferIndicesDynamic(
+            indices: IntArray,
+            vertexCount: Int
+        ): Pair<MGEnumArrayVertexConfiguration, Buffer> {
+            if (vertexCount > Short.MAX_VALUE.toInt() and 0xffff) {
+                return Pair(
+                    MGEnumArrayVertexConfiguration.INT,
+                    allocateInt(
+                        indices.size
+                    ).apply {
+                        fillBuffer(
+                            indices.size
+                        ) { put(it, indices[it]) }
+                    }
+                )
+            }
+
+            if (vertexCount > Byte.MAX_VALUE.toInt() and 0xff) {
+                return Pair(
+                    MGEnumArrayVertexConfiguration.SHORT,
+                    allocateShort(
+                        indices.size
+                    ).apply {
+                        fillBuffer(
+                            indices.size
+                        ) { put(it, indices[it].toShort()) }
+                    }
+                )
+            }
+
+            return Pair(
+                MGEnumArrayVertexConfiguration.BYTE,
+                allocateByte(
+                    indices.size
+                ).apply {
+                    fillBuffer(
+                        indices.size
+                    ) { put(it, indices[it].toByte()) }
+                }
+            )
+        }
+
+        inline fun fillBuffer(
+            indexCount: Int,
+            call: (Int) -> Unit
+        ) {
+            for (i in 0 until indexCount) {
+                call(i)
+            }
         }
 
     }

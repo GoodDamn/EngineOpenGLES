@@ -1,6 +1,7 @@
 package good.damn.engine.opengl.objects;
 
 import android.opengl.GLES30;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -66,14 +67,20 @@ public final class MGObject3d {
             vertices
         );
 
-        this.indices = MGUtilsBuffer.Companion.createInt(
-            indices
+        @Nullable final Pair<
+            MGEnumArrayVertexConfiguration,
+            Buffer
+        > pair = MGUtilsBuffer.Companion.createBufferIndicesDynamic(
+            indices,
+            vertices.length / 8
         );
+
+        this.indices = pair.second;
+        config = pair.first;
 
         this.texturesDiffuseFileName = texturesDiffuseFileName;
         this.texturesMetallicFileName = texturesMetallicFileName;
         this.texturesEmissiveFileName = texturesEmissiveFileName;
-        config = MGEnumArrayVertexConfiguration.INT;
     }
 
     static {

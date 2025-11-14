@@ -91,7 +91,7 @@ MGIListenerOnIntersectPosition {
     private val modelMatrixCamera = MGMatrixTranslate()
 
     private val mVerticesSky = MGArrayVertexConfigurator(
-        MGEnumArrayVertexConfiguration.INT
+        MGEnumArrayVertexConfiguration.SHORT
     )
 
     private val mVerticesDebugBox = MGArrayVertexConfigurator(
