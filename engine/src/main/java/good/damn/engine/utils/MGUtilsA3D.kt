@@ -20,7 +20,8 @@ object MGUtilsA3D {
     }
 
     inline fun createMergedVertexBuffer(
-        mesh: A3DMMesh
+        mesh: A3DMMesh,
+        uvScale: Float
     ) = MGUtilsArray.createMergedVertexBuffer(
         mesh.vertexBuffers[
             A3DEnumTypeBufferVertex.POSITION.type - 1
@@ -30,6 +31,7 @@ object MGUtilsA3D {
         ]!!.vertices,
         mesh.vertexBuffers[
             A3DEnumTypeBufferVertex.NORMAL1.type - 1
-        ]!!.vertices
+        ]!!.vertices,
+        uvScale
     )
 }

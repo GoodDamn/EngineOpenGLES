@@ -7,7 +7,8 @@ object MGUtilsArray {
     fun createMergedVertexBuffer(
         position: FloatArray,
         uv: FloatArray,
-        normal: FloatArray
+        normal: FloatArray,
+        uvScale: Float
     ): FloatBuffer {
         val vertexCount = position.size / 3
         val outSize = 8 * vertexCount
@@ -42,11 +43,11 @@ object MGUtilsArray {
             // UVs
             output.put(
                 ii++,
-                uv[iUv++]
+                uv[iUv++] * uvScale
             )
             output.put(
                 ii++,
-                uv[iUv++]
+                uv[iUv++] * uvScale
             )
 
 

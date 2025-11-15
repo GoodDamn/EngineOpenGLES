@@ -78,7 +78,8 @@ class MGTexture(
             )
 
             texture.setupTexture(
-                assetPath
+                assetPath,
+                GL_REPEAT
             )
 
             return texture

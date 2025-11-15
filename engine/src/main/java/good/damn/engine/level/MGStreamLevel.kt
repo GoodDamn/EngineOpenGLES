@@ -31,6 +31,8 @@ import java.util.LinkedList
 class MGStreamLevel {
 
     companion object {
+        private const val TAG = "MGStreamLevel"
+        
         fun readBin(
             input: InputStream,
             poolTextures: MGPoolTextures
@@ -46,7 +48,6 @@ class MGStreamLevel {
                 stream,
                 buffer
             )
-            val TAG = "MGStreamLevel"
             val libName = map.atlases[0].rects[0].libraryName
             val localPathLibTextures = "textures/$libName"
             val localPathLibObj = "objs/$libName"
@@ -58,14 +59,14 @@ class MGStreamLevel {
                 for (r in j.rects) {
                     if (poolTextures.get(r.name) == null) {
                         poolTextures.add(
-                            r.name,
+                            "${r.name}.png",
                             MGTexture.createDefaultAsset(
                                 "$localPathLibTextures/${r.name}.png",
                                 MGEnumTextureType.DIFFUSE
                             )
                         )
 
-                        val metallicName = "${r.name}_m"
+                        val metallicName = "${r.name}_m.jpg"
                         val metallic = "$localPathLibTextures/$metallicName.jpg"
                         MGUtilsFile.getPublicFile(
                             metallic
@@ -81,7 +82,7 @@ class MGStreamLevel {
                             }
                         }
 
-                        val emissiveName = "${r.name}_e"
+                        val emissiveName = "${r.name}_e.jpg"
                         val emissive = "$localPathLibTextures/$emissiveName.jpg"
                         MGUtilsFile.getPublicFile(
                             emissive
@@ -147,9 +148,9 @@ class MGStreamLevel {
                     mesh.getString(
                         "file"
                     ),
-                    diffuse,
-                    "${diffuse}_m",
-                    "${diffuse}_e",
+                    "${diffuse}.png",
+                    "${diffuse}_m.jpg",
+                    "${diffuse}_e.jpg",
                     LinkedList()
                 )
             }
@@ -248,7 +249,10 @@ class MGStreamLevel {
 
                 configurator.configure(
                     MGUtilsA3D.createMergedVertexBuffer(
-                        mesh
+                        mesh,
+                        if (it.value.fileNameA3d.contains("errain"))
+                            45f
+                        else 1f
                     ),
                     configIndices.buffer,
                     MGArrayVertexConfigurator.STRIDE

@@ -35,7 +35,8 @@ class MGImportA3D(
             arrayOf(
                 MGObject3d(
                     MGUtilsA3D.createMergedVertexBuffer(
-                        mesh
+                        mesh,
+                        1.0f
                     ),
                     configIndices.buffer,
                     MGUtilsA3D.createConfigurationArrayVertex(
