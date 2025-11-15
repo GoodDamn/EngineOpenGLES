@@ -1,11 +1,9 @@
 package good.damn.engine.level
 
-import android.opengl.GLES30
 import android.util.Log
 import good.damn.engine.models.MGMMeshInstance
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.MGArrayVertexInstanced
-import good.damn.engine.opengl.arrays.MGArrayVertexManager
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
@@ -15,11 +13,9 @@ import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.utils.MGUtilsA3D
-import good.damn.engine.utils.MGUtilsArray
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.ia3d.A3DImport
-import good.damn.ia3d.enums.A3DEnumTypeBufferVertex
 import good.damn.ia3d.stream.A3DInputStream
 import good.damn.mapimporter.MIImportMap
 import org.json.JSONObject
@@ -52,6 +48,11 @@ class MGStreamLevel {
             )
             val TAG = "MGStreamLevel"
             val libName = map.atlases[0].rects[0].libraryName
+            val localPathLibTextures = "textures/$libName"
+            val localPathLibObj = "objs/$libName"
+            val libJson = MGUtilsFile.getPublicFile(
+                "levels/$libName/library.txt"
+            )
 
             for (j in map.atlases) {
                 for (r in j.rects) {
@@ -59,17 +60,45 @@ class MGStreamLevel {
                         poolTextures.add(
                             r.name,
                             MGTexture.createDefaultAsset(
-                                "textures/$libName/${r.name}.png",
+                                "$localPathLibTextures/${r.name}.png",
                                 MGEnumTextureType.DIFFUSE
                             )
                         )
+
+                        val metallicName = "${r.name}_m"
+                        val metallic = "$localPathLibTextures/$metallicName.jpg"
+                        MGUtilsFile.getPublicFile(
+                            metallic
+                        ).run {
+                            if (exists()) {
+                                poolTextures.add(
+                                    metallicName,
+                                    MGTexture.createDefaultAsset(
+                                        metallic,
+                                        MGEnumTextureType.METALLIC
+                                    )
+                                )
+                            }
+                        }
+
+                        val emissiveName = "${r.name}_e"
+                        val emissive = "$localPathLibTextures/$emissiveName.jpg"
+                        MGUtilsFile.getPublicFile(
+                            emissive
+                        ).run {
+                            if (exists()) {
+                                poolTextures.add(
+                                    emissiveName,
+                                    MGTexture.createDefaultAsset(
+                                        emissive,
+                                        MGEnumTextureType.EMISSIVE
+                                    )
+                                )
+                            }
+                        }
                     }
                 }
             }
-
-            val libJson = MGUtilsFile.getPublicFile(
-                "textures/$libName/library.txt"
-            )
 
             if (!libJson.exists()) {
                 return null
@@ -108,15 +137,19 @@ class MGStreamLevel {
                     "mesh"
                 )
 
+                val diffuse = mesh.getJSONArray(
+                    "textures"
+                ).getJSONObject(0).getString(
+                    "diffuseMap"
+                )
+
                 meshes[name] = MGProp(
                     mesh.getString(
                         "file"
                     ),
-                    mesh.getJSONArray(
-                        "textures"
-                    ).getJSONObject(0).getString(
-                        "diffuseMap"
-                    ),
+                    diffuse,
+                    "${diffuse}_m",
+                    "${diffuse}_e",
                     LinkedList()
                 )
             }
@@ -173,7 +206,6 @@ class MGStreamLevel {
                 }
             }
 
-            val localPathLib = "textures/$libName"
             val arrayInstanced = Array<MGMMeshInstance?>(
                 meshes.size
             ) { null }
@@ -181,17 +213,8 @@ class MGStreamLevel {
             var currentInstance = 0
 
             meshes.forEach {
-                val folderName = it.value.fileNameA3d.run {
-                    val i = indexOf(".")
-                    return@run if (
-                        i == -1
-                    ) null else substring(
-                        0, i
-                    )
-                }
-
                 val file = MGUtilsFile.getPublicFile(
-                    "$localPathLib/$folderName/${it.value.fileNameA3d}"
+                    "$localPathLibObj/${it.value.fileNameA3d}"
                 )
 
                 if (!file.exists()) {
@@ -210,9 +233,9 @@ class MGStreamLevel {
                 val material = MGMaterial.createWithPath(
                     poolTextures,
                     it.value.fileNameDiffuse,
-                    null,
-                    null,
-                    localPathLib
+                    it.value.fileNameMetallic,
+                    it.value.fileNameEmissive,
+                    localPathLibTextures
                 )
 
                 val mesh = obj.meshes[0]
@@ -276,6 +299,8 @@ class MGStreamLevel {
         private data class MGProp(
             val fileNameA3d: String,
             val fileNameDiffuse: String,
+            val fileNameMetallic: String?,
+            val fileNameEmissive: String?,
             val matrices: LinkedList<
                 MGMatrixTransformationNormal<
                     MGMatrixScaleRotation
