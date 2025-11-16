@@ -350,7 +350,7 @@ MGIListenerOnIntersectPosition {
         )
 
         mTextureSky.setupTexture(
-            "textures/sky/night.png"
+            "textures/sky/sky.png"
         )
 
         MGObject3d.createFromAssets(
