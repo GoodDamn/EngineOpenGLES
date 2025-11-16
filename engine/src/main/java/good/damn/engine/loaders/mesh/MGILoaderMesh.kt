@@ -7,6 +7,8 @@ import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
+import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.engine.runnables.MGRunnableGenVertexArrayInstanced
 import good.damn.engine.utils.MGUtilsBuffer
 import java.nio.Buffer
 import java.nio.FloatBuffer
@@ -23,16 +25,11 @@ interface MGILoaderMesh<T> {
                     MGMatrixScaleRotation
                     >
                 >,
-            material: MGMaterial
+            material: MGMaterial,
+            handlerGl: MGHandlerGl
         ): MGMMeshInstance {
             val configurator = MGArrayVertexConfigurator(
                 config
-            )
-
-            configurator.configure(
-                bufferVertices,
-                bufferIndices,
-                MGArrayVertexConfigurator.STRIDE
             )
 
             val vertexArray = MGArrayVertexInstanced(
@@ -43,20 +40,16 @@ interface MGILoaderMesh<T> {
                 modelMatrices
             )
 
-            vertexArray.setupMatrixBuffer(
-                modelMatrices.size,
-                matrices.model,
-                matrices.rotation
-            )
-
-            vertexArray.setupInstanceDrawing(
-                MGArrayVertexInstanced.INDEX_ATTRIB_INSTANCE_MODEL,
-                MGArrayVertexInstanced.INDEX_BUFFER_MODEL
-            )
-
-            vertexArray.setupInstanceDrawing(
-                MGArrayVertexInstanced.INDEX_ATTRIB_INSTANCE_ROTATION,
-                MGArrayVertexInstanced.INDEX_BUFFER_ROTATION
+            handlerGl.post(
+                MGRunnableGenVertexArrayInstanced(
+                    vertexArray,
+                    configurator,
+                    bufferVertices,
+                    bufferIndices,
+                    modelMatrices,
+                    matrices.model,
+                    matrices.rotation
+                )
             )
 
             return MGMMeshInstance(

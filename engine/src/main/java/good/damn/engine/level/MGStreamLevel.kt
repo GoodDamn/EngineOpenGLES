@@ -1,5 +1,6 @@
 package good.damn.engine.level
 
+import android.util.Log
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.loaders.MGLoaderLevelMatrices
 import good.damn.engine.loaders.mesh.MGLoaderLevelMeshA3D
@@ -16,6 +17,7 @@ import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.mapimporter.MIImportMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.DataInputStream
 import java.io.InputStream
@@ -25,7 +27,7 @@ class MGStreamLevel {
 
     companion object {
         private const val TAG = "MGStreamLevel"
-        
+
         fun readBin(
             input: InputStream,
             poolTextures: MGPoolTextures,
@@ -43,15 +45,16 @@ class MGStreamLevel {
                 buffer
             )
 
+            val scope = CoroutineScope(
+                Dispatchers.IO
+            )
+
             val libName = map.atlases[0].rects[0].libraryName
             val localPathLibTextures = "textures/$libName"
             val localPathLibObj = "objs/$libName"
             val loaderLib = MGLoaderLevelLibrary(
+                scope,
                 "levels/$libName/library.txt"
-            )
-
-            val scope = CoroutineScope(
-                Dispatchers.IO
             )
 
             val loaderTextures = MGLoaderLevelTextures(
@@ -65,20 +68,21 @@ class MGStreamLevel {
                 map
             )
 
-            while (!loaderTextures.isLoadCompleted) { }
-
             if (!loaderLib.loadLibrary()) {
                 return null
             }
 
-            if (!loaderLib.readProps()) {
-                return null
-            }
+            loaderLib.readProps()
 
-            val loaderMatrices = MGLoaderLevelMatrices()
+            while (loaderLib.meshes == null) {}
+            val meshes = loaderLib.meshes!!
+
+            val loaderMatrices = MGLoaderLevelMatrices(
+                scope
+            )
 
             loaderMatrices.loadMatrices(
-                loaderLib.meshes!!,
+                meshes,
                 map
             )
 
@@ -90,20 +94,30 @@ class MGStreamLevel {
                 handlerGl
             )
 
+            while (
+               !(loaderMatrices.isLoadMatrices ||
+                  loaderTextures.isLoadCompleted
+                )
+            ) {}
+
             val arrayInstanced = arrayOfNulls<
                 MGMMeshInstance
-            >(loaderLib.meshes!!.size)
+            >(meshes.size)
 
             var currentInstance = 0
 
-            loaderLib.meshes!!.forEach {
-                arrayInstanced[
-                    currentInstance
-                ] = loaderMeshes.loadMeshInstance(
-                    it.value
-                )
-                currentInstance++
+            scope.launch {
+                meshes.forEach {
+                    arrayInstanced[
+                        currentInstance
+                    ] = loaderMeshes.loadMeshInstance(
+                        it.value
+                    )
+                    currentInstance++
+                }
             }
+
+            while (currentInstance < meshes.size) {}
 
             return arrayInstanced
         }

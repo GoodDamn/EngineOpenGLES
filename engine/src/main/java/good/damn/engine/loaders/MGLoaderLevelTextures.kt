@@ -19,35 +19,40 @@ class MGLoaderLevelTextures(
     private val localPathLibTextures: String
 ) {
 
-    var isLoadCompleted = false
-        private set
+    val isLoadCompleted: Boolean
+        get() = mCurrentIndex >= mCountTextures
+
+    private var mCurrentIndex = 0
+    private var mCountTextures = 0
 
     fun loadTextures(
         map: MIMMap
     ) {
-        isLoadCompleted = false
-        scope.launch {
-            for (j in map.atlases) {
-                for (atlas in j.rects) {
+        mCountTextures = 0
+        mCurrentIndex = 0
+        for (j in map.atlases) {
+            for (atlas in j.rects) {
+                scope.launch {
                     if (poolTextures.get(
                             atlas.name
                         ) != null
                     ) {
-                        continue
+                        mCurrentIndex++
+                        return@launch
                     }
+
                     loadMaps(
                         atlas
                     )
                 }
+                mCountTextures++
             }
-            isLoadCompleted = true
         }
     }
 
     private inline fun loadMaps(
         atlas: MIMAtlasRect
     ) {
-
         poolTexture(
             "${atlas.name}.png",
             MGEnumTextureType.DIFFUSE
@@ -62,7 +67,6 @@ class MGLoaderLevelTextures(
             "${atlas.name}_e.jpg",
             MGEnumTextureType.EMISSIVE
         )
-
     }
 
     private inline fun poolTexture(
@@ -72,7 +76,12 @@ class MGLoaderLevelTextures(
         val texturePath = "$localPathLibTextures/$textureName"
         val bitmap = MGUtilsBitmap.loadBitmap(
             texturePath
-        ) ?: return
+        )
+
+        if (bitmap == null) {
+            mCurrentIndex++
+            return
+        }
 
         val texture = MGTexture(
             textureType
@@ -87,10 +96,10 @@ class MGLoaderLevelTextures(
 
         poolTextures.add(
             textureName,
-            MGTexture(
-                textureType
-            )
+            texture
         )
+
+        mCurrentIndex++
     }
 
 }

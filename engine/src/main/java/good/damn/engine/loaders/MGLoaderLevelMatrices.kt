@@ -5,33 +5,45 @@ import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.mapimporter.models.MIMMap
 import good.damn.mapimporter.models.MIMProp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
-class MGLoaderLevelMatrices {
+class MGLoaderLevelMatrices(
+    private val scope: CoroutineScope
+) {
+
+    var isLoadMatrices = false
+        private set
 
     fun loadMatrices(
         meshes: Map<String, MGProp>,
         map: MIMMap
     ) {
-        for (prop in map.props) {
-            val mesh = meshes[
-                prop.name
-            ] ?: continue
+        isLoadMatrices = false
+        scope.launch {
+            for (prop in map.props) {
+                val mesh = meshes[
+                    prop.name
+                ] ?: continue
 
-            mesh.matrices.add(
-                MGMatrixTransformationNormal(
-                    MGMatrixScaleRotation()
-                ).apply {
-                    fillModelMatrix(
-                        model,
-                        prop
-                    )
+                mesh.matrices.add(
+                    MGMatrixTransformationNormal(
+                        MGMatrixScaleRotation()
+                    ).apply {
+                        fillModelMatrix(
+                            model,
+                            prop
+                        )
 
-                    normal.apply {
-                        calculateInvertModel()
-                        calculateNormalMatrix()
+                        normal.apply {
+                            calculateInvertModel()
+                            calculateNormalMatrix()
+                        }
                     }
-                }
-            )
+                )
+            }
+
+            isLoadMatrices = true
         }
     }
 

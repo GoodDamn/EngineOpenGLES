@@ -17,6 +17,9 @@ import good.damn.engine.runnables.MGRunnableImportFileTemp
 import good.damn.engine.ui.MGIClick
 import good.damn.ia3d.A3DImport
 import good.damn.ia3d.stream.A3DInputStream
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.DataInputStream
 import java.io.File
 import kotlin.experimental.or
@@ -40,6 +43,10 @@ MGIListenerOnGetUserContent {
 
     private val runnableImportA3D = MGRunnableImportA3D(
         importA3D
+    )
+
+    private val mScope = CoroutineScope(
+        Dispatchers.IO
     )
 
     private val mBuffer = ByteArray(8192)
@@ -115,9 +122,9 @@ MGIListenerOnGetUserContent {
         temp: File
     ) {
         runnableImportLevel.fileTemp = temp
-        handler.post(
-            runnableImportLevel
-        )
+        mScope.launch {
+            runnableImportLevel.run()
+        }
     }
 
     private fun createTempFile(
