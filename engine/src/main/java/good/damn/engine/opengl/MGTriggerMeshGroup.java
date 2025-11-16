@@ -6,6 +6,7 @@ import good.damn.engine.opengl.models.MGMPoolMesh;
 import good.damn.engine.opengl.models.MGMPoolMeshMutable;
 import good.damn.engine.opengl.objects.MGObject3d;
 import good.damn.engine.opengl.pools.MGPoolTextures;
+import good.damn.engine.opengl.thread.MGHandlerGl;
 import good.damn.engine.opengl.triggers.MGITrigger;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerGroup;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh;
@@ -79,7 +80,8 @@ public final class MGTriggerMeshGroup {
         @NonNull final MGObject3d[] objs,
         @NonNull final MGMPoolMeshMutable[] outPoolMeshes,
         @NonNull final MGITrigger triggerAction,
-        @NonNull final MGPoolTextures poolTextures
+        @NonNull final MGPoolTextures poolTextures,
+        @NonNull final MGHandlerGl handlerGl
     ) {
         @NonNull
         final MGTriggerMesh[] triggerMeshes = new MGTriggerMesh[
@@ -97,7 +99,8 @@ public final class MGTriggerMeshGroup {
                 obj,
                 poolTextures,
                 outPoolMeshes[i],
-                triggerAction
+                triggerAction,
+                handlerGl
             );
         }
 

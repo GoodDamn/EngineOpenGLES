@@ -23,6 +23,7 @@ import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal;
 import good.damn.engine.opengl.models.MGMPoolMesh;
 import good.damn.engine.opengl.models.MGMPoolMeshMutable;
 import good.damn.engine.opengl.pools.MGPoolTextures;
+import good.damn.engine.opengl.thread.MGHandlerGl;
 import good.damn.engine.opengl.triggers.callbacks.MGManagerTriggerStateCallback;
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
@@ -54,7 +55,8 @@ public final class MGTriggerMesh {
         @NonNull final MGObject3d obj,
         @NonNull final MGPoolTextures poolTextures,
         @NonNull final MGMPoolMeshMutable outPoolMesh,
-        @NonNull final MGITrigger triggerAction
+        @NonNull final MGITrigger triggerAction,
+        @NonNull final MGHandlerGl handlerGl
     ) {
         final MGArrayVertexManager arrayVertex = new MGArrayVertexManager(
             obj.config
@@ -71,7 +73,8 @@ public final class MGTriggerMesh {
             obj.texturesDiffuseFileName == null ? null : obj.texturesDiffuseFileName[0],
             obj.texturesMetallicFileName == null ? null : obj.texturesMetallicFileName[0],
             obj.texturesEmissiveFileName == null ? null : obj.texturesEmissiveFileName[0],
-            "textures"
+            "textures",
+            handlerGl
         );
 
         return createFromVertexArray(

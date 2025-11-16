@@ -12,7 +12,10 @@ import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.mapimporter.MIImportMap
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import java.io.BufferedReader
 import java.io.DataInputStream
 import java.io.InputStream
@@ -25,7 +28,8 @@ class MGStreamLevel {
         
         fun readBin(
             input: InputStream,
-            poolTextures: MGPoolTextures
+            poolTextures: MGPoolTextures,
+            handlerGl: MGHandlerGl
         ): Array<MGMMeshInstance?>? {
             val stream = DataInputStream(
                 input
@@ -46,7 +50,13 @@ class MGStreamLevel {
                 "levels/$libName/library.txt"
             )
 
+            val scope = CoroutineScope(
+                Dispatchers.IO
+            )
+
             val loaderTextures = MGLoaderLevelTextures(
+                scope,
+                handlerGl,
                 poolTextures,
                 localPathLibTextures
             )
@@ -54,6 +64,8 @@ class MGStreamLevel {
             loaderTextures.loadTextures(
                 map
             )
+
+            while (!loaderTextures.isLoadCompleted) { }
 
             if (!loaderLib.loadLibrary()) {
                 return null
@@ -74,7 +86,8 @@ class MGStreamLevel {
                 poolTextures,
                 buffer,
                 localPathLibObj,
-                localPathLibTextures
+                localPathLibTextures,
+                handlerGl
             )
 
             val arrayInstanced = arrayOfNulls<

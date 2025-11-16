@@ -4,6 +4,7 @@ import good.damn.engine.models.MGMMeshInstance
 import good.damn.engine.models.MGProp
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.utils.MGUtilsA3D
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.ia3d.A3DImport
@@ -14,7 +15,8 @@ class MGLoaderLevelMeshA3D(
     private val poolTextures: MGPoolTextures,
     private val buffer: ByteArray,
     private val localPathLibObj: String,
-    private val localPathLibTextures: String
+    private val localPathLibTextures: String,
+    private val handlerGl: MGHandlerGl
 ): MGILoaderMesh<MGProp> {
 
     override fun loadMeshInstance(
@@ -42,7 +44,8 @@ class MGLoaderLevelMeshA3D(
             it.fileNameDiffuse,
             it.fileNameMetallic,
             it.fileNameEmissive,
-            localPathLibTextures
+            localPathLibTextures,
+            handlerGl
         )
 
         val mesh = obj.meshes[0]

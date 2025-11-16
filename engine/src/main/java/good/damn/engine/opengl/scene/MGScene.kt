@@ -1,6 +1,6 @@
 package good.damn.engine.opengl.scene
 
-import android.opengl.GLES30
+import android.opengl.GLES30.GL_CLAMP_TO_EDGE
 import android.opengl.GLES30.GL_CW
 import android.opengl.GLES30.GL_REPEAT
 import android.opengl.GLSurfaceView
@@ -61,6 +61,7 @@ import good.damn.engine.ui.clicks.MGClickImport
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.ui.clicks.MGClickTriggerDrawingFlag
+import good.damn.engine.utils.MGUtilsBitmap
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -230,7 +231,8 @@ MGIListenerOnIntersectPosition {
         managerTrigger,
         meshes,
         mPoolTextures,
-        mPoolMeshes
+        mPoolMeshes,
+        mHandler
     )
 
     private val mLayerEditor = MGUILayerEditor(
@@ -238,7 +240,8 @@ MGIListenerOnIntersectPosition {
             mHandler,
             MGImportLevel(
                 meshesInstanced,
-                mPoolTextures
+                mPoolTextures,
+                mHandler
             ),
             MGImportMesh(
                 mPoolMeshes,
@@ -335,23 +338,42 @@ MGIListenerOnIntersectPosition {
             }
         }
 
-        mTextureMetallicNo.setupTexture(
-            "textures/black.jpg",
-            GL_REPEAT
-        )
+        MGUtilsBitmap.loadBitmap(
+            "textures/black.jpg"
+        )?.run {
+            mTextureMetallicNo.glTextureSetup(
+                this,
+                GL_REPEAT
+            )
+        }
 
-        mTextureEmissiveNo.setupTexture(
-            "textures/black.jpg",
-            GL_REPEAT
-        )
+        MGUtilsBitmap.loadBitmap(
+            "textures/black.jpg"
+        )?.run {
+            mTextureEmissiveNo.glTextureSetup(
+                this,
+                GL_REPEAT
+            )
+        }
 
-        mTextureDefault.setupTexture(
+        MGUtilsBitmap.loadBitmap(
             "textures/white.jpg"
-        )
+        )?.run {
+            mTextureDefault.glTextureSetup(
+                this,
+                GL_REPEAT
+            )
+        }
 
-        mTextureSky.setupTexture(
+
+        MGUtilsBitmap.loadBitmap(
             "textures/sky/sky.png"
-        )
+        )?.run {
+            mTextureSky.glTextureSetup(
+                this,
+                GL_CLAMP_TO_EDGE
+            )
+        }
 
         MGObject3d.createFromAssets(
             "objs/semi_sphere.obj"

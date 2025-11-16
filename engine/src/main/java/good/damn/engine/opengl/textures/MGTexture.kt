@@ -1,13 +1,12 @@
 package good.damn.engine.opengl.textures
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.opengl.GLES30.*
 import android.opengl.GLUtils
 import android.util.Log
-import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.MGIDrawerTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
-import good.damn.engine.opengl.shaders.MGIShaderTexture
 import good.damn.engine.opengl.shaders.MGIShaderTextureUniform
 import good.damn.engine.utils.MGUtilsFile
 import java.io.FileInputStream
@@ -68,44 +67,13 @@ class MGTexture(
                 MGEnumTextureType.DIFFUSE
             )
         }
-
-        fun createDefaultAsset(
-            assetPath: String,
-            type: MGEnumTextureType
-        ): MGTexture {
-            val texture = MGTexture(
-                type
-            )
-
-            texture.setupTexture(
-                assetPath,
-                GL_REPEAT
-            )
-
-            return texture
-        }
     }
 
-    fun setupTexture(
-        assetPath: String,
+
+    fun glTextureSetup(
+        bitmap: Bitmap,
         wrapMode: Int = GL_CLAMP_TO_EDGE
     ) {
-        val filePub = MGUtilsFile.getPublicFile(
-            assetPath
-        )
-
-        if (!filePub.exists()) {
-            throw Exception("No such file: ${filePub.path}")
-        }
-
-        val inp = FileInputStream(
-            filePub
-        )
-
-        val bitmap = BitmapFactory.decodeStream(
-            inp
-        )
-
         glGenTextures(
             1,
             mId,
