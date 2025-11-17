@@ -18,7 +18,8 @@ import java.io.FileInputStream
 class MGMaterial(
     var textureDiffuse: MGTexture,
     var textureMetallic: MGTexture,
-    var textureEmissive: MGTexture
+    var textureEmissive: MGTexture,
+    var textureOpacity: MGTexture
 ): MGIDrawerTexture<MGShaderMaterial> {
     var shine = 1f
 
@@ -28,6 +29,7 @@ class MGMaterial(
             textureNameDiffuse: String?,
             textureNameMetallic: String?,
             textureNameEmissive: String?,
+            textureNameOpacity: String?,
             localPath: String,
             handler: MGHandlerGl
         ) = MGMaterial(
@@ -52,6 +54,14 @@ class MGMaterial(
                 MGEnumTextureType.EMISSIVE,
                 textureNameEmissive,
                 poolTextures.defaultTextureEmissive,
+                localPath,
+                handler
+            ),
+            loadTextureCached(
+                poolTextures,
+                MGEnumTextureType.OPACITY,
+                textureNameOpacity,
+                poolTextures.defaultTextureOpacity,
                 localPath,
                 handler
             )
@@ -118,6 +128,9 @@ class MGMaterial(
         textureEmissive.draw(
             shader.textureEmissive
         )
+        textureOpacity.draw(
+            shader.textureOpacity
+        )
     }
 
     override fun unbind(
@@ -131,6 +144,9 @@ class MGMaterial(
         )
         textureEmissive.unbind(
             shader.textureEmissive
+        )
+        textureOpacity.unbind(
+            shader.textureOpacity
         )
     }
 

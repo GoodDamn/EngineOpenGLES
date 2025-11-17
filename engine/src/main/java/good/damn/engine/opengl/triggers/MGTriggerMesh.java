@@ -78,6 +78,7 @@ public final class MGTriggerMesh {
             obj.texturesDiffuseFileName == null ? null : obj.texturesDiffuseFileName[0],
             obj.texturesMetallicFileName == null ? null : obj.texturesMetallicFileName[0],
             obj.texturesEmissiveFileName == null ? null : obj.texturesEmissiveFileName[0],
+            null,
             "textures",
             handlerGl
         );

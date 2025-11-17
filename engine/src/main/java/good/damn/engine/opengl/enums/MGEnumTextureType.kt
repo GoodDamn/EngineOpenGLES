@@ -5,5 +5,6 @@ enum class MGEnumTextureType(
 ) {
     DIFFUSE(0),
     METALLIC(1),
-    EMISSIVE(2)
+    EMISSIVE(2),
+    OPACITY(3)
 }

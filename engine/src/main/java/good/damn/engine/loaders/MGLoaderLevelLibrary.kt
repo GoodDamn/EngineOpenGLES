@@ -90,9 +90,10 @@ class MGLoaderLevelLibrary(
                     mesh.getString(
                         "file"
                     ),
-                    "${diffuse}.png",
+                    "${diffuse}.jpg",
                     "${diffuse}_m.jpg",
                     "${diffuse}_e.jpg",
+                    "${diffuse}_o.jpg",
                     LinkedList()
                 )
             }

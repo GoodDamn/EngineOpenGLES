@@ -54,7 +54,7 @@ class MGLoaderLevelTextures(
         atlas: MIMAtlasRect
     ) {
         poolTexture(
-            "${atlas.name}.png",
+            "${atlas.name}.jpg",
             MGEnumTextureType.DIFFUSE
         )
 
@@ -66,6 +66,11 @@ class MGLoaderLevelTextures(
         poolTexture(
             "${atlas.name}_e.jpg",
             MGEnumTextureType.EMISSIVE
+        )
+
+        poolTexture(
+            "${atlas.name}_o.jpg",
+            MGEnumTextureType.OPACITY
         )
     }
 
