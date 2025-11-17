@@ -5,12 +5,9 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import java.nio.IntBuffer;
-
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
-import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration;
 import good.damn.engine.opengl.objects.MGObject3d;
 import good.damn.engine.opengl.MGVector;
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch;
@@ -27,6 +24,7 @@ import good.damn.engine.opengl.thread.MGHandlerGl;
 import good.damn.engine.opengl.triggers.callbacks.MGManagerTriggerStateCallback;
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
+import good.damn.engine.runnables.MGRunnableConfigVertexArray;
 import good.damn.engine.utils.MGUtilsAlgo;
 
 public final class MGTriggerMesh {
@@ -62,10 +60,17 @@ public final class MGTriggerMesh {
             obj.config
         );
 
-        arrayVertex.configure(
-            obj.vertices,
-            obj.indices,
-            MGArrayVertexConfigurator.STRIDE
+        handlerGl.post(
+            new MGRunnableConfigVertexArray(
+                arrayVertex,
+                obj.vertices,
+                obj.indices,
+                MGArrayVertexConfigurator.STRIDE
+            )
+        );
+
+        arrayVertex.keepBufferVertices(
+            obj.vertices
         );
 
         @NonNull final MGMaterial material = MGMaterial.Companion.createWithPath(
@@ -105,6 +110,8 @@ public final class MGTriggerMesh {
             vertexArray,
             outPoolMesh.pointMiddle
         );
+
+        vertexArray.unkeepBufferVertices();
 
         outPoolMesh.material = material;
         outPoolMesh.vertexArray = vertexArray;

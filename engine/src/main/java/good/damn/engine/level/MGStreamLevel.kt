@@ -105,20 +105,14 @@ class MGStreamLevel {
             >(meshes.size)
 
             var currentInstance = 0
-
-            scope.launch {
-                meshes.forEach {
-                    arrayInstanced[
-                        currentInstance
-                    ] = loaderMeshes.loadMeshInstance(
-                        it.value
-                    )
-                    currentInstance++
-                }
+            meshes.forEach {
+                arrayInstanced[
+                    currentInstance
+                ] = loaderMeshes.loadMeshInstance(
+                    it.value
+                )
+                currentInstance++
             }
-
-            while (currentInstance < meshes.size) {}
-
             return arrayInstanced
         }
 

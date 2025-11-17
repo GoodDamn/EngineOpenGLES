@@ -237,7 +237,6 @@ MGIListenerOnIntersectPosition {
 
     private val mLayerEditor = MGUILayerEditor(
         clickLoadUserContent = MGClickImport(
-            mHandler,
             MGImportLevel(
                 meshesInstanced,
                 mPoolTextures,

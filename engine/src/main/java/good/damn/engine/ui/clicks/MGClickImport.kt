@@ -25,7 +25,6 @@ import java.io.File
 import kotlin.experimental.or
 
 class MGClickImport(
-    private val handler: MGHandlerGl,
     importLevel: MGImportLevel,
     importMesh: MGImportMesh,
     importA3D: MGImportA3D,
@@ -90,9 +89,7 @@ MGIListenerOnGetUserContent {
 
             runnableImportA3D.asset = asset
             runnableImportA3D.fileName = userContent.fileName
-            handler.post(
-                runnableImportA3D
-            )
+            runnableImportA3D.run()
 
             return
         }
@@ -113,9 +110,7 @@ MGIListenerOnGetUserContent {
         temp: File
     ) {
         runnableImportMesh.fileTemp = temp
-        handler.post(
-            runnableImportMesh
-        )
+        runnableImportMesh.run()
     }
 
     private inline fun processLevel(
