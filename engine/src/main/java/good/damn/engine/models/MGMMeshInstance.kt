@@ -8,6 +8,7 @@ import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 data class MGMMeshInstance(
     val vertexArray: MGArrayVertexInstanced,
     val material: MGMaterial,
+    val enableCullFace: Boolean,
     val matrices: Array<
         MGMatrixTransformationNormal<
             MGMatrixScaleRotation

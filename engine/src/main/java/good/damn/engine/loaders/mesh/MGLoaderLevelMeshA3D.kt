@@ -65,7 +65,8 @@ class MGLoaderLevelMeshA3D(
             configIndices.buffer,
             it.matrices.toTypedArray(),
             material,
-            handlerGl
+            handlerGl,
+            it.enableCullFace
         )
     }
 }

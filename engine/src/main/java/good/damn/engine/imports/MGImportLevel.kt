@@ -22,6 +22,7 @@ class MGImportLevel(
             MGFlowLevel {
                 meshesInstanced.add(
                     MGDrawerMeshInstanced(
+                        it.enableCullFace,
                         it.vertexArray,
                         it.material
                     )

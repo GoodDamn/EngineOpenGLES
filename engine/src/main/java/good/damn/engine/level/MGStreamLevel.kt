@@ -56,7 +56,8 @@ class MGStreamLevel {
             val localPathLibObj = "objs/$libName"
             val loaderLib = MGLoaderLevelLibrary(
                 scope,
-                "levels/$libName/library.txt"
+                "levels/$libName/library.txt",
+                "levels/$libName/culling.txt"
             )
 
             val loaderTextures = MGLoaderLevelTextures(
@@ -75,6 +76,8 @@ class MGStreamLevel {
             }
 
             loaderLib.readProps()
+
+            loaderLib.loadNonCullFaceList()
 
             while (loaderLib.meshes == null) {}
             val meshes = loaderLib.meshes!!

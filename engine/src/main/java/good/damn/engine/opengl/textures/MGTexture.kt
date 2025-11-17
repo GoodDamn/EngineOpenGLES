@@ -88,7 +88,7 @@ class MGTexture(
         glTexParameteri(
             GL_TEXTURE_2D,
             GL_TEXTURE_MIN_FILTER,
-            GL_LINEAR_MIPMAP_LINEAR
+            GL_NEAREST
         )
 
         glTexParameteri(
@@ -116,9 +116,9 @@ class MGTexture(
             0
         )
 
-        glGenerateMipmap(
+        /*glGenerateMipmap(
             GL_TEXTURE_2D
-        )
+        )*/
 
         val error = glGetError()
         if (error != GL_NO_ERROR) {

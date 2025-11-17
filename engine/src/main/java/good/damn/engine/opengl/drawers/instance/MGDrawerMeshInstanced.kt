@@ -8,6 +8,7 @@ import good.damn.engine.opengl.shaders.MGIShaderTextureUniform
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 
 class MGDrawerMeshInstanced(
+    private val enableCullFace: Boolean,
     private val vertexArray: MGArrayVertexInstanced,
     private val material: MGMaterial
 ) {
@@ -36,6 +37,16 @@ class MGDrawerMeshInstanced(
     }
 
     fun drawVertices() {
+        if (enableCullFace) {
+            GLES30.glEnable(
+                GLES30.GL_CULL_FACE
+            )
+        } else {
+            GLES30.glDisable(
+                GLES30.GL_CULL_FACE
+            )
+        }
+
         vertexArray.drawInstanced(
             mode
         )

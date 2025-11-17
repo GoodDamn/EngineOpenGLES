@@ -26,7 +26,8 @@ interface MGILoaderMesh<T> {
                     >
                 >,
             material: MGMaterial,
-            handlerGl: MGHandlerGl
+            handlerGl: MGHandlerGl,
+            enableCullFace: Boolean
         ): MGMMeshInstance {
             val configurator = MGArrayVertexConfigurator(
                 config
@@ -55,6 +56,7 @@ interface MGILoaderMesh<T> {
             return MGMMeshInstance(
                 vertexArray,
                 material,
+                enableCullFace,
                 modelMatrices
             )
         }
