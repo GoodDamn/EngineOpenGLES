@@ -1,20 +1,16 @@
 package good.damn.engine.runnables
 
-import good.damn.engine.opengl.MGObject3d
+import android.opengl.GLES30
+import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.MGTriggerMeshGroup
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
-import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
-import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
-import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
-import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.models.MGMPoolMesh
 import good.damn.engine.opengl.models.MGMPoolMeshMutable
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.shaders.MGShaderDefault
-import good.damn.engine.opengl.shaders.MGShaderSingleMode
+import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.MGIMatrixTrigger
 import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGTriggerMesh
@@ -26,7 +22,8 @@ class MGCallbackModelSpawn(
     private val managerTrigger: MGManagerTriggerMesh,
     private val listMeshes: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>,
     private val poolTextures: MGPoolTextures,
-    private val poolMeshes: MGPoolMeshesStatic
+    private val poolMeshes: MGPoolMeshesStatic,
+    private val handlerGl: MGHandlerGl
 ): MGICallbackModel {
 
     override fun onGetObjectsCached(
@@ -69,7 +66,8 @@ class MGCallbackModelSpawn(
                 objs[0],
                 poolTextures,
                 outPoolMesh,
-                triggerAction
+                triggerAction,
+                handlerGl
             ).run {
                 poolMeshes[fileName] = arrayOf(
                     outPoolMesh.toImmutable()
@@ -87,7 +85,8 @@ class MGCallbackModelSpawn(
             objs,
             outPoolMeshes,
             triggerAction,
-            poolTextures
+            poolTextures,
+            handlerGl
         ).run {
             poolMeshes[fileName] = Array(
                 outPoolMeshes.size

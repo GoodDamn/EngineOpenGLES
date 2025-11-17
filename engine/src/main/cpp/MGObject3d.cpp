@@ -256,7 +256,7 @@ jobjectArray processTextures(
 
 extern "C"
 JNIEXPORT jobjectArray JNICALL
-Java_good_damn_engine_opengl_MGObject3d_createFromPath(
+Java_good_damn_engine_opengl_objects_MGObject3d_createFromPath(
     JNIEnv *env,
     jclass clazz,
     jbyteArray path
@@ -294,7 +294,7 @@ Java_good_damn_engine_opengl_MGObject3d_createFromPath(
     }
 
     jclass classElement = env->FindClass(
-        "good/damn/engine/opengl/MGObject3d"
+        "good/damn/engine/opengl/objects/MGObject3d"
     );
 
     std::list<MGMesh*> meshes;

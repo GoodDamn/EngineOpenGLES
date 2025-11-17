@@ -35,7 +35,7 @@ class MGUtilsAsset {
 
             return String(
                 b,
-                MGEngine.CHARSET
+                MGEngine.getCharsetUTF8()
             )
         }
 

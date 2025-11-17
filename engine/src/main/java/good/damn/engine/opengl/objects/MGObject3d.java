@@ -1,29 +1,34 @@
-package good.damn.engine.opengl;
+package good.damn.engine.opengl.objects;
 
-import android.util.Log;
+import android.opengl.GLES30;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.File;
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import good.damn.engine.MGEngine;
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration;
 import good.damn.engine.utils.MGUtilsBuffer;
 import good.damn.engine.utils.MGUtilsFile;
 
 public final class MGObject3d {
 
-    private static final Charset PATH_CHARSET = StandardCharsets.UTF_8;
-
     @NonNull
     public final FloatBuffer vertices;
 
     @NonNull
-    public final IntBuffer indices;
+    public final Buffer indices;
+
+    @NonNull
+    public final MGEnumArrayVertexConfiguration config;
 
     @Nullable
     public final String[] texturesDiffuseFileName;
@@ -33,6 +38,23 @@ public final class MGObject3d {
 
     @Nullable
     public final String[] texturesEmissiveFileName;
+
+    public MGObject3d(
+        @NonNull final FloatBuffer vertices,
+        @NonNull final Buffer indices,
+        @NonNull final MGEnumArrayVertexConfiguration config,
+        @Nullable final String[] texturesDiffuseFileName,
+        @Nullable final String[] texturesMetallicFileName,
+        @Nullable final String[] texturesEmissiveFileName
+    ) {
+        this.vertices = vertices;
+        this.indices = indices;
+        this.config = config;
+
+        this.texturesDiffuseFileName = texturesDiffuseFileName;
+        this.texturesMetallicFileName = texturesMetallicFileName;
+        this.texturesEmissiveFileName = texturesEmissiveFileName;
+    }
 
     public MGObject3d(
         @NonNull final float[] vertices,
@@ -45,9 +67,16 @@ public final class MGObject3d {
             vertices
         );
 
-        this.indices = MGUtilsBuffer.Companion.createInt(
-            indices
+        @Nullable final Pair<
+            MGEnumArrayVertexConfiguration,
+            Buffer
+        > pair = MGUtilsBuffer.Companion.createBufferIndicesDynamic(
+            indices,
+            vertices.length / 8
         );
+
+        this.indices = pair.second;
+        config = pair.first;
 
         this.texturesDiffuseFileName = texturesDiffuseFileName;
         this.texturesMetallicFileName = texturesMetallicFileName;
@@ -83,7 +112,7 @@ public final class MGObject3d {
     ) {
         return createFromPath(
             path.getBytes(
-                PATH_CHARSET
+                MGEngine.Companion.getCharsetUTF8()
             )
         );
     }

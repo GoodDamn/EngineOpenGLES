@@ -1,17 +1,18 @@
 package good.damn.engine.opengl.scene
 
-import android.opengl.GLES30.GL_CCW
+import android.opengl.GLES30.GL_CLAMP_TO_EDGE
 import android.opengl.GLES30.GL_CW
 import android.opengl.GLES30.GL_REPEAT
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
+import good.damn.engine.imports.MGImportA3D
 import good.damn.engine.imports.MGImportLevel
 import good.damn.engine.imports.MGImportMesh
 import good.damn.engine.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.MGArrayVertex
-import good.damn.engine.opengl.MGObject3d
+import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.MGVector
+import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
@@ -22,7 +23,6 @@ import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
-import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
 import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
 import good.damn.engine.opengl.drawers.modes.MGDrawModeOpaque
 import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleMap
@@ -31,18 +31,12 @@ import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShaderNormals
 import good.damn.engine.opengl.entities.MGLight
-import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.enums.MGEnumTextureType
-import good.damn.engine.opengl.generators.MGGeneratorLandscape
-import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeDisplace
-import good.damn.engine.opengl.iterators.vertex.MGVertexIteratorLandscapeNormal
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
-import good.damn.engine.opengl.maps.MGMapDisplace
-import good.damn.engine.opengl.maps.MGMapNormal
 import good.damn.engine.opengl.matrices.MGMatrixScale
-import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
@@ -67,6 +61,7 @@ import good.damn.engine.ui.clicks.MGClickImport
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.ui.clicks.MGClickTriggerDrawingFlag
+import good.damn.engine.utils.MGUtilsBitmap
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -95,14 +90,18 @@ MGIListenerOnIntersectPosition {
         invalidatePosition()
     }
     private val modelMatrixCamera = MGMatrixTranslate()
-    private val modelMatrixLandscape = MGMatrixTransformationNormal(
-        MGMatrixTranslate()
+
+    private val mVerticesSky = MGArrayVertexConfigurator(
+        MGEnumArrayVertexConfiguration.SHORT
     )
 
-    private val mVerticesSky = MGArrayVertex()
-    private val mVerticesLandscape = MGArrayVertex()
-    private val mVerticesDebugBox = MGArrayVertex()
-    private val mVerticesDebugSphere = MGArrayVertex()
+    private val mVerticesDebugBox = MGArrayVertexConfigurator(
+        MGEnumArrayVertexConfiguration.BYTE
+    )
+
+    private val mVerticesDebugSphere = MGArrayVertexConfigurator(
+        MGEnumArrayVertexConfiguration.BYTE
+    )
 
     private val mDrawerDebugBox = MGDrawerVertexArray(
         mVerticesDebugBox
@@ -112,19 +111,11 @@ MGIListenerOnIntersectPosition {
         mVerticesDebugSphere
     )
 
-    private val mGeneratorLandscape = MGGeneratorLandscape(
-        mVerticesLandscape
-    )
-
     private val mTextureSky = MGTexture(
         MGEnumTextureType.DIFFUSE
     )
 
-    private val mTextureInteract = MGTexture(
-        MGEnumTextureType.DIFFUSE
-    )
-
-    private val mTextureLandscape = MGTexture(
+    private val mTextureDefault = MGTexture(
         MGEnumTextureType.DIFFUSE
     )
 
@@ -136,34 +127,16 @@ MGIListenerOnIntersectPosition {
         MGEnumTextureType.EMISSIVE
     )
 
-    private val materialLandscape = MGMaterial(
-        mTextureLandscape,
-        mTextureMetallicNo,
-        mTextureEmissiveNo
-    )
-
     private val mBridgeMatrix = MGBridgeRayIntersect()
 
-    private val meshLandscape = MGDrawerMeshSwitchNormals(
-        mVerticesLandscape,
-        MGDrawerPositionEntity(
-            modelMatrixLandscape.model
-        ),
-        GL_CW,
-        modelMatrixLandscape.normal
-    ).run {
-        MGDrawerMeshMaterialSwitch(
-            materialLandscape,
-            this
-        )
-    }
-
     private val meshSky = MGDrawerMeshSwitch(
-        mVerticesSky,
+        MGDrawerVertexArray(
+            mVerticesSky
+        ),
         MGDrawerPositionEntity(
             modelMatrixSky
         ),
-        GL_CCW
+        GL_CW
     ).run {
         MGDrawerMeshTextureSwitch(
             mTextureSky,
@@ -193,9 +166,7 @@ MGIListenerOnIntersectPosition {
 
     private val meshes = ConcurrentLinkedQueue<
         MGDrawerMeshMaterialSwitch
-    >().apply {
-        add(meshLandscape)
-    }
+    >()
 
     private val meshesInstanced = ConcurrentLinkedQueue<
         MGDrawerMeshInstanced
@@ -246,34 +217,41 @@ MGIListenerOnIntersectPosition {
     )
 
     private val mPoolTextures = MGPoolTextures(
-        mTextureInteract,
+        mTextureDefault,
         mTextureMetallicNo,
         mTextureEmissiveNo
     )
 
     private val mPoolMeshes = MGPoolMeshesStatic()
+    private val mCallbackModelSpawn = MGCallbackModelSpawn(
+        mBridgeMatrix,
+        MGTriggerSimple(
+            mDrawerLightDirectional
+        ),
+        managerTrigger,
+        meshes,
+        mPoolTextures,
+        mPoolMeshes,
+        mHandler
+    )
 
     private val mLayerEditor = MGUILayerEditor(
         clickLoadUserContent = MGClickImport(
             mHandler,
             MGImportLevel(
                 meshesInstanced,
-                mPoolTextures
+                mPoolTextures,
+                mHandler
             ),
             MGImportMesh(
                 mPoolMeshes,
-                MGCallbackModelSpawn(
-                    mBridgeMatrix,
-                    MGTriggerSimple(
-                        mDrawerLightDirectional
-                    ),
-                    managerTrigger,
-                    meshes,
-                    mPoolTextures,
-                    mPoolMeshes
-                )
+                mCallbackModelSpawn
             ),
-            requesterUserContent,
+            MGImportA3D(
+                mPoolMeshes,
+                mCallbackModelSpawn
+            ),
+            requesterUserContent
         ),
         clickPlaceMesh = MGClickPlaceMesh(
             mBridgeMatrix
@@ -315,7 +293,7 @@ MGIListenerOnIntersectPosition {
                         MGTriggerMethodBox.MAX
                     )
                 ),
-                MGUtilsBuffer.createInt(
+                MGUtilsBuffer.createByte(
                     MGUtilsVertIndices.createCubeIndices()
                 ),
                 stride = 3 * 4
@@ -324,13 +302,13 @@ MGIListenerOnIntersectPosition {
 
         mVerticesDebugSphere.apply {
             val obj = MGUtilsVertIndices.createSphere(
-                36
+                23
             )
 
             configure(
                 obj.second,
                 obj.first,
-                stride = 3 * 4
+                stride = 3 * 4,
             )
         }
 
@@ -360,80 +338,52 @@ MGIListenerOnIntersectPosition {
             }
         }
 
-        mTextureMetallicNo.setupTexture(
-            "textures/black.jpg",
-            GL_REPEAT
-        )
+        MGUtilsBitmap.loadBitmap(
+            "textures/black.jpg"
+        )?.run {
+            mTextureMetallicNo.glTextureSetup(
+                this,
+                GL_REPEAT
+            )
+        }
 
-        mTextureEmissiveNo.setupTexture(
-            "textures/black.jpg",
-            GL_REPEAT
-        )
+        MGUtilsBitmap.loadBitmap(
+            "textures/black.jpg"
+        )?.run {
+            mTextureEmissiveNo.glTextureSetup(
+                this,
+                GL_REPEAT
+            )
+        }
 
-        mTextureInteract.setupTexture(
-            "textures/rock.jpg"
-        )
+        MGUtilsBitmap.loadBitmap(
+            "textures/white.jpg"
+        )?.run {
+            mTextureDefault.glTextureSetup(
+                this,
+                GL_REPEAT
+            )
+        }
 
-        mTextureLandscape.setupTexture(
-            "textures/terrain.png",
-            GL_REPEAT
-        )
 
-        mTextureSky.setupTexture(
-            "textures/sky/night.png"
-        )
+        MGUtilsBitmap.loadBitmap(
+            "textures/sky/sky.png"
+        )?.run {
+            mTextureSky.glTextureSetup(
+                this,
+                GL_CLAMP_TO_EDGE
+            )
+        }
 
         MGObject3d.createFromAssets(
             "objs/semi_sphere.obj"
         )?.get(0)?.run {
             mVerticesSky.configure(
                 vertices,
-                indices
+                indices,
+                MGArrayVertexConfigurator.STRIDE
             )
         }
-
-        val landSize = 1024
-        mGeneratorLandscape.apply {
-            setResolution(
-                landSize,
-                landSize
-            )
-
-            val mapNormal = MGMapNormal.createFromAssets(
-                "maps/normal/terrain_normal.png"
-            )
-
-            forEachVertex(
-                MGVertexIteratorLandscapeNormal(
-                    mapNormal
-                )
-            )
-            mapNormal.destroy()
-
-            val mapHeight = MGMapDisplace.createFromAssets(
-                "maps/terrain_height.png"
-            )
-
-            forEachVertex(
-                MGVertexIteratorLandscapeDisplace(
-                    mapHeight,
-                    255 * 50,
-                    landSize,
-                    landSize
-                )
-            )
-            mapHeight.destroy()
-        }
-
-        val off = mGeneratorLandscape.actualWidth / -2f
-
-        modelMatrixLandscape.model.setPosition(
-            off,
-            -5500f,
-            off
-        )
-
-        modelMatrixLandscape.model.invalidatePosition()
 
         modelMatrixCamera.setPosition(
             0f, 0f, 0f

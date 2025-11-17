@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.entities
 
+import android.graphics.BitmapFactory
 import android.opengl.GLES30
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.MGIDrawerTexture
@@ -8,6 +9,11 @@ import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGIShaderTexture
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.engine.runnables.MGRunnableGenTexture
+import good.damn.engine.utils.MGUtilsBitmap
+import good.damn.engine.utils.MGUtilsFile
+import java.io.FileInputStream
 
 class MGMaterial(
     var textureDiffuse: MGTexture,
@@ -21,25 +27,33 @@ class MGMaterial(
             poolTextures: MGPoolTextures,
             textureNameDiffuse: String?,
             textureNameMetallic: String?,
-            textureNameEmissive: String?
+            textureNameEmissive: String?,
+            localPath: String,
+            handler: MGHandlerGl
         ) = MGMaterial(
             loadTextureCached(
                 poolTextures,
                 MGEnumTextureType.DIFFUSE,
                 textureNameDiffuse,
-                poolTextures.defaultTexture
+                poolTextures.defaultTexture,
+                localPath,
+                handler
             ),
             loadTextureCached(
                 poolTextures,
                 MGEnumTextureType.METALLIC,
                 textureNameMetallic,
-                poolTextures.defaultTextureMetallic
+                poolTextures.defaultTextureMetallic,
+                localPath,
+                handler
             ),
             loadTextureCached(
                 poolTextures,
                 MGEnumTextureType.EMISSIVE,
                 textureNameEmissive,
-                poolTextures.defaultTextureEmissive
+                poolTextures.defaultTextureEmissive,
+                localPath,
+                handler
             )
         )
 
@@ -47,7 +61,9 @@ class MGMaterial(
             poolTextures: MGPoolTextures,
             textureType: MGEnumTextureType,
             textureName: String?,
-            defaultTexture: MGTexture
+            defaultTexture: MGTexture,
+            localPath: String,
+            handler: MGHandlerGl
         ): MGTexture {
             if (textureName == null) {
                 return defaultTexture
@@ -61,19 +77,27 @@ class MGMaterial(
                 return texture
             }
 
-            try {
-                texture = MGTexture.createDefaultAsset(
-                    textureName,
-                    textureType
-                )
+            val bitmap = MGUtilsBitmap.loadBitmap(
+                "$localPath/$textureName"
+            ) ?: return defaultTexture
 
-                poolTextures.add(
-                    textureName,
-                    texture
-                )
-            } catch (_: Exception) { }
+            texture = MGTexture(
+                textureType
+            )
 
-            return texture ?: defaultTexture
+            handler.post(
+                MGRunnableGenTexture(
+                    texture,
+                    bitmap
+                )
+            )
+
+            poolTextures.add(
+                textureName,
+                texture
+            )
+
+            return texture
         }
     }
 

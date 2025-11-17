@@ -1,6 +1,5 @@
 package good.damn.engine.opengl.pools
 
-import good.damn.engine.opengl.MGArrayVertex
 import good.damn.engine.opengl.models.MGMPoolMesh
 
 class MGPoolMeshesStatic {
