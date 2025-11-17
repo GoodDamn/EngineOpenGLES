@@ -1,6 +1,7 @@
 package good.damn.engine.level
 
 import android.util.Log
+import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.loaders.MGLoaderLevelMatrices
 import good.damn.engine.loaders.mesh.MGLoaderLevelMeshA3D
@@ -29,10 +30,11 @@ class MGStreamLevel {
         private const val TAG = "MGStreamLevel"
 
         fun readBin(
+            flow: MGFlowLevel<MGMMeshInstance>,
             input: InputStream,
             poolTextures: MGPoolTextures,
             handlerGl: MGHandlerGl
-        ): Array<MGMMeshInstance?>? {
+        ) {
             val stream = DataInputStream(
                 input
             )
@@ -69,7 +71,7 @@ class MGStreamLevel {
             )
 
             if (!loaderLib.loadLibrary()) {
-                return null
+                return
             }
 
             loaderLib.readProps()
@@ -100,20 +102,15 @@ class MGStreamLevel {
                 )
             ) {}
 
-            val arrayInstanced = arrayOfNulls<
-                MGMMeshInstance
-            >(meshes.size)
-
-            var currentInstance = 0
             meshes.forEach {
-                arrayInstanced[
-                    currentInstance
-                ] = loaderMeshes.loadMeshInstance(
-                    it.value
-                )
-                currentInstance++
+                scope.launch {
+                    val v = loaderMeshes.loadMeshInstance(
+                        it.value
+                    ) ?: return@launch
+
+                    flow.emit(v)
+                }
             }
-            return arrayInstanced
         }
 
         fun read(

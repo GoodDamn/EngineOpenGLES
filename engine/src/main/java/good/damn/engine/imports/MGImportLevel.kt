@@ -1,5 +1,6 @@
 package good.damn.engine.imports
 
+import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.level.MGStreamLevel
 import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
 import good.damn.engine.opengl.pools.MGPoolTextures
@@ -18,21 +19,20 @@ class MGImportLevel(
         it: File
     ) {
         MGStreamLevel.readBin(
+            MGFlowLevel {
+                meshesInstanced.add(
+                    MGDrawerMeshInstanced(
+                        it.vertexArray,
+                        it.material
+                    )
+                )
+            },
             FileInputStream(
                 it
             ),
             poolTextures,
             handlerGl
-        )?.forEach {
-            it?.run {
-                meshesInstanced.add(
-                    MGDrawerMeshInstanced(
-                        vertexArray,
-                        material
-                    )
-                )
-            }
-        }
+        )
     }
 
 }
