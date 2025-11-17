@@ -5,7 +5,6 @@ import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
-import good.damn.engine.opengl.drawers.MGDrawerModeSwitch
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.matrices.MGMatrixNormal

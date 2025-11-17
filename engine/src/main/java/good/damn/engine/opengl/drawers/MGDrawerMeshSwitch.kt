@@ -1,37 +1,49 @@
 package good.damn.engine.opengl.drawers
 
-import android.opengl.GLES30
+import android.opengl.GLES30.GL_CW
+import android.opengl.GLES30.GL_LINES
+import android.opengl.GLES30.GL_TRIANGLES
+import android.opengl.GLES30.glFrontFace
 import good.damn.engine.opengl.enums.MGEnumDrawMode
-import good.damn.engine.opengl.matrices.MGMatrixNormal
-import good.damn.engine.opengl.shaders.MGIShader
-import good.damn.engine.opengl.shaders.MGIShaderCamera
 import good.damn.engine.opengl.shaders.MGIShaderModel
 import good.damn.engine.opengl.shaders.MGIShaderNormal
-import good.damn.engine.opengl.shaders.MGIShaderTexture
-import good.damn.engine.opengl.shaders.MGIShaderTextureUniform
 
 open class MGDrawerMeshSwitch(
-    private val drawSwitch: MGDrawerModeSwitch,
+    private val vertexArray: MGDrawerVertexArray,
     private val drawEntity: MGDrawerPositionEntity,
-    private val normals: MGMatrixNormal?
-): MGIDrawer {
+    private val frontFace: Int = GL_CW,
+): MGIDrawerShader<MGIShaderModel> {
+
+    private var modeVertex = GL_TRIANGLES
 
     fun switchDrawMode(
-        shader: MGIShaderModel,
-        shaderNormals: MGIShaderNormal?,
-        shaderTexture: MGIShaderTextureUniform?,
         drawMode: MGEnumDrawMode
     ) {
-        drawEntity.shader = shader
-        normals?.shader = shaderNormals
-        drawSwitch.switchDrawMode(
-            drawMode,
-            shaderTexture
-        )
+        modeVertex = when (
+            drawMode
+        ) {
+            MGEnumDrawMode.WIREFRAME -> GL_LINES
+            else -> GL_TRIANGLES
+        }
     }
 
-    override fun draw() {
-        normals?.draw()
-        drawEntity.draw()
+    open fun drawNormals(
+        shader: MGIShaderNormal
+    ) = Unit
+
+    override fun draw(
+        shader: MGIShaderModel
+    ) {
+        glFrontFace(
+            frontFace
+        )
+
+        drawEntity.draw(
+            shader
+        )
+
+        vertexArray.draw(
+            modeVertex
+        )
     }
 }

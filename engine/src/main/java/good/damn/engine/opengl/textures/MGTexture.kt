@@ -1,20 +1,19 @@
 package good.damn.engine.opengl.textures
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.opengl.GLES30.*
 import android.opengl.GLUtils
 import android.util.Log
-import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.engine.opengl.drawers.MGIDrawerTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
-import good.damn.engine.opengl.shaders.MGIShaderTexture
 import good.damn.engine.opengl.shaders.MGIShaderTextureUniform
 import good.damn.engine.utils.MGUtilsFile
 import java.io.FileInputStream
 
 class MGTexture(
-    var shader: MGIShaderTextureUniform,
     type: MGEnumTextureType
-): MGIDrawer {
+): MGIDrawerTexture<MGIShaderTextureUniform> {
 
     private var mId = intArrayOf(1)
 
@@ -68,45 +67,13 @@ class MGTexture(
                 MGEnumTextureType.DIFFUSE
             )
         }
-
-        fun createDefaultAsset(
-            fileName: String,
-            type: MGEnumTextureType,
-            shader: MGIShaderTexture
-        ): MGTexture {
-            val texture = MGTexture(
-                shader,
-                type
-            )
-
-            texture.setupTexture(
-                "textures/$fileName"
-            )
-
-            return texture
-        }
     }
 
-    fun setupTexture(
-        assetPath: String,
+
+    fun glTextureSetup(
+        bitmap: Bitmap,
         wrapMode: Int = GL_CLAMP_TO_EDGE
     ) {
-        val filePub = MGUtilsFile.getPublicFile(
-            assetPath
-        )
-
-        if (!filePub.exists()) {
-            throw Exception("No such file: ${filePub.path}")
-        }
-
-        val inp = FileInputStream(
-            filePub
-        )
-
-        val bitmap = BitmapFactory.decodeStream(
-            inp
-        )
-
         glGenTextures(
             1,
             mId,
@@ -171,7 +138,9 @@ class MGTexture(
         }
     }
 
-    fun unbind() {
+    override fun unbind(
+        shader: MGIShaderTextureUniform
+    ) {
         glActiveTexture(
             GL_TEXTURE0 + mActiveTexture
         )
@@ -187,7 +156,9 @@ class MGTexture(
         )
     }
 
-    override fun draw() {
+    override fun draw(
+        shader: MGIShaderTextureUniform
+    ) {
         glActiveTexture(
             GL_TEXTURE0 + mActiveTexture
         )

@@ -1,34 +1,133 @@
 package good.damn.engine.level
 
-import android.opengl.GLES30
+import android.util.Log
+import good.damn.engine.loaders.MGLoaderLevelLibrary
+import good.damn.engine.loaders.MGLoaderLevelMatrices
+import good.damn.engine.loaders.mesh.MGLoaderLevelMeshA3D
+import good.damn.engine.loaders.MGLoaderLevelTextures
+import good.damn.engine.loaders.mesh.MGILoaderMesh
 import good.damn.engine.models.MGMMeshInstance
-import good.damn.engine.opengl.MGArrayVertex
-import good.damn.engine.opengl.MGArrayVertexInstanced
-import good.damn.engine.opengl.MGObject3d
+import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
-import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
-import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.shaders.MGIShaderNormal
-import good.damn.engine.opengl.shaders.MGShaderMaterial
-import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
-import good.damn.engine.utils.MGUtilsBuffer
+import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.mapimporter.MIImportMap
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.BufferedReader
+import java.io.DataInputStream
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.nio.FloatBuffer
 
 class MGStreamLevel {
 
     companion object {
+        private const val TAG = "MGStreamLevel"
+
+        fun readBin(
+            input: InputStream,
+            poolTextures: MGPoolTextures,
+            handlerGl: MGHandlerGl
+        ): Array<MGMMeshInstance?>? {
+            val stream = DataInputStream(
+                input
+            )
+            val buffer = ByteArray(
+                2048
+            )
+
+            val map = MIImportMap.createFromStream(
+                stream,
+                buffer
+            )
+
+            val scope = CoroutineScope(
+                Dispatchers.IO
+            )
+
+            val libName = map.atlases[0].rects[0].libraryName
+            val localPathLibTextures = "textures/$libName"
+            val localPathLibObj = "objs/$libName"
+            val loaderLib = MGLoaderLevelLibrary(
+                scope,
+                "levels/$libName/library.txt"
+            )
+
+            val loaderTextures = MGLoaderLevelTextures(
+                scope,
+                handlerGl,
+                poolTextures,
+                localPathLibTextures
+            )
+
+            loaderTextures.loadTextures(
+                map
+            )
+
+            if (!loaderLib.loadLibrary()) {
+                return null
+            }
+
+            loaderLib.readProps()
+
+            while (loaderLib.meshes == null) {}
+            val meshes = loaderLib.meshes!!
+
+            val loaderMatrices = MGLoaderLevelMatrices(
+                scope
+            )
+
+            loaderMatrices.loadMatrices(
+                meshes,
+                map
+            )
+
+            val loaderMeshes = MGLoaderLevelMeshA3D(
+                poolTextures,
+                buffer,
+                localPathLibObj,
+                localPathLibTextures,
+                handlerGl
+            )
+
+            while (
+               !(loaderMatrices.isLoadMatrices ||
+                  loaderTextures.isLoadCompleted
+                )
+            ) {}
+
+            val arrayInstanced = arrayOfNulls<
+                MGMMeshInstance
+            >(meshes.size)
+
+            var currentInstance = 0
+
+            scope.launch {
+                meshes.forEach {
+                    arrayInstanced[
+                        currentInstance
+                    ] = loaderMeshes.loadMeshInstance(
+                        it.value
+                    )
+                    currentInstance++
+                }
+            }
+
+            while (currentInstance < meshes.size) {}
+
+            return arrayInstanced
+        }
+
         fun read(
             input: InputStream,
-            shaderMaterial: MGShaderMaterial,
             poolTextures: MGPoolTextures
         ): Array<MGMMeshInstance>? {
-            val bufferedReader = BufferedReader(
+            return null
+            /*val bufferedReader = BufferedReader(
                 InputStreamReader(
                     input
                 )
@@ -52,26 +151,41 @@ class MGStreamLevel {
                 val modelMatrices = Array(
                     meshCount
                 ) {
-                    MGMatrixScaleRotation().apply {
-                        val strPosition = bufferedReader
-                            .readLine()!!
-                            .split("\\s+".toRegex())
+                    MGMatrixTransformationNormal(
+                        MGMatrixScaleRotation()
+                    ).apply {
+                        model.run {
+                            val strPosition = bufferedReader
+                                .readLine()!!
+                                .split("\\s+".toRegex())
 
-                        setPosition(
-                            strPosition[0].toIntOrNull()?.toFloat() ?: 0f,
-                            strPosition[1].toIntOrNull()?.toFloat() ?: 0f,
-                            strPosition[2].toIntOrNull()?.toFloat() ?: 0f,
-                        )
-                        val scale =
-                            strPosition[3].toFloatOrNull() ?: 1f
-                        setScale(
-                            scale,
-                            scale,
-                            scale
-                        )
+                            setPosition(
+                                strPosition.getOrNull(0)?.toFloatOrNull() ?: 0f,
+                                strPosition.getOrNull(1)?.toFloatOrNull() ?: 0f,
+                                strPosition.getOrNull(2)?.toFloatOrNull() ?: 0f,
+                            )
 
-                        invalidatePosition()
-                        invalidateScaleRotation()
+                            val scale = strPosition.getOrNull(3)?.toFloatOrNull() ?: 0f
+                            setScale(
+                                scale,
+                                scale,
+                                scale
+                            )
+
+                            setRotation(
+                                strPosition.getOrNull(4)?.toFloatOrNull() ?: 0f,
+                                strPosition.getOrNull(5)?.toFloatOrNull() ?: 0f,
+                                strPosition.getOrNull(6)?.toFloatOrNull() ?: 0f,
+                            )
+
+                            invalidatePosition()
+                            invalidateScaleRotation()
+                        }
+
+                        normal.run {
+                            calculateInvertModel()
+                            calculateNormalMatrix()
+                        }
                     }
                 }
 
@@ -80,59 +194,27 @@ class MGStreamLevel {
                 )?.get(0)!!
 
                 val material = MGMaterial.createWithPath(
-                    shaderMaterial,
                     poolTextures,
                     obj.texturesDiffuseFileName?.get(0),
                     obj.texturesMetallicFileName?.get(0),
-                    obj.texturesEmissiveFileName?.get(0)
+                    obj.texturesEmissiveFileName?.get(0),
+                    "textures"
                 )
 
-                val vertexArray = MGArrayVertexInstanced()
-                vertexArray.configure(
+                return@Array loaderMesh.createVertexArrayInstance(
+                    MGEnumArrayVertexConfiguration.INT,
                     obj.vertices,
-                    obj.indices
-                )
-
-                vertexArray.setupMatrixBuffer(
-                    meshCount,
-                    convertMatricesToBuffer(
-                        modelMatrices
-                    )
-                )
-                vertexArray.setupInstanceDrawing()
-
-                return@Array MGMMeshInstance(
-                    vertexArray,
-                    material,
-                    modelMatrices
+                    obj.indices,
+                    modelMatrices,
+                    material
                 )
             }
             bufferedReader.close()
 
-            return output
+            return output*/
         }
 
         private fun BufferedReader.readLineValueInt() =
             readLine().toIntOrNull()
-
-        private inline fun convertMatricesToBuffer(
-            v: Array<MGMatrixScaleRotation>
-        ): FloatBuffer {
-            var i = 0
-            val output = FloatArray(
-                v.size * 16
-            )
-
-            v.forEach {
-                it.model.forEach { vv ->
-                    output[i] = vv
-                    i++
-                }
-            }
-
-            return MGUtilsBuffer.createFloat(
-                output
-            )
-        }
     }
 }

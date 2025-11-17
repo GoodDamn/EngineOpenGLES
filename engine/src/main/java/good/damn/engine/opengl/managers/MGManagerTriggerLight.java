@@ -3,6 +3,7 @@ package good.damn.engine.opengl.managers;
 import androidx.annotation.NonNull;
 
 import good.damn.engine.opengl.MGVector;
+import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.enums.MGEnumStateTrigger;
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerLight;
@@ -17,8 +18,10 @@ extends MGManagerTrigger<
     private final MGManagerLight managerLight;
 
     public MGManagerTriggerLight(
-        @NonNull final MGManagerLight managerLight
+        @NonNull final MGManagerLight managerLight,
+        @NonNull final MGDrawerVertexArray drawerTrigger
     ) {
+        super(drawerTrigger);
         this.managerLight = managerLight;
     }
 

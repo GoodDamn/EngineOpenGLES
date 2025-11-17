@@ -7,33 +7,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import good.damn.engine.opengl.drawers.MGIDrawer;
+import good.damn.engine.opengl.drawers.MGIDrawerShader;
 import good.damn.engine.opengl.shaders.MGIShaderNormal;
 
 public final class MGMatrixNormal
 extends MGMatrixInvert
-implements MGIDrawer {
+implements MGIDrawerShader<MGIShaderNormal> {
 
     public final float[] normalMatrix = new float[16];
 
-    @Nullable
-    public MGIShaderNormal shader;
-
     public MGMatrixNormal(
-        @NonNull final MGIShaderNormal initShader,
         @NonNull final float[] model
     ) {
         super(model);
-        shader = initShader;
         Matrix.setIdentityM(
             normalMatrix, 0
         );
     }
 
     @Override
-    public final void draw() {
-        if (shader == null) {
-            return;
-        }
+    public final void draw(
+        @NonNull final MGIShaderNormal shader
+    ) {
         GLES30.glUniformMatrix4fv(
             shader.getUniformNormalMatrix(),
             1,

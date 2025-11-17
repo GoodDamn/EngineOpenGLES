@@ -10,12 +10,10 @@ public final class MGMatrixTransformationNormal<
     @NonNull public final T model;
     @NonNull public final MGMatrixNormal normal;
     public MGMatrixTransformationNormal(
-        @NonNull T model,
-        @NonNull final MGIShaderNormal shader
+        @NonNull T model
     ) {
         this.model = model;
         normal = new MGMatrixNormal(
-            shader,
             model.model
         );
     }

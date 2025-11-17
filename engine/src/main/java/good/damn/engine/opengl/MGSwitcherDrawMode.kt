@@ -1,15 +1,18 @@
 package good.damn.engine.opengl
 
+import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
+import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
+import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
 import good.damn.engine.opengl.drawers.MGIDrawer
-import good.damn.engine.opengl.entities.MGMesh
+import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
 import good.damn.engine.opengl.enums.MGEnumDrawMode
-import good.damn.engine.opengl.models.MGMDrawMode
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGSwitcherDrawMode(
-    private val meshSky: MGMesh,
-    private val meshes: ConcurrentLinkedQueue<MGDrawerMeshSwitch>,
+    private val meshSky: MGDrawerMeshTextureSwitch,
+    private val meshes: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>,
+    private val meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>,
     initDrawerMode: MGIDrawer
 ) {
     var currentDrawerMode = initDrawerMode
@@ -17,22 +20,22 @@ class MGSwitcherDrawMode(
 
     fun switchDrawMode(
         drawMode: MGEnumDrawMode,
-        model: MGMDrawMode
+        currentDrawer: MGIDrawer
     ) {
-        currentDrawerMode = model.drawer
+        currentDrawerMode = currentDrawer
 
         meshSky.switchDrawMode(
-            model.shaderSky,
-            model.shaderNormalsSky,
-            model.shaderTexture,
-            drawMode,
+            drawMode
         )
 
         meshes.forEach {
             it.switchDrawMode(
-                model.shaderDefault,
-                model.shaderNormals,
-                model.shaderTexture,
+                drawMode
+            )
+        }
+
+        meshesInstanced.forEach {
+            it.switchDrawMode(
                 drawMode
             )
         }

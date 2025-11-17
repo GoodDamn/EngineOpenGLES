@@ -4,13 +4,15 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.opengl.MGArrayVertex;
+import java.nio.IntBuffer;
+
 import good.damn.engine.opengl.MGVector;
+import good.damn.engine.opengl.arrays.MGArrayVertexManager;
 
 public final class MGUtilsAlgo {
 
     public static void offsetAnchorPoint(
-        @NonNull MGArrayVertex vertexArray,
+        @NonNull MGArrayVertexManager vertexArray,
         @NonNull MGVector dt
     ) {
         int index = 0;
@@ -19,9 +21,9 @@ public final class MGUtilsAlgo {
 
         int ix, iy, iz;
         while (index < c) {
-            ix = index + MGArrayVertex.INDEX_POSITION_X;
-            iy = index + MGArrayVertex.INDEX_POSITION_Y;
-            iz = index + MGArrayVertex.INDEX_POSITION_Z;
+            ix = index + MGArrayVertexManager.INDEX_POSITION_X;
+            iy = index + MGArrayVertexManager.INDEX_POSITION_Y;
+            iz = index + MGArrayVertexManager.INDEX_POSITION_Z;
 
             float x = vertexArray.get(ix);
             float y = vertexArray.get(iy);
@@ -39,7 +41,7 @@ public final class MGUtilsAlgo {
                 iz, z - dt.getZ()
             );
 
-            index += MGArrayVertex.MAX_VALUES_PER_VERTICES;
+            index += MGArrayVertexManager.MAX_VALUES_PER_VERTICES;
         }
 
         vertexArray.sendVertexBufferData();
@@ -47,7 +49,7 @@ public final class MGUtilsAlgo {
     }
 
     public static Pair<MGVector, MGVector> findMinMaxPoints(
-        @NonNull MGArrayVertex vertices
+        @NonNull MGArrayVertexManager vertices
     ) {
         float maxX = Float.MIN_VALUE;
         float maxY = Float.MIN_VALUE;
@@ -64,7 +66,7 @@ public final class MGUtilsAlgo {
         int count = vertices.getCountVertices();
         for (int i = 0; i < count; i++) {
             curX = vertices.getVertexBufferData(
-                i, MGArrayVertex.INDEX_POSITION_X
+                i, MGArrayVertexManager.INDEX_POSITION_X
             );
             if (curX > maxX) {
                 maxX = curX;
@@ -76,7 +78,7 @@ public final class MGUtilsAlgo {
 
 
             curY = vertices.getVertexBufferData(
-                i, MGArrayVertex.INDEX_POSITION_Y
+                i, MGArrayVertexManager.INDEX_POSITION_Y
             );
             if (curY > maxY) {
                 maxY = curY;
@@ -89,7 +91,7 @@ public final class MGUtilsAlgo {
 
 
             curZ = vertices.getVertexBufferData(
-                i, MGArrayVertex.INDEX_POSITION_Z
+                i, MGArrayVertexManager.INDEX_POSITION_Z
             );
             if (curZ > maxZ) {
                 maxZ = curZ;

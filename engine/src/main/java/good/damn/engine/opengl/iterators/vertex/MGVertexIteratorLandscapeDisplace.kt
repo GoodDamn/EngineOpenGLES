@@ -1,6 +1,6 @@
 package good.damn.engine.opengl.iterators.vertex
 
-import good.damn.engine.opengl.MGArrayVertex
+import good.damn.engine.opengl.arrays.MGArrayVertexManager
 import good.damn.engine.opengl.maps.MGMapDisplace
 
 class MGVertexIteratorLandscapeDisplace(
@@ -14,7 +14,7 @@ class MGVertexIteratorLandscapeDisplace(
         index: Int,
         x: Int,
         z: Int,
-        vertexArray: MGArrayVertex
+        vertexArray: MGArrayVertexManager
     ) {
         val topVert = mapDisplace.getHeightNormalRatio(
             x, z - 1,

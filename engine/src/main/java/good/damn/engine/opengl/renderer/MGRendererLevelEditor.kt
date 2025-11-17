@@ -9,12 +9,15 @@ import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.scene.MGScene
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
+import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
+import good.damn.engine.opengl.shaders.MGShaderSingleModeInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.utils.MGUtilsAsset
 import good.damn.engine.utils.MGUtilsFile
@@ -28,21 +31,38 @@ class MGRendererLevelEditor(
         private const val TAG = "MGRendererLevelEditor"
     }
 
-    private val mShaderDefault = MGShaderDefault()
-    private val mShaderOpaqueInstanced = MGShaderOpaque()
+    private val mShaderOpaque = MGMShader(
+        MGShaderDefault(),
+        MGShaderOpaque()
+    )
+
     private val mShaderSky = MGShaderSkySphere()
-    private val mShaderNormals = MGShaderSingleModeNormals()
-    private val mShaderTexCoords = MGShaderSingleMode()
-    private val mShaderWireframe = MGShaderSingleMode()
-    private val mShaderMapEmissive = MGShaderSingleMap()
+    private val mShaderNormals = MGMShader(
+        MGShaderSingleModeNormals(),
+        MGShaderSingleModeInstanced()
+    )
+
+    private val mShaderTexCoords = MGMShader(
+        MGShaderSingleMode(),
+        MGShaderSingleModeInstanced()
+    )
+
+    private val mShaderWireframe = MGMShader(
+        MGShaderSingleMode(),
+        MGShaderSingleModeInstanced()
+    )
+
+    private val mShaderMapEmissive = MGMShader(
+        MGShaderSingleMap(),
+        MGShaderSingleMapInstanced()
+    )
 
     private var mWidth = 0
     private var mHeight = 0
 
     private val mSceneTest = MGScene(
         requesterUserContent,
-        mShaderDefault,
-        mShaderOpaqueInstanced,
+        mShaderOpaque,
         mShaderSky,
         mShaderNormals,
         mShaderTexCoords,
@@ -116,40 +136,70 @@ class MGRendererLevelEditor(
 
         }
 
-        mShaderWireframe.setup(
-            "shaders/wireframe/vert.glsl",
-            "shaders/wireframe/frag.glsl"
-        )
+        mShaderMapEmissive.run {
+            single.setup(
+                "shaders/metallic/vert.glsl",
+                "shaders/metallic/frag.glsl"
+            )
 
-        mShaderDefault.setup(
-            "shaders/vert.glsl",
-            "shaders/frag.glsl"
-        )
+            instanced.setup(
+                "shaders/metallic/vert_i.glsl",
+                "shaders/metallic/frag.glsl"
+            )
+        }
 
-        mShaderOpaqueInstanced.setup(
-            "shaders/vert_instance.glsl",
-            "shaders/frag.glsl"
-        )
+        mShaderWireframe.run {
+            single.setup(
+                "shaders/wireframe/vert.glsl",
+                "shaders/wireframe/frag.glsl"
+            )
+
+            instanced.setup(
+                "shaders/wireframe/vert_i.glsl",
+                "shaders/wireframe/frag.glsl"
+            )
+        }
+
+        mShaderOpaque.run {
+            single.setup(
+                "shaders/vert.glsl",
+                "shaders/frag.glsl"
+            )
+
+            instanced.setup(
+                "shaders/vert_i.glsl",
+                "shaders/frag.glsl"
+            )
+        }
+
+        mShaderTexCoords.run {
+            single.setup(
+                "shaders/texCoords/vert.glsl",
+                "shaders/texCoords/frag.glsl"
+            )
+            instanced.setup(
+                "shaders/texCoords/vert_i.glsl",
+                "shaders/texCoords/frag.glsl"
+            )
+        }
+
+        mShaderNormals.run {
+            single.setup(
+                "shaders/normals/vert.glsl",
+                "shaders/normals/frag.glsl"
+            )
+
+            instanced.setup(
+                "shaders/normals/vert_i.glsl",
+                "shaders/normals/frag.glsl"
+            )
+        }
 
         mShaderSky.setup(
             "shaders/sky/vert.glsl",
             "shaders/sky/frag.glsl"
         )
 
-        mShaderNormals.setup(
-            "shaders/normals/vert.glsl",
-            "shaders/normals/frag.glsl"
-        )
-
-        mShaderTexCoords.setup(
-            "shaders/texCoords/vert.glsl",
-            "shaders/texCoords/frag.glsl"
-        )
-
-        mShaderMapEmissive.setup(
-            "shaders/metallic/vert.glsl",
-            "shaders/metallic/frag.glsl"
-        )
 
         mSceneTest.onSurfaceCreated(
             gl, config
@@ -159,12 +209,16 @@ class MGRendererLevelEditor(
             GL_DEPTH_TEST
         )
 
+        glDepthFunc(
+            GL_LESS
+        )
+
         glEnable(
             GL_CULL_FACE
         )
 
         glCullFace(
-            GL_FRONT
+            GL_BACK
         )
     }
 

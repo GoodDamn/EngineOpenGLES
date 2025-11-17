@@ -1,59 +1,69 @@
 package good.damn.engine.opengl.entities
 
+import android.graphics.BitmapFactory
 import android.opengl.GLES30
 import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.engine.opengl.drawers.MGIDrawerTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGIShaderTexture
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.engine.runnables.MGRunnableGenTexture
+import good.damn.engine.utils.MGUtilsBitmap
+import good.damn.engine.utils.MGUtilsFile
+import java.io.FileInputStream
 
 class MGMaterial(
-    var shader: MGShaderMaterial,
     var textureDiffuse: MGTexture,
     var textureMetallic: MGTexture,
     var textureEmissive: MGTexture
-): MGIDrawer {
+): MGIDrawerTexture<MGShaderMaterial> {
     var shine = 1f
 
     companion object {
         fun createWithPath(
-            shader: MGShaderMaterial,
             poolTextures: MGPoolTextures,
             textureNameDiffuse: String?,
             textureNameMetallic: String?,
-            textureNameEmissive: String?
+            textureNameEmissive: String?,
+            localPath: String,
+            handler: MGHandlerGl
         ) = MGMaterial(
-            shader,
             loadTextureCached(
                 poolTextures,
-                shader.textureDiffuse,
                 MGEnumTextureType.DIFFUSE,
                 textureNameDiffuse,
-                poolTextures.defaultTexture
+                poolTextures.defaultTexture,
+                localPath,
+                handler
             ),
             loadTextureCached(
                 poolTextures,
-                shader.textureMetallic,
                 MGEnumTextureType.METALLIC,
                 textureNameMetallic,
-                poolTextures.defaultTextureMetallic
+                poolTextures.defaultTextureMetallic,
+                localPath,
+                handler
             ),
             loadTextureCached(
                 poolTextures,
-                shader.textureEmissive,
                 MGEnumTextureType.EMISSIVE,
                 textureNameEmissive,
-                poolTextures.defaultTextureEmissive
+                poolTextures.defaultTextureEmissive,
+                localPath,
+                handler
             )
         )
 
         private fun loadTextureCached(
             poolTextures: MGPoolTextures,
-            shaderTextures: MGIShaderTexture,
             textureType: MGEnumTextureType,
             textureName: String?,
-            defaultTexture: MGTexture
+            defaultTexture: MGTexture,
+            localPath: String,
+            handler: MGHandlerGl
         ): MGTexture {
             if (textureName == null) {
                 return defaultTexture
@@ -67,38 +77,61 @@ class MGMaterial(
                 return texture
             }
 
-            try {
-                texture = MGTexture.createDefaultAsset(
-                    textureName,
-                    textureType,
-                    shaderTextures
-                )
+            val bitmap = MGUtilsBitmap.loadBitmap(
+                "$localPath/$textureName"
+            ) ?: return defaultTexture
 
-                poolTextures.add(
-                    textureName,
-                    texture
-                )
-            } catch (_: Exception) { }
+            texture = MGTexture(
+                textureType
+            )
 
-            return texture ?: defaultTexture
+            handler.post(
+                MGRunnableGenTexture(
+                    texture,
+                    bitmap
+                )
+            )
+
+            poolTextures.add(
+                textureName,
+                texture
+            )
+
+            return texture
         }
     }
 
-    override fun draw() {
+    override fun draw(
+        shader: MGShaderMaterial
+    ) {
         GLES30.glUniform1f(
             shader.uniformShininess,
             shine
         )
 
-        textureDiffuse.draw()
-        textureMetallic.draw()
-        textureEmissive.draw()
+        textureDiffuse.draw(
+            shader.textureDiffuse
+        )
+        textureMetallic.draw(
+            shader.textureMetallic
+        )
+        textureEmissive.draw(
+            shader.textureEmissive
+        )
     }
 
-    fun unbind() {
-        textureDiffuse.unbind()
-        textureMetallic.unbind()
-        textureEmissive.unbind()
+    override fun unbind(
+        shader: MGShaderMaterial
+    ) {
+        textureDiffuse.unbind(
+            shader.textureDiffuse
+        )
+        textureMetallic.unbind(
+            shader.textureMetallic
+        )
+        textureEmissive.unbind(
+            shader.textureEmissive
+        )
     }
 
 }
