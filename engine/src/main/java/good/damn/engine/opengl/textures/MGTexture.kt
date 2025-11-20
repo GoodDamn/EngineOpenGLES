@@ -3,6 +3,7 @@ package good.damn.engine.opengl.textures
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.opengl.GLES30.*
+import android.opengl.GLES32
 import android.opengl.GLUtils
 import android.util.Log
 import good.damn.engine.opengl.drawers.MGIDrawerTexture
@@ -116,9 +117,21 @@ class MGTexture(
             0
         )
 
-        /*glGenerateMipmap(
+        glGenerateMipmap(
             GL_TEXTURE_2D
-        )*/
+        )
+
+        glTexParameteri(
+            GL_TEXTURE_2D,
+            GL_TEXTURE_MIN_FILTER,
+            GL_LINEAR_MIPMAP_LINEAR
+        )
+
+        glTexParameterf(
+            GL_TEXTURE_2D,
+            GL_MAX_TEXTURE_LOD_BIAS,
+            -1f
+        )
 
         val error = glGetError()
         if (error != GL_NO_ERROR) {
