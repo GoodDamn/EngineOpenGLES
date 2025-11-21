@@ -118,9 +118,9 @@ class MGLoaderLevelLibrary(
                     "${diffuse}_m.jpg",
                     "${diffuse}_e.jpg",
                     "${diffuse}_o.jpg",
-                    mNonCullFaceMeshes?.contains(
+                    !(mNonCullFaceMeshes?.contains(
                         fileName
-                    ) ?: false,
+                    ) ?: false),
                     LinkedList(),
                 )
             }
