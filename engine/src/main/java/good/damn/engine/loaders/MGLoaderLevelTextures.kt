@@ -22,6 +22,8 @@ class MGLoaderLevelTextures(
     val isLoadCompleted: Boolean
         get() = mCurrentIndex >= mCountTextures
 
+    private val mLock = Any()
+
     private var mCurrentIndex = 0
     private var mCountTextures = 0
 
@@ -32,20 +34,18 @@ class MGLoaderLevelTextures(
         mCurrentIndex = 0
         for (j in map.atlases) {
             for (atlas in j.rects) {
-                scope.launch {
-                    if (poolTextures.get(
-                            atlas.name
-                        ) != null
-                    ) {
-                        mCurrentIndex++
-                        return@launch
-                    }
-
-                    loadMaps(
-                        atlas
-                    )
+                if (poolTextures.get(
+                        atlas.name
+                    ) != null
+                ) {
+                    incrementIndex()
+                    continue
                 }
-                mCountTextures++
+
+                loadMaps(
+                    atlas
+                )
+                mCountTextures += 4
             }
         }
     }
@@ -53,28 +53,44 @@ class MGLoaderLevelTextures(
     private inline fun loadMaps(
         atlas: MIMAtlasRect
     ) {
-        poolTexture(
-            "${atlas.name}.jpg",
-            MGEnumTextureType.DIFFUSE
-        )
+        scope.launch {
+            poolTexture(
+                "${atlas.name}.jpg",
+                MGEnumTextureType.DIFFUSE
+            )
+        }
 
-        poolTexture(
-            "${atlas.name}_m.jpg",
-            MGEnumTextureType.METALLIC
-        )
+        scope.launch {
+            poolTexture(
+                "${atlas.name}_m.jpg",
+                MGEnumTextureType.METALLIC
+            )
+        }
 
-        poolTexture(
-            "${atlas.name}_e.jpg",
-            MGEnumTextureType.EMISSIVE
-        )
+        scope.launch {
+            poolTexture(
+                "${atlas.name}_e.jpg",
+                MGEnumTextureType.EMISSIVE
+            )
+        }
 
-        poolTexture(
-            "${atlas.name}_o.jpg",
-            MGEnumTextureType.OPACITY
-        )
+        scope.launch {
+            poolTexture(
+                "${atlas.name}_o.jpg",
+                MGEnumTextureType.OPACITY
+            )
+        }
     }
 
-    private inline fun poolTexture(
+    private inline fun incrementIndex() {
+        synchronized(
+            mLock
+        ) {
+            mCurrentIndex++
+        }
+    }
+
+    private fun poolTexture(
         textureName: String,
         textureType: MGEnumTextureType
     ) {
@@ -84,7 +100,7 @@ class MGLoaderLevelTextures(
         )
 
         if (bitmap == null) {
-            mCurrentIndex++
+            incrementIndex()
             return
         }
 
@@ -104,7 +120,7 @@ class MGLoaderLevelTextures(
             texture
         )
 
-        mCurrentIndex++
+        incrementIndex()
     }
 
 }
