@@ -24,191 +24,184 @@ import java.io.DataInputStream
 import java.io.InputStream
 import java.io.InputStreamReader
 
-class MGStreamLevel {
+object MGStreamLevel {
+    fun readBin(
+        flow: MGFlowLevel<MGMMeshInstance>,
+        input: InputStream,
+        poolTextures: MGPoolTextures,
+        handlerGl: MGHandlerGl,
+        buffer: ByteArray
+    ) {
+        val stream = DataInputStream(
+            input
+        )
 
-    companion object {
-        private const val TAG = "MGStreamLevel"
+        val map = MIImportMap.createFromStream(
+            stream,
+            buffer
+        )
 
-        fun readBin(
-            flow: MGFlowLevel<MGMMeshInstance>,
-            input: InputStream,
-            poolTextures: MGPoolTextures,
-            handlerGl: MGHandlerGl
-        ) {
-            val stream = DataInputStream(
+        val scope = CoroutineScope(
+            Dispatchers.IO
+        )
+
+        val libName = map.atlases[0].rects[0].libraryName
+        val localPathLibTextures = "textures/$libName"
+        val localPathLibObj = "objs/$libName"
+        val loaderLib = MGLoaderLevelLibrary(
+            scope,
+            "levels/$libName/library.txt",
+            "levels/$libName/culling.txt"
+        )
+
+        val loaderTextures = MGLoaderLevelTextures(
+            scope,
+            handlerGl,
+            poolTextures,
+            localPathLibTextures
+        )
+
+        loaderTextures.loadTextures(
+            map
+        )
+
+        if (!loaderLib.loadLibrary()) {
+            return
+        }
+
+        loaderLib.readProps()
+
+        loaderLib.loadNonCullFaceList()
+
+        while (loaderLib.meshes == null) {}
+        val meshes = loaderLib.meshes!!
+
+        val loaderMatrices = MGLoaderLevelMatrices(
+            scope
+        )
+
+        loaderMatrices.loadMatrices(
+            meshes,
+            map
+        )
+
+        val loaderMeshes = MGLoaderLevelMeshA3D(
+            poolTextures,
+            buffer,
+            localPathLibObj,
+            localPathLibTextures,
+            handlerGl
+        )
+
+        while (
+            !(loaderMatrices.isLoadMatrices ||
+                loaderTextures.isLoadCompleted
+                )
+        ) {}
+
+        meshes.forEach {
+            scope.launch {
+                val v = loaderMeshes.loadMeshInstance(
+                    it.value
+                ) ?: return@launch
+
+                flow.emit(v)
+            }
+        }
+    }
+
+    fun read(
+        input: InputStream,
+        poolTextures: MGPoolTextures
+    ): Array<MGMMeshInstance>? {
+        return null
+        /*val bufferedReader = BufferedReader(
+            InputStreamReader(
                 input
             )
-            val buffer = ByteArray(
-                2048
-            )
+        )
 
-            val map = MIImportMap.createFromStream(
-                stream,
-                buffer
-            )
+        val meshesCount = bufferedReader.readLineValueInt()
+            ?: return null
 
-            val scope = CoroutineScope(
-                Dispatchers.IO
-            )
+        val output = Array(
+            meshesCount
+        ) {
+            val meshNameCount = bufferedReader
+                .readLine()!!
+                .split("\\s+".toRegex())
 
-            val libName = map.atlases[0].rects[0].libraryName
-            val localPathLibTextures = "textures/$libName"
-            val localPathLibObj = "objs/$libName"
-            val loaderLib = MGLoaderLevelLibrary(
-                scope,
-                "levels/$libName/library.txt",
-                "levels/$libName/culling.txt"
-            )
+            val meshCount = meshNameCount[1]
+                .toInt()
 
-            val loaderTextures = MGLoaderLevelTextures(
-                scope,
-                handlerGl,
-                poolTextures,
-                localPathLibTextures
-            )
+            val meshName = meshNameCount[0]
 
-            loaderTextures.loadTextures(
-                map
-            )
-
-            if (!loaderLib.loadLibrary()) {
-                return
-            }
-
-            loaderLib.readProps()
-
-            loaderLib.loadNonCullFaceList()
-
-            while (loaderLib.meshes == null) {}
-            val meshes = loaderLib.meshes!!
-
-            val loaderMatrices = MGLoaderLevelMatrices(
-                scope
-            )
-
-            loaderMatrices.loadMatrices(
-                meshes,
-                map
-            )
-
-            val loaderMeshes = MGLoaderLevelMeshA3D(
-                poolTextures,
-                buffer,
-                localPathLibObj,
-                localPathLibTextures,
-                handlerGl
-            )
-
-            while (
-               !(loaderMatrices.isLoadMatrices ||
-                  loaderTextures.isLoadCompleted
-                )
-            ) {}
-
-            meshes.forEach {
-                scope.launch {
-                    val v = loaderMeshes.loadMeshInstance(
-                        it.value
-                    ) ?: return@launch
-
-                    flow.emit(v)
-                }
-            }
-        }
-
-        fun read(
-            input: InputStream,
-            poolTextures: MGPoolTextures
-        ): Array<MGMMeshInstance>? {
-            return null
-            /*val bufferedReader = BufferedReader(
-                InputStreamReader(
-                    input
-                )
-            )
-
-            val meshesCount = bufferedReader.readLineValueInt()
-                ?: return null
-
-            val output = Array(
-                meshesCount
+            val modelMatrices = Array(
+                meshCount
             ) {
-                val meshNameCount = bufferedReader
-                    .readLine()!!
-                    .split("\\s+".toRegex())
+                MGMatrixTransformationNormal(
+                    MGMatrixScaleRotation()
+                ).apply {
+                    model.run {
+                        val strPosition = bufferedReader
+                            .readLine()!!
+                            .split("\\s+".toRegex())
 
-                val meshCount = meshNameCount[1]
-                    .toInt()
+                        setPosition(
+                            strPosition.getOrNull(0)?.toFloatOrNull() ?: 0f,
+                            strPosition.getOrNull(1)?.toFloatOrNull() ?: 0f,
+                            strPosition.getOrNull(2)?.toFloatOrNull() ?: 0f,
+                        )
 
-                val meshName = meshNameCount[0]
+                        val scale = strPosition.getOrNull(3)?.toFloatOrNull() ?: 0f
+                        setScale(
+                            scale,
+                            scale,
+                            scale
+                        )
 
-                val modelMatrices = Array(
-                    meshCount
-                ) {
-                    MGMatrixTransformationNormal(
-                        MGMatrixScaleRotation()
-                    ).apply {
-                        model.run {
-                            val strPosition = bufferedReader
-                                .readLine()!!
-                                .split("\\s+".toRegex())
+                        setRotation(
+                            strPosition.getOrNull(4)?.toFloatOrNull() ?: 0f,
+                            strPosition.getOrNull(5)?.toFloatOrNull() ?: 0f,
+                            strPosition.getOrNull(6)?.toFloatOrNull() ?: 0f,
+                        )
 
-                            setPosition(
-                                strPosition.getOrNull(0)?.toFloatOrNull() ?: 0f,
-                                strPosition.getOrNull(1)?.toFloatOrNull() ?: 0f,
-                                strPosition.getOrNull(2)?.toFloatOrNull() ?: 0f,
-                            )
+                        invalidatePosition()
+                        invalidateScaleRotation()
+                    }
 
-                            val scale = strPosition.getOrNull(3)?.toFloatOrNull() ?: 0f
-                            setScale(
-                                scale,
-                                scale,
-                                scale
-                            )
-
-                            setRotation(
-                                strPosition.getOrNull(4)?.toFloatOrNull() ?: 0f,
-                                strPosition.getOrNull(5)?.toFloatOrNull() ?: 0f,
-                                strPosition.getOrNull(6)?.toFloatOrNull() ?: 0f,
-                            )
-
-                            invalidatePosition()
-                            invalidateScaleRotation()
-                        }
-
-                        normal.run {
-                            calculateInvertModel()
-                            calculateNormalMatrix()
-                        }
+                    normal.run {
+                        calculateInvertModel()
+                        calculateNormalMatrix()
                     }
                 }
-
-                val obj = MGObject3d.createFromAssets(
-                    "objs/$meshName"
-                )?.get(0)!!
-
-                val material = MGMaterial.createWithPath(
-                    poolTextures,
-                    obj.texturesDiffuseFileName?.get(0),
-                    obj.texturesMetallicFileName?.get(0),
-                    obj.texturesEmissiveFileName?.get(0),
-                    "textures"
-                )
-
-                return@Array loaderMesh.createVertexArrayInstance(
-                    MGEnumArrayVertexConfiguration.INT,
-                    obj.vertices,
-                    obj.indices,
-                    modelMatrices,
-                    material
-                )
             }
-            bufferedReader.close()
 
-            return output*/
+            val obj = MGObject3d.createFromAssets(
+                "objs/$meshName"
+            )?.get(0)!!
+
+            val material = MGMaterial.createWithPath(
+                poolTextures,
+                obj.texturesDiffuseFileName?.get(0),
+                obj.texturesMetallicFileName?.get(0),
+                obj.texturesEmissiveFileName?.get(0),
+                "textures"
+            )
+
+            return@Array loaderMesh.createVertexArrayInstance(
+                MGEnumArrayVertexConfiguration.INT,
+                obj.vertices,
+                obj.indices,
+                modelMatrices,
+                material
+            )
         }
+        bufferedReader.close()
 
-        private fun BufferedReader.readLineValueInt() =
-            readLine().toIntOrNull()
+        return output*/
     }
+
+    private fun BufferedReader.readLineValueInt() =
+        readLine().toIntOrNull()
 }

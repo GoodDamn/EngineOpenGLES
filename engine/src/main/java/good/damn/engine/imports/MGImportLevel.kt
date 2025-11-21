@@ -16,7 +16,8 @@ class MGImportLevel(
 ): MGImportFile {
 
     final override fun onImportFile(
-        it: File
+        it: File,
+        buffer: ByteArray
     ) {
         MGStreamLevel.readBin(
             MGFlowLevel {
@@ -32,7 +33,8 @@ class MGImportLevel(
                 it
             ),
             poolTextures,
-            handlerGl
+            handlerGl,
+            buffer
         )
     }
 

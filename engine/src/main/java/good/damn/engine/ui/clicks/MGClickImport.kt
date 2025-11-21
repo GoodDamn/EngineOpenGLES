@@ -32,12 +32,18 @@ class MGClickImport(
 ): MGIClick,
 MGIListenerOnGetUserContent {
 
+    private val mBuffer = ByteArray(
+        8192
+    )
+
     private val runnableImportMesh = MGRunnableImportFileTemp(
-        importMesh
+        importMesh,
+        mBuffer
     )
 
     private val runnableImportLevel = MGRunnableImportFileTemp(
-        importLevel
+        importLevel,
+        mBuffer
     )
 
     private val runnableImportA3D = MGRunnableImportA3D(
@@ -47,8 +53,6 @@ MGIListenerOnGetUserContent {
     private val mScope = CoroutineScope(
         Dispatchers.IO
     )
-
-    private val mBuffer = ByteArray(8192)
 
     override fun onClick() {
         requester.requestUserContent(

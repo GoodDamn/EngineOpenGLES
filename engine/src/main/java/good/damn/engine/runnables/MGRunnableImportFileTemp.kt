@@ -5,7 +5,8 @@ import good.damn.engine.imports.MGImportFile
 import java.io.File
 
 class MGRunnableImportFileTemp(
-    private val importer: MGImportFile
+    private val importer: MGImportFile,
+    private val buffer: ByteArray
 ): Runnable {
     var fileTemp: File? = null
 
@@ -17,7 +18,8 @@ class MGRunnableImportFileTemp(
             }
 
             importer.onImportFile(
-                this
+                this,
+                buffer
             )
 
             delete()
