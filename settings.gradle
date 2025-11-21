@@ -22,5 +22,5 @@ dependencyResolutionManagement {
 rootProject.name = "EngineOpenGLES"
 include ':app'
 include ':engine'
-include ':mapImporter'
+include ':imap'
 include ':ia3d'
