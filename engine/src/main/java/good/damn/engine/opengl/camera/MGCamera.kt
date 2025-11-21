@@ -31,12 +31,16 @@ open class MGCamera(
     fun drawPosition(
         shader: MGIShaderCameraPosition
     ) {
-        glUniform3f(
-            shader.uniformCameraPosition,
-            modelMatrix.x,
-            modelMatrix.y,
-            modelMatrix.z
-        )
+        synchronized(
+            modelMatrix
+        ) {
+            glUniform3f(
+                shader.uniformCameraPosition,
+                modelMatrix.x,
+                modelMatrix.y,
+                modelMatrix.z
+            )
+        }
     }
 
     fun draw(
@@ -50,12 +54,16 @@ open class MGCamera(
             0
         )
 
-        glUniformMatrix4fv(
-            shader.uniformCameraView,
-            1,
-            false,
-            modelMatrix.model,
-            0
-        )
+        synchronized(
+            modelMatrix
+        ) {
+            glUniformMatrix4fv(
+                shader.uniformCameraView,
+                1,
+                false,
+                modelMatrix.model,
+                0
+            )
+        }
     }
 }
