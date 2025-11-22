@@ -79,6 +79,7 @@ public final class MGTriggerMesh {
             obj.texturesMetallicFileName == null ? null : obj.texturesMetallicFileName[0],
             obj.texturesEmissiveFileName == null ? null : obj.texturesEmissiveFileName[0],
             null,
+            null,
             "textures",
             handlerGl
         );

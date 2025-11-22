@@ -45,7 +45,7 @@ class MGLoaderLevelTextures(
                 loadMaps(
                     atlas
                 )
-                mCountTextures += 4
+                mCountTextures += 5
             }
         }
     }
@@ -78,6 +78,13 @@ class MGLoaderLevelTextures(
             poolTexture(
                 "${atlas.name}_o.jpg",
                 MGEnumTextureType.OPACITY
+            )
+        }
+
+        scope.launch {
+            poolTexture(
+                "${atlas.name}_n.jpg",
+                MGEnumTextureType.NORMAL
             )
         }
     }

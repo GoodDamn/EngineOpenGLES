@@ -131,6 +131,10 @@ MGIListenerOnIntersectPosition {
         MGEnumTextureType.OPACITY
     )
 
+    private val mTextureNormalNo = MGTexture(
+        MGEnumTextureType.NORMAL
+    )
+
     private val mBridgeMatrix = MGBridgeRayIntersect()
 
     private val meshSky = MGDrawerMeshSwitch(
@@ -224,7 +228,8 @@ MGIListenerOnIntersectPosition {
         mTextureDefault,
         mTextureMetallicNo,
         mTextureEmissiveNo,
-        mTextureOpacityNo
+        mTextureOpacityNo,
+        mTextureNormalNo
     )
 
     private val mPoolMeshes = MGPoolMeshesStatic()
@@ -351,6 +356,11 @@ MGIListenerOnIntersectPosition {
             )
 
             mTextureEmissiveNo.glTextureSetup(
+                this,
+                GL_REPEAT
+            )
+
+            mTextureNormalNo.glTextureSetup(
                 this,
                 GL_REPEAT
             )

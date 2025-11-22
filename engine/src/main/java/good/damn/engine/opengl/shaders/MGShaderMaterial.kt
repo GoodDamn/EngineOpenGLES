@@ -13,6 +13,7 @@ class MGShaderMaterial
     val textureMetallic = MGShaderTexture()
     val textureEmissive = MGShaderTexture()
     val textureOpacity = MGShaderTexture()
+    val textureNormal = MGShaderTexture()
 
     override fun setupUniforms(
         program: Int
@@ -35,6 +36,11 @@ class MGShaderMaterial
         textureOpacity.setupUniforms(
             program,
             "material.textOpacity"
+        )
+
+        textureNormal.setupUniforms(
+            program,
+            "material.textNormal"
         )
 
         uniformShininess = glGetUniformLocation(

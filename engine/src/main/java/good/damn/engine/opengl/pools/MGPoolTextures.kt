@@ -6,7 +6,8 @@ class MGPoolTextures(
     val defaultTexture: MGTexture,
     val defaultTextureMetallic: MGTexture,
     val defaultTextureEmissive: MGTexture,
-    val defaultTextureOpacity: MGTexture
+    val defaultTextureOpacity: MGTexture,
+    val defaultTextureNormal: MGTexture
 ) {
     private val map = HashMap<
         String,

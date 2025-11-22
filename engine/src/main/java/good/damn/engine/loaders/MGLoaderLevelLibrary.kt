@@ -118,6 +118,7 @@ class MGLoaderLevelLibrary(
                     "${diffuse}_m.jpg",
                     "${diffuse}_e.jpg",
                     "${diffuse}_o.jpg",
+                    "${diffuse}_n.jpg",
                     !(mNonCullFaceMeshes?.contains(
                         fileName
                     ) ?: false),
