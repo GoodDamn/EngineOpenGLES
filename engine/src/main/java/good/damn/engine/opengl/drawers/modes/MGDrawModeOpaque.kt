@@ -11,12 +11,14 @@ import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderOpaque
+import good.damn.engine.opengl.shaders.MGShaderSingleMap
+import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGDrawModeOpaque(
-    var shaderSky: MGShaderSkySphere,
+    var shaderSky: MGShaderSingleMap,
     var shaderOpaque: MGMShader<MGShaderDefault, MGShaderOpaque>,
     var shaderTrigger: MGShaderSingleMode,
     var sky: MGDrawerMeshTextureSwitch,
@@ -36,7 +38,7 @@ data class MGDrawModeOpaque(
             shaderSky
         )
         sky.drawSingleTexture(
-            shaderSky.texture,
+            shaderSky,
             shaderSky
         )
 

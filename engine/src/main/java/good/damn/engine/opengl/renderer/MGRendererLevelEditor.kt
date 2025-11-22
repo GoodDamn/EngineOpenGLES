@@ -15,12 +15,9 @@ import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
 import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
-import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
-import good.damn.engine.utils.MGUtilsAsset
-import good.damn.engine.utils.MGUtilsFile
 import java.io.File
 
 class MGRendererLevelEditor(
@@ -36,7 +33,6 @@ class MGRendererLevelEditor(
         MGShaderOpaque()
     )
 
-    private val mShaderSky = MGShaderSkySphere()
     private val mShaderNormals = MGMShader(
         MGShaderSingleModeNormals(),
         MGShaderSingleModeInstanced()
@@ -52,7 +48,7 @@ class MGRendererLevelEditor(
         MGShaderSingleModeInstanced()
     )
 
-    private val mShaderMapEmissive = MGMShader(
+    private val mShaderMap = MGMShader(
         MGShaderSingleMap(),
         MGShaderSingleMapInstanced()
     )
@@ -63,11 +59,10 @@ class MGRendererLevelEditor(
     private val mSceneTest = MGScene(
         requesterUserContent,
         mShaderOpaque,
-        mShaderSky,
         mShaderNormals,
         mShaderTexCoords,
         mShaderWireframe,
-        mShaderMapEmissive
+        mShaderMap
     )
     
     override fun onSurfaceCreated(
@@ -76,15 +71,15 @@ class MGRendererLevelEditor(
     ) {
         writeExtensions()
 
-        mShaderMapEmissive.run {
+        mShaderMap.run {
             single.setup(
-                "shaders/metallic/vert.glsl",
-                "shaders/metallic/frag.glsl"
+                "shaders/diffuse/vert.glsl",
+                "shaders/diffuse/frag.glsl"
             )
 
             instanced.setup(
-                "shaders/metallic/vert_i.glsl",
-                "shaders/metallic/frag.glsl"
+                "shaders/diffuse/vert_i.glsl",
+                "shaders/diffuse/frag.glsl"
             )
         }
 
@@ -134,11 +129,6 @@ class MGRendererLevelEditor(
                 "shaders/normals/frag.glsl"
             )
         }
-
-        mShaderSky.setup(
-            "shaders/sky/vert.glsl",
-            "shaders/sky/frag.glsl"
-        )
 
 
         mSceneTest.onSurfaceCreated(

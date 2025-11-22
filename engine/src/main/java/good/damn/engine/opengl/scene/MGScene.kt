@@ -51,7 +51,6 @@ import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
-import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.MGTriggerLight
@@ -74,11 +73,10 @@ import kotlin.random.Random
 class MGScene(
     requesterUserContent: MGIRequestUserContent,
     shaderOpaque: MGMShader<MGShaderDefault, MGShaderOpaque>,
-    shaderSky: MGShaderSkySphere,
     private val shaderNormals: MGMShader<MGShaderSingleModeNormals, MGShaderSingleModeInstanced>,
     private val shaderTexCoords: MGMShader<MGShaderSingleMode, MGShaderSingleModeInstanced>,
     private val shaderWireframe: MGMShader<MGShaderSingleMode, MGShaderSingleModeInstanced>,
-    private val shaderMapEmissive: MGMShader<MGShaderSingleMap, MGShaderSingleMapInstanced>
+    private val shaderMap: MGMShader<MGShaderSingleMap, MGShaderSingleMapInstanced>
 ): GLSurfaceView.Renderer,
 MGIListenerOnIntersectPosition {
 
@@ -207,7 +205,7 @@ MGIListenerOnIntersectPosition {
     )
 
     private val mDrawerModeOpaque = MGDrawModeOpaque(
-        shaderSky,
+        shaderMap.single,
         shaderOpaque,
         shaderWireframe.single,
         meshSky,
@@ -299,6 +297,49 @@ MGIListenerOnIntersectPosition {
         gl: GL10?,
         config: EGLConfig?
     ) {
+        MGUtilsBitmap.loadBitmap(
+            "textures/black.jpg"
+        )?.run {
+            mTextureMetallicNo.glTextureSetup(
+                this,
+                GL_REPEAT
+            )
+
+            mTextureEmissiveNo.glTextureSetup(
+                this,
+                GL_REPEAT
+            )
+
+            mTextureNormalNo.glTextureSetup(
+                this,
+                GL_REPEAT
+            )
+        }
+
+        MGUtilsBitmap.loadBitmap(
+            "textures/white.jpg"
+        )?.run {
+            mTextureDefault.glTextureSetup(
+                this,
+                GL_REPEAT
+            )
+
+            mTextureOpacityNo.glTextureSetup(
+                this,
+                GL_REPEAT
+            )
+        }
+
+
+        MGUtilsBitmap.loadBitmap(
+            "textures/sky/sky.png"
+        )?.run {
+            mTextureSky.glTextureSetup(
+                this,
+                GL_CLAMP_TO_EDGE
+            )
+        }
+
         mVerticesDebugBox.apply {
             configure(
                 MGUtilsBuffer.createFloat(
@@ -350,49 +391,6 @@ MGIListenerOnIntersectPosition {
                     triggerState
                 )
             }
-        }
-
-        MGUtilsBitmap.loadBitmap(
-            "textures/black.jpg"
-        )?.run {
-            mTextureMetallicNo.glTextureSetup(
-                this,
-                GL_REPEAT
-            )
-
-            mTextureEmissiveNo.glTextureSetup(
-                this,
-                GL_REPEAT
-            )
-
-            mTextureNormalNo.glTextureSetup(
-                this,
-                GL_REPEAT
-            )
-        }
-
-        MGUtilsBitmap.loadBitmap(
-            "textures/white.jpg"
-        )?.run {
-            mTextureDefault.glTextureSetup(
-                this,
-                GL_REPEAT
-            )
-
-            mTextureOpacityNo.glTextureSetup(
-                this,
-                GL_REPEAT
-            )
-        }
-
-
-        MGUtilsBitmap.loadBitmap(
-            "textures/sky/sky.png"
-        )?.run {
-            mTextureSky.glTextureSetup(
-                this,
-                GL_CLAMP_TO_EDGE
-            )
         }
 
         MGObject3d.createFromAssets(
@@ -497,7 +495,7 @@ MGIListenerOnIntersectPosition {
             meshesInstanced
         ),
         MGDrawModeSingleMap(
-            shaderMapEmissive,
+            shaderMap,
             mCameraFree,
             meshes,
             meshesInstanced
