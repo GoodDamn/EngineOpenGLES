@@ -4,7 +4,10 @@ import android.opengl.GLES30.GL_CLAMP_TO_EDGE
 import android.opengl.GLES30.GL_CW
 import android.opengl.GLES30.GL_REPEAT
 import android.opengl.GLSurfaceView
+import android.os.Handler
+import android.os.Looper
 import android.view.MotionEvent
+import good.damn.engine.handlers.MGRunnableCollision
 import good.damn.engine.imports.MGImportA3D
 import good.damn.engine.imports.MGImportLevel
 import good.damn.engine.imports.MGImportMesh
@@ -55,7 +58,6 @@ import good.damn.engine.opengl.triggers.MGTriggerLight
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGCallbackModelSpawn
-import good.damn.engine.threads.MGHandlerCollision
 import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickImport
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
@@ -171,6 +173,9 @@ MGIListenerOnIntersectPosition {
     }
 
     private val mHandler = MGHandlerGl()
+    private val mHandlerMain = Handler(
+        Looper.getMainLooper()
+    )
 
     private val meshes = ConcurrentLinkedQueue<
         MGDrawerMeshMaterialSwitch
@@ -195,7 +200,7 @@ MGIListenerOnIntersectPosition {
         mDrawerDebugBox
     )
 
-    private val mHandlerCollision = MGHandlerCollision(
+    private val mRunnableCollision = MGRunnableCollision(
         managerTrigger,
         managerTriggerLight,
         mCameraFree
@@ -409,8 +414,6 @@ MGIListenerOnIntersectPosition {
             10.986f,
             -9.247298f
         )
-
-        mHandlerCollision.start()
     }
 
     override fun onSurfaceChanged(
@@ -439,6 +442,10 @@ MGIListenerOnIntersectPosition {
         mSwitcherDrawMode
             .currentDrawerMode
             .draw()
+
+        mHandlerMain.post(
+            mRunnableCollision
+        )
 
         mHandler.run()
     }

@@ -74,67 +74,7 @@ class MGRendererLevelEditor(
         gl: GL10?,
         config: EGLConfig?
     ) {
-        File(
-            MGEngine.DIR_PUBLIC,
-            "extensions.txt"
-        ).run {
-            if (length() != 0L) {
-                return@run
-            }
-
-            if (!exists() && createNewFile()) {
-                Log.d(TAG, "onSurfaceCreated: $name is created")
-            }
-
-            val extensions = glGetString(
-                GL_EXTENSIONS
-            ).replace(" ".toRegex(), "\n")
-
-            val numExt = extensions.count {
-                it == '\n'
-            }
-
-            val vendor = glGetString(
-                GL_VENDOR
-            )
-
-            val renderer = glGetString(
-                GL_RENDERER
-            )
-
-            val version = glGetString(
-                GL_VERSION
-            )
-
-            outputStream().run {
-                write(
-                    numExt.toString().encodeToByteArray()
-                )
-                write(10)
-                write(
-                    extensions.encodeToByteArray()
-                )
-
-                write(10)
-                write(10)
-
-                write(
-                    renderer.encodeToByteArray()
-                )
-                write(10)
-
-                write(
-                    vendor.encodeToByteArray()
-                )
-                write(10)
-
-                write(
-                    version.encodeToByteArray()
-                )
-                close()
-            }
-
-        }
+        writeExtensions()
 
         mShaderMapEmissive.run {
             single.setup(
@@ -275,5 +215,69 @@ class MGRendererLevelEditor(
         mSceneTest.onTouchEvent(
             event
         )
+    }
+
+    private inline fun writeExtensions() {
+        File(
+            MGEngine.DIR_PUBLIC,
+            "extensions.txt"
+        ).run {
+            if (length() != 0L) {
+                return@run
+            }
+
+            if (!exists() && createNewFile()) {
+                Log.d(TAG, "onSurfaceCreated: $name is created")
+            }
+
+            val extensions = glGetString(
+                GL_EXTENSIONS
+            ).replace(" ".toRegex(), "\n")
+
+            val numExt = extensions.count {
+                it == '\n'
+            }
+
+            val vendor = glGetString(
+                GL_VENDOR
+            )
+
+            val renderer = glGetString(
+                GL_RENDERER
+            )
+
+            val version = glGetString(
+                GL_VERSION
+            )
+
+            outputStream().run {
+                write(
+                    numExt.toString().encodeToByteArray()
+                )
+                write(10)
+                write(
+                    extensions.encodeToByteArray()
+                )
+
+                write(10)
+                write(10)
+
+                write(
+                    renderer.encodeToByteArray()
+                )
+                write(10)
+
+                write(
+                    vendor.encodeToByteArray()
+                )
+                write(10)
+
+                write(
+                    version.encodeToByteArray()
+                )
+                close()
+            }
+
+        }
     }
 }
