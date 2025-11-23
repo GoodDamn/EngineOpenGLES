@@ -11,7 +11,7 @@ import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.scene.MGScene
-import good.damn.engine.opengl.shaders.MGShaderBase
+import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
@@ -19,6 +19,7 @@ import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
+import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import java.io.File
 
 class MGRendererLevelEditor(
@@ -74,27 +75,74 @@ class MGRendererLevelEditor(
 
         setupShaders(
             mShaderMap,
-            "shaders/diffuse"
+            "shaders/diffuse",
+            binderAttributeSingle = MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindTextureCoordinates()
+                .build(),
+            binderAttributeInstanced = MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindTextureCoordinates()
+                .bindInstancedModel()
+                .build()
         )
 
         setupShaders(
             mShaderWireframe,
-            "shaders/wireframe"
+            "shaders/wireframe",
+            binderAttributeSingle = MGBinderAttribute.Builder()
+                .bindPosition()
+                .build(),
+            binderAttributeInstanced = MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindInstancedModel()
+                .build()
         )
 
         setupShaders(
             mShaderOpaque,
-            "shaders/"
+            "shaders/",
+            binderAttributeSingle = MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindTextureCoordinates()
+                .bindNormal()
+                .build(),
+            binderAttributeInstanced = MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindTextureCoordinates()
+                .bindNormal()
+                .bindInstancedModel()
+                .bindInstancedRotationMatrix()
+                .build()
         )
 
         setupShaders(
             mShaderTexCoords,
-            "shaders/texCoords"
+            "shaders/texCoords",
+            binderAttributeSingle = MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindTextureCoordinates()
+                .build(),
+            binderAttributeInstanced = MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindTextureCoordinates()
+                .bindInstancedModel()
+                .build()
         )
 
         setupShaders(
             mShaderNormals,
-            "shaders/normals"
+            "shaders/normals",
+            binderAttributeSingle = MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindNormal()
+                .build(),
+            binderAttributeInstanced = MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindNormal()
+                .bindInstancedModel()
+                .bindInstancedRotationMatrix()
+                .build()
         )
 
         mSceneTest.onSurfaceCreated(
@@ -178,17 +226,21 @@ class MGRendererLevelEditor(
         M: MGShaderBase
     > setupShaders(
         shader: MGMShader<T, M>,
-        localPath: String
+        localPath: String,
+        binderAttributeSingle: MGBinderAttribute,
+        binderAttributeInstanced: MGBinderAttribute
     ) {
         val pathFragment = "$localPath/frag.glsl"
         shader.single.setup(
             "$localPath/vert.glsl",
-            pathFragment
+            pathFragment,
+            binderAttributeSingle
         )
 
         shader.instanced.setup(
             "$localPath/vert_i.glsl",
-            pathFragment
+            pathFragment,
+            binderAttributeInstanced
         )
     }
 

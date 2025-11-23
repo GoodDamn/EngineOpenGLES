@@ -4,24 +4,22 @@ import android.opengl.GLES30
 import android.opengl.GLES30.GL_ARRAY_BUFFER
 import android.opengl.GLES30.GL_FLOAT
 import android.opengl.GLES30.GL_TRIANGLES
-import android.opengl.GLES30.GL_UNSIGNED_INT
 import android.opengl.GLES30.glBindBuffer
 import android.opengl.GLES30.glBindVertexArray
 import android.opengl.GLES30.glDrawElementsInstanced
 import android.opengl.GLES30.glEnableVertexAttribArray
 import android.opengl.GLES30.glVertexAttribDivisor
 import android.opengl.GLES30.glVertexAttribPointer
-import good.damn.engine.opengl.shaders.MGShaderBase
+import good.damn.engine.opengl.shaders.base.MGShaderBase
 import java.nio.FloatBuffer
-import java.nio.ShortBuffer
 
 class MGArrayVertexInstanced(
     private val configurator: MGArrayVertexConfigurator
 ) {
 
     companion object {
-        const val INDEX_ATTRIB_INSTANCE_MODEL = MGShaderBase.INDEX_ATTRIB_INSTANCE_MODEL
-        const val INDEX_ATTRIB_INSTANCE_ROTATION = MGShaderBase.INDEX_ATTRIB_INSTANCE_ROTATION
+        const val INDEX_ATTRIB_INSTANCE_MODEL = 3
+        const val INDEX_ATTRIB_INSTANCE_ROTATION = 7
 
         const val INDEX_BUFFER_MODEL = 0
         const val INDEX_BUFFER_ROTATION = 1

@@ -2,6 +2,7 @@ package good.damn.engine.opengl.shaders
 
 import android.opengl.GLES30.glGetUniformLocation
 import androidx.annotation.CallSuper
+import good.damn.engine.opengl.shaders.base.MGShaderBase
 
 open class MGShaderOpaque
 : MGShaderBase(),

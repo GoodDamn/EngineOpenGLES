@@ -1,21 +1,16 @@
-package good.damn.engine.opengl.shaders
+package good.damn.engine.opengl.shaders.base
 
 import android.opengl.GLES20
 import android.opengl.GLES30.*
 import android.util.Log
-import androidx.annotation.CallSuper
+import good.damn.engine.opengl.shaders.MGIShader
+import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.utils.MGUtilsShader
 
 abstract class MGShaderBase
 : MGIShader {
     companion object {
         private const val TAG = "MGShaderBase"
-
-        const val INDEX_ATTRIB_POSITION = 0
-        const val INDEX_ATTRIB_TEXTURE_COORDS = 1
-        const val INDEX_ATTRIB_NORMALS = 2
-        const val INDEX_ATTRIB_INSTANCE_MODEL = 3
-        const val INDEX_ATTRIB_INSTANCE_ROTATION = 7
     }
 
     private var mProgram = 0
@@ -28,13 +23,15 @@ abstract class MGShaderBase
 
     fun compile(
         pathVertex: String,
-        pathFragment: String
+        pathFragment: String,
+        binderAttribute: MGBinderAttribute
     ): Int {
         mProgram = MGUtilsShader.createProgramFromAssets(
             pathVertex,
             pathFragment
         )
-        bindAttribLocation(
+
+        binderAttribute.bindAttributes(
             mProgram
         )
 
@@ -69,11 +66,13 @@ abstract class MGShaderBase
 
     fun setup(
         pathVertex: String,
-        pathFragment: String
+        pathFragment: String,
+        binderAttribute: MGBinderAttribute
     ) {
         compile(
             pathVertex,
-            pathFragment
+            pathFragment,
+            binderAttribute
         )
         link()
         setupUniforms(
@@ -81,37 +80,4 @@ abstract class MGShaderBase
         )
     }
 
-    private inline fun bindAttribLocation(
-        program: Int
-    ) {
-        glBindAttribLocation(
-            program,
-            INDEX_ATTRIB_POSITION,
-            "position"
-        )
-
-        glBindAttribLocation(
-            program,
-            INDEX_ATTRIB_TEXTURE_COORDS,
-            "texCoord"
-        )
-
-        glBindAttribLocation(
-            program,
-            INDEX_ATTRIB_NORMALS,
-            "normal"
-        )
-
-        glBindAttribLocation(
-            program,
-            INDEX_ATTRIB_INSTANCE_MODEL,
-            "modelInstance"
-        )
-
-        glBindAttribLocation(
-            program,
-            INDEX_ATTRIB_INSTANCE_ROTATION,
-            "instanceRotation"
-        )
-    }
 }
