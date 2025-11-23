@@ -93,7 +93,7 @@ public final class MGObject3d {
     public static MGObject3d[] createFromAssets(
         @NonNull final String localPath
     ) throws Exception {
-        @NonNull final File filePub = MGUtilsFile.Companion.getPublicFile(
+        @NonNull final File filePub = MGUtilsFile.INSTANCE.getPublicFile(
             localPath
         );
 

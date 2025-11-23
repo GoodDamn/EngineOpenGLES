@@ -4,6 +4,7 @@ import java.io.File
 
 interface MGImportFile {
     fun onImportFile(
-        it: File
+        it: File,
+        buffer: ByteArray
     )
 }

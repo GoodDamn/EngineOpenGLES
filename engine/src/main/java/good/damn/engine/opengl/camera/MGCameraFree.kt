@@ -34,23 +34,27 @@ class MGCameraFree(
     }
 
     fun invalidatePosition() {
-        val x = modelMatrix.x
-        val y = modelMatrix.y
-        val z = modelMatrix.z
+        synchronized(
+            modelMatrix
+        ) {
+            val x = modelMatrix.x
+            val y = modelMatrix.y
+            val z = modelMatrix.z
 
-        modelMatrix.setPosition(
-            x, y, z
-        )
-        modelMatrix.invalidatePosition()
-        setLookAtM(
-            modelMatrix.model,
-            0,
-            x, y, z,
-            direction.x + x,
-            direction.y + y,
-            direction.z + z,
-            0.0f, 1.0f, 0.0f
-        )
+            modelMatrix.setPosition(
+                x, y, z
+            )
+            modelMatrix.invalidatePosition()
+            setLookAtM(
+                modelMatrix.model,
+                0,
+                x, y, z,
+                direction.x + x,
+                direction.y + y,
+                direction.z + z,
+                0.0f, 1.0f, 0.0f
+            )
+        }
     }
 
     fun addPosition(
@@ -59,27 +63,31 @@ class MGCameraFree(
         directionX: Float,
         directionY: Float
     ) {
-        mSpeed = hypot(
-            x, y
-        ) * 0.03f
+        synchronized(
+            modelMatrix
+        ) {
+            mSpeed = hypot(
+                x, y
+            ) * 0.03f
 
-        modelMatrix.addPosition(
-            direction.x * mSpeed * -directionY,
-            direction.y * mSpeed * -directionY,
-            direction.z * mSpeed * -directionY
-        )
+            modelMatrix.addPosition(
+                direction.x * mSpeed * -directionY,
+                direction.y * mSpeed * -directionY,
+                direction.z * mSpeed * -directionY
+            )
 
-        mPositionDirection.cross(
-            direction,
-            mUp
-        )
-        mPositionDirection.normalize()
+            mPositionDirection.cross(
+                direction,
+                mUp
+            )
+            mPositionDirection.normalize()
 
-        modelMatrix.addPosition(
-            mPositionDirection.x * mSpeed * directionX,
-            mPositionDirection.y * mSpeed * directionX,
-            mPositionDirection.z * mSpeed * directionX
-        )
+            modelMatrix.addPosition(
+                mPositionDirection.x * mSpeed * directionX,
+                mPositionDirection.y * mSpeed * directionX,
+                mPositionDirection.z * mSpeed * directionX
+            )
+        }
     }
 
     fun addRotation(

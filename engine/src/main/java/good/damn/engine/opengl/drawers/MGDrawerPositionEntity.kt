@@ -12,13 +12,17 @@ class MGDrawerPositionEntity(
     override fun draw(
         shader: MGIShaderModel
     ) {
-        glUniformMatrix4fv(
-            shader.uniformModelView,
-            1,
-            false,
-            modelMatrix.model,
-            0
-        )
+        synchronized(
+            modelMatrix.model
+        ) {
+            glUniformMatrix4fv(
+                shader.uniformModelView,
+                1,
+                false,
+                modelMatrix.model,
+                0
+            )
+        }
     }
 
 }

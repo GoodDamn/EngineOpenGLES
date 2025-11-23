@@ -127,6 +127,10 @@ MGIListenerOnIntersectPosition {
         MGEnumTextureType.EMISSIVE
     )
 
+    private val mTextureOpacityNo = MGTexture(
+        MGEnumTextureType.OPACITY
+    )
+
     private val mBridgeMatrix = MGBridgeRayIntersect()
 
     private val meshSky = MGDrawerMeshSwitch(
@@ -219,7 +223,8 @@ MGIListenerOnIntersectPosition {
     private val mPoolTextures = MGPoolTextures(
         mTextureDefault,
         mTextureMetallicNo,
-        mTextureEmissiveNo
+        mTextureEmissiveNo,
+        mTextureOpacityNo
     )
 
     private val mPoolMeshes = MGPoolMeshesStatic()
@@ -237,7 +242,6 @@ MGIListenerOnIntersectPosition {
 
     private val mLayerEditor = MGUILayerEditor(
         clickLoadUserContent = MGClickImport(
-            mHandler,
             MGImportLevel(
                 meshesInstanced,
                 mPoolTextures,
@@ -345,11 +349,7 @@ MGIListenerOnIntersectPosition {
                 this,
                 GL_REPEAT
             )
-        }
 
-        MGUtilsBitmap.loadBitmap(
-            "textures/black.jpg"
-        )?.run {
             mTextureEmissiveNo.glTextureSetup(
                 this,
                 GL_REPEAT
@@ -360,6 +360,11 @@ MGIListenerOnIntersectPosition {
             "textures/white.jpg"
         )?.run {
             mTextureDefault.glTextureSetup(
+                this,
+                GL_REPEAT
+            )
+
+            mTextureOpacityNo.glTextureSetup(
                 this,
                 GL_REPEAT
             )

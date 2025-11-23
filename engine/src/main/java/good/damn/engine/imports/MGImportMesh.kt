@@ -11,7 +11,8 @@ class MGImportMesh(
 ): MGImportFile {
 
     override fun onImportFile(
-        it: File
+        it: File,
+        buffer: ByteArray
     ) {
         poolMeshes[
             it.name

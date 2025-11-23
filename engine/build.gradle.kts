@@ -49,9 +49,7 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(
-        project(":mapImporter")
-    )
+    implementation(project(":imap"))
     implementation(
         project(":ia3d")
     )

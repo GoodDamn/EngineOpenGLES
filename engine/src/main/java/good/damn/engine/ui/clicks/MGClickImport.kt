@@ -25,7 +25,6 @@ import java.io.File
 import kotlin.experimental.or
 
 class MGClickImport(
-    private val handler: MGHandlerGl,
     importLevel: MGImportLevel,
     importMesh: MGImportMesh,
     importA3D: MGImportA3D,
@@ -33,12 +32,18 @@ class MGClickImport(
 ): MGIClick,
 MGIListenerOnGetUserContent {
 
+    private val mBuffer = ByteArray(
+        8192
+    )
+
     private val runnableImportMesh = MGRunnableImportFileTemp(
-        importMesh
+        importMesh,
+        mBuffer
     )
 
     private val runnableImportLevel = MGRunnableImportFileTemp(
-        importLevel
+        importLevel,
+        mBuffer
     )
 
     private val runnableImportA3D = MGRunnableImportA3D(
@@ -48,8 +53,6 @@ MGIListenerOnGetUserContent {
     private val mScope = CoroutineScope(
         Dispatchers.IO
     )
-
-    private val mBuffer = ByteArray(8192)
 
     override fun onClick() {
         requester.requestUserContent(
@@ -90,9 +93,7 @@ MGIListenerOnGetUserContent {
 
             runnableImportA3D.asset = asset
             runnableImportA3D.fileName = userContent.fileName
-            handler.post(
-                runnableImportA3D
-            )
+            runnableImportA3D.run()
 
             return
         }
@@ -113,9 +114,7 @@ MGIListenerOnGetUserContent {
         temp: File
     ) {
         runnableImportMesh.fileTemp = temp
-        handler.post(
-            runnableImportMesh
-        )
+        runnableImportMesh.run()
     }
 
     private inline fun processLevel(

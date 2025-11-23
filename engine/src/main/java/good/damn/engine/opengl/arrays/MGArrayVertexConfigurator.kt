@@ -43,7 +43,7 @@ open class MGArrayVertexConfigurator(
 
     private var mIndicesSize = 0
 
-    open fun configure(
+    fun configure(
         vertices: FloatBuffer,
         indices: Buffer,
         stride: Int

@@ -9,6 +9,8 @@ data class MGProp(
     val fileNameDiffuse: String,
     val fileNameMetallic: String?,
     val fileNameEmissive: String?,
+    val fileNameOpacity: String?,
+    val enableCullFace: Boolean,
     val matrices: LinkedList<
         MGMatrixTransformationNormal<
             MGMatrixScaleRotation

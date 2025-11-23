@@ -1,26 +1,31 @@
 package good.damn.engine.loaders
 
 import good.damn.engine.models.MGProp
-import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
-import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.utils.MGUtilsFile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 import java.nio.charset.Charset
 import java.util.LinkedList
 
 class MGLoaderLevelLibrary(
     private val scope: CoroutineScope,
-    localPath: String
+    localPath: String,
+    localPathCullFaceList: String
 ) {
 
     private val mFile = MGUtilsFile.getPublicFile(
         localPath
     )
 
+    private val mFileCullFace = MGUtilsFile.getPublicFile(
+        localPathCullFaceList
+    )
+
     private var mJson: JSONArray? = null
+    private var mNonCullFaceMeshes: HashSet<String>? = null
 
     var isLoadLibrary = false
         private set
@@ -37,15 +42,8 @@ class MGLoaderLevelLibrary(
         }
 
         scope.launch {
-            mJson = JSONObject(
-                String(
-                    mFile.inputStream().run {
-                        val b = readBytes()
-                        close()
-                        return@run b
-                    },
-                    Charset.forName("UTF-8")
-                )
+            mJson = fileToJson(
+                mFile
             ).getJSONArray(
                 "groups"
             ).getJSONObject(
@@ -58,6 +56,30 @@ class MGLoaderLevelLibrary(
         }
 
         return true
+    }
+
+    fun loadNonCullFaceList() {
+        if (!mFileCullFace.exists()) {
+            return
+        }
+
+        val jsonList = fileToJson(
+            mFileCullFace
+        ).getJSONArray(
+            "meshes"
+        )
+
+        val meshesSet = HashSet<String>(
+            jsonList.length()
+        )
+
+        for (i in 0 until jsonList.length()) {
+            meshesSet.add(
+                jsonList.getString(i)
+            )
+        }
+
+        mNonCullFaceMeshes = meshesSet
     }
 
     fun readProps() {
@@ -86,19 +108,38 @@ class MGLoaderLevelLibrary(
                     "diffuseMap"
                 )
 
+                val fileName = mesh.getString(
+                    "file"
+                )
+
                 lMeshes[name] = MGProp(
-                    mesh.getString(
-                        "file"
-                    ),
-                    "${diffuse}.png",
+                    fileName,
+                    "${diffuse}.jpg",
                     "${diffuse}_m.jpg",
                     "${diffuse}_e.jpg",
-                    LinkedList()
+                    "${diffuse}_o.jpg",
+                    !(mNonCullFaceMeshes?.contains(
+                        fileName
+                    ) ?: false),
+                    LinkedList(),
                 )
             }
 
             meshes = lMeshes
         }
     }
+
+    private inline fun fileToJson(
+        file: File
+    ) = JSONObject(
+        String(
+            file.inputStream().run {
+                val b = readBytes()
+                close()
+                return@run b
+            },
+            Charset.forName("UTF-8")
+        )
+    )
 
 }

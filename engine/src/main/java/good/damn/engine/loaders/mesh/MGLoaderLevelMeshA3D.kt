@@ -44,6 +44,7 @@ class MGLoaderLevelMeshA3D(
             it.fileNameDiffuse,
             it.fileNameMetallic,
             it.fileNameEmissive,
+            it.fileNameOpacity,
             localPathLibTextures,
             handlerGl
         )
@@ -64,7 +65,8 @@ class MGLoaderLevelMeshA3D(
             configIndices.buffer,
             it.matrices.toTypedArray(),
             material,
-            handlerGl
+            handlerGl,
+            it.enableCullFace
         )
     }
 }

@@ -4,7 +4,6 @@ import android.opengl.GLES30.GL_ARRAY_BUFFER
 import android.opengl.GLES30.glBindBuffer
 import android.opengl.GLES30.glBindVertexArray
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
-import java.nio.Buffer
 import java.nio.FloatBuffer
 
 class MGArrayVertexManager(
@@ -19,39 +18,36 @@ class MGArrayVertexManager(
         const val INDEX_POSITION_Z = 2
     }
 
-    private lateinit var mBufferVertex: FloatBuffer
+    private var mBufferVertex: FloatBuffer? = null
 
     val sizeVertexArray: Int
-        get() = mBufferVertex.capacity()
+        get() = mBufferVertex!!.capacity()
 
     val countVertices: Int
-        get() = mBufferVertex.capacity() / MAX_VALUES_PER_VERTICES
+        get() = mBufferVertex!!.capacity() / MAX_VALUES_PER_VERTICES
 
     fun getVertexBufferData(
         iteration: Int,
         i: Int
-    ) = mBufferVertex[i + iteration * MAX_VALUES_PER_VERTICES]
+    ) = mBufferVertex!![i + iteration * MAX_VALUES_PER_VERTICES]
 
     operator fun get(
         i: Int
-    ) = mBufferVertex[i]
+    ) = mBufferVertex!![i]
 
-    override fun configure(
-        vertices: FloatBuffer,
-        indices: Buffer,
-        stride: Int
+    fun keepBufferVertices(
+        vertices: FloatBuffer
     ) {
-        super.configure(
-            vertices,
-            indices,
-            stride
-        )
         mBufferVertex = vertices
+    }
+
+    fun unkeepBufferVertices() {
+        mBufferVertex = null
     }
 
     fun sendVertexBufferData() {
         sendVertexBufferData(
-            mBufferVertex
+            mBufferVertex!!
         )
     }
 
@@ -79,7 +75,7 @@ class MGArrayVertexManager(
         at: Int,
         data: Float
     ) {
-        mBufferVertex.put(
+        mBufferVertex!!.put(
             at,
             data
         )

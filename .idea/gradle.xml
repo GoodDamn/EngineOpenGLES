@@ -13,7 +13,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/engine" />
             <option value="$PROJECT_DIR$/ia3d" />
-            <option value="$PROJECT_DIR$/mapImporter" />
+            <option value="$PROJECT_DIR$/imap" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
