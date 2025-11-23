@@ -19,6 +19,7 @@ class MGEngine {
         internal lateinit var DIR_CACHE: File
         internal lateinit var DIR_PUBLIC: File
         internal lateinit var DIR_PUBLIC_TEMP: File
+        internal lateinit var DIR_DATA: File
 
         internal var drawMode = MGEnumDrawMode.OPAQUE
 
@@ -36,6 +37,12 @@ class MGEngine {
                     Environment.DIRECTORY_DOCUMENTS
                 ),
                 "MGDirectory"
+            )
+
+            DIR_DATA = File(
+                applicationContext
+                .applicationInfo
+                .dataDir
             )
 
             DIR_PUBLIC_TEMP = File(

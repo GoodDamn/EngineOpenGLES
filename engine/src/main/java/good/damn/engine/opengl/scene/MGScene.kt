@@ -58,6 +58,7 @@ import good.damn.engine.opengl.triggers.MGTriggerLight
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGCallbackModelSpawn
+import good.damn.engine.scripts.MGScriptDirLight
 import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickImport
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
@@ -65,6 +66,7 @@ import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.ui.clicks.MGClickTriggerDrawingFlag
 import good.damn.engine.utils.MGUtilsBitmap
 import good.damn.engine.utils.MGUtilsBuffer
+import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.microedition.khronos.egl.EGLConfig
@@ -298,6 +300,17 @@ MGIListenerOnIntersectPosition {
         gl: GL10?,
         config: EGLConfig?
     ) {
+        val dirScripts = MGUtilsFile.getPublicFile(
+            "scripts"
+        )
+
+        val scriptDirLight = MGScriptDirLight(
+            dirScripts,
+            mDrawerLightDirectional
+        )
+
+        scriptDirLight.execute()
+
         MGUtilsBitmap.loadBitmap(
             "textures/black.jpg"
         )?.run {
