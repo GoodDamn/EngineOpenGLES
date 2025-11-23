@@ -14,7 +14,6 @@ import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
 import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
-import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGDrawModeOpaque(

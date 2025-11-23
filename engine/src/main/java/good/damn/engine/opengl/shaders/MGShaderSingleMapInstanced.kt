@@ -14,7 +14,7 @@ MGIShaderTextureUniform {
     ) {
         uniformTexture = GLES30.glGetUniformLocation(
             program,
-            "texture"
+            "targetTexture"
         )
         super.setupUniforms(
             program

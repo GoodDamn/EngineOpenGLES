@@ -11,6 +11,7 @@ import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.scene.MGScene
+import good.damn.engine.opengl.shaders.MGShaderBase
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
@@ -71,65 +72,30 @@ class MGRendererLevelEditor(
     ) {
         writeExtensions()
 
-        mShaderMap.run {
-            single.setup(
-                "shaders/diffuse/vert.glsl",
-                "shaders/diffuse/frag.glsl"
-            )
+        setupShaders(
+            mShaderMap,
+            "shaders/diffuse"
+        )
 
-            instanced.setup(
-                "shaders/diffuse/vert_i.glsl",
-                "shaders/diffuse/frag.glsl"
-            )
-        }
+        setupShaders(
+            mShaderWireframe,
+            "shaders/wireframe"
+        )
 
-        mShaderWireframe.run {
-            single.setup(
-                "shaders/wireframe/vert.glsl",
-                "shaders/wireframe/frag.glsl"
-            )
+        setupShaders(
+            mShaderOpaque,
+            "shaders/"
+        )
 
-            instanced.setup(
-                "shaders/wireframe/vert_i.glsl",
-                "shaders/wireframe/frag.glsl"
-            )
-        }
+        setupShaders(
+            mShaderTexCoords,
+            "shaders/texCoords"
+        )
 
-        mShaderOpaque.run {
-            single.setup(
-                "shaders/vert.glsl",
-                "shaders/frag.glsl"
-            )
-
-            instanced.setup(
-                "shaders/vert_i.glsl",
-                "shaders/frag.glsl"
-            )
-        }
-
-        mShaderTexCoords.run {
-            single.setup(
-                "shaders/texCoords/vert.glsl",
-                "shaders/texCoords/frag.glsl"
-            )
-            instanced.setup(
-                "shaders/texCoords/vert_i.glsl",
-                "shaders/texCoords/frag.glsl"
-            )
-        }
-
-        mShaderNormals.run {
-            single.setup(
-                "shaders/normals/vert.glsl",
-                "shaders/normals/frag.glsl"
-            )
-
-            instanced.setup(
-                "shaders/normals/vert_i.glsl",
-                "shaders/normals/frag.glsl"
-            )
-        }
-
+        setupShaders(
+            mShaderNormals,
+            "shaders/normals"
+        )
 
         mSceneTest.onSurfaceCreated(
             gl, config
@@ -207,6 +173,25 @@ class MGRendererLevelEditor(
         )
     }
 
+    private inline fun <
+        T: MGShaderBase,
+        M: MGShaderBase
+    > setupShaders(
+        shader: MGMShader<T, M>,
+        localPath: String
+    ) {
+        val pathFragment = "$localPath/frag.glsl"
+        shader.single.setup(
+            "$localPath/vert.glsl",
+            pathFragment
+        )
+
+        shader.instanced.setup(
+            "$localPath/vert_i.glsl",
+            pathFragment
+        )
+    }
+
     private inline fun writeExtensions() {
         File(
             MGEngine.DIR_PUBLIC,
@@ -240,6 +225,10 @@ class MGRendererLevelEditor(
                 GL_VERSION
             )
 
+            val glslVersion = glGetString(
+                GL_SHADING_LANGUAGE_VERSION
+            )
+
             outputStream().run {
                 write(
                     numExt.toString().encodeToByteArray()
@@ -265,6 +254,12 @@ class MGRendererLevelEditor(
                 write(
                     version.encodeToByteArray()
                 )
+
+                write(10)
+                write(
+                    glslVersion.encodeToByteArray()
+                )
+
                 close()
             }
 

@@ -1,6 +1,8 @@
 package good.damn.engine.utils
 
 import android.opengl.GLES20
+import android.opengl.GLES30
+import android.opengl.GLU
 import android.util.Log
 
 class MGUtilsShader {
@@ -73,9 +75,9 @@ class MGUtilsShader {
                 0
             )
 
-            Log.d("TAG", "createShader: STATUS: ${status[0]}")
+            Log.d("TAG", "createShader: STATUS: ${status[0]} TYPE: $type;")
             if (status[0] == GLES20.GL_FALSE) {
-                Log.d("TAG", "createShader: NOT COMPILED")
+                Log.d("TAG", "createShader: NOT COMPILED: ${GLES30.glGetShaderInfoLog(shader)}")
                 return -1
             }
 
