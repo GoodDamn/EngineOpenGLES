@@ -16,6 +16,7 @@ import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.MGVector
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
+import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
@@ -340,6 +341,10 @@ MGIListenerOnIntersectPosition {
             )
         }
 
+        val builderPositionPointer = MGPointerAttribute.Builder()
+            .pointPosition()
+            .build()
+
         mVerticesDebugBox.apply {
             configure(
                 MGUtilsBuffer.createFloat(
@@ -351,7 +356,7 @@ MGIListenerOnIntersectPosition {
                 MGUtilsBuffer.createByte(
                     MGUtilsVertIndices.createCubeIndices()
                 ),
-                stride = 3 * 4
+                builderPositionPointer
             )
         }
 
@@ -363,7 +368,7 @@ MGIListenerOnIntersectPosition {
             configure(
                 obj.second,
                 obj.first,
-                stride = 3 * 4,
+                builderPositionPointer,
             )
         }
 
@@ -399,7 +404,7 @@ MGIListenerOnIntersectPosition {
             mVerticesSky.configure(
                 vertices,
                 indices,
-                MGArrayVertexConfigurator.STRIDE
+                MGPointerAttribute.default32
             )
         }
 

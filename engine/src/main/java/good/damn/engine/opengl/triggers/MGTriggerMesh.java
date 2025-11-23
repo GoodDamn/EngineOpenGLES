@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
+import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.objects.MGObject3d;
 import good.damn.engine.opengl.MGVector;
@@ -65,7 +66,8 @@ public final class MGTriggerMesh {
                 arrayVertex,
                 obj.vertices,
                 obj.indices,
-                MGArrayVertexConfigurator.STRIDE
+                MGPointerAttribute.Companion
+                    .getDefault32()
             )
         );
 

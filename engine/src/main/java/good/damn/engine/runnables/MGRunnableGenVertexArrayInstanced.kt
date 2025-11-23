@@ -2,6 +2,7 @@ package good.damn.engine.runnables
 
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.MGArrayVertexInstanced
+import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import java.nio.Buffer
@@ -25,7 +26,7 @@ class MGRunnableGenVertexArrayInstanced(
         configurator.configure(
             bufferVertices,
             bufferIndices,
-            MGArrayVertexConfigurator.STRIDE
+            MGPointerAttribute.default32
         )
 
         vertexArray.setupMatrixBuffer(
