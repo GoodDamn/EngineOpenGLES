@@ -24,15 +24,13 @@ class MGScriptDirLight(
 
             val c = loader.loadClass("sdk.engine.MGLightDir")
             val method = c.getMethod(
-                "createColorAmbient"
+                "processAmbColor",
+                MGVector3::class.java
             )
 
-            val colorAmbient = method.invoke(
-                c.newInstance()
-            ) as? MGVector3 ?: return
-
-            directionalLight.ambColor.copy(
-                colorAmbient
+            method.invoke(
+                c.newInstance(),
+                directionalLight.ambColor
             )
         } catch (
             e: Exception
