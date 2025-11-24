@@ -4,6 +4,7 @@ import android.util.Log
 import dalvik.system.DexClassLoader
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
+import good.damn.engine.sdk.MGVector3
 import good.damn.engine.utils.MGUtilsFile
 import java.io.File
 
@@ -21,20 +22,18 @@ class MGScriptDirLight(
                 javaClass.classLoader
             )
 
-            val c = loader.loadClass("engine.MGLightDir")
+            val c = loader.loadClass("sdk.engine.MGLightDir")
             val method = c.getMethod(
                 "createColorAmbient"
             )
 
             val colorAmbient = method.invoke(
                 c.newInstance()
-            ) as? ByteArray
+            ) as? MGVector3 ?: return
 
-            directionalLight.ambColor.run {
-                x = ((colorAmbient?.get(0)?.toInt() ?: 0) and 0xff) / 255f
-                y = ((colorAmbient?.get(1)?.toInt() ?: 0) and 0xff) / 255f
-                z = ((colorAmbient?.get(2)?.toInt() ?: 0) and 0xff) / 255f
-            }
+            directionalLight.ambColor.copy(
+                colorAmbient
+            )
         } catch (
             e: Exception
         ) {
