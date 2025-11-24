@@ -5,12 +5,11 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.objects.MGObject3d;
-import good.damn.engine.opengl.MGVector;
+import good.damn.engine.sdk.MGVector3;
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals;
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity;
@@ -132,10 +131,10 @@ public final class MGTriggerMesh {
         @NonNull final MGITrigger triggerAction
     ) {
         @NonNull final Pair<
-            MGVector, MGVector
+            MGVector3, MGVector3
         > pointMinMax = poolMesh.getPointMinMax();
 
-        @NonNull final MGVector pointMiddle = poolMesh
+        @NonNull final MGVector3 pointMiddle = poolMesh
             .getPointMiddle();
 
         @NonNull

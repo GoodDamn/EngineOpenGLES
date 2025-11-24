@@ -14,7 +14,7 @@ import good.damn.engine.imports.MGImportMesh
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.MGSwitcherDrawMode
-import good.damn.engine.opengl.MGVector
+import good.damn.engine.sdk.MGVector3
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
@@ -388,7 +388,7 @@ MGIListenerOnIntersectPosition {
         for (i in 0 until 10) {
             MGTriggerLight.createFromLight(
                 MGLight(
-                    MGVector(
+                    MGVector3(
                         0.5f + Random.nextFloat() * 0.5f,
                         0.5f + Random.nextFloat() * 0.5f,
                         0.5f + Random.nextFloat() * 0.5f
@@ -475,7 +475,7 @@ MGIListenerOnIntersectPosition {
     }
 
     override fun onIntersectPosition(
-        p: MGVector
+        p: MGVector3
     ) {
         mBridgeMatrix.matrix?.run {
             setPosition(

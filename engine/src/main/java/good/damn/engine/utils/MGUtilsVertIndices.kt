@@ -1,11 +1,8 @@
 package good.damn.engine.utils
 
-import android.util.Log
-import good.damn.engine.opengl.MGVector
+import good.damn.engine.sdk.MGVector3
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
-import java.nio.IntBuffer
-import java.nio.ShortBuffer
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -189,8 +186,8 @@ class MGUtilsVertIndices {
         }
 
         fun createCubeVertices(
-            min: MGVector,
-            max: MGVector
+            min: MGVector3,
+            max: MGVector3
         ) = floatArrayOf(
             // top-left
             min.x, min.y, min.z, // down 0

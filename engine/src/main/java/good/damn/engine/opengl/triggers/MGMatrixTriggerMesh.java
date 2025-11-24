@@ -2,7 +2,7 @@ package good.damn.engine.opengl.triggers;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.opengl.MGVector;
+import good.damn.engine.sdk.MGVector3;
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal;
@@ -21,7 +21,7 @@ implements MGIMatrixTrigger {
     > matrixMesh;
 
     @NonNull
-    private final MGVector mTriggerScale;
+    private final MGVector3 mTriggerScale;
 
     public MGMatrixTriggerMesh(
         @NonNull final MGMatrixTransformationInvert<
@@ -30,13 +30,13 @@ implements MGIMatrixTrigger {
         @NonNull final MGMatrixTransformationNormal<
             MGMatrixScaleRotation
         > matrixMesh,
-        @NonNull final MGVector min,
-        @NonNull final MGVector max
+        @NonNull final MGVector3 min,
+        @NonNull final MGVector3 max
     ) {
         this.matrixTrigger = matrixTrigger;
         this.matrixMesh = matrixMesh;
 
-        mTriggerScale = new MGVector(
+        mTriggerScale = new MGVector3(
             max.getX() - min.getX(),
             max.getY() - min.getY(),
             max.getZ() - min.getZ()

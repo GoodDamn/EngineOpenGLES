@@ -1,21 +1,20 @@
 package good.damn.engine.opengl.drawers
 
-import android.opengl.GLES30.glUniform1f
 import android.opengl.GLES30.glUniform3f
 import android.util.Log
-import good.damn.engine.opengl.MGVector
+import good.damn.engine.sdk.MGVector3
 import good.damn.engine.opengl.shaders.MGShaderLightDirectional
 
 class MGDrawerLightDirectional
 : MGIDrawerShader<MGShaderLightDirectional> {
 
-    val ambColor = MGVector(
+    val ambColor = MGVector3(
         0.1f,
         0.1f,
         0.1f
     )
 
-    private val mPosition = MGVector(
+    private val mPosition = MGVector3(
         1f,
         1f,
         -100f
