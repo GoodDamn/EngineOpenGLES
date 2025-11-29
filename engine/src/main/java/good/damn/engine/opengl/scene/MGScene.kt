@@ -12,6 +12,7 @@ import good.damn.engine.imports.MGImportA3D
 import good.damn.engine.imports.MGImportLevel
 import good.damn.engine.imports.MGImportMesh
 import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.sdk.MGVector3
@@ -73,50 +74,9 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import kotlin.random.Random
 
-class MGScene(
-    requesterUserContent: MGIRequestUserContent,
-    shaderOpaque: MGMShader<MGShaderDefault, MGShaderOpaque>,
-    private val shaderNormals: MGMShader<MGShaderSingleModeNormals, MGShaderSingleModeInstanced>,
-    private val shaderTexCoords: MGMShader<MGShaderSingleMode, MGShaderSingleModeInstanced>,
-    private val shaderWireframe: MGMShader<MGShaderSingleMode, MGShaderSingleModeInstanced>,
-    private val shaderMap: MGMShader<MGShaderSingleMap, MGShaderSingleMapInstanced>
-): GLSurfaceView.Renderer,
-MGIListenerOnIntersectPosition {
-
-    private val modelMatrixSky = MGMatrixScale().apply {
-        setScale(
-            200000f,
-            200000f,
-            200000f
-        )
-        invalidateScale()
-        invalidatePosition()
-    }
-    private val modelMatrixCamera = MGMatrixTranslate()
-
-    private val mVerticesSky = MGArrayVertexConfigurator(
-        MGEnumArrayVertexConfiguration.SHORT
-    )
-
-    private val mVerticesDebugBox = MGArrayVertexConfigurator(
-        MGEnumArrayVertexConfiguration.BYTE
-    )
-
-    private val mVerticesDebugSphere = MGArrayVertexConfigurator(
-        MGEnumArrayVertexConfiguration.BYTE
-    )
-
-    private val mDrawerDebugBox = MGDrawerVertexArray(
-        mVerticesDebugBox
-    )
-
-    private val mDrawerDebugSphere = MGDrawerVertexArray(
-        mVerticesDebugSphere
-    )
-
-    private val mTextureSky = MGTexture(
-        MGEnumTextureType.DIFFUSE
-    )
+open class MGScene(
+    private val switcherDrawMode: MGSwitcherDrawMode
+): GLSurfaceView.Renderer {
 
     private val mTextureDefault = MGTexture(
         MGEnumTextureType.DIFFUSE
@@ -138,178 +98,11 @@ MGIListenerOnIntersectPosition {
         MGEnumTextureType.NORMAL
     )
 
-    private val mBridgeMatrix = MGBridgeRayIntersect()
-
-    private val meshSky = MGDrawerMeshSwitch(
-        MGDrawerVertexArray(
-            mVerticesSky
-        ),
-        MGDrawerPositionEntity(
-            modelMatrixSky
-        ),
-        GL_CW
-    ).run {
-        MGDrawerMeshTextureSwitch(
-            mTextureSky,
-            mTextureMetallicNo,
-            mTextureEmissiveNo,
-            this
-        )
-    }
-
-    private val mCameraFree = MGCameraFree(
-        modelMatrixCamera
-    )
-
-    private val mCallbackOnDeltaInteract = MGCallbackOnDeltaInteract(
-        mBridgeMatrix
-    )
-    private val mCallbackOnCameraMove = MGCallbackOnCameraMovement(
-        mCameraFree,
-        mBridgeMatrix
-    ).apply {
-        setListenerIntersection(
-            this@MGScene
-        )
-    }
-
-    private val mHandler = MGHandlerGl()
-    private val mHandlerMain = Handler(
-        Looper.getMainLooper()
-    )
-
-    private val meshes = ConcurrentLinkedQueue<
-        MGDrawerMeshMaterialSwitch
-    >()
-
-    private val meshesInstanced = ConcurrentLinkedQueue<
-        MGDrawerMeshInstanced
-    >()
-
-    private val mDrawerLightDirectional = MGDrawerLightDirectional()
-
-    private val managerLights = MGManagerLight(
-        shaderOpaque.single
-    )
-
-    private val managerTriggerLight = MGManagerTriggerLight(
-        managerLights,
-        mDrawerDebugSphere
-    )
-
-    private val managerTrigger = MGManagerTriggerMesh(
-        mDrawerDebugBox
-    )
-
-    private val mRunnableCollision = MGRunnableCollision(
-        managerTrigger,
-        managerTriggerLight,
-        mCameraFree
-    )
-
-    private val mDrawerModeOpaque = MGDrawModeOpaque(
-        shaderMap.single,
-        shaderOpaque,
-        shaderWireframe.single,
-        meshSky,
-        mCameraFree,
-        mDrawerLightDirectional,
-        meshes,
-        meshesInstanced,
-        arrayOf(
-            managerTrigger,
-            managerTriggerLight
-        ),
-        managerLights
-    )
-
-    private val mSwitcherDrawMode = MGSwitcherDrawMode(
-        meshSky,
-        meshes,
-        meshesInstanced,
-        mDrawerModeOpaque
-    )
-
-    private val mPoolTextures = MGPoolTextures(
-        mTextureDefault,
-        mTextureMetallicNo,
-        mTextureEmissiveNo,
-        mTextureOpacityNo,
-        mTextureNormalNo
-    )
-
-    private val mPoolMeshes = MGPoolMeshesStatic()
-    private val mCallbackModelSpawn = MGCallbackModelSpawn(
-        mBridgeMatrix,
-        MGTriggerSimple(
-            mDrawerLightDirectional
-        ),
-        managerTrigger,
-        meshes,
-        mPoolTextures,
-        mPoolMeshes,
-        mHandler
-    )
-
-    private val mLayerEditor = MGUILayerEditor(
-        clickLoadUserContent = MGClickImport(
-            MGImportLevel(
-                meshesInstanced,
-                mPoolTextures,
-                mHandler
-            ),
-            MGImportMesh(
-                mPoolMeshes,
-                mCallbackModelSpawn
-            ),
-            MGImportA3D(
-                mPoolMeshes,
-                mCallbackModelSpawn
-            ),
-            requesterUserContent
-        ),
-        clickPlaceMesh = MGClickPlaceMesh(
-            mBridgeMatrix
-        ),
-        clickSwitchDrawerMode = createDrawModeSwitcher(),
-        clickTriggerDrawing = MGClickTriggerDrawingFlag(
-            mDrawerModeOpaque
-        )
-    ).apply {
-        setListenerTouchMove(
-            mCallbackOnCameraMove
-        )
-
-        setListenerTouchDelta(
-            mCallbackOnCameraMove
-        )
-
-        setListenerTouchScaleInteract(
-            MGCallbackOnScale(
-                mBridgeMatrix
-            )
-        )
-
-        setListenerTouchDeltaInteract(
-            mCallbackOnDeltaInteract
-        )
-    }
-
 
     override fun onSurfaceCreated(
         gl: GL10?,
         config: EGLConfig?
     ) {
-        val dirScripts = MGUtilsFile.getPublicFile(
-            "scripts"
-        )
-
-        val scriptDirLight = MGScriptDirLight(
-            dirScripts,
-            mDrawerLightDirectional
-        )
-
-        scriptDirLight.execute()
 
         MGUtilsBitmap.loadBitmap(
             "textures/black.jpg"
@@ -344,83 +137,6 @@ MGIListenerOnIntersectPosition {
             )
         }
 
-
-        MGUtilsBitmap.loadBitmap(
-            "textures/sky/sky.png"
-        )?.run {
-            mTextureSky.glTextureSetup(
-                this,
-                GL_CLAMP_TO_EDGE
-            )
-        }
-
-        val builderPositionPointer = MGPointerAttribute.Builder()
-            .pointPosition()
-            .build()
-
-        mVerticesDebugBox.apply {
-            configure(
-                MGUtilsBuffer.createFloat(
-                    MGUtilsVertIndices.createCubeVertices(
-                        MGTriggerMethodBox.MIN,
-                        MGTriggerMethodBox.MAX
-                    )
-                ),
-                MGUtilsBuffer.createByte(
-                    MGUtilsVertIndices.createCubeIndices()
-                ),
-                builderPositionPointer
-            )
-        }
-
-        mVerticesDebugSphere.apply {
-            val obj = MGUtilsVertIndices.createSphere(
-                23
-            )
-
-            configure(
-                obj.second,
-                obj.first,
-                builderPositionPointer,
-            )
-        }
-
-        for (i in 0 until 10) {
-            MGTriggerLight.createFromLight(
-                MGLight(
-                    MGVector3(
-                        0.5f + Random.nextFloat() * 0.5f,
-                        0.5f + Random.nextFloat() * 0.5f,
-                        0.5f + Random.nextFloat() * 0.5f
-                    )
-                )
-            ).run {
-                matrix.setPosition(
-                    1500f * (i + 1),
-                    -1850f,
-                    -3250f,
-                )
-                matrix.radius = 1250f
-                matrix.invalidatePosition()
-                matrix.invalidateRadius()
-                matrix.calculateInvertTrigger()
-
-                managerTriggerLight.addTrigger(
-                    triggerState
-                )
-            }
-        }
-
-        MGObject3d.createFromAssets(
-            "objs/semi_sphere.obj"
-        )?.get(0)?.run {
-            mVerticesSky.configure(
-                vertices,
-                indices,
-                MGPointerAttribute.default32
-            )
-        }
-
         modelMatrixCamera.setPosition(
             0f, 0f, 0f
         )
@@ -436,87 +152,13 @@ MGIListenerOnIntersectPosition {
         gl: GL10?,
         width: Int,
         height: Int
-    ) {
-        val fWidth = width.toFloat()
-        val fHeight = height.toFloat()
-
-        mCameraFree.setPerspective(
-            width,
-            height
-        )
-
-        mLayerEditor.layout(
-            0f, 0f,
-            fWidth,
-            fHeight
-        )
-    }
+    ) {}
 
     override fun onDrawFrame(
         gl: GL10?
     ) {
-        mSwitcherDrawMode
+        switcherDrawMode
             .currentDrawerMode
             .draw()
-
-        mHandlerMain.post(
-            mRunnableCollision
-        )
-
-        mHandler.run()
     }
-
-    fun onTouchEvent(
-        event: MotionEvent
-    ) {
-        mLayerEditor.onTouchEvent(
-            event
-        )
-    }
-
-    override fun onIntersectPosition(
-        p: MGVector3
-    ) {
-        mBridgeMatrix.matrix?.run {
-            setPosition(
-                p.x,
-                p.y,
-                p.z
-            )
-            invalidatePosition()
-        }
-    }
-
-    private inline fun createDrawModeSwitcher() = MGClickSwitchDrawMode(
-        mHandler,
-        mSwitcherDrawMode,
-        mDrawerModeOpaque,
-        MGDrawModeSingleShader(
-            shaderWireframe,
-            meshSky,
-            mCameraFree,
-            meshes,
-            meshesInstanced
-        ),
-        MGDrawModeSingleShaderNormals(
-            shaderNormals,
-            meshSky,
-            mCameraFree,
-            meshes,
-            meshesInstanced
-        ),
-        MGDrawModeSingleShader(
-            shaderTexCoords,
-            meshSky,
-            mCameraFree,
-            meshes,
-            meshesInstanced
-        ),
-        MGDrawModeSingleMap(
-            shaderMap,
-            mCameraFree,
-            meshes,
-            meshesInstanced
-        )
-    )
 }

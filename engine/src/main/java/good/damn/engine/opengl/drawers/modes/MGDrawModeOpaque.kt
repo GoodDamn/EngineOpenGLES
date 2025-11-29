@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.drawers.modes
 
+import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
@@ -17,21 +18,20 @@ import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGDrawModeOpaque(
-    var shaderSky: MGShaderSingleMap,
-    var shaderOpaque: MGMShader<MGShaderDefault, MGShaderOpaque>,
-    var shaderTrigger: MGShaderSingleMode,
-    var sky: MGDrawerMeshTextureSwitch,
-    var camera: MGCamera,
-    var directionalLight: MGDrawerLightDirectional,
-    var meshes: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>,
-    var meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>,
-    var managersTrigger: Array<MGIManagerTrigger>,
-    var lights: MGManagerLight
+    private val informator: MGMInformator
 ): MGIDrawer {
 
-    var canDrawTriggers = true
+    private val mTriggerManagers = arrayOf(
+        informator.managerTrigger,
+        informator.managerTriggerLight
+    )
 
-    override fun draw() {
+    override fun draw() = informator.run {
+
+        val shaderSky = informator.shaders.map.single
+        val shaderOpaque = informator.shaders.opaque
+        val shaderTrigger = informator.shaders.wireframe.single
+
         shaderSky.use()
         camera.draw(
             shaderSky
@@ -62,7 +62,7 @@ data class MGDrawModeOpaque(
                     this
                 )
             }
-            lights.draw(
+            managerLight.draw(
                 lightPoints
             )
         }
@@ -87,7 +87,7 @@ data class MGDrawModeOpaque(
                 )
             }
 
-            lights.draw(
+            managerLight.draw(
                 lightPoints
             )
         }
@@ -103,7 +103,7 @@ data class MGDrawModeOpaque(
         camera.draw(
             shaderTrigger
         )
-        managersTrigger.forEach {
+        mTriggerManagers.forEach {
             it.draw(
                 shaderTrigger
             )

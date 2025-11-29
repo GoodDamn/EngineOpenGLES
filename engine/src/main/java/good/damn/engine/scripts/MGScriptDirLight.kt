@@ -12,8 +12,6 @@ class MGScriptDirLight(
     private val directionalLight: MGDrawerLightDirectional
 ): MGIScript {
 
-
-
     override fun execute() {
         try {
             val loader = DexClassLoader(

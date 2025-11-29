@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.models.MGMInformatorShader
 import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.scene.MGScene
 import good.damn.engine.opengl.shaders.base.MGShaderBase
@@ -30,42 +31,33 @@ class MGRendererLevelEditor(
         private const val TAG = "MGRendererLevelEditor"
     }
 
-    private val mShaderOpaque = MGMShader(
-        MGShaderDefault(),
-        MGShaderOpaque()
-    )
-
-    private val mShaderNormals = MGMShader(
-        MGShaderSingleModeNormals(),
-        MGShaderSingleModeInstanced()
-    )
-
-    private val mShaderTexCoords = MGMShader(
-        MGShaderSingleMode(),
-        MGShaderSingleModeInstanced()
-    )
-
-    private val mShaderWireframe = MGMShader(
-        MGShaderSingleMode(),
-        MGShaderSingleModeInstanced()
-    )
-
-    private val mShaderMap = MGMShader(
-        MGShaderSingleMap(),
-        MGShaderSingleMapInstanced()
+    private val mInformatorShader = MGMInformatorShader(
+        MGMShader(
+            MGShaderDefault(),
+            MGShaderOpaque()
+        ),
+        MGMShader(
+            MGShaderSingleMode(),
+            MGShaderSingleModeInstanced()
+        ),
+        MGMShader(
+            MGShaderSingleModeNormals(),
+            MGShaderSingleModeInstanced(),
+        ),
+        MGMShader(
+            MGShaderSingleMode(),
+            MGShaderSingleModeInstanced()
+        ),
+        MGMShader(
+            MGShaderSingleMap(),
+            MGShaderSingleMapInstanced()
+        )
     )
 
     private var mWidth = 0
     private var mHeight = 0
 
-    private val mSceneTest = MGScene(
-        requesterUserContent,
-        mShaderOpaque,
-        mShaderNormals,
-        mShaderTexCoords,
-        mShaderWireframe,
-        mShaderMap
-    )
+    private val mSceneTest = MGScene()
     
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -74,7 +66,7 @@ class MGRendererLevelEditor(
         writeExtensions()
 
         setupShaders(
-            mShaderMap,
+            mInformatorShader.map,
             "shaders/diffuse",
             binderAttributeSingle = MGBinderAttribute.Builder()
                 .bindPosition()
@@ -88,7 +80,7 @@ class MGRendererLevelEditor(
         )
 
         setupShaders(
-            mShaderWireframe,
+            mInformatorShader.wireframe,
             "shaders/wireframe",
             binderAttributeSingle = MGBinderAttribute.Builder()
                 .bindPosition()
@@ -100,7 +92,7 @@ class MGRendererLevelEditor(
         )
 
         setupShaders(
-            mShaderOpaque,
+            mInformatorShader.opaque,
             "shaders/",
             binderAttributeSingle = MGBinderAttribute.Builder()
                 .bindPosition()
@@ -117,7 +109,7 @@ class MGRendererLevelEditor(
         )
 
         setupShaders(
-            mShaderTexCoords,
+            mInformatorShader.texCoords,
             "shaders/texCoords",
             binderAttributeSingle = MGBinderAttribute.Builder()
                 .bindPosition()
@@ -131,7 +123,7 @@ class MGRendererLevelEditor(
         )
 
         setupShaders(
-            mShaderNormals,
+            mInformatorShader.normals,
             "shaders/normals",
             binderAttributeSingle = MGBinderAttribute.Builder()
                 .bindPosition()
@@ -191,7 +183,8 @@ class MGRendererLevelEditor(
             mHeight
         )
 
-        glClear(GL_COLOR_BUFFER_BIT or
+        glClear(
+            GL_COLOR_BUFFER_BIT or
             GL_DEPTH_BUFFER_BIT
         )
 

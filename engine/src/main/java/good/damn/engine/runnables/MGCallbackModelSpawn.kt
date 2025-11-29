@@ -1,6 +1,7 @@
 package good.damn.engine.runnables
 
 import android.opengl.GLES30
+import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.MGTriggerMeshGroup
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
@@ -19,11 +20,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class MGCallbackModelSpawn(
     private val bridgeRay: MGBridgeRayIntersect,
     private val triggerAction: MGITrigger,
-    private val managerTrigger: MGManagerTriggerMesh,
-    private val listMeshes: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>,
-    private val poolTextures: MGPoolTextures,
-    private val poolMeshes: MGPoolMeshesStatic,
-    private val handlerGl: MGHandlerGl
+    private val informator: MGMInformator
 ): MGICallbackModel {
 
     override fun onGetObjectsCached(
@@ -64,12 +61,12 @@ class MGCallbackModelSpawn(
             val outPoolMesh = MGMPoolMeshMutable()
             MGTriggerMesh.createFromObject(
                 objs[0],
-                poolTextures,
+                informator.poolTextures,
                 outPoolMesh,
                 triggerAction,
-                handlerGl
+                informator.glHandler
             ).run {
-                poolMeshes[fileName] = arrayOf(
+                informator.poolMeshes[fileName] = arrayOf(
                     outPoolMesh.toImmutable()
                 )
                 processMesh(this)
@@ -85,10 +82,10 @@ class MGCallbackModelSpawn(
             objs,
             outPoolMeshes,
             triggerAction,
-            poolTextures,
-            handlerGl
+            informator.poolTextures,
+            informator.glHandler
         ).run {
-            poolMeshes[fileName] = Array(
+            informator.poolMeshes[fileName] = Array(
                 outPoolMeshes.size
             ) { outPoolMeshes[it].toImmutable() }
 
@@ -140,11 +137,11 @@ class MGCallbackModelSpawn(
     private inline fun addMesh(
         mesh: MGTriggerMesh
     ) {
-        listMeshes.add(
+        informator.meshes.add(
             mesh.mesh
         )
 
-        managerTrigger.addTrigger(
+        informator.managerTrigger.addTrigger(
             mesh.triggerState
         )
     }
