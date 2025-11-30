@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import good.damn.engine.MGEngine
 import good.damn.engine.hud.MGHud
 import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.loaders.scripts.MGLoaderScripts
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInformatorShader
 import good.damn.engine.opengl.MGSwitcherDrawMode
@@ -113,13 +114,7 @@ class MGRendererLevelEditor(
         MGCameraFree(
             MGMatrixTranslate()
         ),
-        MGDrawerLightDirectional().apply {
-            setPosition(
-                2.8929129f,
-                10.986f,
-                -9.247298f
-            )
-        },
+        MGDrawerLightDirectional(),
         ConcurrentLinkedQueue(),
         ConcurrentLinkedQueue(),
         MGSky(
@@ -260,6 +255,10 @@ class MGRendererLevelEditor(
             )
             modelMatrix.invalidatePosition()
         }
+
+        MGLoaderScripts.executeDirLight(
+            mInformator.drawerLightDirectional
+        )
 
         glEnable(
             GL_DEPTH_TEST
