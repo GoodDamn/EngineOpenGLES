@@ -42,6 +42,7 @@ import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.sdk.MGVector3
 import good.damn.engine.utils.MGUtilsBuffer
+import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.io.File
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -161,7 +162,7 @@ class MGRendererLevelEditor(
         gl: GL10?,
         config: EGLConfig?
     ) {
-        writeExtensions()
+        MGUtilsFile.glWriteExtensions()
 
         setupShaders(
             mInformatorShader.map,
@@ -360,79 +361,5 @@ class MGRendererLevelEditor(
             pathFragment,
             binderAttributeInstanced
         )
-    }
-
-    private inline fun writeExtensions() {
-        File(
-            MGEngine.DIR_PUBLIC,
-            "extensions.txt"
-        ).run {
-            if (length() != 0L) {
-                return@run
-            }
-
-            if (!exists() && createNewFile()) {
-                Log.d(TAG, "onSurfaceCreated: $name is created")
-            }
-
-            val extensions = glGetString(
-                GL_EXTENSIONS
-            ).replace(" ".toRegex(), "\n")
-
-            val numExt = extensions.count {
-                it == '\n'
-            }
-
-            val vendor = glGetString(
-                GL_VENDOR
-            )
-
-            val renderer = glGetString(
-                GL_RENDERER
-            )
-
-            val version = glGetString(
-                GL_VERSION
-            )
-
-            val glslVersion = glGetString(
-                GL_SHADING_LANGUAGE_VERSION
-            )
-
-            outputStream().run {
-                write(
-                    numExt.toString().encodeToByteArray()
-                )
-                write(10)
-                write(
-                    extensions.encodeToByteArray()
-                )
-
-                write(10)
-                write(10)
-
-                write(
-                    renderer.encodeToByteArray()
-                )
-                write(10)
-
-                write(
-                    vendor.encodeToByteArray()
-                )
-                write(10)
-
-                write(
-                    version.encodeToByteArray()
-                )
-
-                write(10)
-                write(
-                    glslVersion.encodeToByteArray()
-                )
-
-                close()
-            }
-
-        }
     }
 }

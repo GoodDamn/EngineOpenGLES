@@ -2,6 +2,12 @@ package good.damn.engine.utils
 
 import android.content.Context
 import android.net.Uri
+import android.opengl.GLES30.GL_EXTENSIONS
+import android.opengl.GLES30.GL_RENDERER
+import android.opengl.GLES30.GL_SHADING_LANGUAGE_VERSION
+import android.opengl.GLES30.GL_VENDOR
+import android.opengl.GLES30.GL_VERSION
+import android.opengl.GLES30.glGetString
 import android.os.Environment
 import android.util.Log
 import good.damn.engine.MGEngine
@@ -14,12 +20,86 @@ import java.io.IOException
 import java.io.InputStream
 
 object MGUtilsFile {
+
+    private const val TAG = "MGUtilsFile"
+
     fun getPublicFile(
         localPath: String
     ) = File(
         MGEngine.DIR_PUBLIC,
         localPath
     )
+
+    fun glWriteExtensions() = File(
+        MGEngine.DIR_PUBLIC,
+        "extensions.txt"
+    ).run {
+        if (length() != 0L) {
+            return@run
+        }
+
+        if (!exists() && createNewFile()) {
+            Log.d(TAG, "onSurfaceCreated: $name is created")
+        }
+
+        val extensions = glGetString(
+            GL_EXTENSIONS
+        ).replace(" ".toRegex(), "\n")
+
+        val numExt = extensions.count {
+            it == '\n'
+        }
+
+        val vendor = glGetString(
+            GL_VENDOR
+        )
+
+        val renderer = glGetString(
+            GL_RENDERER
+        )
+
+        val version = glGetString(
+            GL_VERSION
+        )
+
+        val glslVersion = glGetString(
+            GL_SHADING_LANGUAGE_VERSION
+        )
+
+        outputStream().run {
+            write(
+                numExt.toString().encodeToByteArray()
+            )
+            write(10)
+            write(
+                extensions.encodeToByteArray()
+            )
+
+            write(10)
+            write(10)
+
+            write(
+                renderer.encodeToByteArray()
+            )
+            write(10)
+
+            write(
+                vendor.encodeToByteArray()
+            )
+            write(10)
+
+            write(
+                version.encodeToByteArray()
+            )
+
+            write(10)
+            write(
+                glslVersion.encodeToByteArray()
+            )
+
+            close()
+        }
+    }
 
     fun read(
         uri: Uri?,
