@@ -23,7 +23,7 @@ class MGDrawModeSingleShader(
                 this
             )
 
-            informator.sky.drawVertices(
+            informator.meshSky.drawVertices(
                 this
             )
 

@@ -6,6 +6,7 @@ import good.damn.engine.imports.MGImportLevel
 import good.damn.engine.imports.MGImportMesh
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
+import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
@@ -25,7 +26,8 @@ import good.damn.engine.ui.clicks.MGClickTriggerDrawingFlag
 
 class MGHud(
     requesterUserContent: MGIRequestUserContent,
-    private val informator: MGMInformator
+    informator: MGMInformator,
+    switcherDrawMode: MGSwitcherDrawMode
 ): MGIListenerOnIntersectPosition {
 
     private val mBridgeMatrix = MGBridgeRayIntersect()
@@ -69,7 +71,10 @@ class MGHud(
         clickPlaceMesh = MGClickPlaceMesh(
             mBridgeMatrix
         ),
-        clickSwitchDrawerMode = createDrawModeSwitcher(),
+        clickSwitchDrawerMode = MGClickSwitchDrawMode(
+            informator,
+            switcherDrawMode
+        ),
         clickTriggerDrawing = MGClickTriggerDrawingFlag(
             informator
         )
@@ -93,10 +98,15 @@ class MGHud(
         )
     }
 
-    private inline fun createDrawModeSwitcher() = MGClickSwitchDrawMode(
-        informator,
-        mSwitcherDrawMode
-    )
+    fun layout(
+        width: Float,
+        height: Float
+    ) {
+        mLayerEditor.layout(
+            0f, 0f,
+            width, height
+        )
+    }
 
     fun touchEvent(
         event: MotionEvent

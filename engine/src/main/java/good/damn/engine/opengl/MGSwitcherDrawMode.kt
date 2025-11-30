@@ -92,7 +92,7 @@ class MGSwitcherDrawMode(
         MGEngine.drawMode = drawMode
         currentDrawerMode = currentDrawer
 
-        informator.sky.switchDrawMode(
+        informator.meshSky.switchDrawMode(
             drawMode
         )
 

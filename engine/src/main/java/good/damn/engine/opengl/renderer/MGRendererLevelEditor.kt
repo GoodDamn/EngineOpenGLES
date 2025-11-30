@@ -8,10 +8,26 @@ import android.opengl.GLU
 import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.MGEngine
+import good.damn.engine.hud.MGHud
 import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInformatorShader
+import good.damn.engine.opengl.MGSwitcherDrawMode
+import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
+import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
+import good.damn.engine.opengl.camera.MGCameraFree
+import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
+import good.damn.engine.opengl.drawers.MGDrawerVertexArray
+import good.damn.engine.opengl.entities.MGSky
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
+import good.damn.engine.opengl.enums.MGEnumTextureType
+import good.damn.engine.opengl.managers.MGManagerLight
+import good.damn.engine.opengl.managers.MGManagerTriggerLight
+import good.damn.engine.opengl.managers.MGManagerTriggerMesh
+import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMShader
-import good.damn.engine.opengl.scene.MGScene
+import good.damn.engine.opengl.pools.MGPoolMeshesStatic
+import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderOpaque
@@ -21,7 +37,14 @@ import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
+import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
+import good.damn.engine.sdk.MGVector3
+import good.damn.engine.utils.MGUtilsBuffer
+import good.damn.engine.utils.MGUtilsVertIndices
 import java.io.File
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGRendererLevelEditor(
     requesterUserContent: MGIRequestUserContent
@@ -54,10 +77,85 @@ class MGRendererLevelEditor(
         )
     )
 
+    private val mPoolTextures = MGPoolTextures(
+        MGTexture(
+            MGEnumTextureType.DIFFUSE
+        ),
+        MGTexture(
+            MGEnumTextureType.METALLIC
+        ),
+        MGTexture(
+            MGEnumTextureType.EMISSIVE
+        ),
+        MGTexture(
+            MGEnumTextureType.OPACITY
+        ),
+        MGTexture(
+            MGEnumTextureType.NORMAL
+        )
+    )
+
+    private val managerLight = MGManagerLight(
+        mInformatorShader.opaque.single.lightPoints.size
+    )
+
+    private val mVerticesBox = MGArrayVertexConfigurator(
+        MGEnumArrayVertexConfiguration.BYTE
+    )
+
+    private val mDrawerBox = MGDrawerVertexArray(
+        mVerticesBox
+    )
+
+    private val mInformator = MGMInformator(
+        mInformatorShader,
+        MGCameraFree(
+            MGMatrixTranslate()
+        ),
+        MGDrawerLightDirectional().apply {
+            setPosition(
+                2.8929129f,
+                10.986f,
+                -9.247298f
+            )
+        },
+        ConcurrentLinkedQueue(),
+        ConcurrentLinkedQueue(),
+        MGSky(
+            MGTexture(
+                MGEnumTextureType.DIFFUSE
+            ),
+            mPoolTextures,
+            MGArrayVertexConfigurator(
+                MGEnumArrayVertexConfiguration.SHORT
+            )
+        ),
+        managerLight,
+        MGManagerTriggerLight(
+            managerLight,
+            mDrawerBox
+        ),
+        MGManagerTriggerMesh(
+            mDrawerBox
+        ),
+        mPoolTextures,
+        MGPoolMeshesStatic(),
+        MGHandlerGl(),
+        true
+    )
+
+    private val mSwitcherDrawMode = MGSwitcherDrawMode(
+        mInformator
+    )
+
+    private val mHud = MGHud(
+        requesterUserContent,
+        mInformator,
+        mSwitcherDrawMode
+    )
+
     private var mWidth = 0
     private var mHeight = 0
-
-    private val mSceneTest = MGScene()
     
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -137,9 +235,30 @@ class MGRendererLevelEditor(
                 .build()
         )
 
-        mSceneTest.onSurfaceCreated(
-            gl, config
+
+        mInformator.poolTextures.configureDefault()
+        mInformator.meshSky.configure()
+        mVerticesBox.configure(
+            MGUtilsBuffer.createFloat(
+                MGUtilsVertIndices.createCubeVertices(
+                    MGTriggerMethodBox.MIN,
+                    MGTriggerMethodBox.MAX
+                )
+            ),
+            MGUtilsBuffer.createByte(
+                MGUtilsVertIndices.createCubeIndices()
+            ),
+            MGPointerAttribute.Builder()
+                .pointPosition()
+                .build()
         )
+
+        mInformator.camera.run {
+            modelMatrix.setPosition(
+                0f, 0f, 0f
+            )
+            modelMatrix.invalidatePosition()
+        }
 
         glEnable(
             GL_DEPTH_TEST
@@ -166,10 +285,14 @@ class MGRendererLevelEditor(
         Log.d(TAG, "onSurfaceChanged: ${Thread.currentThread().name}")
         mWidth = width
         mHeight = height
-        mSceneTest.onSurfaceChanged(
-            gl,
+        mInformator.camera.setPerspective(
             width,
             height
+        )
+
+        mHud.layout(
+            width.toFloat(),
+            height.toFloat()
         )
     }
 
@@ -201,18 +324,20 @@ class MGRendererLevelEditor(
             return
         }
 
-        mSceneTest.onDrawFrame(
-            gl
-        )
+        mInformator
+            .glHandler
+            .run()
+
+        mSwitcherDrawMode
+            .currentDrawerMode
+            .draw()
     }
 
     fun onTouchEvent(
         event: MotionEvent
-    ) {
-        mSceneTest.onTouchEvent(
-            event
-        )
-    }
+    ) = mHud.touchEvent(
+        event
+    )
 
     private inline fun <
         T: MGShaderBase,

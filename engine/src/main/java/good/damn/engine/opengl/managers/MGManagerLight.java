@@ -15,14 +15,10 @@ public final class MGManagerLight {
     private final MGLightWrapper[] mPullLights;
 
     public MGManagerLight(
-        @NonNull final MGShaderDefault shader
+        final int countLights
     ) {
-        @NonNull
-        final MGShaderLightPoint[] lightPoints = shader
-            .getLightPoints();
-
         mPullLights = new MGLightWrapper[
-            lightPoints.length
+            countLights
         ];
 
         for (int i = 0; i < mPullLights.length; i++) {

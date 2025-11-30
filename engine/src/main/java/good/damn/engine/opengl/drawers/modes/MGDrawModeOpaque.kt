@@ -36,7 +36,8 @@ data class MGDrawModeOpaque(
         camera.draw(
             shaderSky
         )
-        sky.drawSingleTexture(
+
+        meshSky.drawSingleTexture(
             shaderSky,
             shaderSky
         )
@@ -50,7 +51,7 @@ data class MGDrawModeOpaque(
             camera.drawPosition(
                 this
             )
-            directionalLight.draw(
+            drawerLightDirectional.draw(
                 lightDirectional
             )
             meshes.forEach {
@@ -77,7 +78,7 @@ data class MGDrawModeOpaque(
             camera.drawPosition(
                 this
             )
-            directionalLight.draw(
+            drawerLightDirectional.draw(
                 lightDirectional
             )
 
