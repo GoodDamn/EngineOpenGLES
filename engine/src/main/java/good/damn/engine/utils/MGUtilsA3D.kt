@@ -33,8 +33,7 @@ object MGUtilsA3D {
         mesh.vertexBuffers[
             A3DEnumTypeBufferVertex.NORMAL1.type - 1
         ]!!.vertices,
-        mesh.subMeshes[0].indices.tangentBi.first,
-        mesh.subMeshes[1].indices.tangentBi.second,
+        mesh.subMeshes[0].indices.tangent,
         uvScale
     )
 

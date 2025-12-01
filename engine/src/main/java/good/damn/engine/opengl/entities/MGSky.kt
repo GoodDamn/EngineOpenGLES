@@ -55,7 +55,7 @@ class MGSky(
             verticesSky.configure(
                 vertices,
                 indices,
-                MGPointerAttribute.default32
+                MGPointerAttribute.defaultNoTangent
             )
         }
     }

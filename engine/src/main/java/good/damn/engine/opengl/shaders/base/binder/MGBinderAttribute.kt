@@ -76,6 +76,16 @@ class MGBinderAttribute private constructor(
             return this
         }
 
+        fun bindTangent(): Builder {
+            list.add(
+                MGMBinderLocation(
+                    "aTangent",
+                    11
+                )
+            )
+            return this
+        }
+
         fun build() = MGBinderAttribute(
             list
         )

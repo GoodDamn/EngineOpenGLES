@@ -1,11 +1,12 @@
 package good.damn.engine.utils
 
+import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import java.nio.FloatBuffer
 import kotlin.math.tan
 
 object MGUtilsArray {
 
-    private const val PUNTB = 14
+    private const val PUNTB = MGArrayVertexConfigurator.MAX_VALUES_PER_VERTICES
 
     @JvmStatic
     fun createMergedVertexBuffer(
@@ -13,7 +14,6 @@ object MGUtilsArray {
         uv: FloatArray,
         normal: FloatArray,
         tangent: FloatArray,
-        bitangent: FloatArray,
         uvScale: Float
     ): FloatBuffer {
         val vertexCount = position.size / 3
@@ -26,7 +26,6 @@ object MGUtilsArray {
         var iNormal = 0
         var iPosition = 0
         var iTangent = 0
-        var iBitangent = 0
 
         var ii = 0
         while (ii < outSize) {
@@ -93,24 +92,7 @@ object MGUtilsArray {
                 ii++,
                 tangent[iTangent]
             )
-
-            // ----------------------------------------
-            // Bitangent
-            output.put(
-                ii++,
-                bitangent[iBitangent++]
-            )
-
-            output.put(
-                ii++,
-                bitangent[iBitangent+1]
-            )
-
-            output.put(
-                ii++,
-                bitangent[iBitangent]
-            )
-
+            iTangent += 2
         }
 
         output.position(0)

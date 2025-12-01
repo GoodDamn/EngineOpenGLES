@@ -15,6 +15,13 @@ class MGPointerAttribute private constructor(
             .pointPosition()
             .pointTextureCoordinates()
             .pointNormal()
+            .pointTangent()
+            .build()
+
+        val defaultNoTangent = Builder()
+            .pointPosition()
+            .pointTextureCoordinates()
+            .pointNormal()
             .build()
     }
 
@@ -70,6 +77,18 @@ class MGPointerAttribute private constructor(
             list.add(
                 MGMPointerAttribute(
                     2,
+                    mOffset,
+                    3
+                )
+            )
+            mOffset += 3 * 4
+            return this
+        }
+
+        fun pointTangent(): Builder {
+            list.add(
+                MGMPointerAttribute(
+                    11,
                     mOffset,
                     3
                 )

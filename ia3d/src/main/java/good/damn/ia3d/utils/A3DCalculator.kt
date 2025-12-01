@@ -4,6 +4,7 @@ import good.damn.ia3d.extractors.A3DIExtractor
 import good.damn.ia3d.misc.A3DMVector2
 import good.damn.ia3d.misc.A3DMVector3
 import java.nio.ShortBuffer
+import kotlin.math.tan
 
 internal object A3DCalculator {
 
@@ -12,14 +13,13 @@ internal object A3DCalculator {
         positions: FloatArray,
         uv: FloatArray,
         indicesExtractor: A3DIExtractor
-    ): Pair<FloatArray, FloatArray> {
+    ): FloatArray {
+
+        val indicesCount = indicesExtractor
+            .indicesCount
 
         val tangent = FloatArray(
             positions.size
-        )
-
-        val bitangent = FloatArray(
-            tangent.size
         )
 
         val position0 = A3DMVector3()
@@ -36,9 +36,6 @@ internal object A3DCalculator {
         val dtuv1 = A3DMVector2()
         val dtuv2 = A3DMVector2()
 
-        val indicesCount = indicesExtractor
-            .indicesCount
-
         var i = 0
         while (i < indicesCount) {
             indicesExtractor.extract(i)
@@ -46,23 +43,27 @@ internal object A3DCalculator {
             val vertex1Index = indicesExtractor.vertex1
             val vertex2Index = indicesExtractor.vertex2
 
+            val beginIndex0 = vertex0Index * 3
+            val beginIndex1 = vertex1Index * 3
+            val beginIndex2 = vertex2Index * 3
+
             // Positions
             getPositionAt(
                 position0,
                 positions,
-                vertex0Index
+                beginIndex0
             )
 
             getPositionAt(
                 position1,
                 positions,
-                vertex1Index
+                beginIndex1
             )
 
             getPositionAt(
                 position2,
                 positions,
-                vertex2Index
+                beginIndex2
             )
 
             // UVs
@@ -101,38 +102,83 @@ internal object A3DCalculator {
 
 
             val f = 1.0f / (dtuv1.x * dtuv2.y - dtuv2.x * dtuv1.y)
+            val tangentX = f * (dtuv2.y * edge1.x - dtuv1.y * edge2.x)
+            val tangentY = f * (dtuv2.y * edge1.y - dtuv1.y * edge2.y)
+            val tangentZ = f * (dtuv2.y * edge1.z - dtuv1.y * edge2.z)
 
-            tangent[i]   = f * (dtuv2.y * edge1.x - dtuv1.y * edge2.x)
-            tangent[i+1] = f * (dtuv2.y * edge1.y - dtuv1.y * edge2.y)
-            tangent[i+2] = f * (dtuv2.y * edge1.z - dtuv1.y * edge2.z)
+            calculateTangent(
+                tangent,
+                beginIndex0,
+                tangentX, tangentY, tangentZ
+            )
 
-            bitangent[i]   = f * (-dtuv2.x * edge1.x + dtuv1.x * edge2.x)
-            bitangent[i+1] = f * (-dtuv2.x * edge1.y + dtuv1.x * edge2.y)
-            bitangent[i+2] = f * (-dtuv2.x * edge1.z + dtuv1.x * edge2.z)
+            calculateTangent(
+                tangent,
+                beginIndex1,
+                tangentX, tangentY, tangentZ
+            )
+
+            calculateTangent(
+                tangent,
+                beginIndex2,
+                tangentX, tangentY, tangentZ
+            )
+
+            //bitangent[iTangent]   = f * (-dtuv2.x * edge1.x + dtuv1.x * edge2.x)
+            //bitangent[iTangent+1] = f * (-dtuv2.x * edge1.y + dtuv1.x * edge2.y)
+            //bitangent[iTangent+2] = f * (-dtuv2.x * edge1.z + dtuv1.x * edge2.z)
+            i += 3
+        }
+
+        i = 0
+        val vector = A3DMVector3()
+        while (i < tangent.size) {
+            vector.x = tangent[i]
+            vector.y = tangent[i+1]
+            vector.z = tangent[i+2]
+            vector.normalize()
+
+            tangent[i] = vector.x
+            tangent[i+1] = vector.y
+            tangent[i+2] = vector.z
 
             i += 3
         }
 
-        return Pair(
-            tangent,
-            bitangent
-        )
+        return tangent
     }
 
-    @JvmStatic
-    private fun getPositionAt(
+    private inline fun calculateTangent(
+        tangent: FloatArray,
+        beginIndex: Int,
+        tangentX: Float,
+        tangentY: Float,
+        tangentZ: Float
+    ) {
+        tangent[
+            beginIndex
+        ] += tangentX
+
+        tangent[
+            beginIndex+1
+        ] += tangentY
+
+        tangent[
+            beginIndex+2
+        ] += tangentZ
+    }
+
+    private inline fun getPositionAt(
         out: A3DMVector3,
         positions: FloatArray,
         index: Int
     ) {
-        val i = index * 3
-        out.x = positions[i]
-        out.y = positions[i+1]
-        out.z = positions[i+2]
+        out.x = positions[index]
+        out.y = positions[index+1]
+        out.z = positions[index+2]
     }
 
-    @JvmStatic
-    private fun getUvAt(
+    private inline fun getUvAt(
         out: A3DMVector2,
         uv: FloatArray,
         index: Int

@@ -1,6 +1,7 @@
 package good.damn.ia3d.misc
 
 import good.damn.ia3d.stream.A3DInputStream
+import kotlin.math.sqrt
 
 data class A3DMVector3(
     var x: Float = 0f,
@@ -16,6 +17,17 @@ data class A3DMVector3(
             stream.readLFloat()
         )
     }
+
+    fun normalize() {
+        val len = length()
+        x /= len
+        y /= len
+        z /= len
+    }
+
+    fun length() = sqrt(
+        x * x + y * y + z * z
+    )
 
     fun subtract(
         v: A3DMVector3,

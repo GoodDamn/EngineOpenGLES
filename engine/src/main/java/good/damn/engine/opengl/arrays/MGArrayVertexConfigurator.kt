@@ -22,7 +22,7 @@ open class MGArrayVertexConfigurator(
 ) {
 
     companion object {
-        const val MAX_VALUES_PER_VERTICES = 8
+        const val MAX_VALUES_PER_VERTICES = 11
     }
 
     val vertexArrayId: Int

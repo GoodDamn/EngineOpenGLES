@@ -192,6 +192,7 @@ class MGRendererLevelEditor(
                 .bindPosition()
                 .bindTextureCoordinates()
                 .bindNormal()
+                .bindTangent()
                 .build(),
             binderAttributeInstanced = MGBinderAttribute.Builder()
                 .bindPosition()
@@ -199,6 +200,7 @@ class MGRendererLevelEditor(
                 .bindNormal()
                 .bindInstancedModel()
                 .bindInstancedRotationMatrix()
+                .bindTangent()
                 .build()
         )
 
