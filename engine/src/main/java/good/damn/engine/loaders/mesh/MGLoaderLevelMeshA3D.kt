@@ -60,7 +60,7 @@ class MGLoaderLevelMeshA3D(
             MGUtilsA3D.createMergedVertexBuffer(
                 mesh,
                 if (it.fileNameA3d.contains("errain"))
-                    45f
+                    105f
                 else 1f
             ),
             configIndices.buffer,
