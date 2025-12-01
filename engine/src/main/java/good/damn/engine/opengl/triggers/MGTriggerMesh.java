@@ -74,7 +74,7 @@ public final class MGTriggerMesh {
             obj.vertices
         );
 
-        @NonNull final MGMaterial material = MGMaterial.Companion.createWithPath(
+        @NonNull final MGMaterial material = MGMaterial.createWithPath(
             poolTextures,
             obj.texturesDiffuseFileName == null ? null : obj.texturesDiffuseFileName[0],
             obj.texturesMetallicFileName == null ? null : obj.texturesMetallicFileName[0],

@@ -7,10 +7,10 @@ import java.io.FileInputStream
 import java.nio.file.NoSuchFileException
 
 class MGUtilsAsset {
-
     companion object {
         private const val TAG = "MGUtilsAsset"
 
+        @JvmStatic
         fun loadString(
             path: String
         ): String {
@@ -40,5 +40,4 @@ class MGUtilsAsset {
         }
 
     }
-
 }

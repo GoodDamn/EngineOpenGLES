@@ -7,6 +7,7 @@ import java.io.FileInputStream
 
 object MGUtilsBitmap {
 
+    @JvmStatic
     fun generateFromColor(
         @ColorInt color: Int
     ) = Bitmap.createBitmap(
@@ -17,6 +18,7 @@ object MGUtilsBitmap {
         Bitmap.Config.ARGB_8888
     )
 
+    @JvmStatic
     fun loadBitmap(
         localPath: String
     ): Bitmap? {

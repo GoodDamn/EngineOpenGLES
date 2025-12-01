@@ -23,6 +23,7 @@ object MGUtilsFile {
 
     private const val TAG = "MGUtilsFile"
 
+    @JvmStatic
     fun getPublicFile(
         localPath: String
     ) = File(
@@ -30,6 +31,7 @@ object MGUtilsFile {
         localPath
     )
 
+    @JvmStatic
     fun glWriteExtensions() = File(
         MGEngine.DIR_PUBLIC,
         "extensions.txt"
@@ -101,6 +103,7 @@ object MGUtilsFile {
         }
     }
 
+    @JvmStatic
     fun read(
         uri: Uri?,
         context: Context
@@ -120,6 +123,7 @@ object MGUtilsFile {
     }
 
 
+    @JvmStatic
     fun readBytes(
         inp: InputStream,
         buffer: ByteArray = MGEngine.BUFFER_MB

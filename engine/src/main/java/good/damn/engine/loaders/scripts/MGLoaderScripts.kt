@@ -6,6 +6,7 @@ import good.damn.engine.utils.MGUtilsFile
 
 object MGLoaderScripts {
 
+    @JvmStatic
     fun executeDirLight(
         directionalLight: MGDrawerLightDirectional
     ) {
