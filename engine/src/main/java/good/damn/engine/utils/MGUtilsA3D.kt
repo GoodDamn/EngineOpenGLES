@@ -26,7 +26,6 @@ object MGUtilsA3D {
 
     fun createMergedVertexBuffer(
         mesh: A3DMMesh,
-        tangentBi: Pair<FloatArray, FloatArray>,
         uvScale: Float
     ) = MGUtilsArray.createMergedVertexBuffer(
         getBufferPosition(mesh),
@@ -34,8 +33,8 @@ object MGUtilsA3D {
         mesh.vertexBuffers[
             A3DEnumTypeBufferVertex.NORMAL1.type - 1
         ]!!.vertices,
-        tangentBi.first,
-        tangentBi.second,
+        mesh.subMeshes[0].indices.tangentBi.first,
+        mesh.subMeshes[1].indices.tangentBi.second,
         uvScale
     )
 
