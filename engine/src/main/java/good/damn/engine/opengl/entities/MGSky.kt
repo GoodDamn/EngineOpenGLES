@@ -22,6 +22,7 @@ class MGSky(
     textureDiffuse,
     poolTextures.defaultTextureMetallic,
     poolTextures.defaultTextureEmissive,
+    poolTextures.defaultTextureNormal,
     MGDrawerMeshSwitch(
         MGDrawerVertexArray(
             verticesSky

@@ -8,9 +8,7 @@ class MGDrawerMeshMaterialSwitch(
     private val material: MGMaterial,
     drawMesh: MGDrawerMeshSwitch
 ): MGDrawerMeshTextureSwitch(
-    material.textureDiffuse,
-    material.textureMetallic,
-    material.textureEmissive,
+    material,
     drawMesh
 ) {
     fun drawMaterial(

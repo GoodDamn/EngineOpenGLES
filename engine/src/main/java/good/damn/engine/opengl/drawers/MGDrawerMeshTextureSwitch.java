@@ -2,6 +2,7 @@ package good.damn.engine.opengl.drawers;
 
 import androidx.annotation.NonNull;
 
+import good.damn.engine.opengl.entities.MGMaterial;
 import good.damn.engine.opengl.enums.MGEnumDrawMode;
 import good.damn.engine.opengl.shaders.MGIShaderModel;
 import good.damn.engine.opengl.shaders.MGIShaderNormal;
@@ -21,6 +22,9 @@ public class MGDrawerMeshTextureSwitch {
     private final MGTexture mTextureEmissive;
 
     @NonNull
+    private final MGTexture mTextureNormal;
+
+    @NonNull
     protected final MGDrawerMeshSwitch mDrawerMesh;
 
     @NonNull
@@ -29,14 +33,29 @@ public class MGDrawerMeshTextureSwitch {
     > mDrawerTexture;
 
     public MGDrawerMeshTextureSwitch(
+        @NonNull final MGMaterial material,
+        @NonNull final MGDrawerMeshSwitch drawerMesh
+    ) {
+        this(
+            material.getTextureDiffuse(),
+            material.getTextureMetallic(),
+            material.getTextureEmissive(),
+            material.getTextureNormal(),
+            drawerMesh
+        );
+    }
+
+    public MGDrawerMeshTextureSwitch(
         @NonNull final MGTexture textureDiffuse,
         @NonNull final MGTexture textureMetallic,
         @NonNull final MGTexture textureEmissive,
+        @NonNull final MGTexture textureNormal,
         @NonNull final MGDrawerMeshSwitch drawerMesh
     ) {
         mTextureDiffuse = textureDiffuse;
         mTextureMetallic = textureMetallic;
         mTextureEmissive = textureEmissive;
+        mTextureNormal = textureNormal;
         mDrawerMesh = drawerMesh;
 
         mDrawerTexture = textureDiffuse;
@@ -55,6 +74,9 @@ public class MGDrawerMeshTextureSwitch {
                 break;
             case EMISSIVE:
                 mDrawerTexture = mTextureEmissive;
+                break;
+            case NORMAL_MAP:
+                mDrawerTexture = mTextureNormal;
                 break;
         }
 

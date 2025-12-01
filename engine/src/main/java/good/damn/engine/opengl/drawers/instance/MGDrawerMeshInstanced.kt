@@ -20,14 +20,13 @@ class MGDrawerMeshInstanced(
     fun switchDrawMode(
         drawMode: MGEnumDrawMode
     ) {
-        if (drawMode == MGEnumDrawMode.DIFFUSE ||
-            drawMode == MGEnumDrawMode.OPAQUE
+        mDrawerTexture = when (
+            drawMode
         ) {
-            mDrawerTexture = material.textureDiffuse
-        } else if (drawMode == MGEnumDrawMode.METALLIC) {
-            mDrawerTexture = material.textureMetallic
-        } else if (drawMode == MGEnumDrawMode.EMISSIVE) {
-            mDrawerTexture = material.textureEmissive
+            MGEnumDrawMode.METALLIC -> material.textureDiffuse
+            MGEnumDrawMode.EMISSIVE -> material.textureEmissive
+            MGEnumDrawMode.NORMAL_MAP -> material.textureNormal
+            else -> material.textureDiffuse
         }
 
         mode = if (

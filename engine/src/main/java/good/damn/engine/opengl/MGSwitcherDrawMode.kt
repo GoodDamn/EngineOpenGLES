@@ -79,6 +79,11 @@ class MGSwitcherDrawMode(
         )
 
         MGEnumDrawMode.EMISSIVE -> switchDrawMode(
+            MGEnumDrawMode.NORMAL_MAP,
+            drawerModeTexture
+        )
+
+        MGEnumDrawMode.NORMAL_MAP -> switchDrawMode(
             MGEnumDrawMode.OPAQUE,
             drawerModeOpaque
         )
