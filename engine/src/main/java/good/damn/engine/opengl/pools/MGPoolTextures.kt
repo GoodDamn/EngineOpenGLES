@@ -37,9 +37,9 @@ class MGPoolTextures(
     }
 
     fun configureDefault() {
-        MGUtilsBitmap.loadBitmap(
-            "textures/black.jpg"
-        )?.run {
+        MGUtilsBitmap.generateFromColor(
+            0
+        ).run {
             defaultTextureMetallic.glTextureSetup(
                 this,
                 GL_REPEAT
@@ -56,9 +56,9 @@ class MGPoolTextures(
             )
         }
 
-        MGUtilsBitmap.loadBitmap(
-            "textures/white.jpg"
-        )?.run {
+        MGUtilsBitmap.generateFromColor(
+            -1
+        ).run {
             defaultTexture.glTextureSetup(
                 this,
                 GL_REPEAT
@@ -70,9 +70,9 @@ class MGPoolTextures(
             )
         }
 
-        MGUtilsBitmap.loadBitmap(
-            "textures/normal.jpg"
-        )?.run {
+        MGUtilsBitmap.generateFromColor(
+            0xff7f7fff.toInt()
+        ).run {
             defaultTextureNormal.glTextureSetup(
                 this,
                 GL_CLAMP_TO_EDGE
