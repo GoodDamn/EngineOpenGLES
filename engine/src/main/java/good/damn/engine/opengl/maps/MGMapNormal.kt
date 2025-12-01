@@ -2,8 +2,7 @@ package good.damn.engine.opengl.maps
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.core.graphics.get
-import good.damn.engine.opengl.MGVector
+import good.damn.engine.sdk.MGVector3
 import good.damn.engine.opengl.factories.MGFactoryBitmap
 import java.io.InputStream
 
@@ -49,7 +48,7 @@ class MGMapNormal(
         (nx * bitmap.width).toInt(),
         (ny * bitmap.height).toInt()
     ).run {
-        MGVector(
+        MGVector3(
             normalize(
                 0x00ff0000,
                 16

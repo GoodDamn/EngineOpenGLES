@@ -4,6 +4,7 @@ import java.nio.FloatBuffer
 
 object MGUtilsArray {
 
+    @JvmStatic
     fun createMergedVertexBuffer(
         position: FloatArray,
         uv: FloatArray,

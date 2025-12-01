@@ -1,7 +1,7 @@
 package good.damn.engine.opengl.camera
 
 import android.opengl.Matrix.setLookAtM
-import good.damn.engine.opengl.MGVector
+import good.damn.engine.sdk.MGVector3
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import kotlin.math.cos
 import kotlin.math.hypot
@@ -13,15 +13,15 @@ class MGCameraFree(
     modelMatrix
 ) {
 
-    val direction = MGVector(
+    val direction = MGVector3(
         0.0f, 0.0f, -1.0f
     )
 
-    private val mUp = MGVector(
+    private val mUp = MGVector3(
         0.0f, 1.0f, 0.0f
     )
 
-    private val mPositionDirection = MGVector(0.0f)
+    private val mPositionDirection = MGVector3(0.0f)
 
     private var mSpeed = 2.0f
 

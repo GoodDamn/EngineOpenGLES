@@ -63,14 +63,14 @@ public final class MGObject3d {
         @Nullable final String[] texturesMetallicFileName,
         @Nullable final String[] texturesEmissiveFileName
     ) {
-        this.vertices = MGUtilsBuffer.Companion.createFloat(
+        this.vertices = MGUtilsBuffer.createFloat(
             vertices
         );
 
         @Nullable final Pair<
             MGEnumArrayVertexConfiguration,
             Buffer
-        > pair = MGUtilsBuffer.Companion.createBufferIndicesDynamic(
+        > pair = MGUtilsBuffer.INSTANCE.createBufferIndicesDynamic(
             indices,
             vertices.length / 8
         );
@@ -93,7 +93,7 @@ public final class MGObject3d {
     public static MGObject3d[] createFromAssets(
         @NonNull final String localPath
     ) throws Exception {
-        @NonNull final File filePub = MGUtilsFile.INSTANCE.getPublicFile(
+        @NonNull final File filePub = MGUtilsFile.getPublicFile(
             localPath
         );
 

@@ -29,7 +29,9 @@ class MGArrayVertexManager(
     fun getVertexBufferData(
         iteration: Int,
         i: Int
-    ) = mBufferVertex!![i + iteration * MAX_VALUES_PER_VERTICES]
+    ) = mBufferVertex!![
+        i + iteration * MAX_VALUES_PER_VERTICES
+    ]
 
     operator fun get(
         i: Int

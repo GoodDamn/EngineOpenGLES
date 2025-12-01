@@ -3,6 +3,7 @@ package good.damn.engine.opengl.generators
 import android.util.Log
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.MGArrayVertexManager
+import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.iterators.vertex.MGIVertexIterator
 import good.damn.engine.utils.MGUtilsBuffer
 
@@ -112,7 +113,7 @@ class MGGeneratorLandscape(
         vertexArray.configure(
             bufferVertex,
             bufferIndices,
-            MGArrayVertexConfigurator.STRIDE
+            MGPointerAttribute.default32
         )
         Log.d(TAG, "setResolution: CONFIGURE: ${System.currentTimeMillis() - time}")
     }

@@ -81,6 +81,10 @@ class MGTexture(
             0
         )
 
+        glActiveTexture(
+            GL_TEXTURE0 + mActiveTexture
+        )
+
         glBindTexture(
             GL_TEXTURE_2D,
             mId[0]

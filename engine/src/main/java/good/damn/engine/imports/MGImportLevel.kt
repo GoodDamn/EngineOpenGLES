@@ -2,6 +2,7 @@ package good.damn.engine.imports
 
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.level.MGStreamLevel
+import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.thread.MGHandlerGl
@@ -10,9 +11,7 @@ import java.io.FileInputStream
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGImportLevel(
-    private val meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>,
-    private val poolTextures: MGPoolTextures,
-    private val handlerGl: MGHandlerGl
+    private val informator: MGMInformator
 ): MGImportFile {
 
     final override fun onImportFile(
@@ -21,7 +20,7 @@ class MGImportLevel(
     ) {
         MGStreamLevel.readBin(
             MGFlowLevel {
-                meshesInstanced.add(
+                informator.meshesInstanced.add(
                     MGDrawerMeshInstanced(
                         it.enableCullFace,
                         it.vertexArray,
@@ -32,8 +31,8 @@ class MGImportLevel(
             FileInputStream(
                 it
             ),
-            poolTextures,
-            handlerGl,
+            informator.poolTextures,
+            informator.glHandler,
             buffer
         )
     }

@@ -11,6 +11,7 @@ import android.opengl.GLES30.glEnableVertexAttribArray
 import android.opengl.GLES30.glGenBuffers
 import android.opengl.GLES30.glGenVertexArrays
 import android.opengl.GLES30.glVertexAttribPointer
+import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import java.nio.Buffer
 import java.nio.FloatBuffer
@@ -21,13 +22,7 @@ open class MGArrayVertexConfigurator(
 ) {
 
     companion object {
-        const val STRIDE = 8 * 4
-
         const val MAX_VALUES_PER_VERTICES = 8
-
-        private const val INDEX_POSITION = 0
-        private const val INDEX_TEX_COORD = 1
-        private const val INDEX_NORMAL = 2
     }
 
     val vertexArrayId: Int
@@ -46,7 +41,7 @@ open class MGArrayVertexConfigurator(
     fun configure(
         vertices: FloatBuffer,
         indices: Buffer,
-        stride: Int
+        pointerAttribute: MGPointerAttribute
     ) {
         mIndicesSize = indices.capacity()
         glGenVertexArrays(
@@ -67,9 +62,7 @@ open class MGArrayVertexConfigurator(
             indices
         )
 
-        enableAttrs(
-            stride
-        )
+        pointerAttribute.bindPointers()
 
         glBindVertexArray(
             0
@@ -135,54 +128,6 @@ open class MGArrayVertexConfigurator(
             indices.capacity() * config.indicesSize,
             indices,
             GL_STATIC_DRAW
-        )
-    }
-
-    private inline fun enableAttrs(
-        stride: Int
-    ) {
-        enableVertex(
-            INDEX_POSITION,
-            0,
-            3,
-            stride
-        )
-        if (stride <= 12) {
-            return
-        }
-
-        enableVertex(
-            INDEX_NORMAL,
-            5 * 4,
-            3,
-            stride
-        )
-
-        enableVertex(
-            INDEX_TEX_COORD,
-            3 * 4,
-            2,
-            stride
-        )
-    }
-
-    private inline fun enableVertex(
-        attrib: Int,
-        offset: Int,
-        size: Int,
-        stride: Int
-    ) {
-        glEnableVertexAttribArray(
-            attrib
-        )
-
-        glVertexAttribPointer(
-            attrib,
-            size,
-            GL_FLOAT,
-            false,
-            stride,
-            offset
         )
     }
 }

@@ -2,7 +2,6 @@ package good.damn.engine.opengl.triggers.methods;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.opengl.MGVector;
 import good.damn.engine.opengl.matrices.MGMatrixInvert;
 
 public final class MGTriggerMethodSphere

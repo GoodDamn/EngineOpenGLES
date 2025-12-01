@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.drawers.modes
 
+import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
@@ -11,32 +12,33 @@ import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderOpaque
+import good.damn.engine.opengl.shaders.MGShaderSingleMap
+import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
-import good.damn.engine.opengl.shaders.MGShaderSkySphere
 import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGDrawModeOpaque(
-    var shaderSky: MGShaderSkySphere,
-    var shaderOpaque: MGMShader<MGShaderDefault, MGShaderOpaque>,
-    var shaderTrigger: MGShaderSingleMode,
-    var sky: MGDrawerMeshTextureSwitch,
-    var camera: MGCamera,
-    var directionalLight: MGDrawerLightDirectional,
-    var meshes: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>,
-    var meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>,
-    var managersTrigger: Array<MGIManagerTrigger>,
-    var lights: MGManagerLight
+    private val informator: MGMInformator
 ): MGIDrawer {
 
-    var canDrawTriggers = true
+    private val mTriggerManagers = arrayOf(
+        informator.managerTrigger,
+        informator.managerTriggerLight
+    )
 
-    override fun draw() {
+    override fun draw() = informator.run {
+
+        val shaderSky = informator.shaders.map.single
+        val shaderOpaque = informator.shaders.opaque
+        val shaderTrigger = informator.shaders.wireframe.single
+
         shaderSky.use()
         camera.draw(
             shaderSky
         )
-        sky.drawSingleTexture(
-            shaderSky.texture,
+
+        meshSky.drawSingleTexture(
+            shaderSky,
             shaderSky
         )
 
@@ -49,7 +51,7 @@ data class MGDrawModeOpaque(
             camera.drawPosition(
                 this
             )
-            directionalLight.draw(
+            drawerLightDirectional.draw(
                 lightDirectional
             )
             meshes.forEach {
@@ -61,7 +63,7 @@ data class MGDrawModeOpaque(
                     this
                 )
             }
-            lights.draw(
+            managerLight.draw(
                 lightPoints
             )
         }
@@ -76,7 +78,7 @@ data class MGDrawModeOpaque(
             camera.drawPosition(
                 this
             )
-            directionalLight.draw(
+            drawerLightDirectional.draw(
                 lightDirectional
             )
 
@@ -86,7 +88,7 @@ data class MGDrawModeOpaque(
                 )
             }
 
-            lights.draw(
+            managerLight.draw(
                 lightPoints
             )
         }
@@ -102,7 +104,7 @@ data class MGDrawModeOpaque(
         camera.draw(
             shaderTrigger
         )
-        managersTrigger.forEach {
+        mTriggerManagers.forEach {
             it.draw(
                 shaderTrigger
             )

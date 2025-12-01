@@ -5,11 +5,11 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
+import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.objects.MGObject3d;
-import good.damn.engine.opengl.MGVector;
+import good.damn.engine.sdk.MGVector3;
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals;
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity;
@@ -65,7 +65,8 @@ public final class MGTriggerMesh {
                 arrayVertex,
                 obj.vertices,
                 obj.indices,
-                MGArrayVertexConfigurator.STRIDE
+                MGPointerAttribute.Companion
+                    .getDefault32()
             )
         );
 
@@ -73,11 +74,12 @@ public final class MGTriggerMesh {
             obj.vertices
         );
 
-        @NonNull final MGMaterial material = MGMaterial.Companion.createWithPath(
+        @NonNull final MGMaterial material = MGMaterial.createWithPath(
             poolTextures,
             obj.texturesDiffuseFileName == null ? null : obj.texturesDiffuseFileName[0],
             obj.texturesMetallicFileName == null ? null : obj.texturesMetallicFileName[0],
             obj.texturesEmissiveFileName == null ? null : obj.texturesEmissiveFileName[0],
+            null,
             null,
             "textures",
             handlerGl
@@ -129,10 +131,10 @@ public final class MGTriggerMesh {
         @NonNull final MGITrigger triggerAction
     ) {
         @NonNull final Pair<
-            MGVector, MGVector
+            MGVector3, MGVector3
         > pointMinMax = poolMesh.getPointMinMax();
 
-        @NonNull final MGVector pointMiddle = poolMesh
+        @NonNull final MGVector3 pointMiddle = poolMesh
             .getPointMiddle();
 
         @NonNull

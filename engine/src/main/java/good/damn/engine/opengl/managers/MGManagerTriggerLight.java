@@ -2,11 +2,9 @@ package good.damn.engine.opengl.managers;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.opengl.MGVector;
+import good.damn.engine.sdk.MGVector3;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.enums.MGEnumStateTrigger;
-import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
-import good.damn.engine.opengl.triggers.MGMatrixTriggerLight;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight;
 
 public final class MGManagerTriggerLight
@@ -32,7 +30,7 @@ extends MGManagerTrigger<
         float checkZ
     ) {
         @NonNull
-        MGVector lightPosition;
+        MGVector3 lightPosition;
 
         for (
             @NonNull

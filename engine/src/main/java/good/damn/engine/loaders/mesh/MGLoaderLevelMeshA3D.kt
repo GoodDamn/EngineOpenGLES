@@ -45,6 +45,7 @@ class MGLoaderLevelMeshA3D(
             it.fileNameMetallic,
             it.fileNameEmissive,
             it.fileNameOpacity,
+            it.fileNameNormal,
             localPathLibTextures,
             handlerGl
         )

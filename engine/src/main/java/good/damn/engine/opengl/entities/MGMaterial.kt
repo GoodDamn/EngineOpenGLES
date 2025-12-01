@@ -19,17 +19,20 @@ class MGMaterial(
     var textureDiffuse: MGTexture,
     var textureMetallic: MGTexture,
     var textureEmissive: MGTexture,
-    var textureOpacity: MGTexture
+    var textureOpacity: MGTexture,
+    var textureNormal: MGTexture
 ): MGIDrawerTexture<MGShaderMaterial> {
     var shine = 1f
 
     companion object {
+        @JvmStatic
         fun createWithPath(
             poolTextures: MGPoolTextures,
             textureNameDiffuse: String?,
             textureNameMetallic: String?,
             textureNameEmissive: String?,
             textureNameOpacity: String?,
+            textureNameNormal: String?,
             localPath: String,
             handler: MGHandlerGl
         ) = MGMaterial(
@@ -62,6 +65,14 @@ class MGMaterial(
                 MGEnumTextureType.OPACITY,
                 textureNameOpacity,
                 poolTextures.defaultTextureOpacity,
+                localPath,
+                handler
+            ),
+            loadTextureCached(
+                poolTextures,
+                MGEnumTextureType.NORMAL,
+                textureNameNormal,
+                poolTextures.defaultTextureNormal,
                 localPath,
                 handler
             )
@@ -131,6 +142,9 @@ class MGMaterial(
         textureOpacity.draw(
             shader.textureOpacity
         )
+        textureNormal.draw(
+            shader.textureNormal
+        )
     }
 
     override fun unbind(
@@ -147,6 +161,9 @@ class MGMaterial(
         )
         textureOpacity.unbind(
             shader.textureOpacity
+        )
+        textureNormal.unbind(
+            shader.textureNormal
         )
     }
 

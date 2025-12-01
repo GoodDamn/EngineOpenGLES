@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.drawers.modes
 
+import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
 import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
@@ -13,19 +14,16 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGDrawModeSingleShaderNormals(
     private val shader: MGMShader<MGShaderSingleModeNormals, MGShaderSingleModeInstanced>,
-    private val sky: MGDrawerMeshTextureSwitch,
-    private val camera: MGCamera,
-    private val meshes: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>,
-    private val meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>
+    private val informator: MGMInformator
 ): MGIDrawer {
 
     override fun draw() {
         shader.single.run {
             use()
-            camera.draw(this)
-            sky.drawNormals(this)
-            sky.drawVertices(this)
-            meshes.forEach {
+            informator.camera.draw(this)
+            informator.meshSky.drawNormals(this)
+            informator.meshSky.drawVertices(this)
+            informator.meshes.forEach {
                 it.drawNormals(this)
                 it.drawVertices(this)
             }
@@ -33,8 +31,8 @@ class MGDrawModeSingleShaderNormals(
 
         shader.instanced.run {
             use()
-            camera.draw(this)
-            meshesInstanced.forEach {
+            informator.camera.draw(this)
+            informator.meshesInstanced.forEach {
                 it.drawVertices()
             }
         }
