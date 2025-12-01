@@ -25,6 +25,7 @@ class MGMaterial(
     var shine = 1f
 
     companion object {
+        @JvmStatic
         fun createWithPath(
             poolTextures: MGPoolTextures,
             textureNameDiffuse: String?,

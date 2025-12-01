@@ -1,40 +1,47 @@
 package good.damn.engine.opengl.drawers
 
-import android.opengl.GLES30.glUniform1f
 import android.opengl.GLES30.glUniform3f
 import android.util.Log
-import good.damn.engine.opengl.MGVector
+import good.damn.engine.sdk.MGVector3
 import good.damn.engine.opengl.shaders.MGShaderLightDirectional
+import good.damn.engine.sdk.models.SDMLight
 
 class MGDrawerLightDirectional
 : MGIDrawerShader<MGShaderLightDirectional> {
 
-    val ambColor = MGVector(
-        0.1f,
-        0.1f,
-        0.1f
-    )
-
-    private val mPosition = MGVector(
-        1f,
-        1f,
-        -100f
+    val info = SDMLight(
+        MGVector3(
+            0.1f,
+            0.1f,
+            0.1f
+        ),
+        MGVector3(
+            .119f,
+            .377f,
+            .601f
+        ),
+        MGVector3(
+            1f,
+            1f,
+            -100f
+        )
     )
 
     init {
-        mPosition.normalize()
+        info.normalDirection.normalize()
     }
 
     fun setPosition(
-        x: Float,
-        y: Float,
-        z: Float
+        xx: Float,
+        yy: Float,
+        zz: Float
     ) {
-        mPosition.x = x
-        mPosition.y = y
-        mPosition.z = z
-        mPosition.normalize()
-        Log.d("TAG", "setPosition: $mPosition")
+        info.normalDirection.run { 
+            x = xx
+            y = yy
+            z = zz
+            normalize()
+        }
     }
 
     override fun draw(
@@ -42,23 +49,23 @@ class MGDrawerLightDirectional
     ) {
         glUniform3f(
             shader.uniformColor,
-            .119f,
-            .377f,
-            .601f
+            info.colorLight.x,
+            info.colorLight.y,
+            info.colorLight.z
         )
 
         glUniform3f(
             shader.uniformColorAmbient,
-            ambColor.x,
-            ambColor.y,
-            ambColor.z
+            info.colorAmbient.x,
+            info.colorAmbient.y,
+            info.colorAmbient.z
         )
 
         glUniform3f(
             shader.uniformDirection,
-            mPosition.x,
-            mPosition.y,
-            mPosition.z,
+            info.normalDirection.x,
+            info.normalDirection.y,
+            info.normalDirection.z,
         )
     }
 }

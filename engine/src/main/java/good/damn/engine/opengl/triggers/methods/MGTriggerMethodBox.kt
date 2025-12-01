@@ -1,7 +1,6 @@
 package good.damn.engine.opengl.triggers.methods
 
-import android.opengl.Matrix
-import good.damn.engine.opengl.MGVector
+import good.damn.engine.sdk.MGVector3
 import good.damn.engine.opengl.matrices.MGMatrixInvert
 
 class MGTriggerMethodBox(
@@ -10,10 +9,10 @@ class MGTriggerMethodBox(
     modelMatrix
 ) {
     companion object {
-        val MIN = MGVector(
+        val MIN = MGVector3(
             -0.5f, -0.5f, -0.5f
         )
-        val MAX = MGVector(
+        val MAX = MGVector3(
             0.5f, 0.5f, 0.5f
         )
     }

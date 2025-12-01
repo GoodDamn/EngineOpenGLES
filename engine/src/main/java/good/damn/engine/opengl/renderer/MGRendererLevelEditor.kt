@@ -8,9 +8,27 @@ import android.opengl.GLU
 import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.MGEngine
+import good.damn.engine.hud.MGHud
 import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.engine.loaders.scripts.MGLoaderScripts
+import good.damn.engine.models.MGMInformator
+import good.damn.engine.models.MGMInformatorShader
+import good.damn.engine.opengl.MGSwitcherDrawMode
+import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
+import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
+import good.damn.engine.opengl.camera.MGCameraFree
+import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
+import good.damn.engine.opengl.drawers.MGDrawerVertexArray
+import good.damn.engine.opengl.entities.MGSky
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
+import good.damn.engine.opengl.enums.MGEnumTextureType
+import good.damn.engine.opengl.managers.MGManagerLight
+import good.damn.engine.opengl.managers.MGManagerTriggerLight
+import good.damn.engine.opengl.managers.MGManagerTriggerMesh
+import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMShader
-import good.damn.engine.opengl.scene.MGScene
+import good.damn.engine.opengl.pools.MGPoolMeshesStatic
+import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.MGShaderDefault
 import good.damn.engine.opengl.shaders.MGShaderOpaque
@@ -20,7 +38,15 @@ import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
+import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
+import good.damn.engine.sdk.MGVector3
+import good.damn.engine.utils.MGUtilsBuffer
+import good.damn.engine.utils.MGUtilsFile
+import good.damn.engine.utils.MGUtilsVertIndices
 import java.io.File
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGRendererLevelEditor(
     requesterUserContent: MGIRequestUserContent
@@ -30,51 +56,111 @@ class MGRendererLevelEditor(
         private const val TAG = "MGRendererLevelEditor"
     }
 
-    private val mShaderOpaque = MGMShader(
-        MGShaderDefault(),
-        MGShaderOpaque()
+    private val mInformatorShader = MGMInformatorShader(
+        MGMShader(
+            MGShaderDefault(),
+            MGShaderOpaque()
+        ),
+        MGMShader(
+            MGShaderSingleMode(),
+            MGShaderSingleModeInstanced()
+        ),
+        MGMShader(
+            MGShaderSingleModeNormals(),
+            MGShaderSingleModeInstanced(),
+        ),
+        MGMShader(
+            MGShaderSingleMode(),
+            MGShaderSingleModeInstanced()
+        ),
+        MGMShader(
+            MGShaderSingleMap(),
+            MGShaderSingleMapInstanced()
+        )
     )
 
-    private val mShaderNormals = MGMShader(
-        MGShaderSingleModeNormals(),
-        MGShaderSingleModeInstanced()
+    private val mPoolTextures = MGPoolTextures(
+        MGTexture(
+            MGEnumTextureType.DIFFUSE
+        ),
+        MGTexture(
+            MGEnumTextureType.METALLIC
+        ),
+        MGTexture(
+            MGEnumTextureType.EMISSIVE
+        ),
+        MGTexture(
+            MGEnumTextureType.OPACITY
+        ),
+        MGTexture(
+            MGEnumTextureType.NORMAL
+        )
     )
 
-    private val mShaderTexCoords = MGMShader(
-        MGShaderSingleMode(),
-        MGShaderSingleModeInstanced()
+    private val managerLight = MGManagerLight(
+        mInformatorShader.opaque.single.lightPoints.size
     )
 
-    private val mShaderWireframe = MGMShader(
-        MGShaderSingleMode(),
-        MGShaderSingleModeInstanced()
+    private val mVerticesBox = MGArrayVertexConfigurator(
+        MGEnumArrayVertexConfiguration.BYTE
     )
 
-    private val mShaderMap = MGMShader(
-        MGShaderSingleMap(),
-        MGShaderSingleMapInstanced()
+    private val mDrawerBox = MGDrawerVertexArray(
+        mVerticesBox
+    )
+
+    private val mInformator = MGMInformator(
+        mInformatorShader,
+        MGCameraFree(
+            MGMatrixTranslate()
+        ),
+        MGDrawerLightDirectional(),
+        ConcurrentLinkedQueue(),
+        ConcurrentLinkedQueue(),
+        MGSky(
+            MGTexture(
+                MGEnumTextureType.DIFFUSE
+            ),
+            mPoolTextures,
+            MGArrayVertexConfigurator(
+                MGEnumArrayVertexConfiguration.SHORT
+            )
+        ),
+        managerLight,
+        MGManagerTriggerLight(
+            managerLight,
+            mDrawerBox
+        ),
+        MGManagerTriggerMesh(
+            mDrawerBox
+        ),
+        mPoolTextures,
+        MGPoolMeshesStatic(),
+        MGHandlerGl(),
+        true
+    )
+
+    private val mSwitcherDrawMode = MGSwitcherDrawMode(
+        mInformator
+    )
+
+    private val mHud = MGHud(
+        requesterUserContent,
+        mInformator,
+        mSwitcherDrawMode
     )
 
     private var mWidth = 0
     private var mHeight = 0
-
-    private val mSceneTest = MGScene(
-        requesterUserContent,
-        mShaderOpaque,
-        mShaderNormals,
-        mShaderTexCoords,
-        mShaderWireframe,
-        mShaderMap
-    )
     
     override fun onSurfaceCreated(
         gl: GL10?,
         config: EGLConfig?
     ) {
-        writeExtensions()
+        MGUtilsFile.glWriteExtensions()
 
         setupShaders(
-            mShaderMap,
+            mInformatorShader.map,
             "shaders/diffuse",
             binderAttributeSingle = MGBinderAttribute.Builder()
                 .bindPosition()
@@ -88,7 +174,7 @@ class MGRendererLevelEditor(
         )
 
         setupShaders(
-            mShaderWireframe,
+            mInformatorShader.wireframe,
             "shaders/wireframe",
             binderAttributeSingle = MGBinderAttribute.Builder()
                 .bindPosition()
@@ -100,7 +186,7 @@ class MGRendererLevelEditor(
         )
 
         setupShaders(
-            mShaderOpaque,
+            mInformatorShader.opaque,
             "shaders/",
             binderAttributeSingle = MGBinderAttribute.Builder()
                 .bindPosition()
@@ -117,7 +203,7 @@ class MGRendererLevelEditor(
         )
 
         setupShaders(
-            mShaderTexCoords,
+            mInformatorShader.texCoords,
             "shaders/texCoords",
             binderAttributeSingle = MGBinderAttribute.Builder()
                 .bindPosition()
@@ -131,7 +217,7 @@ class MGRendererLevelEditor(
         )
 
         setupShaders(
-            mShaderNormals,
+            mInformatorShader.normals,
             "shaders/normals",
             binderAttributeSingle = MGBinderAttribute.Builder()
                 .bindPosition()
@@ -145,8 +231,33 @@ class MGRendererLevelEditor(
                 .build()
         )
 
-        mSceneTest.onSurfaceCreated(
-            gl, config
+
+        mInformator.poolTextures.configureDefault()
+        mInformator.meshSky.configure()
+        mVerticesBox.configure(
+            MGUtilsBuffer.createFloat(
+                MGUtilsVertIndices.createCubeVertices(
+                    MGTriggerMethodBox.MIN,
+                    MGTriggerMethodBox.MAX
+                )
+            ),
+            MGUtilsBuffer.createByte(
+                MGUtilsVertIndices.createCubeIndices()
+            ),
+            MGPointerAttribute.Builder()
+                .pointPosition()
+                .build()
+        )
+
+        mInformator.camera.run {
+            modelMatrix.setPosition(
+                0f, 0f, 0f
+            )
+            modelMatrix.invalidatePosition()
+        }
+
+        MGLoaderScripts.executeDirLight(
+            mInformator.drawerLightDirectional
         )
 
         glEnable(
@@ -174,10 +285,14 @@ class MGRendererLevelEditor(
         Log.d(TAG, "onSurfaceChanged: ${Thread.currentThread().name}")
         mWidth = width
         mHeight = height
-        mSceneTest.onSurfaceChanged(
-            gl,
+        mInformator.camera.setPerspective(
             width,
             height
+        )
+
+        mHud.layout(
+            width.toFloat(),
+            height.toFloat()
         )
     }
 
@@ -191,7 +306,8 @@ class MGRendererLevelEditor(
             mHeight
         )
 
-        glClear(GL_COLOR_BUFFER_BIT or
+        glClear(
+            GL_COLOR_BUFFER_BIT or
             GL_DEPTH_BUFFER_BIT
         )
 
@@ -208,18 +324,20 @@ class MGRendererLevelEditor(
             return
         }
 
-        mSceneTest.onDrawFrame(
-            gl
-        )
+        mInformator
+            .glHandler
+            .run()
+
+        mSwitcherDrawMode
+            .currentDrawerMode
+            .draw()
     }
 
     fun onTouchEvent(
         event: MotionEvent
-    ) {
-        mSceneTest.onTouchEvent(
-            event
-        )
-    }
+    ) = mHud.touchEvent(
+        event
+    )
 
     private inline fun <
         T: MGShaderBase,
@@ -242,79 +360,5 @@ class MGRendererLevelEditor(
             pathFragment,
             binderAttributeInstanced
         )
-    }
-
-    private inline fun writeExtensions() {
-        File(
-            MGEngine.DIR_PUBLIC,
-            "extensions.txt"
-        ).run {
-            if (length() != 0L) {
-                return@run
-            }
-
-            if (!exists() && createNewFile()) {
-                Log.d(TAG, "onSurfaceCreated: $name is created")
-            }
-
-            val extensions = glGetString(
-                GL_EXTENSIONS
-            ).replace(" ".toRegex(), "\n")
-
-            val numExt = extensions.count {
-                it == '\n'
-            }
-
-            val vendor = glGetString(
-                GL_VENDOR
-            )
-
-            val renderer = glGetString(
-                GL_RENDERER
-            )
-
-            val version = glGetString(
-                GL_VERSION
-            )
-
-            val glslVersion = glGetString(
-                GL_SHADING_LANGUAGE_VERSION
-            )
-
-            outputStream().run {
-                write(
-                    numExt.toString().encodeToByteArray()
-                )
-                write(10)
-                write(
-                    extensions.encodeToByteArray()
-                )
-
-                write(10)
-                write(10)
-
-                write(
-                    renderer.encodeToByteArray()
-                )
-                write(10)
-
-                write(
-                    vendor.encodeToByteArray()
-                )
-                write(10)
-
-                write(
-                    version.encodeToByteArray()
-                )
-
-                write(10)
-                write(
-                    glslVersion.encodeToByteArray()
-                )
-
-                close()
-            }
-
-        }
     }
 }

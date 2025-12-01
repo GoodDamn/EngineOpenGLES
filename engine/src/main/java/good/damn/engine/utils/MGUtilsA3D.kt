@@ -9,6 +9,7 @@ import good.damn.ia3d.models.A3DMMesh
 
 object MGUtilsA3D {
 
+    @JvmStatic
     fun createConfigurationArrayVertex(
         config: A3DMConfigIndices
     ) = when (

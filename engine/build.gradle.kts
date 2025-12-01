@@ -49,11 +49,19 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(project(":imap"))
+
+    implementation(
+        project(":sdk")
+    )
+
+    implementation(
+        project(":imap")
+    )
+
     implementation(
         project(":ia3d")
     )
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    //testImplementation(libs.junit)
+    //androidTestImplementation(libs.androidx.junit)
+    //androidTestImplementation(libs.androidx.espresso.core)
 }

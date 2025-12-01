@@ -8,15 +8,15 @@ class MGTriggerSimple(
 ): MGITrigger {
     override fun onTriggerBegin() {
         Log.d("TAG", "onTriggerBegin: TRIGGER BEGIN")
-        dirLight.ambColor.x = 0.5f
-        dirLight.ambColor.y = 0.5f
-        dirLight.ambColor.z = 0.5f
+        //dirLight.colorAmbient.x = 0.5f
+        //dirLight.colorAmbient.y = 0.5f
+        //dirLight.colorAmbient.z = 0.5f
     }
 
     override fun onTriggerEnd() {
         Log.d("TAG", "onTriggerBegin: TRIGGER END")
-        dirLight.ambColor.x = 0.05f
-        dirLight.ambColor.y = 0.05f
-        dirLight.ambColor.z = 0.05f
+        //dirLight.colorAmbient.x = 0.05f
+        //dirLight.colorAmbient.y = 0.05f
+        //dirLight.colorAmbient.z = 0.05f
     }
 }

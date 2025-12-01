@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.drawers.modes
 
+import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
 import good.damn.engine.opengl.drawers.MGIDrawer
@@ -12,18 +13,16 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGDrawModeSingleMap(
     private val shader: MGMShader<MGShaderSingleMap, MGShaderSingleMapInstanced>,
-    private val camera: MGCamera,
-    private val meshes: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>,
-    private val meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>
+    private val informator: MGMInformator
 ): MGIDrawer {
 
     override fun draw() {
         shader.single.run {
             use()
-            camera.draw(
+            informator.camera.draw(
                 this
             )
-            meshes.forEach {
+            informator.meshes.forEach {
                 it.drawSingleTexture(
                     this,
                     this
@@ -33,10 +32,10 @@ class MGDrawModeSingleMap(
 
         shader.instanced.run {
             use()
-            camera.draw(
+            informator.camera.draw(
                 this
             )
-            meshesInstanced.forEach {
+            informator.meshesInstanced.forEach {
                 it.drawSingleTexture(
                     this
                 )
