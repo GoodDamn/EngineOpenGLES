@@ -67,11 +67,11 @@ class MGDrawerMeshInstanced(
     fun drawSingleTexture(
         shaderTexture: MGIShaderTextureUniform
     ) {
-        mDrawerTexture.draw(
+        mDrawerTexture?.draw(
             shaderTexture
         )
         drawVertices()
-        mDrawerTexture.unbind(
+        mDrawerTexture?.unbind(
             shaderTexture
         )
     }

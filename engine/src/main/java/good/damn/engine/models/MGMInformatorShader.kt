@@ -8,9 +8,11 @@ import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
+import good.damn.engine.shader.MGShaderSource
 import java.util.concurrent.ConcurrentHashMap
 
 data class MGMInformatorShader(
+    val source: MGShaderSource,
     val opaqueGenerated: ConcurrentHashMap<Int, MGShaderDefault>,
     val opaqueGeneratedInstanced: ConcurrentHashMap<Int, MGShaderOpaque>,
     val wireframe: MGMShader<MGShaderSingleMode, MGShaderSingleModeInstanced>,

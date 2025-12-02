@@ -11,7 +11,6 @@ import android.opengl.GLES30.glGetString
 import android.os.Environment
 import android.util.Log
 import good.damn.engine.MGEngine
-import good.damn.engine.utils.MGUtilsAsset.Companion
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream

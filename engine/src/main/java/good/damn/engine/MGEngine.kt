@@ -7,6 +7,7 @@ import android.opengl.GLES30.glGetString
 import android.os.Environment
 import android.util.Log
 import good.damn.engine.opengl.enums.MGEnumDrawMode
+import good.damn.engine.shader.MGShaderSource
 import java.io.File
 import java.nio.ByteOrder
 import java.nio.charset.Charset
@@ -20,6 +21,8 @@ class MGEngine {
         internal lateinit var DIR_PUBLIC: File
         internal lateinit var DIR_PUBLIC_TEMP: File
         internal lateinit var DIR_DATA: File
+
+        internal lateinit var shaderSource: MGShaderSource
 
         internal var drawMode = MGEnumDrawMode.OPAQUE
 
@@ -48,6 +51,10 @@ class MGEngine {
             DIR_PUBLIC_TEMP = File(
                 DIR_PUBLIC,
                 "temp"
+            )
+
+            shaderSource = MGShaderSource(
+                "opaque"
             )
 
             createPublicDir(

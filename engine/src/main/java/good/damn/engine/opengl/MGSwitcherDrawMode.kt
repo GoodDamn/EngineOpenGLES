@@ -102,15 +102,19 @@ class MGSwitcherDrawMode(
         )
 
         informator.meshes.forEach {
-            it.switchDrawMode(
-                drawMode
-            )
+            it.value.forEach {
+                it.switchDrawMode(
+                    drawMode
+                )
+            }
         }
 
         informator.meshesInstanced.forEach {
-            it.switchDrawMode(
-                drawMode
-            )
+            it.value.forEach {
+                it.switchDrawMode(
+                    drawMode
+                )
+            }
         }
     }
 }

@@ -14,9 +14,10 @@ class MGShaderSource(
     val frag2: String
     val fragNormalNo: String
     val fragNormalMap: String
+    val verti: String
 
     init {
-        val localFullPath = "$localPath/$FOLDER"
+        val localFullPath = "$FOLDER/$localPath"
         frag1 = MGUtilsAsset.loadString(
             MGUtilsFile.getPublicFile(
                 "$localFullPath/frag1.glsl"
@@ -38,6 +39,12 @@ class MGShaderSource(
         fragNormalMap = MGUtilsAsset.loadString(
             MGUtilsFile.getPublicFile(
                 "$localFullPath/frag_normal.glsl"
+            )
+        )
+
+        verti = MGUtilsAsset.loadString(
+            MGUtilsFile.getPublicFile(
+                "$localFullPath/vert_i.glsl"
             )
         )
     }

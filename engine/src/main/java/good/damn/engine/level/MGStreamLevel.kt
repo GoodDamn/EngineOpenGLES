@@ -1,12 +1,14 @@
 package good.damn.engine.level
 
 import android.util.Log
+import good.damn.engine.MGEngine
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.loaders.MGLoaderLevelMatrices
 import good.damn.engine.loaders.mesh.MGLoaderLevelMeshA3D
 import good.damn.engine.loaders.MGLoaderLevelTextures
 import good.damn.engine.loaders.mesh.MGILoaderMesh
+import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMMeshInstance
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.entities.MGMaterial
@@ -14,6 +16,7 @@ import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.mapimporter.MIImportMap
 import kotlinx.coroutines.CoroutineScope
@@ -26,10 +29,9 @@ import java.io.InputStreamReader
 
 object MGStreamLevel {
     fun readBin(
-        flow: MGFlowLevel<MGMMeshInstance>,
+        flow: MGFlowLevel<Pair<MGShaderOpaque,MGMMeshInstance?>>,
         input: InputStream,
-        poolTextures: MGPoolTextures,
-        handlerGl: MGHandlerGl,
+        informator: MGMInformator,
         buffer: ByteArray
     ) {
         val stream = DataInputStream(
@@ -50,15 +52,16 @@ object MGStreamLevel {
         val localPathLibObj = "objs/$libName"
         val loaderLib = MGLoaderLevelLibrary(
             scope,
-            poolTextures,
+            informator,
+            localPathLibTextures,
             "levels/$libName/library.txt",
             "levels/$libName/culling.txt"
         )
 
         val loaderTextures = MGLoaderLevelTextures(
             scope,
-            handlerGl,
-            poolTextures,
+            informator.glHandler,
+            informator.poolTextures,
             localPathLibTextures
         )
 
@@ -87,11 +90,11 @@ object MGStreamLevel {
         )
 
         val loaderMeshes = MGLoaderLevelMeshA3D(
-            poolTextures,
+            informator.poolTextures,
             buffer,
             localPathLibObj,
             localPathLibTextures,
-            handlerGl
+            informator.glHandler
         )
 
         while (

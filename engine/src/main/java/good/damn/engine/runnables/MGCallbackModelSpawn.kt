@@ -137,9 +137,9 @@ class MGCallbackModelSpawn(
     private inline fun addMesh(
         mesh: MGTriggerMesh
     ) {
-        informator.meshes.add(
+        /*informator.meshes.add(
             mesh.mesh
-        )
+        )*/
 
         informator.managerTrigger.addTrigger(
             mesh.triggerState

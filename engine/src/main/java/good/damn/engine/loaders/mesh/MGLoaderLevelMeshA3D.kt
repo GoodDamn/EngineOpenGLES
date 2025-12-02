@@ -5,6 +5,7 @@ import good.damn.engine.models.MGProp
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.utils.MGUtilsA3D
 import good.damn.engine.utils.MGUtilsFile
@@ -22,7 +23,7 @@ class MGLoaderLevelMeshA3D(
 
     override fun loadMeshInstance(
         it: MGProp
-    ): MGMMeshInstance? {
+    ): Pair<MGShaderOpaque, MGMMeshInstance?>? {
         val file = MGUtilsFile.getPublicFile(
             "$localPathLibObj/${it.fileNameA3d}"
         )
@@ -53,21 +54,24 @@ class MGLoaderLevelMeshA3D(
         val mesh = obj.meshes[0]
         val configIndices = mesh.subMeshes[0].indices
 
-        return MGILoaderMesh.createVertexArrayInstance(
-            MGUtilsA3D.createConfigurationArrayVertex(
-                configIndices
-            ),
-            MGUtilsA3D.createMergedVertexBuffer(
-                mesh,
-                if (it.fileNameA3d.contains("errain"))
-                    105f
-                else 1f
-            ),
-            configIndices.buffer,
-            it.matrices.toTypedArray(),
-            material,
-            handlerGl,
-            it.enableCullFace
+        return Pair(
+            it.shaderOpaque,
+            MGILoaderMesh.createVertexArrayInstance(
+                MGUtilsA3D.createConfigurationArrayVertex(
+                    configIndices
+                ),
+                MGUtilsA3D.createMergedVertexBuffer(
+                    mesh,
+                    if (it.fileNameA3d.contains("errain"))
+                        105f
+                    else 1f
+                ),
+                configIndices.buffer,
+                it.matrices.toTypedArray(),
+                material,
+                handlerGl,
+                it.enableCullFace
+            )
         )
     }
 }

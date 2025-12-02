@@ -7,6 +7,7 @@ import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
+import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.runnables.MGRunnableGenVertexArrayInstanced
 import good.damn.engine.utils.MGUtilsBuffer
@@ -102,5 +103,5 @@ interface MGILoaderMesh<T> {
 
     fun loadMeshInstance(
         it: T
-    ): MGMMeshInstance?
+    ): Pair<MGShaderOpaque, MGMMeshInstance?>?
 }

@@ -26,79 +26,80 @@ data class MGDrawModeOpaque(
         informator.managerTriggerLight
     )
 
-    override fun draw() = informator.run {
+    override fun draw() {
 
         val shaderSky = informator.shaders.map.single
         val shaderTrigger = informator.shaders.wireframe.single
+        val camera = informator.camera
+        val drawerLightDirectional = informator.drawerLightDirectional
+        val managerLight = informator.managerLight
 
         shaderSky.use()
         camera.draw(
             shaderSky
         )
 
-        meshSky.drawSingleTexture(
+        informator.meshSky.drawSingleTexture(
             shaderSky,
             shaderSky
         )
 
-        informator.shaders.opaqueGenerated.forEach {
-
-        }
-
-        shaderOpaque.single.run {
-            use()
-            camera.draw(
-                this
-            )
-            camera.drawPosition(
-                this
-            )
-            drawerLightDirectional.draw(
-                lightDirectional
-            )
-            meshes.forEach {
-                it.drawNormals(
+        informator.meshes.forEach {
+            it.key.run {
+                use()
+                camera.draw(
                     this
                 )
-                it.drawMaterial(
-                    material,
+                camera.drawPosition(
                     this
                 )
-            }
-            managerLight.draw(
-                lightPoints
-            )
-        }
-
-
-
-        shaderOpaque.instanced.run {
-            use()
-            camera.draw(
-                this
-            )
-            camera.drawPosition(
-                this
-            )
-            drawerLightDirectional.draw(
-                lightDirectional
-            )
-
-            meshesInstanced.forEach {
-                it.draw(
-                    material
+                drawerLightDirectional.draw(
+                    lightDirectional
+                )
+                it.value.forEach {
+                    it.drawNormals(
+                        this
+                    )
+                    it.drawMaterial(
+                        material,
+                        this
+                    )
+                }
+                managerLight.draw(
+                    lightPoints
                 )
             }
+        }
 
-            managerLight.draw(
-                lightPoints
-            )
+
+        informator.meshesInstanced.forEach {
+            it.key.run {
+                use()
+                camera.draw(
+                    this
+                )
+                camera.drawPosition(
+                    this
+                )
+                drawerLightDirectional.draw(
+                    lightDirectional
+                )
+
+                it.value.forEach {
+                    it.draw(
+                        material
+                    )
+                }
+
+                managerLight.draw(
+                    lightPoints
+                )
+            }
         }
 
 
 
-
-        if (!canDrawTriggers) {
+        if (!informator.canDrawTriggers) {
             return
         }
 

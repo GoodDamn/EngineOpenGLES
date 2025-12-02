@@ -12,15 +12,25 @@ import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.shaders.MGShaderDefault
+import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.thread.MGHandlerGl
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGMInformator(
     val shaders: MGMInformatorShader,
     val camera: MGCameraFree,
     val drawerLightDirectional: MGDrawerLightDirectional,
-    val meshes: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>,
-    val meshesInstanced: ConcurrentLinkedQueue<MGDrawerMeshInstanced>,
+    val meshes: ConcurrentHashMap<
+        MGShaderDefault,
+        ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>
+    >,
+
+    val meshesInstanced: ConcurrentHashMap<
+        MGShaderOpaque,
+        ConcurrentLinkedQueue<MGDrawerMeshInstanced>
+    >,
 
     val meshSky: MGSky,
 

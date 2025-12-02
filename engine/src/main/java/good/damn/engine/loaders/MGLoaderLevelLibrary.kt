@@ -1,8 +1,16 @@
 package good.damn.engine.loaders
 
+import good.damn.engine.models.MGMInformator
+import good.damn.engine.models.MGMInformatorShader
 import good.damn.engine.models.MGProp
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.shaders.MGShaderOpaque
+import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
+import good.damn.engine.runnables.MGRunnableCompileShaders
+import good.damn.engine.shader.MGShaderSource
+import good.damn.engine.shader.generators.MGGeneratorShader
+import good.damn.engine.utils.MGUtilsAsset
 import good.damn.engine.utils.MGUtilsFile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -14,7 +22,8 @@ import java.util.LinkedList
 
 class MGLoaderLevelLibrary(
     private val scope: CoroutineScope,
-    private val poolTextures: MGPoolTextures,
+    private val informator: MGMInformator,
+    private val localPathLibTextures: String,
     localPath: String,
     localPathCullFaceList: String
 ) {
@@ -115,24 +124,72 @@ class MGLoaderLevelLibrary(
                     "file"
                 )
 
-                val materialTexture = MGMaterialTexture.Builder(
-                    poolTextures
-                ).textureDiffuse(
-                    "${diffuse}.jpg"
-                ).textureMetallic(
-                    "${diffuse}_m.jpg"
-                ).textureEmissive(
-                    "${diffuse}_e.jpg"
-                ).textureOpacity(
-                    "${diffuse}_o.jpg"
-                ).textureNormal(
-                    "${diffuse}_n.jpg"
-                ).build()
+                val builderMaterial = MGMaterialTexture.Builder(
+                    informator.poolTextures
+                )
 
+                val generatorShader = MGGeneratorShader(
+                    informator.shaders.source
+                )
+
+                buildTextureIfExists(
+                    "${diffuse}.jpg"
+                ) { builderMaterial.textureDiffuse(it) }
+
+                buildTextureIfExists(
+                    "${diffuse}_m.jpg"
+                ) { builderMaterial.textureMetallic(it) }
+
+                buildTextureIfExists(
+                    "${diffuse}_e.jpg"
+                ) { builderMaterial.textureEmissive(it) }
+
+                buildTextureIfExists(
+                    "${diffuse}_o.jpg"
+                ) { builderMaterial.textureOpacity(it) }
+
+                "${diffuse}_n.jpg".let {
+                    if (textureExists(it)) {
+                        builderMaterial.textureNormal(it)
+                        generatorShader.normalMapping()
+                        return@let
+                    }
+                    generatorShader.normalVertex()
+                }
+
+                val fragmentCode = generatorShader.generate()
+
+                var cachedShader = informator.shaders.opaqueGeneratedInstanced[
+                    fragmentCode.hashCode()
+                ]
+
+                if (cachedShader == null) {
+                    cachedShader = MGShaderOpaque()
+                    informator.shaders.opaqueGeneratedInstanced[
+                        fragmentCode.hashCode()
+                    ] = cachedShader
+
+                    informator.glHandler.post(
+                        MGRunnableCompileShaders(
+                            fragmentCode,
+                            cachedShader,
+                            informator.shaders.source.verti,
+                            MGBinderAttribute.Builder()
+                                .bindPosition()
+                                .bindTextureCoordinates()
+                                .bindNormal()
+                                .bindInstancedModel()
+                                .bindInstancedRotationMatrix()
+                                .bindTangent()
+                                .build()
+                        )
+                    )
+                }
 
                 lMeshes[name] = MGProp(
                     fileName,
-                    materialTexture,
+                    builderMaterial.build(),
+                    cachedShader,
                     !(mNonCullFaceMeshes?.contains(
                         fileName
                     ) ?: false),
@@ -141,6 +198,22 @@ class MGLoaderLevelLibrary(
             }
 
             meshes = lMeshes
+        }
+    }
+
+    private inline fun textureExists(
+        textureName: String
+    ) = MGUtilsFile.getPublicFile(
+        "$localPathLibTextures/$textureName"
+    ).exists()
+
+    private inline fun buildTextureIfExists(
+        textureName: String,
+        call: ((String)->Unit)
+    ) {
+        if (textureExists(textureName)) {
+            call(textureName)
+            return
         }
     }
 

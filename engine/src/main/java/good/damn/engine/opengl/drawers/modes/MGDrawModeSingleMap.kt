@@ -23,10 +23,12 @@ class MGDrawModeSingleMap(
                 this
             )
             informator.meshes.forEach {
-                it.drawSingleTexture(
-                    this,
-                    this
-                )
+                it.value.forEach {
+                    it.drawSingleTexture(
+                        this,
+                        this
+                    )
+                }
             }
         }
 
@@ -36,9 +38,11 @@ class MGDrawModeSingleMap(
                 this
             )
             informator.meshesInstanced.forEach {
-                it.drawSingleTexture(
-                    this
-                )
+                it.value.forEach {
+                    it.drawSingleTexture(
+                        this
+                    )
+                }
             }
         }
     }

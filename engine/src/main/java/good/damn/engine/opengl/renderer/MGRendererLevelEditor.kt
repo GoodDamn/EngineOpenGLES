@@ -62,6 +62,7 @@ class MGRendererLevelEditor(
             MGShaderDefault(),
             MGShaderOpaque()
         ),*/
+        MGEngine.shaderSource,
         ConcurrentHashMap(),
         ConcurrentHashMap(),
         MGMShader(
@@ -118,8 +119,8 @@ class MGRendererLevelEditor(
             MGMatrixTranslate()
         ),
         MGDrawerLightDirectional(),
-        ConcurrentLinkedQueue(),
-        ConcurrentLinkedQueue(),
+        ConcurrentHashMap(),
+        ConcurrentHashMap(),
         MGSky(
             MGTexture(
                 MGEnumTextureType.DIFFUSE

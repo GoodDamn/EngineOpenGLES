@@ -21,6 +21,23 @@ abstract class MGShaderBase
         )
     }
 
+    fun compileFromSource(
+        srcVertex: String,
+        srcFragment: String,
+        binderAttribute: MGBinderAttribute
+    ): Int {
+        mProgram = MGUtilsShader.createProgram(
+            srcVertex,
+            srcFragment
+        )
+
+        binderAttribute.bindAttributes(
+            mProgram
+        )
+
+        return 0
+    }
+
     fun compile(
         pathVertex: String,
         pathFragment: String,
@@ -62,6 +79,22 @@ abstract class MGShaderBase
             return
         }
         Log.d(TAG, "link: ERROR:")
+    }
+
+    fun setupFromSource(
+        srcVertex: String,
+        srcFragment: String,
+        binderAttribute: MGBinderAttribute
+    ) {
+        compileFromSource(
+            srcVertex,
+            srcFragment,
+            binderAttribute
+        )
+        link()
+        setupUniforms(
+            mProgram
+        )
     }
 
     fun setup(
