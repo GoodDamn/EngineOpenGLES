@@ -12,6 +12,42 @@ class MGGeneratorShader(
     private val mBuilderSourceFragment = StringBuilder()
         .append(source.frag1)
 
+    fun metallicMap(): MGGeneratorShader {
+        mBuilderSourceFragment.append(
+            source.fragMetallicMap
+        )
+        return this
+    }
+
+    fun metallicNo(): MGGeneratorShader {
+        mBuilderSourceFragment.append(
+            source.fragMetallicNo
+        )
+        return this
+    }
+
+    fun specular(): MGGeneratorShader {
+        mBuilderSourceFragment.append(
+            source.fragSpecular
+        )
+        return this
+    }
+
+    fun specularNo(): MGGeneratorShader {
+        mBuilderSourceFragment.append(
+            source.fragSpecularNo
+        )
+        return this
+    }
+
+    fun lighting(): MGGeneratorShader {
+        mBuilderSourceFragment.append(
+            source.fragLight
+        )
+
+        return this
+    }
+
     fun normalMapping(): MGGeneratorShader {
         mBuilderSourceFragment.append(
             source.fragNormalMap

@@ -136,9 +136,21 @@ class MGLoaderLevelLibrary(
                     "${diffuse}.jpg"
                 ) { builderMaterial.textureDiffuse(it) }
 
-                buildTextureIfExists(
-                    "${diffuse}_m.jpg"
-                ) { builderMaterial.textureMetallic(it) }
+                "${diffuse}_m.jpg".let {
+                    if (textureExists(it)) {
+                        builderMaterial.textureMetallic(it)
+                        generatorShader.apply {
+                            specular()
+                            metallicMap()
+                        }
+                        return@let
+                    }
+
+                    generatorShader.apply {
+                        specularNo()
+                        metallicNo()
+                    }
+                }
 
                 buildTextureIfExists(
                     "${diffuse}_e.jpg"
@@ -156,6 +168,8 @@ class MGLoaderLevelLibrary(
                     }
                     generatorShader.normalVertex()
                 }
+
+                generatorShader.lighting()
 
                 val fragmentCode = generatorShader.generate()
 
