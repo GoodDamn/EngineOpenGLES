@@ -26,6 +26,34 @@ class MGGeneratorShader(
         return this
     }
 
+    fun emissiveMap(): MGGeneratorShader {
+        mBuilderSourceFragment.append(
+            source.fragEmissiveMap
+        )
+        return this
+    }
+
+    fun emissiveNo(): MGGeneratorShader {
+        mBuilderSourceFragment.append(
+            source.fragEmissiveNo
+        )
+        return this
+    }
+
+    fun opacityMap(): MGGeneratorShader {
+        mBuilderSourceFragment.append(
+            source.fragOpacityMap
+        )
+        return this
+    }
+
+    fun opacityNo(): MGGeneratorShader {
+        mBuilderSourceFragment.append(
+            source.fragOpacityNo
+        )
+        return this
+    }
+
     fun specular(): MGGeneratorShader {
         mBuilderSourceFragment.append(
             source.fragSpecular

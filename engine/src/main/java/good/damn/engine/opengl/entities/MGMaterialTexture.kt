@@ -114,7 +114,7 @@ class MGMaterialTexture private constructor(
                 MGEnumTextureType.DIFFUSE.v,
                 MGMTexturePart(
                     MGEnumTextureType.DIFFUSE,
-                    MGDrawerMaterialTextureNormal(
+                    MGDrawerMaterialTextureDiffuse(
                         poolTextures.defaultTexture
                     ),
                     textureName
@@ -130,7 +130,7 @@ class MGMaterialTexture private constructor(
                 MGEnumTextureType.METALLIC.v,
                 MGMTexturePart(
                     MGEnumTextureType.METALLIC,
-                    MGDrawerMaterialTextureNormal(
+                    MGDrawerMaterialTextureMetallic(
                         poolTextures.defaultTextureMetallic
                     ),
                     textureName
@@ -146,7 +146,7 @@ class MGMaterialTexture private constructor(
                 MGEnumTextureType.EMISSIVE.v,
                 MGMTexturePart(
                     MGEnumTextureType.EMISSIVE,
-                    MGDrawerMaterialTextureNormal(
+                    MGDrawerMaterialTextureEmissive(
                         poolTextures.defaultTextureEmissive
                     ),
                     textureName
@@ -162,7 +162,7 @@ class MGMaterialTexture private constructor(
                 MGEnumTextureType.OPACITY.v,
                 MGMTexturePart(
                     MGEnumTextureType.OPACITY,
-                    MGDrawerMaterialTextureNormal(
+                    MGDrawerMaterialTextureOpacity(
                         poolTextures.defaultTextureOpacity
                     ),
                     textureName

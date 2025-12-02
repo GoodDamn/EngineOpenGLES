@@ -152,13 +152,25 @@ class MGLoaderLevelLibrary(
                     }
                 }
 
-                buildTextureIfExists(
-                    "${diffuse}_e.jpg"
-                ) { builderMaterial.textureEmissive(it) }
+                "${diffuse}_e.jpg".let {
+                    if (textureExists(it)) {
+                        builderMaterial.textureEmissive(it)
+                        generatorShader.emissiveMap()
+                        return@let
+                    }
+                    generatorShader.emissiveNo()
+                }
 
-                buildTextureIfExists(
-                    "${diffuse}_o.jpg"
-                ) { builderMaterial.textureOpacity(it) }
+
+                "${diffuse}_o.jpg".let {
+                    if (textureExists(it)) {
+                        builderMaterial.textureOpacity(it)
+                        generatorShader.opacityMap()
+                        return@let
+                    }
+                    generatorShader.opacityNo()
+                }
+
 
                 "${diffuse}_n.jpg".let {
                     if (textureExists(it)) {

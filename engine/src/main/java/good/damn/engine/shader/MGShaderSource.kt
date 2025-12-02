@@ -22,6 +22,13 @@ class MGShaderSource(
     val fragSpecularNo: String
     val fragSpecular: String
 
+    val fragOpacityNo: String
+    val fragOpacityMap: String
+
+    val fragEmissiveNo: String
+    val fragEmissiveMap: String
+
+
     val fragLight: String
 
     val verti: String
@@ -62,6 +69,26 @@ class MGShaderSource(
 
         fragMetallicNo = MGUtilsAsset.loadString(
             "$localFullPath/frag_metal_no.glsl"
+        )
+
+
+
+        fragEmissiveMap = MGUtilsAsset.loadString(
+            "$localFullPath/frag_emissive.glsl"
+        )
+
+        fragEmissiveNo = MGUtilsAsset.loadString(
+            "$localFullPath/frag_emissive_no.glsl"
+        )
+
+
+
+        fragOpacityMap = MGUtilsAsset.loadString(
+            "$localFullPath/frag_opacity.glsl"
+        )
+
+        fragOpacityNo = MGUtilsAsset.loadString(
+            "$localFullPath/frag_opacity_no.glsl"
         )
 
         fragLight = MGUtilsAsset.loadString(
