@@ -46,6 +46,7 @@ import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGRendererLevelEditor(
@@ -57,10 +58,12 @@ class MGRendererLevelEditor(
     }
 
     private val mInformatorShader = MGMInformatorShader(
-        MGMShader(
+        /*MGMShader(
             MGShaderDefault(),
             MGShaderOpaque()
-        ),
+        ),*/
+        ConcurrentHashMap(),
+        ConcurrentHashMap(),
         MGMShader(
             MGShaderSingleMode(),
             MGShaderSingleModeInstanced()
@@ -98,7 +101,7 @@ class MGRendererLevelEditor(
     )
 
     private val managerLight = MGManagerLight(
-        mInformatorShader.opaque.single.lightPoints.size
+        MGMInformatorShader.SIZE_LIGHT_POINT
     )
 
     private val mVerticesBox = MGArrayVertexConfigurator(
@@ -185,9 +188,9 @@ class MGRendererLevelEditor(
                 .build()
         )
 
-        setupShaders(
+        /*setupShaders(
             mInformatorShader.opaque,
-            "shaders/",
+            "shaders/opaque",
             binderAttributeSingle = MGBinderAttribute.Builder()
                 .bindPosition()
                 .bindTextureCoordinates()
@@ -202,7 +205,7 @@ class MGRendererLevelEditor(
                 .bindInstancedRotationMatrix()
                 .bindTangent()
                 .build()
-        )
+        )*/
 
         setupShaders(
             mInformatorShader.texCoords,

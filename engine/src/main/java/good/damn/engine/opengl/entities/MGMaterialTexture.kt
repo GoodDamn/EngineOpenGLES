@@ -1,5 +1,8 @@
 package good.damn.engine.opengl.entities
 
+import android.util.SparseArray
+import androidx.collection.SparseArrayCompat
+import androidx.core.util.forEach
 import good.damn.engine.opengl.drawers.MGIDrawerTexture
 import good.damn.engine.opengl.drawers.material.MGDrawerMaterialTextureDiffuse
 import good.damn.engine.opengl.drawers.material.MGDrawerMaterialTextureEmissive
@@ -18,22 +21,22 @@ import good.damn.engine.utils.MGUtilsBitmap
 import java.util.LinkedList
 
 class MGMaterialTexture private constructor(
-    private val list: Array<MGMTexturePart>
+    private val list: SparseArray<MGMTexturePart>
 ): MGIDrawerTexture<MGShaderMaterial> {
 
     override fun draw(
         shader: MGShaderMaterial
     ) {
-        list.forEach {
-            it.drawer.draw(shader)
+        list.forEach { _, value ->
+            value.drawer.draw(shader)
         }
     }
 
     override fun unbind(
         shader: MGShaderMaterial
     ) {
-        list.forEach {
-            it.drawer.unbind(shader)
+        list.forEach { _, value ->
+            value.drawer.unbind(shader)
         }
     }
 
@@ -48,7 +51,7 @@ class MGMaterialTexture private constructor(
         localPath: String,
         glHandler: MGHandlerGl
     ) {
-        list.forEach {
+        list.forEach { _, it ->
             loadTextureDrawerCached(
                 it,
                 localPath,
@@ -65,8 +68,6 @@ class MGMaterialTexture private constructor(
         glHandler: MGHandlerGl
     ) {
         val textureName = part.textureName
-            ?: return
-
         var texture = poolTextures.get(
             textureName
         )
@@ -100,92 +101,100 @@ class MGMaterialTexture private constructor(
     }
 
     class Builder(
-        poolTextures: MGPoolTextures
+        private val poolTextures: MGPoolTextures
     ) {
-        private val mTextureDiffuse = MGMTexturePart(
-            MGEnumTextureType.DIFFUSE,
-            MGDrawerMaterialTextureDiffuse(
-                poolTextures.defaultTexture
-            )
-        )
-
-        private val mTextureMetallic = MGMTexturePart(
-            MGEnumTextureType.METALLIC,
-            MGDrawerMaterialTextureMetallic(
-                poolTextures.defaultTextureMetallic
-            )
-        )
-
-        private val mTextureEmissive = MGMTexturePart(
-            MGEnumTextureType.EMISSIVE,
-            MGDrawerMaterialTextureEmissive(
-                poolTextures.defaultTextureEmissive
-            )
-        )
-
-        private val mTextureOpacity = MGMTexturePart(
-            MGEnumTextureType.OPACITY,
-            MGDrawerMaterialTextureOpacity(
-                poolTextures.defaultTextureOpacity
-            )
-        )
-
-        private val mTextureNormal = MGMTexturePart(
-            MGEnumTextureType.NORMAL,
-            MGDrawerMaterialTextureNormal(
-                poolTextures.defaultTextureNormal
-            )
-        )
+        private val map = SparseArray<
+            MGMTexturePart
+        >()
 
         fun textureDiffuse(
             textureName: String
         ): Builder {
-            mTextureDiffuse.textureName = textureName
+            map.put(
+                MGEnumTextureType.DIFFUSE.v,
+                MGMTexturePart(
+                    MGEnumTextureType.DIFFUSE,
+                    MGDrawerMaterialTextureNormal(
+                        poolTextures.defaultTexture
+                    ),
+                    textureName
+                )
+            )
             return this
         }
 
         fun textureMetallic(
             textureName: String
         ): Builder {
-            mTextureMetallic.textureName = textureName
+            map.put(
+                MGEnumTextureType.METALLIC.v,
+                MGMTexturePart(
+                    MGEnumTextureType.METALLIC,
+                    MGDrawerMaterialTextureNormal(
+                        poolTextures.defaultTextureMetallic
+                    ),
+                    textureName
+                )
+            )
             return this
         }
 
         fun textureEmissive(
             textureName: String
         ): Builder {
-            mTextureEmissive.textureName = textureName
+            map.put(
+                MGEnumTextureType.EMISSIVE.v,
+                MGMTexturePart(
+                    MGEnumTextureType.EMISSIVE,
+                    MGDrawerMaterialTextureNormal(
+                        poolTextures.defaultTextureEmissive
+                    ),
+                    textureName
+                )
+            )
             return this
         }
 
         fun textureOpacity(
             textureName: String
         ): Builder {
-            mTextureOpacity.textureName = textureName
+            map.put(
+                MGEnumTextureType.OPACITY.v,
+                MGMTexturePart(
+                    MGEnumTextureType.OPACITY,
+                    MGDrawerMaterialTextureNormal(
+                        poolTextures.defaultTextureOpacity
+                    ),
+                    textureName
+                )
+            )
             return this
         }
 
         fun textureNormal(
             textureName: String
         ): Builder {
-            mTextureNormal.textureName = textureName
+            map.put(
+                MGEnumTextureType.NORMAL.v,
+                MGMTexturePart(
+                    MGEnumTextureType.NORMAL,
+                    MGDrawerMaterialTextureNormal(
+                        poolTextures.defaultTextureNormal
+                    ),
+                    textureName
+                )
+            )
             return this
         }
 
         fun build() = MGMaterialTexture(
-            arrayOf(
-                mTextureDiffuse,
-                mTextureMetallic,
-                mTextureEmissive,
-                mTextureOpacity,
-                mTextureNormal,
-            )
+            map
         )
     }
 
     private data class MGMTexturePart(
         val type: MGEnumTextureType,
         val drawer: MGIDrawerMaterialTexture,
-        var textureName: String? = null
+        val textureName: String
     )
 }

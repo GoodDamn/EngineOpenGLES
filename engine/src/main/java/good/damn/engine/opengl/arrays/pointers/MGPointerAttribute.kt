@@ -11,6 +11,7 @@ class MGPointerAttribute private constructor(
 ) {
 
     companion object {
+        @JvmField
         val default32 = Builder()
             .pointPosition()
             .pointTextureCoordinates()
@@ -18,6 +19,7 @@ class MGPointerAttribute private constructor(
             .pointTangent()
             .build()
 
+        @JvmField
         val defaultNoTangent = Builder()
             .pointPosition()
             .pointTextureCoordinates()

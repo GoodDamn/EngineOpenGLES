@@ -66,8 +66,7 @@ public final class MGTriggerMesh {
                 arrayVertex,
                 obj.vertices,
                 obj.indices,
-                MGPointerAttribute.Companion
-                    .getDefault32()
+                MGPointerAttribute.defaultNoTangent
             )
         );
 

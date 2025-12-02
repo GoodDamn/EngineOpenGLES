@@ -29,7 +29,6 @@ data class MGDrawModeOpaque(
     override fun draw() = informator.run {
 
         val shaderSky = informator.shaders.map.single
-        val shaderOpaque = informator.shaders.opaque
         val shaderTrigger = informator.shaders.wireframe.single
 
         shaderSky.use()
@@ -42,6 +41,9 @@ data class MGDrawModeOpaque(
             shaderSky
         )
 
+        informator.shaders.opaqueGenerated.forEach {
+
+        }
 
         shaderOpaque.single.run {
             use()
