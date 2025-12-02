@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
+import good.damn.engine.opengl.entities.MGMaterialTexture;
 import good.damn.engine.opengl.objects.MGObject3d;
 import good.damn.engine.sdk.MGVector3;
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch;
@@ -74,15 +75,42 @@ public final class MGTriggerMesh {
             obj.vertices
         );
 
-        @NonNull final MGMaterial material = MGMaterial.createWithPath(
+        @NonNull
+        MGMaterialTexture.Builder builder = new MGMaterialTexture.Builder(
+            poolTextures
+        );
+
+        if (obj.texturesDiffuseFileName != null) {
+            builder = builder.textureDiffuse(
+                obj.texturesDiffuseFileName[0]
+            );
+        }
+
+        if (obj.texturesMetallicFileName != null) {
+            builder = builder.textureMetallic(
+                obj.texturesMetallicFileName[0]
+            );
+        }
+
+        if (obj.texturesEmissiveFileName != null) {
+            builder = builder.textureEmissive(
+                obj.texturesEmissiveFileName[0]
+            );
+        }
+
+        @NonNull
+        final MGMaterialTexture materialTexture = builder
+            .build();
+
+        materialTexture.load(
             poolTextures,
-            obj.texturesDiffuseFileName == null ? null : obj.texturesDiffuseFileName[0],
-            obj.texturesMetallicFileName == null ? null : obj.texturesMetallicFileName[0],
-            obj.texturesEmissiveFileName == null ? null : obj.texturesEmissiveFileName[0],
-            null,
-            null,
             "textures",
             handlerGl
+        );
+
+        @NonNull
+        final MGMaterial material = new MGMaterial(
+            builder.build()
         );
 
         return createFromVertexArray(

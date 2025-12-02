@@ -50,6 +50,7 @@ object MGStreamLevel {
         val localPathLibObj = "objs/$libName"
         val loaderLib = MGLoaderLevelLibrary(
             scope,
+            poolTextures,
             "levels/$libName/library.txt",
             "levels/$libName/culling.txt"
         )

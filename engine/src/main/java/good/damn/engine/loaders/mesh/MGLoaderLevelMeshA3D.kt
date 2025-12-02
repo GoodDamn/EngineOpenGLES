@@ -3,6 +3,7 @@ package good.damn.engine.loaders.mesh
 import good.damn.engine.models.MGMMeshInstance
 import good.damn.engine.models.MGProp
 import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.utils.MGUtilsA3D
@@ -39,15 +40,14 @@ class MGLoaderLevelMeshA3D(
             buffer
         ) ?: return null
 
-        val material = MGMaterial.createWithPath(
+        it.materialTexture.load(
             poolTextures,
-            it.fileNameDiffuse,
-            it.fileNameMetallic,
-            it.fileNameEmissive,
-            it.fileNameOpacity,
-            it.fileNameNormal,
             localPathLibTextures,
             handlerGl
+        )
+
+        val material = MGMaterial(
+            it.materialTexture
         )
 
         val mesh = obj.meshes[0]

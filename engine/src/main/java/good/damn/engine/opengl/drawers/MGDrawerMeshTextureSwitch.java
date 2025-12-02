@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import good.damn.engine.opengl.entities.MGMaterial;
 import good.damn.engine.opengl.enums.MGEnumDrawMode;
+import good.damn.engine.opengl.enums.MGEnumTextureType;
 import good.damn.engine.opengl.shaders.MGIShaderModel;
 import good.damn.engine.opengl.shaders.MGIShaderNormal;
 import good.damn.engine.opengl.shaders.MGIShaderTextureUniform;
@@ -37,10 +38,18 @@ public class MGDrawerMeshTextureSwitch {
         @NonNull final MGDrawerMeshSwitch drawerMesh
     ) {
         this(
-            material.getTextureDiffuse(),
-            material.getTextureMetallic(),
-            material.getTextureEmissive(),
-            material.getTextureNormal(),
+            material.getTextureByType(
+                MGEnumTextureType.DIFFUSE
+            ),
+            material.getTextureByType(
+                MGEnumTextureType.METALLIC
+            ),
+            material.getTextureByType(
+                MGEnumTextureType.EMISSIVE
+            ),
+            material.getTextureByType(
+                MGEnumTextureType.NORMAL
+            ),
             drawerMesh
         );
     }

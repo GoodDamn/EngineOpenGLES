@@ -4,6 +4,7 @@ import android.opengl.GLES30
 import good.damn.engine.opengl.arrays.MGArrayVertexInstanced
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumDrawMode
+import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.shaders.MGIShaderTextureUniform
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 
@@ -13,7 +14,9 @@ class MGDrawerMeshInstanced(
     private val material: MGMaterial
 ) {
 
-    private var mDrawerTexture = material.textureDiffuse
+    private var mDrawerTexture = material.getTextureByType(
+        MGEnumTextureType.DIFFUSE
+    )
 
     private var mode = GLES30.GL_TRIANGLES
 
@@ -23,16 +26,26 @@ class MGDrawerMeshInstanced(
         mDrawerTexture = when (
             drawMode
         ) {
-            MGEnumDrawMode.METALLIC -> material.textureDiffuse
-            MGEnumDrawMode.EMISSIVE -> material.textureEmissive
-            MGEnumDrawMode.NORMAL_MAP -> material.textureNormal
-            else -> material.textureDiffuse
+            MGEnumDrawMode.METALLIC -> material.getTextureByType(
+                MGEnumTextureType.METALLIC
+            )
+
+            MGEnumDrawMode.EMISSIVE -> material.getTextureByType(
+                MGEnumTextureType.EMISSIVE
+            )
+
+            MGEnumDrawMode.NORMAL_MAP -> material.getTextureByType(
+                MGEnumTextureType.NORMAL
+            )
+
+            else -> material.getTextureByType(
+                MGEnumTextureType.DIFFUSE
+            )
         }
 
         mode = if (
             drawMode == MGEnumDrawMode.WIREFRAME
         ) GLES30.GL_LINES else GLES30.GL_TRIANGLES
-
     }
 
     fun drawVertices() {

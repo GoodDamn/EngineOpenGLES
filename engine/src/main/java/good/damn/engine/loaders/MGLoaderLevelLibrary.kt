@@ -1,6 +1,8 @@
 package good.damn.engine.loaders
 
 import good.damn.engine.models.MGProp
+import good.damn.engine.opengl.entities.MGMaterialTexture
+import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.utils.MGUtilsFile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -12,6 +14,7 @@ import java.util.LinkedList
 
 class MGLoaderLevelLibrary(
     private val scope: CoroutineScope,
+    private val poolTextures: MGPoolTextures,
     localPath: String,
     localPathCullFaceList: String
 ) {
@@ -112,13 +115,24 @@ class MGLoaderLevelLibrary(
                     "file"
                 )
 
+                val materialTexture = MGMaterialTexture.Builder(
+                    poolTextures
+                ).textureDiffuse(
+                    "${diffuse}.jpg"
+                ).textureMetallic(
+                    "${diffuse}_m.jpg"
+                ).textureEmissive(
+                    "${diffuse}_e.jpg"
+                ).textureOpacity(
+                    "${diffuse}_o.jpg"
+                ).textureNormal(
+                    "${diffuse}_n.jpg"
+                ).build()
+
+
                 lMeshes[name] = MGProp(
                     fileName,
-                    "${diffuse}.jpg",
-                    "${diffuse}_m.jpg",
-                    "${diffuse}_e.jpg",
-                    "${diffuse}_o.jpg",
-                    "${diffuse}_n.jpg",
+                    materialTexture,
                     !(mNonCullFaceMeshes?.contains(
                         fileName
                     ) ?: false),
