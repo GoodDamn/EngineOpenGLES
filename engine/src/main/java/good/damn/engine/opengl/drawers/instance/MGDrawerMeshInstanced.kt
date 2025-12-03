@@ -53,6 +53,9 @@ class MGDrawerMeshInstanced(
             GLES30.glEnable(
                 GLES30.GL_CULL_FACE
             )
+            GLES30.glFrontFace(
+                GLES30.GL_CW
+            )
         } else {
             GLES30.glDisable(
                 GLES30.GL_CULL_FACE

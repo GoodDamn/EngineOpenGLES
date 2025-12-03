@@ -4,7 +4,7 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.opengl.shaders.MGShaderDefault;
+import good.damn.engine.opengl.shaders.MGShaderOpaqueSingle;
 import good.damn.engine.sdk.MGVector3;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
 import good.damn.engine.opengl.entities.MGMaterial;
@@ -15,8 +15,9 @@ public final class MGMPoolMeshMutable {
     @NonNull public MGMaterial material;
     @NonNull public MGVector3 pointMiddle;
 
-    @NonNull public MGShaderDefault shaderOpaque;
+    @NonNull public MGShaderOpaqueSingle shaderOpaque;
 
+    @NonNull
     public final MGMPoolMesh toImmutable() {
         return new MGMPoolMesh(
             vertexArray,

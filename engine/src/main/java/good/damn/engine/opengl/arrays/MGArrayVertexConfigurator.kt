@@ -21,10 +21,6 @@ open class MGArrayVertexConfigurator(
     val config: MGEnumArrayVertexConfiguration
 ) {
 
-    companion object {
-        const val MAX_VALUES_PER_VERTICES = 11
-    }
-
     val vertexArrayId: Int
         get() = mVertexArray[0]
 

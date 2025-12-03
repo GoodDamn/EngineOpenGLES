@@ -6,7 +6,7 @@ import kotlin.math.tan
 
 object MGUtilsArray {
 
-    private const val PUNTB = MGArrayVertexConfigurator.MAX_VALUES_PER_VERTICES
+    private const val PUNTB = 11
 
     @JvmStatic
     fun createMergedVertexBuffer(

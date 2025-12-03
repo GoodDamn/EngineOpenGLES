@@ -2,7 +2,7 @@ package good.damn.engine.opengl.shaders
 
 import android.opengl.GLES30.glGetUniformLocation
 
-class MGShaderDefault
+class MGShaderOpaqueSingle
 : MGShaderOpaque(),
 MGIShaderModel {
 

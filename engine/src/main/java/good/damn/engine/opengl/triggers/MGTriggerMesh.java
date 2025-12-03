@@ -2,13 +2,8 @@ package good.damn.engine.opengl.triggers;
 
 import android.opengl.GLES30;
 import android.util.Pair;
-import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import good.damn.engine.models.MGMInformator;
 import good.damn.engine.models.MGMInformatorShader;
@@ -17,7 +12,7 @@ import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMaterialTexture;
 import good.damn.engine.opengl.objects.MGObject3d;
-import good.damn.engine.opengl.shaders.MGShaderDefault;
+import good.damn.engine.opengl.shaders.MGShaderOpaqueSingle;
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute;
 import good.damn.engine.sdk.MGVector3;
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch;
@@ -51,13 +46,13 @@ public final class MGTriggerMesh {
     public final MGDrawerTriggerStateable triggerState;
 
     @NonNull
-    public final MGShaderDefault shaderOpaque;
+    public final MGShaderOpaqueSingle shaderOpaque;
 
     private MGTriggerMesh(
         @NonNull final MGMatrixTriggerMesh matrix,
         @NonNull final MGDrawerMeshMaterialSwitch mesh,
         @NonNull final MGDrawerTriggerStateable triggerState,
-        @NonNull final MGShaderDefault shaderOpaque
+        @NonNull final MGShaderOpaqueSingle shaderOpaque
     ) {
         this.matrix = matrix;
         this.mesh = mesh;
@@ -87,7 +82,7 @@ public final class MGTriggerMesh {
 
         @NonNull
         final MGShaderCache<
-            MGShaderDefault
+            MGShaderOpaqueSingle
         > shaderCache = shaders.getOpaqueGenerated();
 
         @NonNull
@@ -150,12 +145,12 @@ public final class MGTriggerMesh {
         final String src = generatorShader.generate();
 
         @NonNull
-        MGShaderDefault cachedShader = shaderCache.get(
+        MGShaderOpaqueSingle cachedShader = shaderCache.get(
             src
         );
 
         if (cachedShader == null) {
-            cachedShader = new MGShaderDefault();
+            cachedShader = new MGShaderOpaqueSingle();
             shaderCache.cacheAndCompile(
                 src,
                 shaderSource.getVert(),
@@ -165,7 +160,6 @@ public final class MGTriggerMesh {
                     .bindPosition()
                     .bindTextureCoordinates()
                     .bindNormal()
-                    .bindTangent()
                     .build()
             );
         }
@@ -200,7 +194,7 @@ public final class MGTriggerMesh {
         @NonNull final MGMaterial material,
         @NonNull final MGMPoolMeshMutable outPoolMesh,
         @NonNull final MGITrigger triggerAction,
-        @NonNull final MGShaderDefault shaderOpaque
+        @NonNull final MGShaderOpaqueSingle shaderOpaque
     ) {
         outPoolMesh.pointMinMax = MGUtilsAlgo.findMinMaxPoints(
             vertexArray
@@ -274,7 +268,7 @@ public final class MGTriggerMesh {
             new MGDrawerPositionEntity(
                 matrix.matrixMesh.model
             ),
-            GLES30.GL_CW,
+            GLES30.GL_CCW,
             matrix.matrixMesh.normal
         );
 
