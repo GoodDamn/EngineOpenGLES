@@ -11,34 +11,38 @@ import good.damn.engine.opengl.shaders.MGShaderMaterial
 class MGDrawerMeshInstanced(
     private val enableCullFace: Boolean,
     private val vertexArray: MGArrayVertexInstanced,
-    private val material: MGMaterial
+    private val materials: Array<MGMaterial>
 ) {
 
-    private var mDrawerTexture = material.getTextureByType(
-        MGEnumTextureType.DIFFUSE
-    )
+    private val mDrawerTextures = Array(
+        materials.size
+    ) {
+        materials[it].getTextureByType(
+            MGEnumTextureType.DIFFUSE
+        )
+    }
 
     private var mode = GLES30.GL_TRIANGLES
 
     fun switchDrawMode(
         drawMode: MGEnumDrawMode
     ) {
-        mDrawerTexture = when (
+        when (
             drawMode
         ) {
-            MGEnumDrawMode.METALLIC -> material.getTextureByType(
+            MGEnumDrawMode.METALLIC -> switchDrawerTexture(
                 MGEnumTextureType.METALLIC
             )
 
-            MGEnumDrawMode.EMISSIVE -> material.getTextureByType(
+            MGEnumDrawMode.EMISSIVE -> switchDrawerTexture(
                 MGEnumTextureType.EMISSIVE
             )
 
-            MGEnumDrawMode.NORMAL_MAP -> material.getTextureByType(
+            MGEnumDrawMode.NORMAL_MAP -> switchDrawerTexture(
                 MGEnumTextureType.NORMAL
             )
 
-            else -> material.getTextureByType(
+            else -> switchDrawerTexture(
                 MGEnumTextureType.DIFFUSE
             )
         }
@@ -70,24 +74,41 @@ class MGDrawerMeshInstanced(
     fun drawSingleTexture(
         shaderTexture: MGIShaderTextureUniform
     ) {
-        mDrawerTexture?.draw(
-            shaderTexture
-        )
+        mDrawerTextures.forEach {
+            it?.draw(shaderTexture)
+        }
         drawVertices()
-        mDrawerTexture?.unbind(
-            shaderTexture
-        )
+
+        mDrawerTextures.forEach {
+            it?.unbind(shaderTexture)
+        }
     }
 
     fun draw(
-        shaderMaterial: MGShaderMaterial
+        shaderMaterial: Array<
+            MGShaderMaterial
+        >
     ) {
-        material.draw(
-            shaderMaterial
-        )
+        for (i in materials.indices) {
+            materials[i].draw(
+                shaderMaterial[i]
+            )
+        }
         drawVertices()
-        material.unbind(
-            shaderMaterial
-        )
+        for (i in materials.indices) {
+            materials[i].unbind(
+                shaderMaterial[i]
+            )
+        }
+    }
+
+    private inline fun switchDrawerTexture(
+        type: MGEnumTextureType
+    ) {
+        for (i in mDrawerTextures.indices) {
+            mDrawerTextures[i] = materials[i].getTextureByType(
+                type
+            )
+        }
     }
 }

@@ -49,6 +49,9 @@ class MGLoaderLevelLibrary(
     >? = null
         private set
 
+    var terrain: MGMLevelInfoMesh? = null
+        private set
+
     fun loadLibrary(): Boolean {
         isLoadLibrary = false
         if (!mFile.exists()) {
@@ -66,6 +69,10 @@ class MGLoaderLevelLibrary(
                 0
             ).getJSONArray(
                 "props"
+            )
+
+            terrain = MGMLevelInfoMesh.createFromJson(
+                rootJson.getJSONObject("terrain")
             )
 
             isLoadLibrary = true

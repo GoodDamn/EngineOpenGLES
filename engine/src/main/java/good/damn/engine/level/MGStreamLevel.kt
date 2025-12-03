@@ -1,23 +1,17 @@
 package good.damn.engine.level
 
-import android.util.Log
-import good.damn.engine.MGEngine
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.loaders.MGLoaderLevelMatrices
 import good.damn.engine.loaders.mesh.MGLoaderLevelMeshA3D
 import good.damn.engine.loaders.MGLoaderLevelTextures
-import good.damn.engine.loaders.mesh.MGILoaderMesh
 import good.damn.engine.models.MGMInformator
-import good.damn.engine.models.MGMMeshInstance
-import good.damn.engine.opengl.objects.MGObject3d
+import good.damn.engine.models.MGMInstanceMesh
+import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.shaders.MGShaderOpaque
-import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.mapimporter.MIImportMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,14 +19,15 @@ import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.DataInputStream
 import java.io.InputStream
-import java.io.InputStreamReader
 
 object MGStreamLevel {
+
+    @JvmStatic
     fun readBin(
-        flow: MGFlowLevel<Pair<MGShaderOpaque,MGMMeshInstance?>>,
+        flow: MGFlowLevel<MGMInstanceMesh>,
         input: InputStream,
         informator: MGMInformator,
-        buffer: ByteArray
+        bufferMap: ByteArray
     ) {
         val stream = DataInputStream(
             input
@@ -40,7 +35,7 @@ object MGStreamLevel {
 
         val map = MIImportMap.createFromStream(
             stream,
-            buffer
+            bufferMap
         )
 
         val scope = CoroutineScope(
@@ -90,10 +85,7 @@ object MGStreamLevel {
         )
 
         val loaderMeshes = MGLoaderLevelMeshA3D(
-            informator.poolTextures,
-            buffer,
             localPathLibObj,
-            localPathLibTextures,
             informator.glHandler
         )
 
@@ -105,19 +97,46 @@ object MGStreamLevel {
 
         meshes.forEach {
             scope.launch {
-                val v = loaderMeshes.loadMeshInstance(
-                    it.value
+                val prop = it.value
+                val v = loaderMeshes.loadInstanceArray(
+                    prop.fileNameA3d,
+                    prop.matrices.toTypedArray()
                 ) ?: return@launch
 
-                flow.emit(v)
+                prop.materialTexture.load(
+                    informator.poolTextures,
+                    localPathLibTextures,
+                    informator.glHandler
+                )
+
+                flow.emit(
+                    MGMInstanceMesh(
+                        prop.shaderOpaque,
+                        v.vertexArray,
+                        MGMaterial(
+                            prop.materialTexture
+                        ),
+                        prop.enableCullFace,
+                        v.modelMatrices
+                    )
+                )
             }
         }
+
+        scope.launch {
+            while (loaderLib.terrain == null) { }
+            val terrain = loaderLib.terrain!!
+            loadLandscape(
+                terrain
+            )
+        }
+
     }
 
     fun read(
         input: InputStream,
         poolTextures: MGPoolTextures
-    ): Array<MGMMeshInstance>? {
+    ): Array<MGMInstanceMesh>? {
         return null
         /*val bufferedReader = BufferedReader(
             InputStreamReader(
@@ -208,4 +227,22 @@ object MGStreamLevel {
 
     private fun BufferedReader.readLineValueInt() =
         readLine().toIntOrNull()
+
+    private inline fun loadLandscape(
+        landscape: MGMLevelInfoMesh,
+        loaderMesh: MGLoaderLevelMeshA3D
+    ): MGMInstanceMesh? {
+        val instanceArray = loaderMesh.loadInstanceArray(
+            landscape.a3dMesh,
+            arrayOf(
+                MGMatrixTransformationNormal(
+                    MGMatrixScaleRotation()
+                )
+            )
+        ) ?: return null
+
+        return MGMInstanceMesh(
+
+        )
+    }
 }
