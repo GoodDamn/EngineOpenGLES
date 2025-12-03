@@ -131,12 +131,12 @@ public final class MGTriggerMesh {
         generatorShader.normalVertex();
 
         if (obj.texturesEmissiveFileName == null) {
-            generatorShader.emissiveMap();
+            generatorShader.emissiveNo();
         } else {
             builder.textureEmissive(
                 obj.texturesEmissiveFileName[0]
             );
-            generatorShader.emissiveNo();
+            generatorShader.emissiveMap();
         }
 
         generatorShader.lighting();
