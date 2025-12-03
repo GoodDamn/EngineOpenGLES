@@ -62,9 +62,9 @@ class MGLoaderLevelMeshA3D(
                 ),
                 MGUtilsA3D.createMergedVertexBuffer(
                     mesh,
-                    if (it.fileNameA3d.contains("errain"))
+                    /*if (it.fileNameA3d.contains("errain"))
                         105f
-                    else 1f
+                    else*/ 1f
                 ),
                 configIndices.buffer,
                 it.matrices.toTypedArray(),

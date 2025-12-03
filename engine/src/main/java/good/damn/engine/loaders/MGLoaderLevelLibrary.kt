@@ -3,6 +3,8 @@ package good.damn.engine.loaders
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInformatorShader
 import good.damn.engine.models.MGProp
+import good.damn.engine.models.json.MGMLevelInfoMesh
+import good.damn.engine.models.json.MGMLevelInfoTextures
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderOpaque
@@ -54,9 +56,11 @@ class MGLoaderLevelLibrary(
         }
 
         scope.launch {
-            mJson = fileToJson(
+            val rootJson = fileToJson(
                 mFile
-            ).getJSONArray(
+            )
+
+            mJson = rootJson.getJSONArray(
                 "groups"
             ).getJSONObject(
                 0
@@ -110,19 +114,14 @@ class MGLoaderLevelLibrary(
                     "name"
                 )
 
-                val mesh = lJson.getJSONObject(
-                    "mesh"
+                val mesh = MGMLevelInfoMesh.createFromJson(
+                    lJson.getJSONObject("mesh")
                 )
 
-                val diffuse = mesh.getJSONArray(
-                    "textures"
-                ).getJSONObject(0).getString(
-                    "diffuseMap"
-                )
-
-                val fileName = mesh.getString(
-                    "file"
-                )
+                val fileName = mesh.a3dMesh
+                val diffuse = mesh.textures.textures[
+                    0
+                ].diffuseMapName
 
                 val builderMaterial = MGMaterialTexture.Builder()
 
