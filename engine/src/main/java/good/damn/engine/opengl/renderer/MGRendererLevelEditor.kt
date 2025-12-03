@@ -6,6 +6,7 @@ import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
 import android.opengl.GLU
 import android.util.Log
+import android.util.SparseArray
 import android.view.MotionEvent
 import good.damn.engine.MGEngine
 import good.damn.engine.hud.MGHud
@@ -42,6 +43,7 @@ import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.sdk.MGVector3
+import good.damn.engine.shader.MGShaderCache
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsVertIndices
@@ -59,8 +61,12 @@ class MGRendererLevelEditor(
 
     private val mInformatorShader = MGMInformatorShader(
         MGEngine.shaderSource,
-        ConcurrentHashMap(),
-        ConcurrentHashMap(),
+        MGShaderCache(
+            SparseArray(5)
+        ),
+        MGShaderCache(
+            SparseArray(5)
+        ),
         MGMShader(
             MGShaderSingleMode(),
             MGShaderSingleModeInstanced()
@@ -99,8 +105,8 @@ class MGRendererLevelEditor(
             MGMatrixTranslate()
         ),
         MGDrawerLightDirectional(),
-        ConcurrentHashMap(5),
-        ConcurrentHashMap(5),
+        ConcurrentHashMap(15),
+        ConcurrentHashMap(50),
         MGSky(
             MGTexture(
                 MGEnumTextureType.DIFFUSE

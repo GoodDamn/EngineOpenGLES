@@ -32,6 +32,7 @@ class MGShaderSource(
     val fragLight: String
 
     val verti: String
+    val vert: String
 
     init {
         val localFullPath = "$FOLDER/$localPath"
@@ -97,6 +98,10 @@ class MGShaderSource(
 
         verti = loadSourceCode(
             "$localFullPath/vert_i.glsl"
+        )
+
+        vert = loadSourceCode(
+            "$localFullPath/vert.glsl"
         )
     }
 

@@ -184,29 +184,24 @@ class MGLoaderLevelLibrary(
                 val fragmentCode = generatorShader.generate()
 
                 var cachedShader = informator.shaders.opaqueGeneratedInstanced[
-                    fragmentCode.hashCode()
+                    fragmentCode
                 ]
 
                 if (cachedShader == null) {
                     cachedShader = MGShaderOpaque()
-                    informator.shaders.opaqueGeneratedInstanced[
-                        fragmentCode.hashCode()
-                    ] = cachedShader
-
-                    informator.glHandler.post(
-                        MGRunnableCompileShaders(
-                            fragmentCode,
-                            cachedShader,
-                            informator.shaders.source.verti,
-                            MGBinderAttribute.Builder()
-                                .bindPosition()
-                                .bindTextureCoordinates()
-                                .bindNormal()
-                                .bindInstancedModel()
-                                .bindInstancedRotationMatrix()
-                                .bindTangent()
-                                .build()
-                        )
+                    informator.shaders.opaqueGeneratedInstanced.cacheAndCompile(
+                        fragmentCode,
+                        informator.shaders.source.verti,
+                        cachedShader,
+                        informator.glHandler,
+                        MGBinderAttribute.Builder()
+                            .bindPosition()
+                            .bindTextureCoordinates()
+                            .bindNormal()
+                            .bindInstancedModel()
+                            .bindInstancedRotationMatrix()
+                            .bindTangent()
+                            .build()
                     )
                 }
 
