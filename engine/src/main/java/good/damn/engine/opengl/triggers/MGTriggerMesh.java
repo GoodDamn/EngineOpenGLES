@@ -75,24 +75,22 @@ public final class MGTriggerMesh {
         );
 
         @NonNull
-        MGMaterialTexture.Builder builder = new MGMaterialTexture.Builder(
-            poolTextures
-        );
+        final MGMaterialTexture.Builder builder = new MGMaterialTexture.Builder();
 
         if (obj.texturesDiffuseFileName != null) {
-            builder = builder.textureDiffuse(
+            builder.textureDiffuse(
                 obj.texturesDiffuseFileName[0]
             );
         }
 
         if (obj.texturesMetallicFileName != null) {
-            builder = builder.textureMetallic(
+            builder.textureMetallic(
                 obj.texturesMetallicFileName[0]
             );
         }
 
         if (obj.texturesEmissiveFileName != null) {
-            builder = builder.textureEmissive(
+            builder.textureEmissive(
                 obj.texturesEmissiveFileName[0]
             );
         }

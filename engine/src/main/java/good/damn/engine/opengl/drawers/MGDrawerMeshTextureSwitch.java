@@ -1,6 +1,7 @@
 package good.damn.engine.opengl.drawers;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import good.damn.engine.opengl.entities.MGMaterial;
 import good.damn.engine.opengl.enums.MGEnumDrawMode;
@@ -16,19 +17,19 @@ public class MGDrawerMeshTextureSwitch {
     @NonNull
     private final MGTexture mTextureDiffuse;
 
-    @NonNull
+    @Nullable
     private final MGTexture mTextureMetallic;
 
-    @NonNull
+    @Nullable
     private final MGTexture mTextureEmissive;
 
-    @NonNull
+    @Nullable
     private final MGTexture mTextureNormal;
 
     @NonNull
     protected final MGDrawerMeshSwitch mDrawerMesh;
 
-    @NonNull
+    @Nullable
     private MGIDrawerTexture<
         MGIShaderTextureUniform
     > mDrawerTexture;
@@ -56,9 +57,9 @@ public class MGDrawerMeshTextureSwitch {
 
     public MGDrawerMeshTextureSwitch(
         @NonNull final MGTexture textureDiffuse,
-        @NonNull final MGTexture textureMetallic,
-        @NonNull final MGTexture textureEmissive,
-        @NonNull final MGTexture textureNormal,
+        @Nullable final MGTexture textureMetallic,
+        @Nullable final MGTexture textureEmissive,
+        @Nullable final MGTexture textureNormal,
         @NonNull final MGDrawerMeshSwitch drawerMesh
     ) {
         mTextureDiffuse = textureDiffuse;
@@ -106,17 +107,21 @@ public class MGDrawerMeshTextureSwitch {
         @NonNull final MGIShaderTextureUniform shaderTexture,
         @NonNull final MGIShaderModel shaderModel
     ) {
-        mDrawerTexture.draw(
-            shaderTexture
-        );
+        if (mDrawerTexture != null) {
+            mDrawerTexture.draw(
+                shaderTexture
+            );
+        }
 
         mDrawerMesh.draw(
             shaderModel
         );
 
-        mDrawerTexture.unbind(
-            shaderTexture
-        );
+        if (mDrawerTexture != null) {
+            mDrawerTexture.unbind(
+                shaderTexture
+            );
+        }
     }
 
     public final void drawVertices(

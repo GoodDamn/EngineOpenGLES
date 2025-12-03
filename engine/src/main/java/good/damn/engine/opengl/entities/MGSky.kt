@@ -16,13 +16,12 @@ import good.damn.engine.utils.MGUtilsBitmap
 
 class MGSky(
     private val textureDiffuse: MGTexture,
-    poolTextures: MGPoolTextures,
     private val verticesSky: MGArrayVertexConfigurator
 ): MGDrawerMeshTextureSwitch(
     textureDiffuse,
-    poolTextures.defaultTextureMetallic,
-    poolTextures.defaultTextureEmissive,
-    poolTextures.defaultTextureNormal,
+    null,
+    null,
+    null,
     MGDrawerMeshSwitch(
         MGDrawerVertexArray(
             verticesSky

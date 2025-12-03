@@ -124,9 +124,7 @@ class MGLoaderLevelLibrary(
                     "file"
                 )
 
-                val builderMaterial = MGMaterialTexture.Builder(
-                    informator.poolTextures
-                )
+                val builderMaterial = MGMaterialTexture.Builder()
 
                 val generatorShader = MGGeneratorShader(
                     informator.shaders.source

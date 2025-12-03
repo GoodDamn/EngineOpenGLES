@@ -58,10 +58,6 @@ class MGRendererLevelEditor(
     }
 
     private val mInformatorShader = MGMInformatorShader(
-        /*MGMShader(
-            MGShaderDefault(),
-            MGShaderOpaque()
-        ),*/
         MGEngine.shaderSource,
         ConcurrentHashMap(),
         ConcurrentHashMap(),
@@ -83,23 +79,7 @@ class MGRendererLevelEditor(
         )
     )
 
-    private val mPoolTextures = MGPoolTextures(
-        MGTexture(
-            MGEnumTextureType.DIFFUSE
-        ),
-        MGTexture(
-            MGEnumTextureType.METALLIC
-        ),
-        MGTexture(
-            MGEnumTextureType.EMISSIVE
-        ),
-        MGTexture(
-            MGEnumTextureType.OPACITY
-        ),
-        MGTexture(
-            MGEnumTextureType.NORMAL
-        )
-    )
+    private val mPoolTextures = MGPoolTextures()
 
     private val managerLight = MGManagerLight(
         MGMInformatorShader.SIZE_LIGHT_POINT
@@ -119,13 +99,12 @@ class MGRendererLevelEditor(
             MGMatrixTranslate()
         ),
         MGDrawerLightDirectional(),
-        ConcurrentHashMap(),
-        ConcurrentHashMap(),
+        ConcurrentHashMap(5),
+        ConcurrentHashMap(5),
         MGSky(
             MGTexture(
                 MGEnumTextureType.DIFFUSE
             ),
-            mPoolTextures,
             MGArrayVertexConfigurator(
                 MGEnumArrayVertexConfiguration.SHORT
             )
@@ -237,8 +216,6 @@ class MGRendererLevelEditor(
                 .build()
         )
 
-
-        mInformator.poolTextures.configureDefault()
         mInformator.meshSky.configure()
         mVerticesBox.configure(
             MGUtilsBuffer.createFloat(

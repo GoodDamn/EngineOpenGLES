@@ -100,9 +100,13 @@ class MGMaterialTexture private constructor(
         part.drawer.texture = texture
     }
 
-    class Builder(
-        private val poolTextures: MGPoolTextures
-    ) {
+    class Builder {
+        companion object {
+            private val DEFAULT = MGTexture(
+                MGEnumTextureType.DIFFUSE
+            )
+        }
+
         private val map = SparseArray<
             MGMTexturePart
         >()
@@ -115,7 +119,7 @@ class MGMaterialTexture private constructor(
                 MGMTexturePart(
                     MGEnumTextureType.DIFFUSE,
                     MGDrawerMaterialTextureDiffuse(
-                        poolTextures.defaultTexture
+                        DEFAULT
                     ),
                     textureName
                 )
@@ -131,7 +135,7 @@ class MGMaterialTexture private constructor(
                 MGMTexturePart(
                     MGEnumTextureType.METALLIC,
                     MGDrawerMaterialTextureMetallic(
-                        poolTextures.defaultTextureMetallic
+                        DEFAULT
                     ),
                     textureName
                 )
@@ -147,7 +151,7 @@ class MGMaterialTexture private constructor(
                 MGMTexturePart(
                     MGEnumTextureType.EMISSIVE,
                     MGDrawerMaterialTextureEmissive(
-                        poolTextures.defaultTextureEmissive
+                        DEFAULT
                     ),
                     textureName
                 )
@@ -163,7 +167,7 @@ class MGMaterialTexture private constructor(
                 MGMTexturePart(
                     MGEnumTextureType.OPACITY,
                     MGDrawerMaterialTextureOpacity(
-                        poolTextures.defaultTextureOpacity
+                        DEFAULT
                     ),
                     textureName
                 )
@@ -179,7 +183,7 @@ class MGMaterialTexture private constructor(
                 MGMTexturePart(
                     MGEnumTextureType.NORMAL,
                     MGDrawerMaterialTextureNormal(
-                        poolTextures.defaultTextureNormal
+                        DEFAULT
                     ),
                     textureName
                 )
