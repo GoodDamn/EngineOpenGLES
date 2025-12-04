@@ -1,26 +1,26 @@
 package good.damn.engine.opengl.drawers.material
 
 import good.damn.engine.opengl.drawers.MGIDrawerTexture
-import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.textures.MGTexture
 
-class MGDrawerMaterialTextureOpacity(
-    override var texture: MGTexture
-): MGIDrawerMaterialTexture {
+class MGDrawerMaterialTexture(
+    var texture: MGTexture
+): MGIDrawerTexture<MGShaderTexture> {
 
     override fun draw(
-        shader: MGShaderMaterial
+        shader: MGShaderTexture
     ) {
         texture.draw(
-            shader.textureOpacity
+            shader
         )
     }
 
     override fun unbind(
-        shader: MGShaderMaterial
+        shader: MGShaderTexture
     ) {
         texture.unbind(
-            shader.textureOpacity
+            shader
         )
     }
 

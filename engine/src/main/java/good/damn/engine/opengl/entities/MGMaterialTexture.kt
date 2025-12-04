@@ -1,42 +1,45 @@
 package good.damn.engine.opengl.entities
 
+import android.util.Log
 import android.util.SparseArray
-import androidx.collection.SparseArrayCompat
 import androidx.core.util.forEach
 import good.damn.engine.opengl.drawers.MGIDrawerTexture
-import good.damn.engine.opengl.drawers.material.MGDrawerMaterialTextureDiffuse
-import good.damn.engine.opengl.drawers.material.MGDrawerMaterialTextureEmissive
-import good.damn.engine.opengl.drawers.material.MGDrawerMaterialTextureMetallic
-import good.damn.engine.opengl.drawers.material.MGDrawerMaterialTextureNormal
-import good.damn.engine.opengl.drawers.material.MGDrawerMaterialTextureOpacity
-import good.damn.engine.opengl.drawers.material.MGIDrawerMaterialTexture
-import good.damn.engine.opengl.entities.MGMaterialTexture.MGMTexturePart
+import good.damn.engine.opengl.drawers.material.MGDrawerMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.runnables.MGRunnableGenTexture
 import good.damn.engine.utils.MGUtilsBitmap
-import java.util.LinkedList
 
 class MGMaterialTexture private constructor(
     private val list: SparseArray<MGMTexturePart>
-): MGIDrawerTexture<MGShaderMaterial> {
-
+): MGIDrawerTexture<
+    Array<MGShaderTexture>
+> {
     override fun draw(
-        shader: MGShaderMaterial
+        shader: Array<MGShaderTexture>
     ) {
-        list.forEach { _, value ->
-            value.drawer.draw(shader)
+        var i = 0
+        list.forEach { _, it ->
+            it.drawer.draw(
+                shader[i]
+            )
+            i++
         }
     }
 
     override fun unbind(
-        shader: MGShaderMaterial
+        shader: Array<MGShaderTexture>
     ) {
-        list.forEach { _, value ->
-            value.drawer.unbind(shader)
+        var i = 0
+        list.forEach { _, it ->
+            it.drawer.unbind(
+                shader[i]
+            )
+            i++
         }
     }
 
@@ -44,7 +47,7 @@ class MGMaterialTexture private constructor(
         type: MGEnumTextureType
     ) = list[
         type.v
-    ]?.drawer?.texture
+    ].drawer.texture
 
     fun load(
         poolTextures: MGPoolTextures,
@@ -118,7 +121,7 @@ class MGMaterialTexture private constructor(
                 MGEnumTextureType.DIFFUSE.v,
                 MGMTexturePart(
                     MGEnumTextureType.DIFFUSE,
-                    MGDrawerMaterialTextureDiffuse(
+                    MGDrawerMaterialTexture(
                         DEFAULT
                     ),
                     textureName
@@ -134,7 +137,7 @@ class MGMaterialTexture private constructor(
                 MGEnumTextureType.METALLIC.v,
                 MGMTexturePart(
                     MGEnumTextureType.METALLIC,
-                    MGDrawerMaterialTextureMetallic(
+                    MGDrawerMaterialTexture(
                         DEFAULT
                     ),
                     textureName
@@ -150,7 +153,7 @@ class MGMaterialTexture private constructor(
                 MGEnumTextureType.EMISSIVE.v,
                 MGMTexturePart(
                     MGEnumTextureType.EMISSIVE,
-                    MGDrawerMaterialTextureEmissive(
+                    MGDrawerMaterialTexture(
                         DEFAULT
                     ),
                     textureName
@@ -166,7 +169,7 @@ class MGMaterialTexture private constructor(
                 MGEnumTextureType.OPACITY.v,
                 MGMTexturePart(
                     MGEnumTextureType.OPACITY,
-                    MGDrawerMaterialTextureOpacity(
+                    MGDrawerMaterialTexture(
                         DEFAULT
                     ),
                     textureName
@@ -182,7 +185,7 @@ class MGMaterialTexture private constructor(
                 MGEnumTextureType.NORMAL.v,
                 MGMTexturePart(
                     MGEnumTextureType.NORMAL,
-                    MGDrawerMaterialTextureNormal(
+                    MGDrawerMaterialTexture(
                         DEFAULT
                     ),
                     textureName
@@ -198,7 +201,7 @@ class MGMaterialTexture private constructor(
 
     private data class MGMTexturePart(
         val type: MGEnumTextureType,
-        val drawer: MGIDrawerMaterialTexture,
+        val drawer: MGDrawerMaterialTexture,
         val textureName: String
     )
 }

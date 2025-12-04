@@ -9,7 +9,7 @@ import good.damn.engine.opengl.shaders.MGShaderOpaque
 data class MGMInstanceMesh(
     val shader: MGShaderOpaque,
     val vertexArray: MGArrayVertexInstanced,
-    val material: MGMaterial,
+    val material: Array<MGMaterial>,
     val enableCullFace: Boolean,
     val matrices: Array<
         MGMatrixTransformationNormal<

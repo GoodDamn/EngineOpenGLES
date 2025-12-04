@@ -7,7 +7,9 @@ import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.models.json.MGMLevelInfoTextures
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.MGShaderOpaque
+import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.runnables.MGRunnableCompileShaders
 import good.damn.engine.shader.MGShaderSource
@@ -105,6 +107,141 @@ class MGLoaderLevelLibrary(
         mNonCullFaceMeshes = meshesSet
     }
 
+    fun readProp(
+        mesh: MGMLevelInfoMesh
+    ): MGProp {
+        val fileName = mesh.a3dMesh
+        val diffuse = mesh.textures.textures[
+            0
+        ].diffuseMapName
+
+        val builderMaterial = MGMaterialTexture.Builder()
+
+        val generatorShader = MGGeneratorShader(
+            informator.shaders.source
+        )
+
+        val shaderTextures = LinkedList<
+            MGShaderTexture
+        >()
+
+        buildTextureIfExists(
+            "${diffuse}.jpg"
+        ) {
+            builderMaterial.textureDiffuse(it)
+            shaderTextures.add(
+                MGShaderTexture(
+                    "textDiffuse"
+                )
+            )
+        }
+
+        "${diffuse}_m.jpg".let {
+            if (textureExists(it)) {
+                shaderTextures.add(
+                    MGShaderTexture(
+                        "textMetallic"
+                    )
+                )
+                builderMaterial.textureMetallic(it)
+                generatorShader.apply {
+                    specular()
+                    metallicMap()
+                }
+                return@let
+            }
+
+            generatorShader.apply {
+                specularNo()
+                metallicNo()
+            }
+        }
+
+        "${diffuse}_e.jpg".let {
+            if (textureExists(it)) {
+                shaderTextures.add(
+                    MGShaderTexture(
+                        "textEmissive"
+                    )
+                )
+                builderMaterial.textureEmissive(it)
+                generatorShader.emissiveMap()
+                return@let
+            }
+            generatorShader.emissiveNo()
+        }
+
+
+        "${diffuse}_o.jpg".let {
+            if (textureExists(it)) {
+                shaderTextures.add(
+                    MGShaderTexture(
+                        "textOpacity"
+                    )
+                )
+                builderMaterial.textureOpacity(it)
+                generatorShader.opacityMap()
+                return@let
+            }
+            generatorShader.opacityNo()
+        }
+
+
+        "${diffuse}_n.jpg".let {
+            if (textureExists(it)) {
+                shaderTextures.add(
+                    MGShaderTexture(
+                        "textNormal"
+                    )
+                )
+                builderMaterial.textureNormal(it)
+                generatorShader.normalMapping()
+                return@let
+            }
+            generatorShader.normalVertex()
+        }
+
+        generatorShader.lighting()
+
+        val fragmentCode = generatorShader.generate()
+
+        var cachedShader = informator.shaders.opaqueGeneratedInstanced[
+            fragmentCode
+        ]
+
+        if (cachedShader == null) {
+            cachedShader = MGShaderOpaque(
+                MGShaderMaterial.singleMaterial(
+                    shaderTextures.toTypedArray()
+                )
+            )
+            informator.shaders.opaqueGeneratedInstanced.cacheAndCompile(
+                fragmentCode,
+                informator.shaders.source.verti,
+                cachedShader,
+                informator.glHandler,
+                MGBinderAttribute.Builder()
+                    .bindPosition()
+                    .bindTextureCoordinates()
+                    .bindNormal()
+                    .bindInstancedModel()
+                    .bindInstancedRotationMatrix()
+                    .bindTangent()
+                    .build()
+            )
+        }
+
+        return MGProp(
+            fileName,
+            builderMaterial.build(),
+            cachedShader,
+            !(mNonCullFaceMeshes?.contains(
+                fileName
+            ) ?: false),
+            LinkedList(),
+        )
+    }
+
     fun readProps() {
         scope.launch {
             while (mJson == null) {}
@@ -125,100 +262,8 @@ class MGLoaderLevelLibrary(
                     lJson.getJSONObject("mesh")
                 )
 
-                val fileName = mesh.a3dMesh
-                val diffuse = mesh.textures.textures[
-                    0
-                ].diffuseMapName
-
-                val builderMaterial = MGMaterialTexture.Builder()
-
-                val generatorShader = MGGeneratorShader(
-                    informator.shaders.source
-                )
-
-                buildTextureIfExists(
-                    "${diffuse}.jpg"
-                ) { builderMaterial.textureDiffuse(it) }
-
-                "${diffuse}_m.jpg".let {
-                    if (textureExists(it)) {
-                        builderMaterial.textureMetallic(it)
-                        generatorShader.apply {
-                            specular()
-                            metallicMap()
-                        }
-                        return@let
-                    }
-
-                    generatorShader.apply {
-                        specularNo()
-                        metallicNo()
-                    }
-                }
-
-                "${diffuse}_e.jpg".let {
-                    if (textureExists(it)) {
-                        builderMaterial.textureEmissive(it)
-                        generatorShader.emissiveMap()
-                        return@let
-                    }
-                    generatorShader.emissiveNo()
-                }
-
-
-                "${diffuse}_o.jpg".let {
-                    if (textureExists(it)) {
-                        builderMaterial.textureOpacity(it)
-                        generatorShader.opacityMap()
-                        return@let
-                    }
-                    generatorShader.opacityNo()
-                }
-
-
-                "${diffuse}_n.jpg".let {
-                    if (textureExists(it)) {
-                        builderMaterial.textureNormal(it)
-                        generatorShader.normalMapping()
-                        return@let
-                    }
-                    generatorShader.normalVertex()
-                }
-
-                generatorShader.lighting()
-
-                val fragmentCode = generatorShader.generate()
-
-                var cachedShader = informator.shaders.opaqueGeneratedInstanced[
-                    fragmentCode
-                ]
-
-                if (cachedShader == null) {
-                    cachedShader = MGShaderOpaque()
-                    informator.shaders.opaqueGeneratedInstanced.cacheAndCompile(
-                        fragmentCode,
-                        informator.shaders.source.verti,
-                        cachedShader,
-                        informator.glHandler,
-                        MGBinderAttribute.Builder()
-                            .bindPosition()
-                            .bindTextureCoordinates()
-                            .bindNormal()
-                            .bindInstancedModel()
-                            .bindInstancedRotationMatrix()
-                            .bindTangent()
-                            .build()
-                    )
-                }
-
-                lMeshes[name] = MGProp(
-                    fileName,
-                    builderMaterial.build(),
-                    cachedShader,
-                    !(mNonCullFaceMeshes?.contains(
-                        fileName
-                    ) ?: false),
-                    LinkedList(),
+                lMeshes[name] = readProp(
+                    mesh
                 )
             }
 

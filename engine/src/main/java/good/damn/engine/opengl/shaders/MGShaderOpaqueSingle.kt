@@ -2,9 +2,11 @@ package good.damn.engine.opengl.shaders
 
 import android.opengl.GLES30.glGetUniformLocation
 
-class MGShaderOpaqueSingle
-: MGShaderOpaque(),
-MGIShaderModel {
+class MGShaderOpaqueSingle(
+    materials: Array<MGShaderMaterial>
+): MGShaderOpaque(
+    materials
+), MGIShaderModel {
 
     override var uniformModelView = 0
         private set

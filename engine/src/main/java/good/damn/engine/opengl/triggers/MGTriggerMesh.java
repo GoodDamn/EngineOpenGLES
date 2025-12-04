@@ -5,6 +5,8 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
+import java.util.LinkedList;
+
 import good.damn.engine.models.MGMInformator;
 import good.damn.engine.models.MGMInformatorShader;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
@@ -12,7 +14,9 @@ import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMaterialTexture;
 import good.damn.engine.opengl.objects.MGObject3d;
+import good.damn.engine.opengl.shaders.MGShaderMaterial;
 import good.damn.engine.opengl.shaders.MGShaderOpaqueSingle;
+import good.damn.engine.opengl.shaders.MGShaderTexture;
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute;
 import good.damn.engine.sdk.MGVector3;
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch;
@@ -110,9 +114,20 @@ public final class MGTriggerMesh {
             shaderSource
         );
 
+        @NonNull
+        final LinkedList<
+            MGShaderTexture
+        > shaderTextures = new LinkedList<>();
+
         if (obj.texturesDiffuseFileName != null) {
             builder.textureDiffuse(
                 obj.texturesDiffuseFileName[0]
+            );
+
+            shaderTextures.add(
+                new MGShaderTexture(
+                    "textDiffuse"
+                )
             );
         }
 
@@ -120,6 +135,11 @@ public final class MGTriggerMesh {
             generatorShader.metallicNo();
             generatorShader.specularNo();
         } else {
+            shaderTextures.add(
+                new MGShaderTexture(
+                    "textMetallic"
+                )
+            );
             builder.textureMetallic(
                 obj.texturesMetallicFileName[0]
             );
@@ -133,6 +153,11 @@ public final class MGTriggerMesh {
         if (obj.texturesEmissiveFileName == null) {
             generatorShader.emissiveNo();
         } else {
+            shaderTextures.add(
+                new MGShaderTexture(
+                    "textEmissive"
+                )
+            );
             builder.textureEmissive(
                 obj.texturesEmissiveFileName[0]
             );
@@ -150,7 +175,11 @@ public final class MGTriggerMesh {
         );
 
         if (cachedShader == null) {
-            cachedShader = new MGShaderOpaqueSingle();
+            cachedShader = new MGShaderOpaqueSingle(
+                MGShaderMaterial.singleMaterial(
+                    shaderTextures.toArray(new MGShaderTexture[0])
+                )
+            );
             shaderCache.cacheAndCompile(
                 src,
                 shaderSource.getVert(),
@@ -274,7 +303,7 @@ public final class MGTriggerMesh {
 
         @NonNull
         final MGDrawerMeshMaterialSwitch meshTexture = new MGDrawerMeshMaterialSwitch(
-            material,
+            new MGMaterial[]{material},
             drawerMeshSwitchNormals
         );
 

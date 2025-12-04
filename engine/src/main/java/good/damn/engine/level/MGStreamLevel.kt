@@ -12,6 +12,7 @@ import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.mapimporter.MIImportMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -113,8 +114,10 @@ object MGStreamLevel {
                     MGMInstanceMesh(
                         prop.shaderOpaque,
                         v.vertexArray,
-                        MGMaterial(
-                            prop.materialTexture
+                        arrayOf(
+                            MGMaterial(
+                                prop.materialTexture
+                            )
                         ),
                         prop.enableCullFace,
                         v.modelMatrices
@@ -127,7 +130,9 @@ object MGStreamLevel {
             while (loaderLib.terrain == null) { }
             val terrain = loaderLib.terrain!!
             loadLandscape(
-                terrain
+                terrain,
+                loaderMeshes,
+                loaderLib
             )
         }
 
@@ -230,7 +235,8 @@ object MGStreamLevel {
 
     private inline fun loadLandscape(
         landscape: MGMLevelInfoMesh,
-        loaderMesh: MGLoaderLevelMeshA3D
+        loaderMesh: MGLoaderLevelMeshA3D,
+        loaderProp: MGLoaderLevelLibrary
     ): MGMInstanceMesh? {
         val instanceArray = loaderMesh.loadInstanceArray(
             landscape.a3dMesh,
@@ -241,8 +247,16 @@ object MGStreamLevel {
             )
         ) ?: return null
 
-        return MGMInstanceMesh(
+        val prop = loaderProp.readProp(
+            landscape
+        )
 
+        return MGMInstanceMesh(
+            prop.shaderOpaque,
+            instanceArray.vertexArray,
+            arrayOf(),
+            true,
+            instanceArray.modelMatrices
         )
     }
 }

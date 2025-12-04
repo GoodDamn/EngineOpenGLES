@@ -14,6 +14,9 @@ class MGGeneratorShader(
 
     fun metallicMap(): MGGeneratorShader {
         mBuilderSourceFragment.append(
+            "uniform sampler2D textMetallic;"
+        )
+        mBuilderSourceFragment.append(
             source.fragMetallicMap
         )
         return this
@@ -28,6 +31,9 @@ class MGGeneratorShader(
 
     fun emissiveMap(): MGGeneratorShader {
         mBuilderSourceFragment.append(
+            "uniform sampler2D textEmissive;"
+        )
+        mBuilderSourceFragment.append(
             source.fragEmissiveMap
         )
         return this
@@ -41,6 +47,9 @@ class MGGeneratorShader(
     }
 
     fun opacityMap(): MGGeneratorShader {
+        mBuilderSourceFragment.append(
+            "uniform sampler2D textOpacity;"
+        )
         mBuilderSourceFragment.append(
             source.fragOpacityMap
         )
@@ -72,11 +81,13 @@ class MGGeneratorShader(
         mBuilderSourceFragment.append(
             source.fragLight
         )
-
         return this
     }
 
     fun normalMapping(): MGGeneratorShader {
+        mBuilderSourceFragment.append(
+            "uniform sampler2D textNormal;"
+        )
         mBuilderSourceFragment.append(
             source.fragNormalMap
         )

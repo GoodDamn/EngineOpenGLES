@@ -20,6 +20,7 @@ import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
+import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.enums.MGEnumTextureType
@@ -103,9 +104,10 @@ class MGRendererLevelEditor(
         ConcurrentHashMap(15),
         ConcurrentHashMap(50),
         MGSky(
-            MGTexture(
-                MGEnumTextureType.DIFFUSE
-            ),
+            MGMaterialTexture.Builder()
+                .textureDiffuse(
+                    "sky.png"
+                ).build(),
             MGArrayVertexConfigurator(
                 MGEnumArrayVertexConfiguration.SHORT
             )
@@ -217,7 +219,11 @@ class MGRendererLevelEditor(
                 .build()
         )
 
-        mInformator.meshSky.configure()
+        mInformator.meshSky.configure(
+            mPoolTextures,
+            mInformator.glHandler
+        )
+
         mVerticesBox.configure(
             MGUtilsBuffer.createFloat(
                 MGUtilsVertIndices.createCubeVertices(

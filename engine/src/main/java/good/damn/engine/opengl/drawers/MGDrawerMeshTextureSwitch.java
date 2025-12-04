@@ -15,60 +15,29 @@ import good.damn.engine.opengl.textures.MGTexture;
 public class MGDrawerMeshTextureSwitch {
 
     @NonNull
-    private final MGTexture mTextureDiffuse;
-
-    @Nullable
-    private final MGTexture mTextureMetallic;
-
-    @Nullable
-    private final MGTexture mTextureEmissive;
-
-    @Nullable
-    private final MGTexture mTextureNormal;
+    private final MGMaterial[] materials;
 
     @NonNull
     protected final MGDrawerMeshSwitch mDrawerMesh;
 
-    @Nullable
+    @NonNull
     private MGIDrawerTexture<
         MGIShaderTextureUniform
-    > mDrawerTexture;
+    >[] mDrawerTextures;
 
     public MGDrawerMeshTextureSwitch(
-        @NonNull final MGMaterial material,
+        @NonNull final MGMaterial[] materials,
         @NonNull final MGDrawerMeshSwitch drawerMesh
     ) {
-        this(
-            material.getTextureByType(
-                MGEnumTextureType.DIFFUSE
-            ),
-            material.getTextureByType(
-                MGEnumTextureType.METALLIC
-            ),
-            material.getTextureByType(
-                MGEnumTextureType.EMISSIVE
-            ),
-            material.getTextureByType(
-                MGEnumTextureType.NORMAL
-            ),
-            drawerMesh
-        );
-    }
-
-    public MGDrawerMeshTextureSwitch(
-        @NonNull final MGTexture textureDiffuse,
-        @Nullable final MGTexture textureMetallic,
-        @Nullable final MGTexture textureEmissive,
-        @Nullable final MGTexture textureNormal,
-        @NonNull final MGDrawerMeshSwitch drawerMesh
-    ) {
-        mTextureDiffuse = textureDiffuse;
-        mTextureMetallic = textureMetallic;
-        mTextureEmissive = textureEmissive;
-        mTextureNormal = textureNormal;
+        this.materials = materials;
         mDrawerMesh = drawerMesh;
+        mDrawerTextures = new MGIDrawerTexture[
+            materials.length
+        ];
 
-        mDrawerTexture = textureDiffuse;
+        switchTextures(
+            MGEnumTextureType.DIFFUSE
+        );
     }
 
     public final void switchDrawMode(
@@ -77,16 +46,24 @@ public class MGDrawerMeshTextureSwitch {
         switch (drawMode) {
             case OPAQUE:
             case DIFFUSE:
-                mDrawerTexture = mTextureDiffuse;
+                switchTextures(
+                    MGEnumTextureType.DIFFUSE
+                );
                 break;
             case METALLIC:
-                mDrawerTexture = mTextureMetallic;
+                switchTextures(
+                    MGEnumTextureType.METALLIC
+                );
                 break;
             case EMISSIVE:
-                mDrawerTexture = mTextureEmissive;
+                switchTextures(
+                    MGEnumTextureType.EMISSIVE
+                );
                 break;
             case NORMAL_MAP:
-                mDrawerTexture = mTextureNormal;
+                switchTextures(
+                    MGEnumTextureType.NORMAL
+                );
                 break;
         }
 
@@ -107,20 +84,30 @@ public class MGDrawerMeshTextureSwitch {
         @NonNull final MGIShaderTextureUniform shaderTexture,
         @NonNull final MGIShaderModel shaderModel
     ) {
-        if (mDrawerTexture != null) {
-            mDrawerTexture.draw(
-                shaderTexture
-            );
+        for (
+            @Nullable final MGIDrawerTexture<
+                MGIShaderTextureUniform
+            > drawer: mDrawerTextures
+        ) {
+            if (drawer == null) {
+                continue;
+            }
+            drawer.draw(shaderTexture);
         }
 
         mDrawerMesh.draw(
             shaderModel
         );
 
-        if (mDrawerTexture != null) {
-            mDrawerTexture.unbind(
-                shaderTexture
-            );
+        for (
+            @Nullable final MGIDrawerTexture<
+                MGIShaderTextureUniform
+                > drawer: mDrawerTextures
+        ) {
+            if (drawer == null) {
+                continue;
+            }
+            drawer.unbind(shaderTexture);
         }
     }
 
@@ -130,5 +117,19 @@ public class MGDrawerMeshTextureSwitch {
         mDrawerMesh.draw(
             shader
         );
+    }
+
+    private final void switchTextures(
+        @NonNull final MGEnumTextureType type
+    ) {
+        for (
+            byte i = 0;
+            i < mDrawerTextures.length;
+            i++
+        ) {
+            mDrawerTextures[i] = materials[i].getTextureByType(
+                type
+            );
+        }
     }
 }

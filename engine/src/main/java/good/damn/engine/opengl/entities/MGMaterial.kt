@@ -35,7 +35,7 @@ class MGMaterial(
         )
 
         materialTexture.draw(
-            shader
+            shader.textures
         )
     }
 
@@ -43,7 +43,7 @@ class MGMaterial(
         shader: MGShaderMaterial
     ) {
         materialTexture.unbind(
-            shader
+            shader.textures
         )
     }
 
