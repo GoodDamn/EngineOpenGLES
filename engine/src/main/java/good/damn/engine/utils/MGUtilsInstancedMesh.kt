@@ -19,7 +19,7 @@ object MGUtilsInstancedMesh {
         config: MGEnumArrayVertexConfiguration,
         bufferVertices: FloatBuffer,
         bufferIndices: Buffer,
-        modelMatrices: Array<
+        modelMatrices: List<
             MGMatrixTransformationNormal<
                 MGMatrixScaleRotation
                 >
@@ -44,9 +44,9 @@ object MGUtilsInstancedMesh {
                 configurator,
                 bufferVertices,
                 bufferIndices,
-                modelMatrices,
                 matrices.model,
-                matrices.rotation
+                matrices.rotation,
+                modelMatrices.size
             )
         )
 
@@ -57,35 +57,40 @@ object MGUtilsInstancedMesh {
     }
 
     private inline fun convertMatricesToBuffer(
-        v: Array<
+        v: List<
             MGMatrixTransformationNormal<
                 MGMatrixScaleRotation
                 >
             >
     ): MGMatrixBuffer {
         var i = 0
-        val outputModel = FloatArray(
+        val outputModel = MGUtilsBuffer.allocateFloat(
             v.size * 16
         )
-        val outputRotation = FloatArray(
-            outputModel.size
+        val outputRotation = MGUtilsBuffer.allocateFloat(
+            outputModel.capacity()
         )
 
         v.forEach {
             for (indexMat in it.model.model.indices) {
-                outputModel[i] = it.model.model[indexMat]
-                outputRotation[i] = it.normal.normalMatrix[indexMat]
+                outputModel.put(
+                    i,
+                    it.model.model[indexMat]
+                )
+                outputRotation.put(
+                    i,
+                    it.normal.normalMatrix[indexMat]
+                )
                 i++
             }
         }
 
+        outputModel.position(0)
+        outputRotation.position(0)
+
         return MGMatrixBuffer(
-            MGUtilsBuffer.createFloat(
-                outputModel
-            ),
-            MGUtilsBuffer.createFloat(
-                outputRotation
-            )
+            outputModel,
+            outputRotation
         )
     }
 

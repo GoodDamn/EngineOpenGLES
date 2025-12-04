@@ -101,7 +101,7 @@ object MGStreamLevel {
                 val prop = it.value
                 val v = loaderMeshes.loadInstanceArray(
                     prop.fileNameA3d,
-                    prop.matrices.toTypedArray()
+                    prop.matrices
                 ) ?: return@launch
 
                 prop.materialTexture.load(
@@ -136,6 +136,33 @@ object MGStreamLevel {
             )
         }
 
+    }
+
+    private inline fun loadLandscape(
+        landscape: MGMLevelInfoMesh,
+        loaderMesh: MGLoaderLevelMeshA3D,
+        loaderProp: MGLoaderLevelLibrary
+    ): MGMInstanceMesh? {
+        val instanceArray = loaderMesh.loadInstanceArray(
+            landscape.a3dMesh,
+            arrayListOf(
+                MGMatrixTransformationNormal(
+                    MGMatrixScaleRotation()
+                )
+            )
+        ) ?: return null
+
+        val prop = loaderProp.readProp(
+            landscape
+        )
+
+        return MGMInstanceMesh(
+            prop.shaderOpaque,
+            instanceArray.vertexArray,
+            arrayOf(),
+            true,
+            instanceArray.modelMatrices
+        )
     }
 
     fun read(
@@ -232,31 +259,4 @@ object MGStreamLevel {
 
     private fun BufferedReader.readLineValueInt() =
         readLine().toIntOrNull()
-
-    private inline fun loadLandscape(
-        landscape: MGMLevelInfoMesh,
-        loaderMesh: MGLoaderLevelMeshA3D,
-        loaderProp: MGLoaderLevelLibrary
-    ): MGMInstanceMesh? {
-        val instanceArray = loaderMesh.loadInstanceArray(
-            landscape.a3dMesh,
-            arrayOf(
-                MGMatrixTransformationNormal(
-                    MGMatrixScaleRotation()
-                )
-            )
-        ) ?: return null
-
-        val prop = loaderProp.readProp(
-            landscape
-        )
-
-        return MGMInstanceMesh(
-            prop.shaderOpaque,
-            instanceArray.vertexArray,
-            arrayOf(),
-            true,
-            instanceArray.modelMatrices
-        )
-    }
 }

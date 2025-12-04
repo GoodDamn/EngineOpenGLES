@@ -11,7 +11,7 @@ data class MGMInstanceMesh(
     val vertexArray: MGArrayVertexInstanced,
     val material: Array<MGMaterial>,
     val enableCullFace: Boolean,
-    val matrices: Array<
+    val matrices: List<
         MGMatrixTransformationNormal<
             MGMatrixScaleRotation
         >

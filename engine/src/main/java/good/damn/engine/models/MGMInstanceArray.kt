@@ -6,7 +6,7 @@ import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 
 data class MGMInstanceArray(
     val vertexArray: MGArrayVertexInstanced,
-    val modelMatrices: Array<
+    val modelMatrices: List<
         MGMatrixTransformationNormal<MGMatrixScaleRotation>
     >
 )

@@ -17,7 +17,7 @@ class MGLoaderLevelMeshA3D(
 ) {
     fun loadInstanceArray(
         fileNameA3D: String,
-        matrices: Array<
+        matrices: List<
             MGMatrixTransformationNormal<MGMatrixScaleRotation>
         >
     ): MGMInstanceArray? {
