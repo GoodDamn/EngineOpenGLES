@@ -108,7 +108,8 @@ class MGLoaderLevelLibrary(
     }
 
     fun readProp(
-        mesh: MGMLevelInfoMesh
+        mesh: MGMLevelInfoMesh,
+        extension: String,
     ): MGProp {
         val fileName = mesh.a3dMesh
         val diffuse = mesh.textures.textures[
@@ -126,7 +127,7 @@ class MGLoaderLevelLibrary(
         >()
 
         buildTextureIfExists(
-            "${diffuse}.jpg"
+            "${diffuse}.$extension"
         ) {
             builderMaterial.textureDiffuse(it)
             shaderTextures.add(
@@ -136,7 +137,7 @@ class MGLoaderLevelLibrary(
             )
         }
 
-        "${diffuse}_m.jpg".let {
+        "${diffuse}_m.$extension".let {
             if (textureExists(it)) {
                 shaderTextures.add(
                     MGShaderTexture(
@@ -157,7 +158,7 @@ class MGLoaderLevelLibrary(
             }
         }
 
-        "${diffuse}_e.jpg".let {
+        "${diffuse}_e.$extension".let {
             if (textureExists(it)) {
                 shaderTextures.add(
                     MGShaderTexture(
@@ -172,7 +173,7 @@ class MGLoaderLevelLibrary(
         }
 
 
-        "${diffuse}_o.jpg".let {
+        "${diffuse}_o.$extension".let {
             if (textureExists(it)) {
                 shaderTextures.add(
                     MGShaderTexture(
@@ -187,7 +188,7 @@ class MGLoaderLevelLibrary(
         }
 
 
-        "${diffuse}_n.jpg".let {
+        "${diffuse}_n.$extension".let {
             if (textureExists(it)) {
                 shaderTextures.add(
                     MGShaderTexture(
@@ -263,7 +264,8 @@ class MGLoaderLevelLibrary(
                 )
 
                 lMeshes[name] = readProp(
-                    mesh
+                    mesh,
+                    "jpg"
                 )
             }
 

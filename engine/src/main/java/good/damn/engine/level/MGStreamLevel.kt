@@ -3,6 +3,7 @@ package good.damn.engine.level
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.loaders.MGLoaderLevelMatrices
+import good.damn.engine.loaders.MGLoaderLevelMatrices.Companion.fillModelMatrix
 import good.damn.engine.loaders.mesh.MGLoaderLevelMeshA3D
 import good.damn.engine.loaders.MGLoaderLevelTextures
 import good.damn.engine.models.MGMInformator
@@ -14,6 +15,7 @@ import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.mapimporter.MIImportMap
+import good.damn.mapimporter.models.MIMProp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -129,11 +131,23 @@ object MGStreamLevel {
         scope.launch {
             while (loaderLib.terrain == null) { }
             val terrain = loaderLib.terrain!!
+
+            val mapProp = map.props.find {
+                it.name == terrain.a3dMesh
+            }
+
             loadLandscape(
                 terrain,
                 loaderMeshes,
-                loaderLib
-            )
+                loaderLib,
+                informator,
+                localPathLibTextures,
+                mapProp
+            )?.run {
+                flow.emit(
+                    this
+                )
+            }
         }
 
     }
@@ -141,25 +155,50 @@ object MGStreamLevel {
     private inline fun loadLandscape(
         landscape: MGMLevelInfoMesh,
         loaderMesh: MGLoaderLevelMeshA3D,
-        loaderProp: MGLoaderLevelLibrary
+        loaderProp: MGLoaderLevelLibrary,
+        informator: MGMInformator,
+        localLibPathTextures: String,
+        mapProp: MIMProp?,
     ): MGMInstanceMesh? {
         val instanceArray = loaderMesh.loadInstanceArray(
-            landscape.a3dMesh,
+            "${landscape.a3dMesh}.a3d",
             arrayListOf(
                 MGMatrixTransformationNormal(
                     MGMatrixScaleRotation()
-                )
+                ).apply {
+                    mapProp ?: return@apply
+                    fillModelMatrix(
+                        model,
+                        mapProp
+                    )
+
+                    normal.apply {
+                        calculateInvertModel()
+                        calculateNormalMatrix()
+                    }
+                }
             )
         ) ?: return null
 
         val prop = loaderProp.readProp(
-            landscape
+            landscape,
+            "png"
+        )
+
+        prop.materialTexture.load(
+            informator.poolTextures,
+            localLibPathTextures,
+            informator.glHandler
         )
 
         return MGMInstanceMesh(
             prop.shaderOpaque,
             instanceArray.vertexArray,
-            arrayOf(),
+            arrayOf(
+                MGMaterial(
+                    prop.materialTexture
+                )
+            ),
             true,
             instanceArray.modelMatrices
         )
