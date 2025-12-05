@@ -21,9 +21,11 @@ import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.entities.MGMaterialTexture
+import good.damn.engine.opengl.entities.MGPostProcess
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.enums.MGEnumTextureType
+import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
@@ -31,6 +33,7 @@ import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.shaders.MGShaderPostProcess
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
 import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
@@ -80,6 +83,8 @@ class MGRendererLevelEditor(
             MGShaderSingleMapInstanced()
         )
     )
+
+    private val mShaderPostProcess = MGShaderPostProcess()
 
     private val mPoolTextures = MGPoolTextures()
 
@@ -138,12 +143,24 @@ class MGRendererLevelEditor(
 
     private var mWidth = 0
     private var mHeight = 0
-    
+
+    private val mFramebufferScene = MGFramebuffer()
+    private val mPostProcess = MGPostProcess()
+
     override fun onSurfaceCreated(
         gl: GL10?,
         config: EGLConfig?
     ) {
         MGUtilsFile.glWriteExtensions()
+
+        mShaderPostProcess.setup(
+            "shaders/post/vert.glsl",
+            "shaders/diffuse/frag.glsl",
+            MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindTextureCoordinates()
+                .build()
+        )
 
         setupShaders(
             mInformatorShader.map,
@@ -275,6 +292,15 @@ class MGRendererLevelEditor(
         Log.d(TAG, "onSurfaceChanged: ${Thread.currentThread().name}")
         mWidth = width
         mHeight = height
+
+        mFramebufferScene.generate()
+        mFramebufferScene.bind()
+        mFramebufferScene.generateTextureAttachment(
+            width,
+            height
+        )
+        mFramebufferScene.unbind()
+
         mInformator.camera.setPerspective(
             width,
             height
@@ -289,6 +315,11 @@ class MGRendererLevelEditor(
     override fun onDrawFrame(
         gl: GL10?
     ) {
+        mInformator
+            .glHandler
+            .run()
+
+        mFramebufferScene.bind()
         glViewport(
             0,
             0,
@@ -308,19 +339,18 @@ class MGRendererLevelEditor(
             1.0f
         )
 
-        val error = glGetError()
-        if (error != GL_NO_ERROR) {
-            Log.d("TAG", "onDrawFrame: ERROR: ${error.toString(16)}: ${GLU.gluErrorString(error)}")
-            return
-        }
-
-        mInformator
-            .glHandler
-            .run()
+        glEnable(
+            GL_DEPTH_TEST
+        )
 
         mSwitcherDrawMode
             .currentDrawerMode
             .draw()
+
+        // post-process pass
+        mPostProcess.draw(
+            mShaderPostProcess
+        )
     }
 
     fun onTouchEvent(

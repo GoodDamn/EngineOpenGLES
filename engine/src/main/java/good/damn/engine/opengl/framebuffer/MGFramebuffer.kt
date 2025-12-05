@@ -34,6 +34,13 @@ class MGFramebuffer {
         )
     }
 
+    fun unbind() {
+        glBindFramebuffer(
+            GL_FRAMEBUFFER,
+            0
+        )
+    }
+
     fun delete() {
         glDeleteFramebuffers(
             1,
@@ -125,11 +132,6 @@ class MGFramebuffer {
         ) != GL_FRAMEBUFFER_COMPLETE) {
             Log.d(TAG, "generateTextureAttachment: frame buffer error")
         }
-
-        glBindFramebuffer(
-            GL_FRAMEBUFFER,
-            0
-        )
     }
 
 }
