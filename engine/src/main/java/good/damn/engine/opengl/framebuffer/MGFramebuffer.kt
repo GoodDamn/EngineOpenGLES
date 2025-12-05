@@ -9,12 +9,15 @@ class MGFramebuffer {
         private const val TAG = "MGFramebuffer"
     }
 
-    private val mId = intArrayOf(-1)
-    private val mIdRenderBuffer = intArrayOf(-1)
-    private val mTexture = intArrayOf(-1)
+    val textureId: Int
+        get() = mTexture[0]
+
+    private val mId = intArrayOf(1)
+    private val mIdRenderBuffer = intArrayOf(1)
+    private val mTexture = intArrayOf(1)
 
     fun generate() {
-        if (mId[0] != -1) {
+        if (mId[0] != 1) {
             throw IllegalStateException(
                 "Framebuffer is already generated"
             )
@@ -41,6 +44,7 @@ class MGFramebuffer {
         )
     }
 
+
     fun delete() {
         glDeleteFramebuffers(
             1,
@@ -49,6 +53,7 @@ class MGFramebuffer {
         )
         mId[0] = -1
     }
+
 
     fun generateTextureAttachment(
         width: Int,
@@ -65,6 +70,18 @@ class MGFramebuffer {
             mTexture[0]
         )
 
+        glTexParameteri(
+            GL_TEXTURE_2D,
+            GL_TEXTURE_MIN_FILTER,
+            GL_LINEAR
+        )
+
+        glTexParameteri(
+            GL_TEXTURE_2D,
+            GL_TEXTURE_MAG_FILTER,
+            GL_LINEAR
+        )
+
         glTexImage2D(
             GL_TEXTURE_2D,
             0,
@@ -77,16 +94,9 @@ class MGFramebuffer {
             null
         )
 
-        glTexParameteri(
+        glBindTexture(
             GL_TEXTURE_2D,
-            GL_TEXTURE_MIN_FILTER,
-            GL_LINEAR
-        )
-
-        glTexParameteri(
-            GL_TEXTURE_2D,
-            GL_TEXTURE_MAG_FILTER,
-            GL_LINEAR
+            0
         )
 
         glFramebufferTexture2D(
@@ -128,10 +138,11 @@ class MGFramebuffer {
         )
 
         if (glCheckFramebufferStatus(
-            GL_FRAMEBUFFER
-        ) != GL_FRAMEBUFFER_COMPLETE) {
+                GL_FRAMEBUFFER
+            ) != GL_FRAMEBUFFER_COMPLETE) {
             Log.d(TAG, "generateTextureAttachment: frame buffer error")
         }
+        unbind()
     }
 
 }

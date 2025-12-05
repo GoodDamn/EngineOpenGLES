@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.renderer
 
+import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -241,6 +242,9 @@ class MGRendererLevelEditor(
             mInformator.glHandler
         )
 
+        mPostProcess.configure()
+        mFramebufferScene.generate()
+
         mVerticesBox.configure(
             MGUtilsBuffer.createFloat(
                 MGUtilsVertIndices.createCubeVertices(
@@ -267,14 +271,10 @@ class MGRendererLevelEditor(
             mInformator.drawerLightDirectional
         )
 
-        glEnable(
-            GL_DEPTH_TEST
-        )
-
         glDepthFunc(
             GL_LESS
         )
-
+/*
         glEnable(
             GL_CULL_FACE
         )
@@ -282,6 +282,10 @@ class MGRendererLevelEditor(
         glCullFace(
             GL_BACK
         )
+*/
+        mInformator
+            .glHandler
+            .run()
     }
 
     override fun onSurfaceChanged(
@@ -293,13 +297,14 @@ class MGRendererLevelEditor(
         mWidth = width
         mHeight = height
 
-        mFramebufferScene.generate()
-        mFramebufferScene.bind()
-        mFramebufferScene.generateTextureAttachment(
-            width,
-            height
-        )
-        mFramebufferScene.unbind()
+        mInformator.glHandler.post {
+            mFramebufferScene.bind()
+            mFramebufferScene.generateTextureAttachment(
+                mWidth,
+                mHeight
+            )
+            mFramebufferScene.unbind()
+        }
 
         mInformator.camera.setPerspective(
             width,
@@ -310,6 +315,10 @@ class MGRendererLevelEditor(
             width.toFloat(),
             height.toFloat()
         )
+
+        mInformator
+            .glHandler
+            .run()
     }
 
     override fun onDrawFrame(
@@ -318,7 +327,6 @@ class MGRendererLevelEditor(
         mInformator
             .glHandler
             .run()
-
         mFramebufferScene.bind()
         glViewport(
             0,
@@ -347,9 +355,11 @@ class MGRendererLevelEditor(
             .currentDrawerMode
             .draw()
 
-        // post-process pass
         mPostProcess.draw(
-            mShaderPostProcess
+            mWidth,
+            mHeight,
+            mShaderPostProcess,
+            mFramebufferScene.textureId
         )
     }
 

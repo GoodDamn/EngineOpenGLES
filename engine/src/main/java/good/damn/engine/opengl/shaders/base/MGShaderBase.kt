@@ -55,11 +55,6 @@ abstract class MGShaderBase
         return 0
     }
 
-    fun setupUniforms() {
-        setupUniforms(
-            mProgram
-        )
-    }
 
     fun link() {
         glLinkProgram(

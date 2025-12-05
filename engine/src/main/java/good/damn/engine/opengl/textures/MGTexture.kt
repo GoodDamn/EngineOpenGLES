@@ -80,16 +80,20 @@ class MGTexture(
             GL_LINEAR_MIPMAP_LINEAR
         )
 
-        glTexParameterf(
+        /*glTexParameterf(
             GL_TEXTURE_2D,
             GL_MAX_TEXTURE_LOD_BIAS,
             -1f
-        )
+        )*/
 
         val error = glGetError()
         if (error != GL_NO_ERROR) {
             Log.d("MGTexture", "setupTexture: ERROR: ${error.toString(16)}")
         }
+        glBindTexture(
+            GL_TEXTURE_2D,
+            0
+        )
     }
 
     override fun unbind(

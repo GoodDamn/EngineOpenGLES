@@ -7,8 +7,11 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 object MGUtilsVertIndices {
+
+    @JvmStatic
     private val PI2 = 3.14159f * 2
 
+    @JvmStatic
     fun createSphere(
         countStepsHorizontal: Int,
     ): Pair<ByteBuffer, FloatBuffer> {
@@ -183,6 +186,8 @@ object MGUtilsVertIndices {
         );
     }
 
+
+    @JvmStatic
     fun createCubeVertices(
         min: MGVector3,
         max: MGVector3
@@ -204,6 +209,8 @@ object MGUtilsVertIndices {
         max.x, max.y, max.z, // up 7
     )
 
+
+    @JvmStatic
     fun createCubeIndices() = byteArrayOf(
         // Left
         0, 1, 4,
@@ -228,5 +235,20 @@ object MGUtilsVertIndices {
         // back
         4, 5, 6,
         6, 7, 5
+    )
+
+
+    @JvmStatic
+    fun createQuadVertices() = floatArrayOf(
+        -1.0f, 1.0f,     0.0f, 0.0f,   // top left
+        -1.0f, -1.0f,    0.0f, 1.0f,   // bottom left
+        1.0f, -1.0f,     1.0f, 1.0f,   // bottom right
+        1.0f, 1.0f,      1.0f, 0.0f   // top right
+    )
+
+    @JvmStatic
+    fun createQuadIndices() = byteArrayOf(
+        0, 1, 2,
+        0, 2, 3
     )
 }
