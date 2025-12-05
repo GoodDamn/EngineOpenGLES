@@ -20,57 +20,6 @@ class MGTexture(
 
     private val mActiveTexture = type.v
 
-    companion object {
-
-        fun getNameAndTextureType(
-            textureName: String
-        ): Pair<String, MGEnumTextureType> {
-            val splitIndex = textureName.indexOf("_")
-
-            if (splitIndex == -1) {
-                val dotIndex = textureName.indexOf(".")
-                return Pair(
-                    if (
-                        dotIndex == -1
-                    ) textureName else textureName.substring(
-                        0,
-                        dotIndex
-                    ),
-                    MGEnumTextureType.DIFFUSE
-                )
-            }
-
-            if (splitIndex+2 < textureName.length) {
-                val textureType = when (
-                    textureName.substring(
-                        splitIndex+1,
-                        splitIndex+2
-                    )
-                ) {
-                    "s" -> MGEnumTextureType.METALLIC
-                    else -> MGEnumTextureType.DIFFUSE
-                }
-
-                return Pair(
-                    textureName.substring(
-                        0,
-                        splitIndex
-                    ),
-                    textureType
-                )
-            }
-
-            return Pair(
-                textureName.substring(
-                    0,
-                    splitIndex
-                ),
-                MGEnumTextureType.DIFFUSE
-            )
-        }
-    }
-
-
     fun glTextureSetup(
         bitmap: Bitmap,
         wrapMode: Int = GL_CLAMP_TO_EDGE

@@ -216,7 +216,7 @@ class MGLoaderLevelLibrary(
             if (textureExists(it)) {
                 shaderTextures.add(
                     MGShaderTexture(
-                        "textOpacity"
+                        ID_OPACITY
                     )
                 )
                 builderMaterial.textureOpacity(it)
@@ -338,16 +338,6 @@ class MGLoaderLevelLibrary(
     ) = MGUtilsFile.getPublicFile(
         "$localPathLibTextures/$textureName"
     ).exists()
-
-    private inline fun buildTextureIfExists(
-        textureName: String,
-        call: ((String)->Unit)
-    ) {
-        if (textureExists(textureName)) {
-            call(textureName)
-            return
-        }
-    }
 
     private inline fun fileToJson(
         file: File
