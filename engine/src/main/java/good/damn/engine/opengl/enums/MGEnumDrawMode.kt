@@ -7,5 +7,6 @@ enum class MGEnumDrawMode {
     TEX_COORDS,
     DIFFUSE,
     METALLIC,
-    EMISSIVE
+    EMISSIVE,
+    NORMAL_MAP
 }

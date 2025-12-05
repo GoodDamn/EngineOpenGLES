@@ -4,42 +4,61 @@ import android.opengl.GLES30
 import good.damn.engine.opengl.arrays.MGArrayVertexInstanced
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.enums.MGEnumDrawMode
+import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.shaders.MGIShaderTextureUniform
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 
 class MGDrawerMeshInstanced(
     private val enableCullFace: Boolean,
     private val vertexArray: MGArrayVertexInstanced,
-    private val material: MGMaterial
+    private val materials: Array<MGMaterial>
 ) {
 
-    private var mDrawerTexture = material.textureDiffuse
+    private val mDrawerTextures = Array(
+        materials.size
+    ) {
+        materials[it].getTextureByType(
+            MGEnumTextureType.DIFFUSE
+        )
+    }
 
     private var mode = GLES30.GL_TRIANGLES
 
     fun switchDrawMode(
         drawMode: MGEnumDrawMode
     ) {
-        if (drawMode == MGEnumDrawMode.DIFFUSE ||
-            drawMode == MGEnumDrawMode.OPAQUE
+        when (
+            drawMode
         ) {
-            mDrawerTexture = material.textureDiffuse
-        } else if (drawMode == MGEnumDrawMode.METALLIC) {
-            mDrawerTexture = material.textureMetallic
-        } else if (drawMode == MGEnumDrawMode.EMISSIVE) {
-            mDrawerTexture = material.textureEmissive
+            MGEnumDrawMode.METALLIC -> switchDrawerTexture(
+                MGEnumTextureType.METALLIC
+            )
+
+            MGEnumDrawMode.EMISSIVE -> switchDrawerTexture(
+                MGEnumTextureType.EMISSIVE
+            )
+
+            MGEnumDrawMode.NORMAL_MAP -> switchDrawerTexture(
+                MGEnumTextureType.NORMAL
+            )
+
+            else -> switchDrawerTexture(
+                MGEnumTextureType.DIFFUSE
+            )
         }
 
         mode = if (
             drawMode == MGEnumDrawMode.WIREFRAME
         ) GLES30.GL_LINES else GLES30.GL_TRIANGLES
-
     }
 
     fun drawVertices() {
         if (enableCullFace) {
             GLES30.glEnable(
                 GLES30.GL_CULL_FACE
+            )
+            GLES30.glFrontFace(
+                GLES30.GL_CW
             )
         } else {
             GLES30.glDisable(
@@ -55,24 +74,41 @@ class MGDrawerMeshInstanced(
     fun drawSingleTexture(
         shaderTexture: MGIShaderTextureUniform
     ) {
-        mDrawerTexture.draw(
-            shaderTexture
-        )
+        mDrawerTextures.forEach {
+            it?.draw(shaderTexture)
+        }
         drawVertices()
-        mDrawerTexture.unbind(
-            shaderTexture
-        )
+
+        mDrawerTextures.forEach {
+            it?.unbind(shaderTexture)
+        }
     }
 
     fun draw(
-        shaderMaterial: MGShaderMaterial
+        shaderMaterial: Array<
+            MGShaderMaterial
+        >
     ) {
-        material.draw(
-            shaderMaterial
-        )
+        for (i in materials.indices) {
+            materials[i].draw(
+                shaderMaterial[i]
+            )
+        }
         drawVertices()
-        material.unbind(
-            shaderMaterial
-        )
+        for (i in materials.indices) {
+            materials[i].unbind(
+                shaderMaterial[i]
+            )
+        }
+    }
+
+    private inline fun switchDrawerTexture(
+        type: MGEnumTextureType
+    ) {
+        for (i in mDrawerTextures.indices) {
+            mDrawerTextures[i] = materials[i].getTextureByType(
+                type
+            )
+        }
     }
 }

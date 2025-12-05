@@ -1,36 +1,36 @@
 package good.damn.engine.level
 
-import android.util.Log
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.loaders.MGLoaderLevelMatrices
+import good.damn.engine.loaders.MGLoaderLevelMatrices.Companion.fillModelMatrix
 import good.damn.engine.loaders.mesh.MGLoaderLevelMeshA3D
 import good.damn.engine.loaders.MGLoaderLevelTextures
-import good.damn.engine.loaders.mesh.MGILoaderMesh
-import good.damn.engine.models.MGMMeshInstance
-import good.damn.engine.opengl.objects.MGObject3d
+import good.damn.engine.models.MGMInformator
+import good.damn.engine.models.MGMInstanceMesh
+import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.mapimporter.MIImportMap
+import good.damn.mapimporter.models.MIMProp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.DataInputStream
 import java.io.InputStream
-import java.io.InputStreamReader
 
 object MGStreamLevel {
+
+    @JvmStatic
     fun readBin(
-        flow: MGFlowLevel<MGMMeshInstance>,
+        flow: MGFlowLevel<MGMInstanceMesh>,
         input: InputStream,
-        poolTextures: MGPoolTextures,
-        handlerGl: MGHandlerGl,
-        buffer: ByteArray
+        informator: MGMInformator,
+        bufferMap: ByteArray
     ) {
         val stream = DataInputStream(
             input
@@ -38,7 +38,7 @@ object MGStreamLevel {
 
         val map = MIImportMap.createFromStream(
             stream,
-            buffer
+            bufferMap
         )
 
         val scope = CoroutineScope(
@@ -50,14 +50,16 @@ object MGStreamLevel {
         val localPathLibObj = "objs/$libName"
         val loaderLib = MGLoaderLevelLibrary(
             scope,
+            informator,
+            localPathLibTextures,
             "levels/$libName/library.txt",
             "levels/$libName/culling.txt"
         )
 
         val loaderTextures = MGLoaderLevelTextures(
             scope,
-            handlerGl,
-            poolTextures,
+            informator.glHandler,
+            informator.poolTextures,
             localPathLibTextures
         )
 
@@ -86,11 +88,8 @@ object MGStreamLevel {
         )
 
         val loaderMeshes = MGLoaderLevelMeshA3D(
-            poolTextures,
-            buffer,
             localPathLibObj,
-            localPathLibTextures,
-            handlerGl
+            informator.glHandler
         )
 
         while (
@@ -101,19 +100,114 @@ object MGStreamLevel {
 
         meshes.forEach {
             scope.launch {
-                val v = loaderMeshes.loadMeshInstance(
-                    it.value
+                val prop = it.value
+                val v = loaderMeshes.loadInstanceArray(
+                    prop.fileNameA3d,
+                    prop.matrices
                 ) ?: return@launch
 
-                flow.emit(v)
+                prop.materialTexture.load(
+                    informator.poolTextures,
+                    localPathLibTextures,
+                    informator.glHandler
+                )
+
+                flow.emit(
+                    MGMInstanceMesh(
+                        prop.shaderOpaque,
+                        v.vertexArray,
+                        arrayOf(
+                            MGMaterial(
+                                prop.materialTexture
+                            )
+                        ),
+                        prop.enableCullFace,
+                        v.modelMatrices
+                    )
+                )
             }
         }
+
+        scope.launch {
+            while (loaderLib.terrain == null) { }
+            val terrain = loaderLib.terrain!!
+
+            val mapProp = map.props.find {
+                it.name == terrain.a3dMesh
+            }
+
+            loadLandscape(
+                terrain,
+                loaderMeshes,
+                loaderLib,
+                informator,
+                localPathLibTextures,
+                mapProp
+            )?.run {
+                flow.emit(
+                    this
+                )
+            }
+        }
+
+    }
+
+    private inline fun loadLandscape(
+        landscape: MGMLevelInfoMesh,
+        loaderMesh: MGLoaderLevelMeshA3D,
+        loaderProp: MGLoaderLevelLibrary,
+        informator: MGMInformator,
+        localLibPathTextures: String,
+        mapProp: MIMProp?,
+    ): MGMInstanceMesh? {
+        val instanceArray = loaderMesh.loadInstanceArray(
+            "${landscape.a3dMesh}.a3d",
+            arrayListOf(
+                MGMatrixTransformationNormal(
+                    MGMatrixScaleRotation()
+                ).apply {
+                    mapProp ?: return@apply
+                    fillModelMatrix(
+                        model,
+                        mapProp
+                    )
+
+                    normal.apply {
+                        calculateInvertModel()
+                        calculateNormalMatrix()
+                    }
+                }
+            )
+        ) ?: return null
+
+        val prop = loaderProp.readProp(
+            landscape,
+            "png"
+        )
+
+        prop.materialTexture.load(
+            informator.poolTextures,
+            localLibPathTextures,
+            informator.glHandler
+        )
+
+        return MGMInstanceMesh(
+            prop.shaderOpaque,
+            instanceArray.vertexArray,
+            arrayOf(
+                MGMaterial(
+                    prop.materialTexture
+                )
+            ),
+            true,
+            instanceArray.modelMatrices
+        )
     }
 
     fun read(
         input: InputStream,
         poolTextures: MGPoolTextures
-    ): Array<MGMMeshInstance>? {
+    ): Array<MGMInstanceMesh>? {
         return null
         /*val bufferedReader = BufferedReader(
             InputStreamReader(

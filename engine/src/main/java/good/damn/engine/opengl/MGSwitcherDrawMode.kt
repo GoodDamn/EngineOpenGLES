@@ -79,6 +79,11 @@ class MGSwitcherDrawMode(
         )
 
         MGEnumDrawMode.EMISSIVE -> switchDrawMode(
+            MGEnumDrawMode.NORMAL_MAP,
+            drawerModeTexture
+        )
+
+        MGEnumDrawMode.NORMAL_MAP -> switchDrawMode(
             MGEnumDrawMode.OPAQUE,
             drawerModeOpaque
         )
@@ -97,15 +102,19 @@ class MGSwitcherDrawMode(
         )
 
         informator.meshes.forEach {
-            it.switchDrawMode(
-                drawMode
-            )
+            it.value.forEach {
+                it.switchDrawMode(
+                    drawMode
+                )
+            }
         }
 
         informator.meshesInstanced.forEach {
-            it.switchDrawMode(
-                drawMode
-            )
+            it.value.forEach {
+                it.switchDrawMode(
+                    drawMode
+                )
+            }
         }
     }
 }

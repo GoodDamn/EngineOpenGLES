@@ -16,6 +16,8 @@ class MGArrayVertexManager(
         const val INDEX_POSITION_X = 0
         const val INDEX_POSITION_Y = 1
         const val INDEX_POSITION_Z = 2
+
+        const val MAX_VALUES_PER_VERTICES = 8
     }
 
     private var mBufferVertex: FloatBuffer? = null

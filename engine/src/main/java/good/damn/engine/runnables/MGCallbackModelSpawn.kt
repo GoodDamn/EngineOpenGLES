@@ -1,17 +1,12 @@
 package good.damn.engine.runnables
 
-import android.opengl.GLES30
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.MGTriggerMeshGroup
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
-import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.models.MGMPoolMesh
 import good.damn.engine.opengl.models.MGMPoolMeshMutable
-import good.damn.engine.opengl.pools.MGPoolMeshesStatic
-import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.MGIMatrixTrigger
 import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGTriggerMesh
@@ -61,10 +56,9 @@ class MGCallbackModelSpawn(
             val outPoolMesh = MGMPoolMeshMutable()
             MGTriggerMesh.createFromObject(
                 objs[0],
-                informator.poolTextures,
+                informator,
                 outPoolMesh,
                 triggerAction,
-                informator.glHandler
             ).run {
                 informator.poolMeshes[fileName] = arrayOf(
                     outPoolMesh.toImmutable()
@@ -82,8 +76,7 @@ class MGCallbackModelSpawn(
             objs,
             outPoolMeshes,
             triggerAction,
-            informator.poolTextures,
-            informator.glHandler
+            informator
         ).run {
             informator.poolMeshes[fileName] = Array(
                 outPoolMeshes.size
@@ -137,10 +130,37 @@ class MGCallbackModelSpawn(
     private inline fun addMesh(
         mesh: MGTriggerMesh
     ) {
-        informator.meshes.add(
+        informator.meshes[
+            mesh.shaderOpaque
+        ]?.run {
+            addMeshToShader(
+                this,
+                mesh
+            )
+            return
+        }
+
+        val queue = ConcurrentLinkedQueue<
+            MGDrawerMeshMaterialSwitch
+        >()
+
+        informator.meshes[
+            mesh.shaderOpaque
+        ] = queue
+
+        addMeshToShader(
+            queue,
+            mesh
+        )
+    }
+
+    private inline fun addMeshToShader(
+        queue: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>,
+        mesh: MGTriggerMesh
+    ) {
+        queue.add(
             mesh.mesh
         )
-
         informator.managerTrigger.addTrigger(
             mesh.triggerState
         )

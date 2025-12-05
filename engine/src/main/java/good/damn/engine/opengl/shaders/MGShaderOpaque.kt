@@ -4,8 +4,9 @@ import android.opengl.GLES30.glGetUniformLocation
 import androidx.annotation.CallSuper
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 
-open class MGShaderOpaque
-: MGShaderBase(),
+open class MGShaderOpaque(
+    override val material: Array<MGShaderMaterial>
+): MGShaderBase(),
 MGIShaderNormal,
 MGIShaderCamera,
 MGIShaderCameraPosition,
@@ -28,7 +29,7 @@ MGIShaderLight {
         private set
 
     final override val lightDirectional = MGShaderLightDirectional()
-    final override val material = MGShaderMaterial()
+
     final override val lightPoints = Array(
         NUM_LIGHTS
     ) { MGShaderLightPoint(it) }
@@ -47,10 +48,11 @@ MGIShaderLight {
             )
         }
 
-        material.setupUniforms(
-            program
-        )
-
+        material.forEach {
+            it.setupUniforms(
+                program
+            )
+        }
 
         // Uniforms
 

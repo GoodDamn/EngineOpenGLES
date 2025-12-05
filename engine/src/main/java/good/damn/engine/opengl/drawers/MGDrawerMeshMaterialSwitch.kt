@@ -5,28 +5,30 @@ import good.damn.engine.opengl.shaders.MGIShaderModel
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 
 class MGDrawerMeshMaterialSwitch(
-    private val material: MGMaterial,
+    private val material: Array<MGMaterial>,
     drawMesh: MGDrawerMeshSwitch
 ): MGDrawerMeshTextureSwitch(
-    material.textureDiffuse,
-    material.textureMetallic,
-    material.textureEmissive,
+    material,
     drawMesh
 ) {
     fun drawMaterial(
-        shaderMaterial: MGShaderMaterial,
+        shaderMaterial: Array<MGShaderMaterial>,
         shaderModel: MGIShaderModel
     ) {
-        material.draw(
-            shaderMaterial
-        )
+        for (i in material.indices) {
+            material[i].draw(
+                shaderMaterial[i]
+            )
+        }
 
         mDrawerMesh.draw(
             shaderModel
         )
 
-        material.unbind(
-            shaderMaterial
-        )
+        for (i in material.indices) {
+            material[i].unbind(
+                shaderMaterial[i]
+            )
+        }
     }
 }

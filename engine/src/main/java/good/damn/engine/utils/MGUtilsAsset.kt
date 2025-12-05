@@ -6,38 +6,44 @@ import java.io.File
 import java.io.FileInputStream
 import java.nio.file.NoSuchFileException
 
-class MGUtilsAsset {
-    companion object {
-        private const val TAG = "MGUtilsAsset"
+object MGUtilsAsset {
+    private const val TAG = "MGUtilsAsset"
 
-        @JvmStatic
-        fun loadString(
-            path: String
-        ): String {
-            val pubFile = File(
-                MGEngine.DIR_PUBLIC,
-                path
-            )
+    @JvmStatic
+    fun loadString(
+        file: File
+    ): String {
+        val inp = FileInputStream(
+            file
+        )
 
-            if (!pubFile.exists()) {
-                throw Exception(pubFile.path)
-            }
+        val b = MGUtilsFile.readBytes(
+            inp
+        )
 
-            val inp = FileInputStream(
-                pubFile
-            )
+        inp.close()
 
-            val b = MGUtilsFile.readBytes(
-                inp
-            )
+        return String(
+            b,
+            MGEngine.getCharsetUTF8()
+        )
+    }
 
-            inp.close()
+    @JvmStatic
+    fun loadString(
+        path: String
+    ): String {
+        val pubFile = File(
+            MGEngine.DIR_PUBLIC,
+            path
+        )
 
-            return String(
-                b,
-                MGEngine.getCharsetUTF8()
-            )
+        if (!pubFile.exists()) {
+            throw Exception(pubFile.path)
         }
 
+        return loadString(
+            pubFile
+        )
     }
 }

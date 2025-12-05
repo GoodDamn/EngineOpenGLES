@@ -2,6 +2,7 @@ package good.damn.engine.opengl;
 
 import androidx.annotation.NonNull;
 
+import good.damn.engine.models.MGMInformator;
 import good.damn.engine.opengl.models.MGMPoolMesh;
 import good.damn.engine.opengl.models.MGMPoolMeshMutable;
 import good.damn.engine.opengl.objects.MGObject3d;
@@ -80,8 +81,7 @@ public final class MGTriggerMeshGroup {
         @NonNull final MGObject3d[] objs,
         @NonNull final MGMPoolMeshMutable[] outPoolMeshes,
         @NonNull final MGITrigger triggerAction,
-        @NonNull final MGPoolTextures poolTextures,
-        @NonNull final MGHandlerGl handlerGl
+        @NonNull final MGMInformator informator
     ) {
         @NonNull
         final MGTriggerMesh[] triggerMeshes = new MGTriggerMesh[
@@ -97,10 +97,9 @@ public final class MGTriggerMeshGroup {
             obj = objs[i];
             triggerMeshes[i] = MGTriggerMesh.createFromObject(
                 obj,
-                poolTextures,
+                informator,
                 outPoolMeshes[i],
-                triggerAction,
-                handlerGl
+                triggerAction
             );
         }
 

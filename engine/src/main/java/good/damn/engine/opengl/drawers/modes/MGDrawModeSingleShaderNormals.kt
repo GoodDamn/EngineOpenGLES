@@ -24,8 +24,14 @@ class MGDrawModeSingleShaderNormals(
             informator.meshSky.drawNormals(this)
             informator.meshSky.drawVertices(this)
             informator.meshes.forEach {
-                it.drawNormals(this)
-                it.drawVertices(this)
+                it.value.forEach {
+                    it.drawNormals(
+                        this
+                    )
+                    it.drawVertices(
+                        this
+                    )
+                }
             }
         }
 
@@ -33,7 +39,9 @@ class MGDrawModeSingleShaderNormals(
             use()
             informator.camera.draw(this)
             informator.meshesInstanced.forEach {
-                it.drawVertices()
+                it.value.forEach {
+                    it.drawVertices()
+                }
             }
         }
 

@@ -28,9 +28,11 @@ class MGDrawModeSingleShader(
             )
 
             informator.meshes.forEach {
-                it.drawVertices(
-                    this
-                )
+                it.value.forEach {
+                    it.drawVertices(
+                        this
+                    )
+                }
             }
         }
 
@@ -40,7 +42,9 @@ class MGDrawModeSingleShader(
                 this
             )
             informator.meshesInstanced.forEach {
-                it.drawVertices()
+                it.value.forEach {
+                    it.drawVertices()
+                }
             }
         }
     }

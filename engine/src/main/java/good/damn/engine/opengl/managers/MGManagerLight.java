@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint;
 import good.damn.engine.opengl.entities.MGLight;
-import good.damn.engine.opengl.shaders.MGShaderDefault;
 import good.damn.engine.opengl.shaders.MGShaderLightPoint;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerLight;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight;

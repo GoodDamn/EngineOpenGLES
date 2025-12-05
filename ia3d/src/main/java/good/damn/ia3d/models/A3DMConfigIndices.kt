@@ -4,5 +4,6 @@ import java.nio.Buffer
 
 data class A3DMConfigIndices(
     val indexSize: Byte,
-    val buffer: Buffer
+    val buffer: Buffer,
+    val tangent: FloatArray
 )

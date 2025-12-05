@@ -113,7 +113,7 @@ class MGGeneratorLandscape(
         vertexArray.configure(
             bufferVertex,
             bufferIndices,
-            MGPointerAttribute.default32
+            MGPointerAttribute.defaultNoTangent
         )
         Log.d(TAG, "setResolution: CONFIGURE: ${System.currentTimeMillis() - time}")
     }

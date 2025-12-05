@@ -1,8 +1,11 @@
 package good.damn.engine.opengl.drawers;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import good.damn.engine.opengl.entities.MGMaterial;
 import good.damn.engine.opengl.enums.MGEnumDrawMode;
+import good.damn.engine.opengl.enums.MGEnumTextureType;
 import good.damn.engine.opengl.shaders.MGIShaderModel;
 import good.damn.engine.opengl.shaders.MGIShaderNormal;
 import good.damn.engine.opengl.shaders.MGIShaderTextureUniform;
@@ -12,13 +15,7 @@ import good.damn.engine.opengl.textures.MGTexture;
 public class MGDrawerMeshTextureSwitch {
 
     @NonNull
-    private final MGTexture mTextureDiffuse;
-
-    @NonNull
-    private final MGTexture mTextureMetallic;
-
-    @NonNull
-    private final MGTexture mTextureEmissive;
+    private final MGMaterial[] materials;
 
     @NonNull
     protected final MGDrawerMeshSwitch mDrawerMesh;
@@ -26,20 +23,21 @@ public class MGDrawerMeshTextureSwitch {
     @NonNull
     private MGIDrawerTexture<
         MGIShaderTextureUniform
-    > mDrawerTexture;
+    >[] mDrawerTextures;
 
     public MGDrawerMeshTextureSwitch(
-        @NonNull final MGTexture textureDiffuse,
-        @NonNull final MGTexture textureMetallic,
-        @NonNull final MGTexture textureEmissive,
+        @NonNull final MGMaterial[] materials,
         @NonNull final MGDrawerMeshSwitch drawerMesh
     ) {
-        mTextureDiffuse = textureDiffuse;
-        mTextureMetallic = textureMetallic;
-        mTextureEmissive = textureEmissive;
+        this.materials = materials;
         mDrawerMesh = drawerMesh;
+        mDrawerTextures = new MGIDrawerTexture[
+            materials.length
+        ];
 
-        mDrawerTexture = textureDiffuse;
+        switchTextures(
+            MGEnumTextureType.DIFFUSE
+        );
     }
 
     public final void switchDrawMode(
@@ -48,13 +46,24 @@ public class MGDrawerMeshTextureSwitch {
         switch (drawMode) {
             case OPAQUE:
             case DIFFUSE:
-                mDrawerTexture = mTextureDiffuse;
+                switchTextures(
+                    MGEnumTextureType.DIFFUSE
+                );
                 break;
             case METALLIC:
-                mDrawerTexture = mTextureMetallic;
+                switchTextures(
+                    MGEnumTextureType.METALLIC
+                );
                 break;
             case EMISSIVE:
-                mDrawerTexture = mTextureEmissive;
+                switchTextures(
+                    MGEnumTextureType.EMISSIVE
+                );
+                break;
+            case NORMAL_MAP:
+                switchTextures(
+                    MGEnumTextureType.NORMAL
+                );
                 break;
         }
 
@@ -75,17 +84,31 @@ public class MGDrawerMeshTextureSwitch {
         @NonNull final MGIShaderTextureUniform shaderTexture,
         @NonNull final MGIShaderModel shaderModel
     ) {
-        mDrawerTexture.draw(
-            shaderTexture
-        );
+        for (
+            @Nullable final MGIDrawerTexture<
+                MGIShaderTextureUniform
+            > drawer: mDrawerTextures
+        ) {
+            if (drawer == null) {
+                continue;
+            }
+            drawer.draw(shaderTexture);
+        }
 
         mDrawerMesh.draw(
             shaderModel
         );
 
-        mDrawerTexture.unbind(
-            shaderTexture
-        );
+        for (
+            @Nullable final MGIDrawerTexture<
+                MGIShaderTextureUniform
+                > drawer: mDrawerTextures
+        ) {
+            if (drawer == null) {
+                continue;
+            }
+            drawer.unbind(shaderTexture);
+        }
     }
 
     public final void drawVertices(
@@ -94,5 +117,19 @@ public class MGDrawerMeshTextureSwitch {
         mDrawerMesh.draw(
             shader
         );
+    }
+
+    private final void switchTextures(
+        @NonNull final MGEnumTextureType type
+    ) {
+        for (
+            byte i = 0;
+            i < mDrawerTextures.length;
+            i++
+        ) {
+            mDrawerTextures[i] = materials[i].getTextureByType(
+                type
+            );
+        }
     }
 }

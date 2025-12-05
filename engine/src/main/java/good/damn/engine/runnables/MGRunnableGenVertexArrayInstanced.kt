@@ -13,13 +13,9 @@ class MGRunnableGenVertexArrayInstanced(
     private val configurator: MGArrayVertexConfigurator,
     private val bufferVertices: FloatBuffer,
     private val bufferIndices: Buffer,
-    private val modelMatrices: Array<
-        MGMatrixTransformationNormal<
-            MGMatrixScaleRotation
-        >
-    >,
     private val matrixModel: FloatBuffer,
-    private val matrixRotation: FloatBuffer
+    private val matrixRotation: FloatBuffer,
+    private val matrixSize: Int
 ): Runnable {
 
     override fun run() {
@@ -30,7 +26,7 @@ class MGRunnableGenVertexArrayInstanced(
         )
 
         vertexArray.setupMatrixBuffer(
-            modelMatrices.size,
+            matrixSize,
             matrixModel,
             matrixRotation
         )

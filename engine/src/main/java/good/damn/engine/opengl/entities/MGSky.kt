@@ -12,16 +12,18 @@ import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.utils.MGUtilsBitmap
 
 class MGSky(
-    private val textureDiffuse: MGTexture,
-    poolTextures: MGPoolTextures,
+    private val materialTexture: MGMaterialTexture,
     private val verticesSky: MGArrayVertexConfigurator
 ): MGDrawerMeshTextureSwitch(
-    textureDiffuse,
-    poolTextures.defaultTextureMetallic,
-    poolTextures.defaultTextureEmissive,
+    arrayOf(
+        MGMaterial(
+            materialTexture
+        )
+    ),
     MGDrawerMeshSwitch(
         MGDrawerVertexArray(
             verticesSky
@@ -39,15 +41,15 @@ class MGSky(
         GLES30.GL_CW
     )
 ) {
-    fun configure() {
-        MGUtilsBitmap.loadBitmap(
-            "textures/sky/sky.png"
-        )?.run {
-            textureDiffuse.glTextureSetup(
-                this,
-                GL_CLAMP_TO_EDGE
-            )
-        }
+    fun configure(
+        poolTextures: MGPoolTextures,
+        glHandler: MGHandlerGl
+    ) {
+        materialTexture.load(
+            poolTextures,
+            "textures/sky",
+            glHandler
+        )
 
         MGObject3d.createFromAssets(
             "objs/semi_sphere.obj"
@@ -55,7 +57,7 @@ class MGSky(
             verticesSky.configure(
                 vertices,
                 indices,
-                MGPointerAttribute.default32
+                MGPointerAttribute.defaultNoTangent
             )
         }
     }

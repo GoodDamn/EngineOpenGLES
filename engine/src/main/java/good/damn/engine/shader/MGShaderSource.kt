@@ -1,0 +1,93 @@
+package good.damn.engine.shader
+
+import good.damn.engine.utils.MGUtilsAsset
+import good.damn.engine.utils.MGUtilsFile
+
+class MGShaderSource(
+    localPath: String,
+) {
+    companion object {
+        private const val FOLDER = "shaders"
+    }
+
+    val frag1: String
+    val fragMain: String
+
+    val fragNormalNo: String
+    val fragNormalMap: String
+
+    val fragSpecularNo: String
+    val fragSpecular: String
+
+    val fragTexture: String
+    val fragTextureNo: String
+
+    val fragMaterial: String
+
+    val fragLight: String
+
+    val verti: String
+    val vert: String
+
+    init {
+        val localFullPath = "$FOLDER/$localPath"
+        frag1 = loadSourceCode(
+            "$localFullPath/frag1.glsl"
+        )
+
+        fragMain = loadSourceCode(
+            "$localFullPath/frag_main.glsl"
+        )
+
+        fragNormalNo = loadSourceCode(
+            "$localFullPath/frag_normal_no.glsl"
+        )
+
+        fragNormalMap = loadSourceCode(
+            "$localFullPath/frag_normal.glsl"
+        )
+
+
+        fragSpecular = loadSourceCode(
+            "$localFullPath/frag_spec.glsl"
+        )
+
+        fragSpecularNo = loadSourceCode(
+            "$localFullPath/frag_spec_no.glsl"
+        )
+
+        fragTexture = loadSourceCode(
+            "$localFullPath/frag_texture.glsl"
+        )
+
+        fragTextureNo = loadSourceCode(
+            "$localFullPath/frag_texture_no.glsl"
+        )
+
+
+        fragMaterial = loadSourceCode(
+            "$localFullPath/frag_material.glsl"
+        )
+
+
+        fragLight = loadSourceCode(
+            "$localFullPath/frag_light.glsl"
+        )
+
+        verti = loadSourceCode(
+            "$localFullPath/vert_i.glsl"
+        )
+
+        vert = loadSourceCode(
+            "$localFullPath/vert.glsl"
+        )
+    }
+
+    private inline fun loadSourceCode(
+        localFullPath: String
+    ) = MGUtilsAsset.loadString(
+        MGUtilsFile.getPublicFile(
+            localFullPath
+        )
+    )
+}

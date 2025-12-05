@@ -6,6 +6,7 @@ import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
 import android.opengl.GLU
 import android.util.Log
+import android.util.SparseArray
 import android.view.MotionEvent
 import good.damn.engine.MGEngine
 import good.damn.engine.hud.MGHud
@@ -19,6 +20,7 @@ import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
+import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.enums.MGEnumTextureType
@@ -30,8 +32,6 @@ import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.base.MGShaderBase
-import good.damn.engine.opengl.shaders.MGShaderDefault
-import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
 import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
@@ -41,12 +41,11 @@ import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
-import good.damn.engine.sdk.MGVector3
+import good.damn.engine.shader.MGShaderCache
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsVertIndices
-import java.io.File
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.ConcurrentHashMap
 
 class MGRendererLevelEditor(
     requesterUserContent: MGIRequestUserContent
@@ -57,9 +56,12 @@ class MGRendererLevelEditor(
     }
 
     private val mInformatorShader = MGMInformatorShader(
-        MGMShader(
-            MGShaderDefault(),
-            MGShaderOpaque()
+        MGEngine.shaderSource,
+        MGShaderCache(
+            SparseArray(5)
+        ),
+        MGShaderCache(
+            SparseArray(5)
         ),
         MGMShader(
             MGShaderSingleMode(),
@@ -79,26 +81,10 @@ class MGRendererLevelEditor(
         )
     )
 
-    private val mPoolTextures = MGPoolTextures(
-        MGTexture(
-            MGEnumTextureType.DIFFUSE
-        ),
-        MGTexture(
-            MGEnumTextureType.METALLIC
-        ),
-        MGTexture(
-            MGEnumTextureType.EMISSIVE
-        ),
-        MGTexture(
-            MGEnumTextureType.OPACITY
-        ),
-        MGTexture(
-            MGEnumTextureType.NORMAL
-        )
-    )
+    private val mPoolTextures = MGPoolTextures()
 
     private val managerLight = MGManagerLight(
-        mInformatorShader.opaque.single.lightPoints.size
+        MGMInformatorShader.SIZE_LIGHT_POINT
     )
 
     private val mVerticesBox = MGArrayVertexConfigurator(
@@ -115,13 +101,13 @@ class MGRendererLevelEditor(
             MGMatrixTranslate()
         ),
         MGDrawerLightDirectional(),
-        ConcurrentLinkedQueue(),
-        ConcurrentLinkedQueue(),
+        ConcurrentHashMap(15),
+        ConcurrentHashMap(50),
         MGSky(
-            MGTexture(
-                MGEnumTextureType.DIFFUSE
-            ),
-            mPoolTextures,
+            MGMaterialTexture.Builder()
+                .textureDiffuse(
+                    "sky.png"
+                ).build(),
             MGArrayVertexConfigurator(
                 MGEnumArrayVertexConfiguration.SHORT
             )
@@ -185,13 +171,14 @@ class MGRendererLevelEditor(
                 .build()
         )
 
-        setupShaders(
+        /*setupShaders(
             mInformatorShader.opaque,
-            "shaders/",
+            "shaders/opaque",
             binderAttributeSingle = MGBinderAttribute.Builder()
                 .bindPosition()
                 .bindTextureCoordinates()
                 .bindNormal()
+                .bindTangent()
                 .build(),
             binderAttributeInstanced = MGBinderAttribute.Builder()
                 .bindPosition()
@@ -199,8 +186,9 @@ class MGRendererLevelEditor(
                 .bindNormal()
                 .bindInstancedModel()
                 .bindInstancedRotationMatrix()
+                .bindTangent()
                 .build()
-        )
+        )*/
 
         setupShaders(
             mInformatorShader.texCoords,
@@ -231,9 +219,11 @@ class MGRendererLevelEditor(
                 .build()
         )
 
+        mInformator.meshSky.configure(
+            mPoolTextures,
+            mInformator.glHandler
+        )
 
-        mInformator.poolTextures.configureDefault()
-        mInformator.meshSky.configure()
         mVerticesBox.configure(
             MGUtilsBuffer.createFloat(
                 MGUtilsVertIndices.createCubeVertices(

@@ -12,6 +12,47 @@ class MGLoaderLevelMatrices(
     private val scope: CoroutineScope
 ) {
 
+    companion object {
+        @JvmStatic
+        fun fillModelMatrix(
+            model: MGMatrixScaleRotation,
+            prop: MIMProp
+        ) {
+            var roll = 0f
+            var yaw = 0f
+            var pitch = 0f
+
+            prop.rotation?.let {
+                roll += Math.toDegrees(it.x.toDouble()).toFloat()
+                yaw += Math.toDegrees(it.y.toDouble()).toFloat()
+                pitch += Math.toDegrees(it.z.toDouble()).toFloat()
+            }
+
+            model.setRotation(
+                roll,
+                pitch,
+                yaw
+            )
+
+            model.setPosition(
+                prop.position.x,
+                prop.position.z,
+                prop.position.y,
+            )
+
+            prop.scale?.let {
+                model.setScale(
+                    it.x,
+                    it.z,
+                    it.y
+                )
+            }
+
+            model.invalidatePosition()
+            model.invalidateScaleRotation()
+        }
+    }
+
     var isLoadMatrices = false
         private set
 
@@ -45,43 +86,5 @@ class MGLoaderLevelMatrices(
 
             isLoadMatrices = true
         }
-    }
-
-    private inline fun fillModelMatrix(
-        model: MGMatrixScaleRotation,
-        prop: MIMProp
-    ) {
-        var roll = 0f
-        var yaw = 0f
-        var pitch = 0f
-
-        prop.rotation?.let {
-            roll += Math.toDegrees(it.x.toDouble()).toFloat()
-            yaw += Math.toDegrees(it.y.toDouble()).toFloat()
-            pitch += Math.toDegrees(it.z.toDouble()).toFloat()
-        }
-
-        model.setRotation(
-            roll,
-            pitch,
-            yaw
-        )
-
-        model.setPosition(
-            prop.position.x,
-            prop.position.z,
-            prop.position.y,
-        )
-
-        prop.scale?.let {
-            model.setScale(
-                it.x,
-                it.z,
-                it.y
-            )
-        }
-
-        model.invalidatePosition()
-        model.invalidateScaleRotation()
     }
 }
