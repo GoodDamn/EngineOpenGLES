@@ -156,7 +156,7 @@ class MGRendererLevelEditor(
 
         mShaderPostProcess.setup(
             "shaders/post/vert.glsl",
-            "shaders/diffuse/frag.glsl",
+            "shaders/post/frag.glsl",
             MGBinderAttribute.Builder()
                 .bindPosition()
                 .bindTextureCoordinates()
@@ -274,15 +274,11 @@ class MGRendererLevelEditor(
         glDepthFunc(
             GL_LESS
         )
-/*
-        glEnable(
-            GL_CULL_FACE
-        )
 
         glCullFace(
             GL_BACK
         )
-*/
+
         mInformator
             .glHandler
             .run()
@@ -345,6 +341,10 @@ class MGRendererLevelEditor(
             0.0f,
             0.0f,
             1.0f
+        )
+
+        glEnable(
+            GL_CULL_FACE
         )
 
         glEnable(
