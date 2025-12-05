@@ -1,18 +1,22 @@
 package good.damn.engine.opengl.triggers;
 
 import android.opengl.GLES30;
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
 import java.util.LinkedList;
 
+import good.damn.engine.loaders.MGLoaderLevelLibrary;
+import good.damn.engine.models.MGMGeneratorMaterial;
 import good.damn.engine.models.MGMInformator;
 import good.damn.engine.models.MGMInformatorShader;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMaterialTexture;
+import good.damn.engine.opengl.enums.MGEnumTextureType;
 import good.damn.engine.opengl.objects.MGObject3d;
 import good.damn.engine.opengl.shaders.MGShaderMaterial;
 import good.damn.engine.opengl.shaders.MGShaderOpaqueSingle;
@@ -35,6 +39,7 @@ import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
 import good.damn.engine.runnables.MGRunnableConfigVertexArray;
 import good.damn.engine.shader.MGShaderCache;
 import good.damn.engine.shader.MGShaderSource;
+import good.damn.engine.shader.generators.MGGeneratorMaterial;
 import good.damn.engine.shader.generators.MGGeneratorShader;
 import good.damn.engine.utils.MGUtilsAlgo;
 
@@ -115,59 +120,101 @@ public final class MGTriggerMesh {
         );
 
         @NonNull
+        final MGGeneratorMaterial generatorMaterial = new MGGeneratorMaterial(
+            shaderSource
+        );
+
+        @NonNull
         final LinkedList<
             MGShaderTexture
         > shaderTextures = new LinkedList<>();
 
-        if (obj.texturesDiffuseFileName != null) {
+        if (obj.texturesDiffuseFileName == null) {
+            generatorMaterial.mapTextureNo(
+                MGLoaderLevelLibrary.ID_DIFFUSE,
+                MGEnumTextureType.DIFFUSE,
+                1.0f
+            );
+        } else {
+            generatorMaterial.mapTexture(
+                MGLoaderLevelLibrary.ID_DIFFUSE,
+                MGEnumTextureType.DIFFUSE
+            );
             builder.textureDiffuse(
                 obj.texturesDiffuseFileName[0]
             );
 
             shaderTextures.add(
                 new MGShaderTexture(
-                    "textDiffuse"
+                    MGLoaderLevelLibrary.ID_DIFFUSE
                 )
             );
         }
 
         if (obj.texturesMetallicFileName == null) {
-            generatorShader.metallicNo();
+            generatorMaterial.mapTextureNo(
+                MGLoaderLevelLibrary.ID_METALLIC,
+                MGEnumTextureType.METALLIC,
+                0.0f
+            );
             generatorShader.specularNo();
         } else {
             shaderTextures.add(
                 new MGShaderTexture(
-                    "textMetallic"
+                    MGLoaderLevelLibrary.ID_METALLIC
                 )
             );
             builder.textureMetallic(
                 obj.texturesMetallicFileName[0]
             );
-            generatorShader.metallicMap();
+            generatorMaterial.mapTexture(
+                MGLoaderLevelLibrary.ID_METALLIC,
+                MGEnumTextureType.METALLIC
+            );
             generatorShader.specular();
         }
 
-        generatorShader.opacityNo();
-        generatorShader.normalVertex();
+        generatorMaterial.mapTextureNo(
+            MGLoaderLevelLibrary.ID_OPACITY,
+            MGEnumTextureType.OPACITY,
+            1.0f
+        ).normalVertex(
+            MGLoaderLevelLibrary.ID_NORMAL
+        );
 
         if (obj.texturesEmissiveFileName == null) {
-            generatorShader.emissiveNo();
+            generatorMaterial.mapTextureNo(
+                MGLoaderLevelLibrary.ID_EMISSIVE,
+                MGEnumTextureType.EMISSIVE,
+                0.0f
+            );
         } else {
             shaderTextures.add(
                 new MGShaderTexture(
-                    "textEmissive"
+                    MGLoaderLevelLibrary.ID_EMISSIVE
                 )
             );
             builder.textureEmissive(
                 obj.texturesEmissiveFileName[0]
             );
-            generatorShader.emissiveMap();
+            generatorMaterial.mapTexture(
+                MGLoaderLevelLibrary.ID_EMISSIVE,
+                MGEnumTextureType.EMISSIVE
+            );
         }
 
-        generatorShader.lighting();
+        @NonNull
+        final MGMGeneratorMaterial srcCodeMaterial = generatorMaterial
+            .generate("0");
+
+        generatorShader.lighting().material(
+            srcCodeMaterial
+        );
 
         @NonNull
-        final String src = generatorShader.generate();
+        final String src = generatorShader.generate(
+            srcCodeMaterial
+        );
 
         @NonNull
         MGShaderOpaqueSingle cachedShader = shaderCache.get(

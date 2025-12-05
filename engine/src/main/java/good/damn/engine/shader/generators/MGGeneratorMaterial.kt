@@ -1,6 +1,7 @@
 package good.damn.engine.shader.generators
 
 import android.util.Log
+import good.damn.engine.models.MGMGeneratorMaterial
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.shader.MGShaderSource
 import java.util.LinkedList
@@ -8,6 +9,10 @@ import java.util.LinkedList
 class MGGeneratorMaterial(
     private val source: MGShaderSource
 ) {
+
+    companion object {
+        const val ID_MATERIAL_FUNC = "calculateMaterial_"
+    }
 
     private val mBuilderSourceFragment = StringBuilder()
 
@@ -85,19 +90,26 @@ class MGGeneratorMaterial(
 
     fun generate(
         idMaterial: String
-    ): String {
+    ): MGMGeneratorMaterial {
         var srcMaterial = source.fragMaterial
 
         for (i in listIds) {
             srcMaterial = srcMaterial.replace(
-                "$${i.type.v+1}".toRegex(),
+                "$${i.type.v+1}",
                 i.id
             )
         }
 
-        return srcMaterial.replace(
-            "$0".toRegex(),
+        val src = srcMaterial.replace(
+            "$0",
             idMaterial
+        )
+
+        return MGMGeneratorMaterial(
+            idMaterial,
+            mBuilderSourceFragment.append(
+                src
+            ).toString()
         )
     }
 
@@ -108,8 +120,6 @@ class MGGeneratorMaterial(
         val indexedSrc = replaceParam(
             src, 0, id
         )
-
-        Log.d("TAG", "appendIndexedMapFunc: $id ---> $indexedSrc")
 
         mBuilderSourceFragment.append(
             indexedSrc
@@ -141,7 +151,7 @@ class MGGeneratorMaterial(
         param: Int,
         arg: String
     ) = src.replace(
-        "$$param".toRegex(),
+        "$"+param,
         arg
     )
 

@@ -11,7 +11,7 @@ class MGShaderSource(
     }
 
     val frag1: String
-    val frag2: String
+    val fragMain: String
 
     val fragNormalNo: String
     val fragNormalMap: String
@@ -35,8 +35,8 @@ class MGShaderSource(
             "$localFullPath/frag1.glsl"
         )
 
-        frag2 = loadSourceCode(
-            "$localFullPath/frag2.glsl"
+        fragMain = loadSourceCode(
+            "$localFullPath/frag_main.glsl"
         )
 
         fragNormalNo = loadSourceCode(
@@ -70,7 +70,7 @@ class MGShaderSource(
         )
 
 
-        fragLight = MGUtilsAsset.loadString(
+        fragLight = loadSourceCode(
             "$localFullPath/frag_light.glsl"
         )
 

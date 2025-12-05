@@ -1,5 +1,6 @@
 package good.damn.engine.loaders
 
+import android.util.Log
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInformatorShader
 import good.damn.engine.models.MGProp
@@ -7,6 +8,7 @@ import good.damn.engine.models.json.MGMLevelInfoDiffuse
 import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.models.json.MGMLevelInfoTextures
 import good.damn.engine.opengl.entities.MGMaterialTexture
+import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.MGShaderOpaque
@@ -14,6 +16,7 @@ import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.runnables.MGRunnableCompileShaders
 import good.damn.engine.shader.MGShaderSource
+import good.damn.engine.shader.generators.MGGeneratorMaterial
 import good.damn.engine.shader.generators.MGGeneratorShader
 import good.damn.engine.utils.MGUtilsAsset
 import good.damn.engine.utils.MGUtilsFile
@@ -32,6 +35,14 @@ class MGLoaderLevelLibrary(
     localPath: String,
     localPathCullFaceList: String
 ) {
+
+    companion object {
+        const val ID_DIFFUSE = "textDiffuse"
+        const val ID_METALLIC = "textMetallic"
+        const val ID_EMISSIVE = "textEmissive"
+        const val ID_OPACITY = "textOpacity"
+        const val ID_NORMAL = "textNormal"
+    }
 
     private val mFile = MGUtilsFile.getPublicFile(
         localPath
@@ -119,6 +130,10 @@ class MGLoaderLevelLibrary(
 
         val builderMaterial = MGMaterialTexture.Builder()
 
+        val generatorMaterial = MGGeneratorMaterial(
+            informator.shaders.source
+        )
+
         val generatorShader = MGGeneratorShader(
             informator.shaders.source
         )
@@ -127,14 +142,25 @@ class MGLoaderLevelLibrary(
             MGShaderTexture
         >()
 
-        buildTextureIfExists(
-            "${diffuse}.$extension"
-        ) {
-            builderMaterial.textureDiffuse(it)
-            shaderTextures.add(
-                MGShaderTexture(
-                    "textDiffuse"
+        "${diffuse}.$extension".let {
+            if (textureExists(it)) {
+                shaderTextures.add(
+                    MGShaderTexture(
+                        ID_DIFFUSE
+                    )
                 )
+                builderMaterial.textureDiffuse(it)
+                generatorMaterial.mapTexture(
+                    ID_DIFFUSE,
+                    MGEnumTextureType.DIFFUSE
+                )
+                return@let
+            }
+
+            generatorMaterial.mapTextureNo(
+                ID_DIFFUSE,
+                MGEnumTextureType.DIFFUSE,
+                1.0f
             )
         }
 
@@ -142,35 +168,47 @@ class MGLoaderLevelLibrary(
             if (textureExists(it)) {
                 shaderTextures.add(
                     MGShaderTexture(
-                        "textMetallic"
+                        ID_METALLIC
                     )
                 )
                 builderMaterial.textureMetallic(it)
-                generatorShader.apply {
-                    specular()
-                    metallicMap()
-                }
+                generatorMaterial.mapTexture(
+                    ID_METALLIC,
+                    MGEnumTextureType.METALLIC
+                )
+                generatorShader.specular()
                 return@let
             }
 
-            generatorShader.apply {
-                specularNo()
-                metallicNo()
-            }
+
+            generatorShader.specularNo()
+            generatorMaterial.mapTextureNo(
+                ID_METALLIC,
+                MGEnumTextureType.METALLIC,
+                0.0f
+            )
         }
 
         "${diffuse}_e.$extension".let {
             if (textureExists(it)) {
                 shaderTextures.add(
                     MGShaderTexture(
-                        "textEmissive"
+                        ID_EMISSIVE
                     )
                 )
                 builderMaterial.textureEmissive(it)
-                generatorShader.emissiveMap()
+                generatorMaterial.mapTexture(
+                    ID_EMISSIVE,
+                    MGEnumTextureType.EMISSIVE
+                )
                 return@let
             }
-            generatorShader.emissiveNo()
+
+            generatorMaterial.mapTextureNo(
+                ID_EMISSIVE,
+                MGEnumTextureType.EMISSIVE,
+                0.0f
+            )
         }
 
 
@@ -182,10 +220,17 @@ class MGLoaderLevelLibrary(
                     )
                 )
                 builderMaterial.textureOpacity(it)
-                generatorShader.opacityMap()
+                generatorMaterial.mapTexture(
+                    ID_OPACITY,
+                    MGEnumTextureType.OPACITY
+                )
                 return@let
             }
-            generatorShader.opacityNo()
+            generatorMaterial.mapTextureNo(
+                ID_OPACITY,
+                MGEnumTextureType.OPACITY,
+                1.0f
+            )
         }
 
 
@@ -193,19 +238,33 @@ class MGLoaderLevelLibrary(
             if (textureExists(it)) {
                 shaderTextures.add(
                     MGShaderTexture(
-                        "textNormal"
+                        ID_NORMAL
                     )
                 )
                 builderMaterial.textureNormal(it)
-                generatorShader.normalMapping()
+                generatorMaterial.normalMapping(
+                    ID_NORMAL
+                )
                 return@let
             }
-            generatorShader.normalVertex()
+            generatorMaterial.normalVertex(
+                ID_NORMAL
+            )
         }
+        val idMaterial = "0"
 
-        generatorShader.lighting()
+        val fragmentCodeMaterial = generatorMaterial.generate(
+            idMaterial
+        )
 
-        val fragmentCode = generatorShader.generate()
+        generatorShader.lighting().material(
+            fragmentCodeMaterial
+        )
+
+        val fragmentCode = generatorShader.generate(
+            fragmentCodeMaterial
+        )
+
 
         var cachedShader = informator.shaders.opaqueGeneratedInstanced[
             fragmentCode
@@ -217,6 +276,8 @@ class MGLoaderLevelLibrary(
                     shaderTextures.toTypedArray()
                 )
             )
+
+            Log.d("TAG", "readProp: $fragmentCode")
             informator.shaders.opaqueGeneratedInstanced.cacheAndCompile(
                 fragmentCode,
                 informator.shaders.source.verti,

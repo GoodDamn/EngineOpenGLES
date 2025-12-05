@@ -1,5 +1,6 @@
 package good.damn.engine.shader.generators
 
+import good.damn.engine.models.MGMGeneratorMaterial
 import good.damn.engine.shader.MGShaderSource
 import good.damn.engine.utils.MGUtilsAsset
 import good.damn.engine.utils.MGUtilsFile
@@ -11,7 +12,6 @@ class MGGeneratorShader(
 
     private val mBuilderSourceFragment = StringBuilder()
         .append(source.frag1)
-
 
 
     fun specular(): MGGeneratorShader {
@@ -35,7 +35,24 @@ class MGGeneratorShader(
         return this
     }
 
-    fun generate() = mBuilderSourceFragment.append(
-        source.frag2
-    ).toString()
+    fun material(
+        srcCodeMaterial: MGMGeneratorMaterial
+    ): MGGeneratorShader {
+        mBuilderSourceFragment.append(
+            srcCodeMaterial.srcCodeFragment
+        )
+
+        return this
+    }
+
+    fun generate(
+        material: MGMGeneratorMaterial
+    ): String {
+        return mBuilderSourceFragment.append(
+            source.fragMain.replace(
+                "$0",
+                "${MGGeneratorMaterial.ID_MATERIAL_FUNC}${material.idMethod}();"
+            )
+        ).toString()
+    }
 }
