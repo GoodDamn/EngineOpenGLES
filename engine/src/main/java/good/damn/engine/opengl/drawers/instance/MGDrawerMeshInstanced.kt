@@ -75,12 +75,12 @@ class MGDrawerMeshInstanced(
         shaderTexture: MGIShaderTextureUniform
     ) {
         mDrawerTextures.forEach {
-            it.draw(shaderTexture)
+            it?.draw(shaderTexture)
         }
         drawVertices()
 
         mDrawerTextures.forEach {
-            it.unbind(shaderTexture)
+            it?.unbind(shaderTexture)
         }
     }
 

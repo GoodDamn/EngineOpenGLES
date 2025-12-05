@@ -276,8 +276,6 @@ class MGLoaderLevelLibrary(
                     shaderTextures.toTypedArray()
                 )
             )
-
-            Log.d("TAG", "readProp: $fragmentCode")
             informator.shaders.opaqueGeneratedInstanced.cacheAndCompile(
                 fragmentCode,
                 informator.shaders.source.verti,

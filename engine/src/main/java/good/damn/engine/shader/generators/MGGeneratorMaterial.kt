@@ -151,7 +151,7 @@ class MGGeneratorMaterial(
         param: Int,
         arg: String
     ) = src.replace(
-        "$"+param,
+        "$$param",
         arg
     )
 

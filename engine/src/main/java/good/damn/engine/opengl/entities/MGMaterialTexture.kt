@@ -47,7 +47,7 @@ class MGMaterialTexture private constructor(
         type: MGEnumTextureType
     ) = list[
         type.v
-    ].drawer.texture
+    ]?.drawer?.texture
 
     fun load(
         poolTextures: MGPoolTextures,
