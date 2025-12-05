@@ -17,9 +17,11 @@ class MGGeneratorMaterial(
         idSampler: String,
         type: MGEnumTextureType
     ): MGGeneratorMaterial {
-        appendTexture(
-            idSampler
+        appendIndexedFunc(
+            idSampler,
+            source.fragTexture
         )
+
         listIds.add(
             MGMMaterialGen(
                 type,
@@ -31,11 +33,13 @@ class MGGeneratorMaterial(
 
     fun mapTextureNo(
         idSampler: String,
-        type: MGEnumTextureType
+        type: MGEnumTextureType,
+        defaultValue: Float
     ): MGGeneratorMaterial {
-        appendIndexedFunc(
+        appendIndexedFuncWithDefValue(
             idSampler,
-            source.fragTextureNo
+            source.fragTextureNo,
+            defaultValue
         )
         listIds.add(
             MGMMaterialGen(
@@ -49,10 +53,6 @@ class MGGeneratorMaterial(
     fun normalMapping(
         idSampler: String
     ): MGGeneratorMaterial {
-        appendSampler2D(
-            idSampler
-        )
-
         appendIndexedFunc(
             idSampler,
             source.fragNormalMap
@@ -101,34 +101,12 @@ class MGGeneratorMaterial(
         )
     }
 
-    private inline fun appendTexture(
-        id: String
-    ) {
-        appendSampler2D(
-            id
-        )
-
-        appendIndexedFunc(
-            id,
-            source.fragTexture
-        )
-    }
-
-    private fun appendSampler2D(
-        id: String
-    ) {
-        mBuilderSourceFragment.append(
-            "uniform sampler2D $id;"
-        )
-    }
-
     private inline fun appendIndexedFunc(
         id: String,
         src: String
     ) {
-        val indexedSrc = src.replace(
-            "$0".toRegex(),
-            id
+        val indexedSrc = replaceParam(
+            src, 0, id
         )
 
         Log.d("TAG", "appendIndexedMapFunc: $id ---> $indexedSrc")
@@ -137,6 +115,35 @@ class MGGeneratorMaterial(
             indexedSrc
         )
     }
+
+    private inline fun appendIndexedFuncWithDefValue(
+        id: String,
+        src: String,
+        defaultValue: Float
+    ) {
+        val indexedSrc = replaceParam(
+            src, 0,
+            id
+        )
+
+        val result = replaceParam(
+            indexedSrc, 1,
+            defaultValue.toString()
+        )
+
+        mBuilderSourceFragment.append(
+            result
+        )
+    }
+
+    private inline fun replaceParam(
+        src: String,
+        param: Int,
+        arg: String
+    ) = src.replace(
+        "$$param".toRegex(),
+        arg
+    )
 
     private data class MGMMaterialGen(
         val type: MGEnumTextureType,
