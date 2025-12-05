@@ -12,56 +12,7 @@ class MGGeneratorShader(
     private val mBuilderSourceFragment = StringBuilder()
         .append(source.frag1)
 
-    fun metallicMap(): MGGeneratorShader {
-        mBuilderSourceFragment.append(
-            "uniform sampler2D textMetallic;"
-        )
-        mBuilderSourceFragment.append(
-            source.fragMetallicMap
-        )
-        return this
-    }
 
-    fun metallicNo(): MGGeneratorShader {
-        mBuilderSourceFragment.append(
-            source.fragMetallicNo
-        )
-        return this
-    }
-
-    fun emissiveMap(): MGGeneratorShader {
-        mBuilderSourceFragment.append(
-            "uniform sampler2D textEmissive;"
-        )
-        mBuilderSourceFragment.append(
-            source.fragEmissiveMap
-        )
-        return this
-    }
-
-    fun emissiveNo(): MGGeneratorShader {
-        mBuilderSourceFragment.append(
-            source.fragEmissiveNo
-        )
-        return this
-    }
-
-    fun opacityMap(): MGGeneratorShader {
-        mBuilderSourceFragment.append(
-            "uniform sampler2D textOpacity;"
-        )
-        mBuilderSourceFragment.append(
-            source.fragOpacityMap
-        )
-        return this
-    }
-
-    fun opacityNo(): MGGeneratorShader {
-        mBuilderSourceFragment.append(
-            source.fragOpacityNo
-        )
-        return this
-    }
 
     fun specular(): MGGeneratorShader {
         mBuilderSourceFragment.append(
@@ -80,23 +31,6 @@ class MGGeneratorShader(
     fun lighting(): MGGeneratorShader {
         mBuilderSourceFragment.append(
             source.fragLight
-        )
-        return this
-    }
-
-    fun normalMapping(): MGGeneratorShader {
-        mBuilderSourceFragment.append(
-            "uniform sampler2D textNormal;"
-        )
-        mBuilderSourceFragment.append(
-            source.fragNormalMap
-        )
-        return this
-    }
-
-    fun normalVertex(): MGGeneratorShader {
-        mBuilderSourceFragment.append(
-            source.fragNormalNo
         )
         return this
     }

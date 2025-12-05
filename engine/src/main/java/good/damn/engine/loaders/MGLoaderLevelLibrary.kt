@@ -3,6 +3,7 @@ package good.damn.engine.loaders
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInformatorShader
 import good.damn.engine.models.MGProp
+import good.damn.engine.models.json.MGMLevelInfoDiffuse
 import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.models.json.MGMLevelInfoTextures
 import good.damn.engine.opengl.entities.MGMaterialTexture
