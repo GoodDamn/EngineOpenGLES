@@ -42,6 +42,7 @@ class MGLoaderLevelLibrary(
         const val ID_EMISSIVE = "textEmissive"
         const val ID_OPACITY = "textOpacity"
         const val ID_NORMAL = "textNormal"
+        private const val EXTENSION_TEXTURE = ".jpg"
     }
 
     private val mFile = MGUtilsFile.getPublicFile(
@@ -121,7 +122,6 @@ class MGLoaderLevelLibrary(
 
     fun readProp(
         mesh: MGMLevelInfoMesh,
-        extension: String,
     ): MGProp {
         val fileName = mesh.a3dMesh
         val diffuse = mesh.textures.textures[
@@ -142,7 +142,7 @@ class MGLoaderLevelLibrary(
             MGShaderTexture
         >()
 
-        "${diffuse}.$extension".let {
+        "${diffuse}$EXTENSION_TEXTURE".let {
             if (textureExists(it)) {
                 shaderTextures.add(
                     MGShaderTexture(
@@ -164,7 +164,7 @@ class MGLoaderLevelLibrary(
             )
         }
 
-        "${diffuse}_m.$extension".let {
+        "${diffuse}_m$EXTENSION_TEXTURE".let {
             if (textureExists(it)) {
                 shaderTextures.add(
                     MGShaderTexture(
@@ -189,7 +189,7 @@ class MGLoaderLevelLibrary(
             )
         }
 
-        "${diffuse}_e.$extension".let {
+        "${diffuse}_e$EXTENSION_TEXTURE".let {
             if (textureExists(it)) {
                 shaderTextures.add(
                     MGShaderTexture(
@@ -212,7 +212,7 @@ class MGLoaderLevelLibrary(
         }
 
 
-        "${diffuse}_o.$extension".let {
+        "${diffuse}_o$EXTENSION_TEXTURE".let {
             if (textureExists(it)) {
                 shaderTextures.add(
                     MGShaderTexture(
@@ -234,7 +234,7 @@ class MGLoaderLevelLibrary(
         }
 
 
-        "${diffuse}_n.$extension".let {
+        "${diffuse}_n$EXTENSION_TEXTURE".let {
             if (textureExists(it)) {
                 shaderTextures.add(
                     MGShaderTexture(
@@ -324,8 +324,7 @@ class MGLoaderLevelLibrary(
                 )
 
                 lMeshes[name] = readProp(
-                    mesh,
-                    "jpg"
+                    mesh
                 )
             }
 

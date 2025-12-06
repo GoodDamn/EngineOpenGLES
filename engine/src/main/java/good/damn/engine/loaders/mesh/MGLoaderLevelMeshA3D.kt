@@ -19,7 +19,8 @@ class MGLoaderLevelMeshA3D(
         fileNameA3D: String,
         matrices: List<
             MGMatrixTransformationNormal<MGMatrixScaleRotation>
-        >
+        >,
+        uvScale: Float
     ): MGMInstanceArray? {
         val file = MGUtilsFile.getPublicFile(
             "$localPathLibObj/$fileNameA3D"
@@ -49,7 +50,7 @@ class MGLoaderLevelMeshA3D(
             ),
             MGUtilsA3D.createMergedVertexBuffer(
                 mesh,
-                1f
+                uvScale
             ),
             configIndices.buffer,
             matrices,

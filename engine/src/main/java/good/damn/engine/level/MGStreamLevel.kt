@@ -103,7 +103,8 @@ object MGStreamLevel {
                 val prop = it.value
                 val v = loaderMeshes.loadInstanceArray(
                     prop.fileNameA3d,
-                    prop.matrices
+                    prop.matrices,
+                    1f
                 ) ?: return@launch
 
                 prop.materialTexture.load(
@@ -177,12 +178,12 @@ object MGStreamLevel {
                         calculateNormalMatrix()
                     }
                 }
-            )
+            ),
+            105f
         ) ?: return null
 
         val prop = loaderProp.readProp(
-            landscape,
-            "png"
+            landscape
         )
 
         prop.materialTexture.load(
