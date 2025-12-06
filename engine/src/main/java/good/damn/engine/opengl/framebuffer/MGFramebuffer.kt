@@ -13,7 +13,6 @@ class MGFramebuffer {
         get() = mTexture[0]
 
     private val mId = intArrayOf(1)
-    private val mIdRenderBuffer = intArrayOf(1)
     private val mTexture = intArrayOf(1)
 
     fun generate() {
@@ -107,42 +106,11 @@ class MGFramebuffer {
             0
         )
 
-        glGenRenderbuffers(
-            1,
-            mIdRenderBuffer,
-            0
-        )
-
-        glBindRenderbuffer(
-            GL_RENDERBUFFER,
-            mIdRenderBuffer[0]
-        )
-
-        glRenderbufferStorage(
-            GL_RENDERBUFFER,
-            GL_DEPTH24_STENCIL8,
-            width,
-            height
-        )
-
-        glBindRenderbuffer(
-            GL_RENDERBUFFER,
-            0
-        )
-
-        glFramebufferRenderbuffer(
-            GL_FRAMEBUFFER,
-            GL_DEPTH_STENCIL_ATTACHMENT,
-            GL_RENDERBUFFER,
-            mIdRenderBuffer[0]
-        )
-
         if (glCheckFramebufferStatus(
                 GL_FRAMEBUFFER
             ) != GL_FRAMEBUFFER_COMPLETE) {
             Log.d(TAG, "generateTextureAttachment: frame buffer error")
         }
-        unbind()
     }
 
 }

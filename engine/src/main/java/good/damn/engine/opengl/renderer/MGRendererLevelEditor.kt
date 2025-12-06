@@ -27,6 +27,7 @@ import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
+import good.damn.engine.opengl.framebuffer.MGFramebufferScene
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
@@ -145,7 +146,7 @@ class MGRendererLevelEditor(
     private var mWidth = 0
     private var mHeight = 0
 
-    private val mFramebufferScene = MGFramebuffer()
+    private val mFramebufferScene = MGFramebufferScene()
     private val mPostProcess = MGPostProcess()
 
     override fun onSurfaceCreated(
@@ -294,12 +295,10 @@ class MGRendererLevelEditor(
         mHeight = height
 
         mInformator.glHandler.post {
-            mFramebufferScene.bind()
-            mFramebufferScene.generateTextureAttachment(
+            mFramebufferScene.setupAttachments(
                 mWidth,
                 mHeight
             )
-            mFramebufferScene.unbind()
         }
 
         mInformator.camera.setPerspective(
@@ -354,6 +353,8 @@ class MGRendererLevelEditor(
         mSwitcherDrawMode
             .currentDrawerMode
             .draw()
+
+        mFramebufferScene.unbind()
 
         mPostProcess.draw(
             mWidth,
