@@ -1,5 +1,6 @@
 package good.damn.engine.level
 
+import android.util.Size
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.loaders.MGLoaderLevelMatrices
@@ -14,6 +15,7 @@ import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderOpaque
+import good.damn.engine.runnables.MGRunnableGenerateLandscapeTexture
 import good.damn.mapimporter.MIImportMap
 import good.damn.mapimporter.models.MIMProp
 import kotlinx.coroutines.CoroutineScope
@@ -191,6 +193,13 @@ object MGStreamLevel {
             localLibPathTextures,
             informator.glHandler
         )
+
+        /*informator.glHandler.post(
+            MGRunnableGenerateLandscapeTexture(
+                Size(512, 512),
+
+            )
+        )*/
 
         return MGMInstanceMesh(
             prop.shaderOpaque,

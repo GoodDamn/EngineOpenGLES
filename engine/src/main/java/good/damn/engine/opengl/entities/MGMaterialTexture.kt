@@ -18,6 +18,49 @@ class MGMaterialTexture private constructor(
 ): MGIDrawerTexture<
     Array<MGShaderTexture>
 > {
+    companion object {
+        @JvmStatic
+        fun loadTextureDrawerCached(
+            textureType: MGEnumTextureType,
+            textureName: String,
+            localPath: String,
+            poolTextures: MGPoolTextures,
+            glHandler: MGHandlerGl
+        ): MGTexture? {
+            var texture = poolTextures.get(
+                textureName
+            )
+
+            if (texture != null) {
+                return texture
+            }
+
+            val bitmap = MGUtilsBitmap.loadBitmap(
+                "$localPath/$textureName"
+            ) ?: return null
+
+            texture = MGTexture(
+                textureType
+            )
+
+            glHandler.post(
+                MGRunnableTextureSetupBitmap(
+                    MGTextureBitmap(
+                        texture
+                    ),
+                    bitmap
+                )
+            )
+
+            poolTextures.add(
+                textureName,
+                texture
+            )
+
+            return texture
+        }
+    }
+
     override fun draw(
         shader: Array<MGShaderTexture>
     ) {
@@ -48,6 +91,13 @@ class MGMaterialTexture private constructor(
         type.v
     ]?.drawer?.texture
 
+    fun changeTextureByType(
+        type: MGEnumTextureType,
+        texture: MGTexture
+    ) {
+        list[type.v]?.drawer?.texture = texture
+    }
+
     fun load(
         poolTextures: MGPoolTextures,
         localPath: String,
@@ -55,53 +105,15 @@ class MGMaterialTexture private constructor(
     ) {
         list.forEach { _, it ->
             loadTextureDrawerCached(
-                it,
+                it.type,
+                it.textureName,
                 localPath,
                 poolTextures,
                 glHandler
-            )
+            )?.run {
+                it.drawer.texture = this
+            }
         }
-    }
-
-    private fun loadTextureDrawerCached(
-        part: MGMTexturePart,
-        localPath: String,
-        poolTextures: MGPoolTextures,
-        glHandler: MGHandlerGl
-    ) {
-        val textureName = part.textureName
-        var texture = poolTextures.get(
-            textureName
-        )
-
-        if (texture != null) {
-            part.drawer.texture = texture
-            return
-        }
-
-        val bitmap = MGUtilsBitmap.loadBitmap(
-            "$localPath/$textureName"
-        ) ?: return
-
-        texture = MGTexture(
-            part.type
-        )
-
-        glHandler.post(
-            MGRunnableTextureSetupBitmap(
-                MGTextureBitmap(
-                    texture
-                ),
-                bitmap
-            )
-        )
-
-        poolTextures.add(
-            textureName,
-            texture
-        )
-
-        part.drawer.texture = texture
     }
 
     class Builder {

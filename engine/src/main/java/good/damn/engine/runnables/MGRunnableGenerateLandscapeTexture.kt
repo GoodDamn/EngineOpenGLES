@@ -7,7 +7,9 @@ import good.damn.engine.models.MGMLandscapeTexture
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
+import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
+import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import good.damn.engine.opengl.shaders.MGShaderLandscapeTexture
 import good.damn.engine.opengl.textures.MGTexture
@@ -18,7 +20,8 @@ import good.damn.engine.utils.MGUtilsVertIndices
 class MGRunnableGenerateLandscapeTexture(
     private val landscapeBounds: Size,
     private val textures: Array<MGMLandscapeTexture>,
-    private val shader: MGShaderLandscapeTexture
+    private val shader: MGShaderLandscapeTexture,
+    private val materialTexture: MGMaterialTexture
 ): Runnable {
 
     private val mFramebuffer = MGFramebuffer()
@@ -90,6 +93,10 @@ class MGRunnableGenerateLandscapeTexture(
             mFramebuffer.unbind()
         }
 
+        materialTexture.changeTextureByType(
+            MGEnumTextureType.DIFFUSE,
+            mTextureResult.texture
+        )
     }
 
     private inline fun drawTextures(
