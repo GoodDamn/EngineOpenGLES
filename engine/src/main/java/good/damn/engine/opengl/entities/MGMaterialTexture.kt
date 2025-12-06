@@ -21,7 +21,7 @@ class MGMaterialTexture private constructor(
     companion object {
         @JvmStatic
         fun loadTextureDrawerCached(
-            textureType: MGEnumTextureType,
+            textureId: Int,
             textureName: String,
             localPath: String,
             poolTextures: MGPoolTextures,
@@ -40,7 +40,7 @@ class MGMaterialTexture private constructor(
             ) ?: return null
 
             texture = MGTexture(
-                textureType
+                textureId
             )
 
             glHandler.post(
@@ -105,7 +105,7 @@ class MGMaterialTexture private constructor(
     ) {
         list.forEach { _, it ->
             loadTextureDrawerCached(
-                it.type,
+                it.type.v,
                 it.textureName,
                 localPath,
                 poolTextures,

@@ -1,24 +1,22 @@
 package good.damn.engine.loaders
 
-import android.util.Log
 import good.damn.engine.models.MGMInformator
-import good.damn.engine.models.MGMInformatorShader
+import good.damn.engine.models.MGMLandscapeTexture
 import good.damn.engine.models.MGProp
-import good.damn.engine.models.json.MGMLevelInfoDiffuse
+import good.damn.engine.models.MGPropLandscape
+import good.damn.engine.models.json.MGMLevelInfoLandscape
 import good.damn.engine.models.json.MGMLevelInfoMesh
-import good.damn.engine.models.json.MGMLevelInfoTextures
+import good.damn.engine.models.json.MGMLevelInfoTexturesLandscape
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
-import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.runnables.MGRunnableCompileShaders
-import good.damn.engine.shader.MGShaderSource
+import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.textures.MGTextureBitmap
 import good.damn.engine.shader.generators.MGGeneratorMaterial
 import good.damn.engine.shader.generators.MGGeneratorShader
-import good.damn.engine.utils.MGUtilsAsset
 import good.damn.engine.utils.MGUtilsFile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -64,7 +62,7 @@ class MGLoaderLevelLibrary(
     >? = null
         private set
 
-    var terrain: MGMLevelInfoMesh? = null
+    var terrain: MGMLevelInfoLandscape? = null
         private set
 
     fun loadLibrary(): Boolean {
@@ -86,7 +84,7 @@ class MGLoaderLevelLibrary(
                 "props"
             )
 
-            terrain = MGMLevelInfoMesh.createFromJson(
+            terrain = MGMLevelInfoLandscape.createFromJson(
                 rootJson.getJSONObject("terrain")
             )
 
@@ -118,6 +116,207 @@ class MGLoaderLevelLibrary(
         }
 
         mNonCullFaceMeshes = meshesSet
+    }
+
+    fun readLandscape(
+        textures: MGMLevelInfoTexturesLandscape
+    ): MGPropLandscape {
+        val textures = textures.textures
+        val builderMaterial = MGMaterialTexture.Builder()
+
+        val generatorMaterial = MGGeneratorMaterial(
+            informator.shaders.source
+        )
+
+        val generatorShader = MGGeneratorShader(
+            informator.shaders.source
+        )
+
+        val shaderTextures = LinkedList<
+            MGShaderTexture
+            >()
+
+        val diffuse = textures[0].diffuseMapName
+
+        "${diffuse}$EXTENSION_TEXTURE".let {
+            if (textureExists(it)) {
+                shaderTextures.add(
+                    MGShaderTexture(
+                        ID_DIFFUSE
+                    )
+                )
+                builderMaterial.textureDiffuse(it)
+                generatorMaterial.mapTexture(
+                    ID_DIFFUSE,
+                    MGEnumTextureType.DIFFUSE
+                )
+                return@let
+            }
+
+            generatorMaterial.mapTextureNo(
+                ID_DIFFUSE,
+                MGEnumTextureType.DIFFUSE,
+                1.0f
+            )
+        }
+
+        "${diffuse}_m$EXTENSION_TEXTURE".let {
+            if (textureExists(it)) {
+                shaderTextures.add(
+                    MGShaderTexture(
+                        ID_METALLIC
+                    )
+                )
+                builderMaterial.textureMetallic(it)
+                generatorMaterial.mapTexture(
+                    ID_METALLIC,
+                    MGEnumTextureType.METALLIC
+                )
+                generatorShader.specular()
+                return@let
+            }
+
+
+            generatorShader.specularNo()
+            generatorMaterial.mapTextureNo(
+                ID_METALLIC,
+                MGEnumTextureType.METALLIC,
+                0.0f
+            )
+        }
+
+        "${diffuse}_e$EXTENSION_TEXTURE".let {
+            if (textureExists(it)) {
+                shaderTextures.add(
+                    MGShaderTexture(
+                        ID_EMISSIVE
+                    )
+                )
+                builderMaterial.textureEmissive(it)
+                generatorMaterial.mapTexture(
+                    ID_EMISSIVE,
+                    MGEnumTextureType.EMISSIVE
+                )
+                return@let
+            }
+
+            generatorMaterial.mapTextureNo(
+                ID_EMISSIVE,
+                MGEnumTextureType.EMISSIVE,
+                0.0f
+            )
+        }
+
+
+        "${diffuse}_o$EXTENSION_TEXTURE".let {
+            if (textureExists(it)) {
+                shaderTextures.add(
+                    MGShaderTexture(
+                        ID_OPACITY
+                    )
+                )
+                builderMaterial.textureOpacity(it)
+                generatorMaterial.mapTexture(
+                    ID_OPACITY,
+                    MGEnumTextureType.OPACITY
+                )
+                return@let
+            }
+            generatorMaterial.mapTextureNo(
+                ID_OPACITY,
+                MGEnumTextureType.OPACITY,
+                1.0f
+            )
+        }
+
+
+        "${diffuse}_n$EXTENSION_TEXTURE".let {
+            if (textureExists(it)) {
+                shaderTextures.add(
+                    MGShaderTexture(
+                        ID_NORMAL
+                    )
+                )
+                builderMaterial.textureNormal(it)
+                generatorMaterial.normalMapping(
+                    ID_NORMAL
+                )
+                return@let
+            }
+            generatorMaterial.normalVertex(
+                ID_NORMAL
+            )
+        }
+
+        val idMaterial = "0"
+
+        val fragmentCodeMaterial = generatorMaterial.generate(
+            idMaterial
+        )
+
+        generatorShader.lighting().material(
+            fragmentCodeMaterial
+        )
+
+        val fragmentCode = generatorShader.generate(
+            fragmentCodeMaterial
+        )
+
+        var cachedShader = informator.shaders.opaqueGeneratedInstanced[
+            fragmentCode
+        ]
+
+        if (cachedShader == null) {
+            cachedShader = MGShaderOpaque(
+                MGShaderMaterial.singleMaterial(
+                    shaderTextures.toTypedArray()
+                )
+            )
+            informator.shaders.opaqueGeneratedInstanced.cacheAndCompile(
+                fragmentCode,
+                informator.shaders.source.verti,
+                cachedShader,
+                informator.glHandler,
+                MGBinderAttribute.Builder()
+                    .bindPosition()
+                    .bindTextureCoordinates()
+                    .bindNormal()
+                    .bindInstancedModel()
+                    .bindInstancedRotationMatrix()
+                    .bindTangent()
+                    .build()
+            )
+        }
+
+        return MGPropLandscape(
+            builderMaterial.build(),
+            cachedShader,
+            Array(
+                textures.size
+            ) {
+                val t = textures[it]
+                MGMLandscapeTexture(
+                    MGTextureBitmap(
+                        MGMaterialTexture.loadTextureDrawerCached(
+                            1,
+                            "${t.diffuseMapName}$EXTENSION_TEXTURE",
+                            localPathLibTextures,
+                            informator.poolTextures,
+                            informator.glHandler
+                        )!!
+                    ),
+                    MGTextureBitmap(
+                        MGMaterialTexture.loadTextureDrawerCached(
+                            2,
+                            "${t.controlMapName}$EXTENSION_TEXTURE",
+                            localPathLibTextures,
+                            informator.poolTextures,
+                            informator.glHandler
+                        )!!
+                    )
+                )
+            }
+        )
     }
 
     fun readProp(

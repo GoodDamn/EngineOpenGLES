@@ -9,11 +9,15 @@ import good.damn.engine.loaders.mesh.MGLoaderLevelMeshA3D
 import good.damn.engine.loaders.MGLoaderLevelTextures
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInstanceMesh
+import good.damn.engine.models.MGMLandscapeTexture
+import good.damn.engine.models.json.MGMLevelInfoLandscape
 import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.shaders.MGShaderLandscapeTexture
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.runnables.MGRunnableGenerateLandscapeTexture
 import good.damn.mapimporter.MIImportMap
@@ -156,7 +160,7 @@ object MGStreamLevel {
     }
 
     private inline fun loadLandscape(
-        landscape: MGMLevelInfoMesh,
+        landscape: MGMLevelInfoLandscape,
         loaderMesh: MGLoaderLevelMeshA3D,
         loaderProp: MGLoaderLevelLibrary,
         informator: MGMInformator,
@@ -184,8 +188,8 @@ object MGStreamLevel {
             105f
         ) ?: return null
 
-        val prop = loaderProp.readProp(
-            landscape
+        val prop = loaderProp.readLandscape(
+            landscape.textures
         )
 
         prop.materialTexture.load(
@@ -194,12 +198,14 @@ object MGStreamLevel {
             informator.glHandler
         )
 
-        /*informator.glHandler.post(
+        informator.glHandler.post(
             MGRunnableGenerateLandscapeTexture(
                 Size(512, 512),
-
+                prop.textures,
+                MGShaderLandscapeTexture(),
+                prop.materialTexture
             )
-        )*/
+        )
 
         return MGMInstanceMesh(
             prop.shaderOpaque,

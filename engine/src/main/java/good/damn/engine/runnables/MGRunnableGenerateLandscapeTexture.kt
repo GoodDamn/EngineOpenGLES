@@ -12,6 +12,7 @@ import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import good.damn.engine.opengl.shaders.MGShaderLandscapeTexture
+import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.textures.MGTextureAttachment
 import good.damn.engine.utils.MGUtilsBuffer
@@ -38,6 +39,15 @@ class MGRunnableGenerateLandscapeTexture(
     )
 
     override fun run() {
+        shader.setup(
+            "shaders/post/vert.glsl",
+            "shaders/post/frag_land.glsl",
+            MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindTextureCoordinates()
+                .build()
+        )
+
         mArrayVertexQuad.configure(
             MGUtilsBuffer.createFloat(
                 MGUtilsVertIndices.createQuadVertices()
