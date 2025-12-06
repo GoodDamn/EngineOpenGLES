@@ -2,14 +2,15 @@ package good.damn.engine.runnables
 
 import android.graphics.Bitmap
 import android.opengl.GLES30
-import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.textures.MGTextureBitmap
 
-class MGRunnableGenTexture(
-    private val texture: MGTexture,
+class MGRunnableTextureSetupBitmap(
+    private val texture: MGTextureBitmap,
     private val bitmap: Bitmap
 ): Runnable {
 
     override fun run() {
+        texture.texture.generate()
         texture.glTextureSetup(
             bitmap,
             GLES30.GL_REPEAT

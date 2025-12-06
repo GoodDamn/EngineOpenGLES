@@ -3,10 +3,10 @@ package good.damn.engine.loaders
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.textures.MGTextureBitmap
 import good.damn.engine.opengl.thread.MGHandlerGl
-import good.damn.engine.runnables.MGRunnableGenTexture
+import good.damn.engine.runnables.MGRunnableTextureSetupBitmap
 import good.damn.engine.utils.MGUtilsBitmap
-import good.damn.engine.utils.MGUtilsFile
 import good.damn.mapimporter.models.MIMAtlasRect
 import good.damn.mapimporter.models.MIMMap
 import kotlinx.coroutines.CoroutineScope
@@ -116,8 +116,10 @@ class MGLoaderLevelTextures(
         )
 
         handlerGl.post(
-            MGRunnableGenTexture(
-                texture,
+            MGRunnableTextureSetupBitmap(
+                MGTextureBitmap(
+                    texture
+                ),
                 bitmap
             )
         )

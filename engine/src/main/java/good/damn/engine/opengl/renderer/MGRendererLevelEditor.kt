@@ -44,6 +44,7 @@ import good.damn.engine.opengl.shaders.MGShaderSingleModeInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.textures.MGTextureAttachment
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.shader.MGShaderCache
@@ -146,6 +147,9 @@ class MGRendererLevelEditor(
     private var mWidth = 0
     private var mHeight = 0
 
+    private val mTextureAttachmentPost = MGTextureAttachment(
+        MGTexture(0)
+    )
     private val mFramebufferScene = MGFramebufferScene()
     private val mPostProcess = MGPostProcess()
 
@@ -295,9 +299,14 @@ class MGRendererLevelEditor(
         mHeight = height
 
         mInformator.glHandler.post {
-            mFramebufferScene.setupAttachments(
+            mTextureAttachmentPost.texture.generate()
+            mTextureAttachmentPost.glTextureSetup(
+                width, height
+            )
+            mFramebufferScene.setupAttachment(
+                mTextureAttachmentPost,
                 mWidth,
-                mHeight
+                mHeight,
             )
         }
 
@@ -360,7 +369,7 @@ class MGRendererLevelEditor(
             mWidth,
             mHeight,
             mShaderPostProcess,
-            mFramebufferScene.textureId
+            mTextureAttachmentPost
         )
     }
 

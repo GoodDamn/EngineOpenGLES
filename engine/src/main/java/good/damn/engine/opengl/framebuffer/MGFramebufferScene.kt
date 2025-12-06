@@ -1,5 +1,8 @@
 package good.damn.engine.opengl.framebuffer
 
+import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.textures.MGTextureAttachment
+
 class MGFramebufferScene {
 
     private val mFramebuffer = MGFramebuffer()
@@ -23,14 +26,14 @@ class MGFramebufferScene {
         mFramebuffer.unbind()
     }
 
-    fun setupAttachments(
+    fun setupAttachment(
+        texture: MGTextureAttachment,
         width: Int,
         height: Int
     ) {
         mFramebuffer.bind()
-        mFramebuffer.generateTextureAttachment(
-            width,
-            height
+        mFramebuffer.attachColorTexture(
+            texture
         )
         mRenderbuffer.bind()
         mRenderbuffer.allocateStorage(

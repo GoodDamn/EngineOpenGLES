@@ -2,6 +2,8 @@ package good.damn.engine.opengl.framebuffer
 
 import android.opengl.GLES30.*
 import android.util.Log
+import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.textures.MGTextureAttachment
 
 class MGFramebuffer {
 
@@ -9,11 +11,7 @@ class MGFramebuffer {
         private const val TAG = "MGFramebuffer"
     }
 
-    val textureId: Int
-        get() = mTexture[0]
-
     private val mId = intArrayOf(1)
-    private val mTexture = intArrayOf(1)
 
     fun generate() {
         if (mId[0] != 1) {
@@ -54,55 +52,14 @@ class MGFramebuffer {
     }
 
 
-    fun generateTextureAttachment(
-        width: Int,
-        height: Int
+    fun attachColorTexture(
+        texture: MGTextureAttachment
     ) {
-        glGenTextures(
-            1,
-            mTexture,
-            0
-        )
-
-        glBindTexture(
-            GL_TEXTURE_2D,
-            mTexture[0]
-        )
-
-        glTexParameteri(
-            GL_TEXTURE_2D,
-            GL_TEXTURE_MIN_FILTER,
-            GL_LINEAR
-        )
-
-        glTexParameteri(
-            GL_TEXTURE_2D,
-            GL_TEXTURE_MAG_FILTER,
-            GL_LINEAR
-        )
-
-        glTexImage2D(
-            GL_TEXTURE_2D,
-            0,
-            GL_RGB,
-            width,
-            height,
-            0,
-            GL_RGB,
-            GL_UNSIGNED_BYTE,
-            null
-        )
-
-        glBindTexture(
-            GL_TEXTURE_2D,
-            0
-        )
-
         glFramebufferTexture2D(
             GL_FRAMEBUFFER,
             GL_COLOR_ATTACHMENT0,
             GL_TEXTURE_2D,
-            mTexture[0],
+            texture.texture.id,
             0
         )
 

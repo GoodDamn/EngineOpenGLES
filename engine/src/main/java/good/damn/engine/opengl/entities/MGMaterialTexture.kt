@@ -1,17 +1,16 @@
 package good.damn.engine.opengl.entities
 
-import android.util.Log
 import android.util.SparseArray
 import androidx.core.util.forEach
 import good.damn.engine.opengl.drawers.MGIDrawerTexture
 import good.damn.engine.opengl.drawers.material.MGDrawerMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.textures.MGTextureBitmap
 import good.damn.engine.opengl.thread.MGHandlerGl
-import good.damn.engine.runnables.MGRunnableGenTexture
+import good.damn.engine.runnables.MGRunnableTextureSetupBitmap
 import good.damn.engine.utils.MGUtilsBitmap
 
 class MGMaterialTexture private constructor(
@@ -89,8 +88,10 @@ class MGMaterialTexture private constructor(
         )
 
         glHandler.post(
-            MGRunnableGenTexture(
-                texture,
+            MGRunnableTextureSetupBitmap(
+                MGTextureBitmap(
+                    texture
+                ),
                 bitmap
             )
         )

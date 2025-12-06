@@ -8,6 +8,7 @@ import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import good.damn.engine.opengl.shaders.MGShaderPostProcess
+import good.damn.engine.opengl.textures.MGTextureAttachment
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsVertIndices
 
@@ -42,7 +43,7 @@ class MGPostProcess {
         width: Int,
         height: Int,
         shader: MGShaderPostProcess,
-        textureId: Int
+        texture: MGTextureAttachment
     ) {
         glViewport(
             0,
@@ -68,28 +69,13 @@ class MGPostProcess {
         )
         // use post process shader
         shader.use()
-
-        glActiveTexture(
-            GL_TEXTURE0
-        )
-
-        glBindTexture(
-            GL_TEXTURE_2D,
-            textureId
-        )
-
-        glUniform1i(
-            shader.uniformTexture,
-            0
+        texture.texture.draw(
+            shader
         )
 
         mDrawerQuad.draw(
             GL_TRIANGLES
         )
-
-        glBindTexture(
-            GL_TEXTURE_2D,
-            0
-        )
+        texture.texture.unbind()
     }
 }
