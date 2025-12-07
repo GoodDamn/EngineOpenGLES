@@ -109,21 +109,25 @@ object MGStreamLevel {
                     1f
                 ) ?: return@launch
 
-                prop.materialTexture.load(
-                    informator.poolTextures,
-                    localPathLibTextures,
-                    informator.glLoaderTexture
-                )
+                prop.materialTexture.forEach {
+                    it.load(
+                        informator.poolTextures,
+                        localPathLibTextures,
+                        informator.glLoaderTexture
+                    )
+                }
 
                 flow.emit(
                     MGMInstanceMesh(
                         prop.shaderOpaque,
                         v.vertexArray,
-                        arrayOf(
+                        Array(
+                            prop.materialTexture.size
+                        ) {
                             MGMaterial(
-                                prop.materialTexture
+                                prop.materialTexture[it]
                             )
-                        ),
+                        },
                         prop.enableCullFace,
                         v.modelMatrices
                     )
@@ -187,22 +191,25 @@ object MGStreamLevel {
         val prop = loaderProp.readProp(
             landscape
         )
-
-        prop.materialTexture.load(
-            informator.poolTextures,
-            localLibPathTextures,
-            informator.glLoaderTexture
-        )
+        prop.materialTexture.forEach {
+            it.load(
+                informator.poolTextures,
+                localLibPathTextures,
+                informator.glLoaderTexture
+            )
+        }
 
 
         return MGMInstanceMesh(
             prop.shaderOpaque,
             instanceArray.vertexArray,
-            arrayOf(
+            Array(
+                prop.materialTexture.size
+            ) {
                 MGMaterial(
-                    prop.materialTexture
+                    prop.materialTexture[it]
                 )
-            ),
+            },
             true,
             instanceArray.modelMatrices
         )

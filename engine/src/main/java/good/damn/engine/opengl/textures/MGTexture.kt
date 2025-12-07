@@ -13,27 +13,14 @@ import good.damn.engine.opengl.shaders.MGIShaderTextureUniform
 import good.damn.engine.utils.MGUtilsFile
 import java.io.FileInputStream
 
-class MGTexture
-: MGIDrawerTexture<MGIShaderTextureUniform> {
+class MGTexture(
+    var textureActive: MGTextureActive
+): MGIDrawerTexture<MGIShaderTextureUniform> {
 
     val id: Int
         get() = mId[0]
 
     private val mId = intArrayOf(1)
-
-    private val textureUniformId: Int
-    private val mActiveTexture: Int
-
-    constructor(
-        textureUniformId: Int
-    ) {
-        this.textureUniformId = textureUniformId
-        mActiveTexture = GL_TEXTURE0 + textureUniformId
-    }
-
-    constructor(
-        type: MGEnumTextureType
-    ): this(type.v)
 
     fun generate() {
         glGenTextures(
@@ -51,7 +38,7 @@ class MGTexture
 
     fun unbind() {
         glActiveTexture(
-            mActiveTexture
+            textureActive.activeTexture
         )
 
         glBindTexture(
@@ -62,7 +49,7 @@ class MGTexture
 
     fun bind() {
         glActiveTexture(
-            mActiveTexture
+            textureActive.activeTexture
         )
 
         glBindTexture(
@@ -77,7 +64,7 @@ class MGTexture
         unbind()
         glUniform1i(
             shader.uniformTexture,
-            textureUniformId
+            textureActive.textureUniformId
         )
     }
 
@@ -87,7 +74,7 @@ class MGTexture
         bind()
         glUniform1i(
             shader.uniformTexture,
-            textureUniformId
+            textureActive.textureUniformId
         )
     }
 }

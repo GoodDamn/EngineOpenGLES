@@ -10,6 +10,7 @@ import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.textures.MGTextureActive
 import good.damn.engine.opengl.textures.MGTextureBitmap
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.runnables.MGRunnableTextureSetupBitmap
@@ -23,7 +24,7 @@ class MGMaterialTexture private constructor(
     companion object {
         @JvmStatic
         fun loadTextureDrawerCached(
-            textureId: Int,
+            textureActive: MGTextureActive,
             textureName: String,
             localPath: String,
             poolTextures: MGPoolTextures,
@@ -34,6 +35,7 @@ class MGMaterialTexture private constructor(
             )
 
             if (texture != null) {
+                texture.textureActive = textureActive
                 return texture
             }
 
@@ -42,7 +44,7 @@ class MGMaterialTexture private constructor(
             ) ?: return null
 
             texture = MGTexture(
-                textureId
+                textureActive
             )
 
             textureLoader.loadTexture(
@@ -103,7 +105,7 @@ class MGMaterialTexture private constructor(
     ) {
         list.forEach { _, it ->
             loadTextureDrawerCached(
-                it.type.v,
+                it.drawer.activeTexture,
                 it.textureName,
                 localPath,
                 poolTextures,
@@ -117,7 +119,9 @@ class MGMaterialTexture private constructor(
     class Builder {
         companion object {
             private val DEFAULT = MGTexture(
-                MGEnumTextureType.DIFFUSE
+                MGTextureActive(
+                    MGEnumTextureType.DIFFUSE
+                )
             )
         }
 
@@ -128,13 +132,25 @@ class MGMaterialTexture private constructor(
         fun buildTexture(
             textureName: String,
             type: MGEnumTextureType
+        ) = buildTexture(
+            textureName,
+            type,
+            MGTextureActive(
+                type.v
+            )
+        )
+
+        fun buildTexture(
+            textureName: String,
+            type: MGEnumTextureType,
+            activeTexture: MGTextureActive
         ): Builder {
             map.put(
                 type.v,
                 MGMTexturePart(
-                    type,
                     MGDrawerMaterialTexture(
-                        DEFAULT
+                        DEFAULT,
+                        activeTexture
                     ),
                     textureName
                 )
@@ -149,7 +165,6 @@ class MGMaterialTexture private constructor(
     }
 
     private data class MGMTexturePart(
-        val type: MGEnumTextureType,
         val drawer: MGDrawerMaterialTexture,
         val textureName: String
     )

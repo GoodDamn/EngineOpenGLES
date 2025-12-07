@@ -143,7 +143,8 @@ public final class MGTriggerMesh {
         } else {
             generatorMaterial.mapTexture(
                 MGLoaderLevelLibrary.ID_DIFFUSE,
-                MGEnumTextureType.DIFFUSE
+                MGEnumTextureType.DIFFUSE,
+                1f
             );
             builder.buildTexture(
                 obj.texturesDiffuseFileName[0],
@@ -176,7 +177,8 @@ public final class MGTriggerMesh {
             );
             generatorMaterial.mapTexture(
                 MGLoaderLevelLibrary.ID_METALLIC,
-                MGEnumTextureType.METALLIC
+                MGEnumTextureType.METALLIC,
+                1f
             );
             generatorShader.specular();
         }
@@ -207,7 +209,8 @@ public final class MGTriggerMesh {
             );
             generatorMaterial.mapTexture(
                 MGLoaderLevelLibrary.ID_EMISSIVE,
-                MGEnumTextureType.EMISSIVE
+                MGEnumTextureType.EMISSIVE,
+                1f
             );
         }
 

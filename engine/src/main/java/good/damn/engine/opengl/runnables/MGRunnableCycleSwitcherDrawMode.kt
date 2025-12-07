@@ -16,6 +16,7 @@ import good.damn.engine.opengl.framebuffer.MGFramebufferScene
 import good.damn.engine.opengl.shaders.MGShaderPostProcess
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.textures.MGTextureActive
 import good.damn.engine.opengl.textures.MGTextureAttachment
 
 class MGRunnableCycleSwitcherDrawMode(
@@ -26,7 +27,9 @@ class MGRunnableCycleSwitcherDrawMode(
     private val mShaderPostProcess = MGShaderPostProcess()
 
     private val mTextureAttachmentPost = MGTextureAttachment(
-        MGTexture(0)
+        MGTexture(
+            MGTextureActive(0)
+        )
     )
     private val mFramebufferScene = MGFramebufferScene()
     private val mPostProcess = MGPostProcess()

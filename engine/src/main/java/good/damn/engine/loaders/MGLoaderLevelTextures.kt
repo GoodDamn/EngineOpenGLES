@@ -3,6 +3,7 @@ package good.damn.engine.loaders
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.textures.MGTextureActive
 import good.damn.engine.opengl.textures.MGTextureBitmap
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.runnables.MGRunnableTextureSetupBitmap
@@ -112,7 +113,9 @@ class MGLoaderLevelTextures(
         }
 
         val texture = MGTexture(
-            textureType
+            MGTextureActive(
+                textureType
+            )
         )
 
         handlerGl.post(

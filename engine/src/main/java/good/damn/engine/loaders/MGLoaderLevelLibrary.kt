@@ -11,6 +11,7 @@ import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
+import good.damn.engine.opengl.textures.MGTextureActive
 import good.damn.engine.shader.generators.MGGeneratorMaterial
 import good.damn.engine.shader.generators.MGGeneratorShader
 import good.damn.engine.utils.MGUtilsFile
@@ -121,8 +122,6 @@ class MGLoaderLevelLibrary(
         val fileName = mesh.a3dMesh
         val textures = mesh.textures.textures
 
-        val builderMaterial = MGMaterialTexture.Builder()
-
         val generatorShader = MGGeneratorShader(
             informator.shaders.source
         )
@@ -130,17 +129,28 @@ class MGLoaderLevelLibrary(
         val shaderMaterials = LinkedList<MGShaderMaterial>()
         val codeMaterials = LinkedList<MGMGeneratorMaterial>()
 
+        val buildersMaterial = LinkedList<MGMaterialTexture>()
+
+        val texturesCount = 5
+        var indexMaterial = 0
         for (index in textures.indices) {
+            val diffuse = textures[index].diffuseMapName
+            val controlMapName = textures[index].controlMapName
+
             val generatorMaterial = MGGeneratorMaterial(
                 informator.shaders.source
             )
+
+            val builderMaterial = MGMaterialTexture.Builder()
 
             val shaderTextures = LinkedList<
                 MGShaderTexture
             >()
 
-            val diffuse = textures[index].diffuseMapName
-            val controlMapName = textures[index].controlMapName
+            val texCoordScale = if (
+                controlMapName == null
+            ) 1f else 105f
+
 
             buildTextureMap(
                 generatorMaterial,
@@ -149,7 +159,9 @@ class MGLoaderLevelLibrary(
                 1.0f,
                 shaderTextures,
                 MGEnumTextureType.DIFFUSE,
-                "${ID_DIFFUSE}$index"
+                indexMaterial,
+                "${ID_DIFFUSE}$index",
+                texCoordScale
             )
 
             buildTextureMap(
@@ -159,7 +171,9 @@ class MGLoaderLevelLibrary(
                 0.0f,
                 shaderTextures,
                 MGEnumTextureType.METALLIC,
-                "${ID_METALLIC}$index"
+                indexMaterial,
+                "${ID_METALLIC}$index",
+                texCoordScale
             ).run {
                 if (index == 0) {
                     if (this) {
@@ -177,7 +191,9 @@ class MGLoaderLevelLibrary(
                 0.0f,
                 shaderTextures,
                 MGEnumTextureType.EMISSIVE,
-                "${ID_EMISSIVE}$index"
+                indexMaterial,
+                "${ID_EMISSIVE}$index",
+                texCoordScale
             )
 
             buildTextureMap(
@@ -187,7 +203,9 @@ class MGLoaderLevelLibrary(
                 1.0f,
                 shaderTextures,
                 MGEnumTextureType.OPACITY,
-                "${ID_OPACITY}$index"
+                indexMaterial,
+                "${ID_OPACITY}$index",
+                texCoordScale
             )
 
             buildTexture(
@@ -195,11 +213,13 @@ class MGLoaderLevelLibrary(
                 "${diffuse}_n$EXTENSION_TEXTURE",
                 shaderTextures,
                 MGEnumTextureType.NORMAL,
+                indexMaterial,
                 "${ID_NORMAL}$index"
             ).run {
                 if (this) {
                     generatorMaterial.normalMapping(
-                        "${ID_NORMAL}$index"
+                        "${ID_NORMAL}$index",
+                        texCoordScale
                     )
                 } else {
                     generatorMaterial.normalVertex(
@@ -215,7 +235,9 @@ class MGLoaderLevelLibrary(
                 1.0f,
                 shaderTextures,
                 MGEnumTextureType.BLEND,
-                "${ID_BLEND}$index"
+                indexMaterial,
+                "${ID_BLEND}$index",
+                1f
             )
 
             val fragmentCodeMaterial = generatorMaterial.generate(
@@ -240,6 +262,11 @@ class MGLoaderLevelLibrary(
                     shaderTextures.toTypedArray()
                 )
             )
+
+            buildersMaterial.add(
+                builderMaterial.build()
+            )
+            indexMaterial += texturesCount
 
             if (controlMapName == null) {
                 break
@@ -278,7 +305,7 @@ class MGLoaderLevelLibrary(
 
         return MGProp(
             fileName,
-            builderMaterial.build(),
+            buildersMaterial.toTypedArray(),
             cachedShader,
             !(mNonCullFaceMeshes?.contains(
                 fileName
@@ -292,6 +319,7 @@ class MGLoaderLevelLibrary(
         textureName: String,
         shaderTextures: MutableList<MGShaderTexture>,
         type: MGEnumTextureType,
+        indexMaterial: Int,
         idUniform: String
     ): Boolean {
         if (textureExists(textureName)) {
@@ -303,7 +331,10 @@ class MGLoaderLevelLibrary(
 
             builderMaterial.buildTexture(
                 textureName,
-                type
+                type,
+                MGTextureActive(
+                    indexMaterial + type.v
+                )
             )
             return true
         }
@@ -318,18 +349,22 @@ class MGLoaderLevelLibrary(
         defaultValue: Float,
         shaderTextures: MutableList<MGShaderTexture>,
         type: MGEnumTextureType,
-        idUniform: String
+        indexMaterial: Int,
+        idUniform: String,
+        texCoordScale: Float
     ): Boolean {
         if (buildTexture(
             builderMaterial,
             textureName,
             shaderTextures,
             type,
+            indexMaterial,
             idUniform
         )) {
             generatorMaterial.mapTexture(
                 idUniform,
-                type
+                type,
+                texCoordScale
             )
             return true
         }

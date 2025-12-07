@@ -8,7 +8,7 @@ import java.util.LinkedList
 
 data class MGProp(
     val fileNameA3d: String,
-    val materialTexture: MGMaterialTexture,
+    val materialTexture: Array<MGMaterialTexture>,
     val shaderOpaque: MGShaderOpaque,
     val enableCullFace: Boolean,
     val matrices: LinkedList<

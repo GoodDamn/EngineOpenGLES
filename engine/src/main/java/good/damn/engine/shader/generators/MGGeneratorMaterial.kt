@@ -20,11 +20,13 @@ class MGGeneratorMaterial(
 
     fun mapTexture(
         idSampler: String,
-        type: MGEnumTextureType
+        type: MGEnumTextureType,
+        texCoordsScale: Float
     ): MGGeneratorMaterial {
-        appendIndexedFunc(
+        appendIndexedFuncWithDefValue(
             idSampler,
-            source.fragTexture
+            source.fragTexture,
+            texCoordsScale
         )
 
         listIds.add(
@@ -56,11 +58,13 @@ class MGGeneratorMaterial(
     }
 
     fun normalMapping(
-        idSampler: String
+        idSampler: String,
+        texCoordsScale: Float
     ): MGGeneratorMaterial {
-        appendIndexedFunc(
+        appendIndexedFuncWithDefValue(
             idSampler,
-            source.fragNormalMap
+            source.fragNormalMap,
+            texCoordsScale
         )
 
         listIds.add(
