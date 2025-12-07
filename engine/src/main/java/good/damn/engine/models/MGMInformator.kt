@@ -1,5 +1,6 @@
 package good.damn.engine.models
 
+import good.damn.engine.loaders.texture.MGLoaderTextureAsync
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
@@ -40,6 +41,7 @@ data class MGMInformator(
     val poolMeshes: MGPoolMeshesStatic,
 
     val glHandler: MGHandlerGl,
+    val glLoaderTexture: MGLoaderTextureAsync,
 
     var canDrawTriggers: Boolean
 )

@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.loaders.scripts.MGLoaderScripts
+import good.damn.engine.loaders.texture.MGLoaderTextureAsync
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInformatorShader
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
@@ -96,6 +97,11 @@ class MGRendererLevelEditor(
 
     private val mHandlerGlExecutor = MGHandlerGlExecutor()
 
+    private val mHandlerGl = MGHandlerGl(
+        mHandlerGlExecutor.queue,
+        mHandlerGlExecutor.queueCycle,
+    )
+
     private val mInformator = MGMInformator(
         mInformatorShader,
         MGCameraFree(
@@ -123,9 +129,9 @@ class MGRendererLevelEditor(
         ),
         mPoolTextures,
         MGPoolMeshesStatic(),
-        MGHandlerGl(
-            mHandlerGlExecutor.queue,
-            mHandlerGlExecutor.queueCycle,
+        mHandlerGl,
+        MGLoaderTextureAsync(
+            mHandlerGl
         ),
         true
     )
@@ -220,8 +226,7 @@ class MGRendererLevelEditor(
         )
 
         mInformator.meshSky.configure(
-            mPoolTextures,
-            mInformator.glHandler
+            mPoolTextures
         )
 
         mVerticesBox.configure(

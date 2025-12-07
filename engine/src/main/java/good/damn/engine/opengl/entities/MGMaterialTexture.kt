@@ -1,7 +1,9 @@
 package good.damn.engine.opengl.entities
 
+import android.graphics.Bitmap
 import android.util.SparseArray
 import androidx.core.util.forEach
+import good.damn.engine.loaders.texture.MGILoaderTexture
 import good.damn.engine.opengl.drawers.MGIDrawerTexture
 import good.damn.engine.opengl.drawers.material.MGDrawerMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
@@ -25,7 +27,7 @@ class MGMaterialTexture private constructor(
             textureName: String,
             localPath: String,
             poolTextures: MGPoolTextures,
-            glHandler: MGHandlerGl
+            textureLoader: MGILoaderTexture
         ): MGTexture? {
             var texture = poolTextures.get(
                 textureName
@@ -43,13 +45,9 @@ class MGMaterialTexture private constructor(
                 textureId
             )
 
-            glHandler.post(
-                MGRunnableTextureSetupBitmap(
-                    MGTextureBitmap(
-                        texture
-                    ),
-                    bitmap
-                )
+            textureLoader.loadTexture(
+                bitmap,
+                texture
             )
 
             poolTextures.add(
@@ -101,7 +99,7 @@ class MGMaterialTexture private constructor(
     fun load(
         poolTextures: MGPoolTextures,
         localPath: String,
-        glHandler: MGHandlerGl
+        textureLoader: MGILoaderTexture
     ) {
         list.forEach { _, it ->
             loadTextureDrawerCached(
@@ -109,7 +107,7 @@ class MGMaterialTexture private constructor(
                 it.textureName,
                 localPath,
                 poolTextures,
-                glHandler
+                textureLoader
             )?.run {
                 it.drawer.texture = this
             }

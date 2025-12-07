@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import java.util.LinkedList;
 
 import good.damn.engine.loaders.MGLoaderLevelLibrary;
+import good.damn.engine.loaders.texture.MGLoaderTextureAsync;
 import good.damn.engine.models.MGMGeneratorMaterial;
 import good.damn.engine.models.MGMInformator;
 import good.damn.engine.models.MGMInformatorShader;
@@ -84,6 +85,10 @@ public final class MGTriggerMesh {
         @NonNull
         final MGHandlerGl glHandler = informator
             .getGlHandler();
+
+        @NonNull
+        final MGLoaderTextureAsync loaderTexture = informator
+            .getGlLoaderTexture();
 
         @NonNull
         final MGMInformatorShader shaders = informator
@@ -247,7 +252,7 @@ public final class MGTriggerMesh {
         materialTexture.load(
             informator.getPoolTextures(),
             "textures",
-            glHandler
+            loaderTexture
         );
 
         @NonNull

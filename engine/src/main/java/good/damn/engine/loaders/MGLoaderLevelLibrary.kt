@@ -9,14 +9,18 @@ import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.models.json.MGMLevelInfoTexturesLandscape
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
+import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.textures.MGTextureBitmap
+import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.engine.runnables.MGRunnableTextureSetupBitmap
 import good.damn.engine.shader.generators.MGGeneratorMaterial
 import good.damn.engine.shader.generators.MGGeneratorShader
+import good.damn.engine.utils.MGUtilsBitmap
 import good.damn.engine.utils.MGUtilsFile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -302,7 +306,7 @@ class MGLoaderLevelLibrary(
                             "${t.diffuseMapName}$EXTENSION_TEXTURE",
                             localPathLibTextures,
                             informator.poolTextures,
-                            informator.glHandler
+                            informator.glLoaderTexture
                         )!!
                     ),
                     MGTextureBitmap(
@@ -311,7 +315,7 @@ class MGLoaderLevelLibrary(
                             "${t.controlMapName}$EXTENSION_TEXTURE",
                             localPathLibTextures,
                             informator.poolTextures,
-                            informator.glHandler
+                            informator.glLoaderTexture
                         )!!
                     )
                 )

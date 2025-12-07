@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGHandlerGl(
-    private val queue: ConcurrentLinkedDeque<MGIRunnableBounds>,
+    private val queue: ConcurrentLinkedQueue<MGIRunnableBounds>,
     private val queueCycle: ConcurrentLinkedQueue<MGIRunnableBounds>
 ) {
     fun registerCycleTask(

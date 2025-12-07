@@ -2,6 +2,7 @@ package good.damn.engine.opengl.entities
 
 import android.opengl.GLES30
 import android.opengl.GLES30.GL_CLAMP_TO_EDGE
+import good.damn.engine.loaders.texture.MGLoaderTexture
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
@@ -42,13 +43,12 @@ class MGSky(
     )
 ) {
     fun configure(
-        poolTextures: MGPoolTextures,
-        glHandler: MGHandlerGl
+        poolTextures: MGPoolTextures
     ) {
         materialTexture.load(
             poolTextures,
             "textures/sky",
-            glHandler
+            MGLoaderTexture.INSTANCE
         )
 
         MGObject3d.createFromAssets(

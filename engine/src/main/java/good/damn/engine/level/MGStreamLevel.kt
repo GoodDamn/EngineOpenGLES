@@ -116,7 +116,7 @@ object MGStreamLevel {
                 prop.materialTexture.load(
                     informator.poolTextures,
                     localPathLibTextures,
-                    informator.glHandler
+                    informator.glLoaderTexture
                 )
 
                 flow.emit(
@@ -151,9 +151,9 @@ object MGStreamLevel {
                 localPathLibTextures,
                 mapProp
             )?.run {
-                /*flow.emit(
+                flow.emit(
                     this
-                )*/
+                )
             }
         }
 
@@ -195,7 +195,7 @@ object MGStreamLevel {
         prop.materialTexture.load(
             informator.poolTextures,
             localLibPathTextures,
-            informator.glHandler
+            informator.glLoaderTexture
         )
 
         /*informator.glHandler.post(

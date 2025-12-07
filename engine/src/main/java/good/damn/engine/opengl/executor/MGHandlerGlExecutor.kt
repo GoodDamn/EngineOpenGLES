@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGHandlerGlExecutor {
 
-    val queue = ConcurrentLinkedDeque<MGIRunnableBounds>()
+    val queue = ConcurrentLinkedQueue<MGIRunnableBounds>()
     val queueCycle = ConcurrentLinkedQueue<MGIRunnableBounds>()
 
     fun runTasksBounds(
@@ -14,7 +14,7 @@ class MGHandlerGlExecutor {
         height: Int
     ) {
         while (queue.isNotEmpty()) {
-            queue.removeLast().run(
+            queue.remove().run(
                 width, height
             )
         }
