@@ -10,16 +10,12 @@ import good.damn.engine.loaders.MGLoaderLevelTextures
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInstanceMesh
 import good.damn.engine.models.MGMLandscapeTexture
-import good.damn.engine.models.json.MGMLevelInfoLandscape
 import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.shaders.MGShaderLandscapeTexture
-import good.damn.engine.opengl.shaders.MGShaderOpaque
-import good.damn.engine.runnables.MGRunnableGenerateLandscapeTexture
 import good.damn.mapimporter.MIImportMap
 import good.damn.mapimporter.models.MIMProp
 import kotlinx.coroutines.CoroutineScope
@@ -160,7 +156,7 @@ object MGStreamLevel {
     }
 
     private inline fun loadLandscape(
-        landscape: MGMLevelInfoLandscape,
+        landscape: MGMLevelInfoMesh,
         loaderMesh: MGLoaderLevelMeshA3D,
         loaderProp: MGLoaderLevelLibrary,
         informator: MGMInformator,
@@ -188,8 +184,8 @@ object MGStreamLevel {
             1f
         ) ?: return null
 
-        val prop = loaderProp.readLandscape(
-            landscape.textures
+        val prop = loaderProp.readProp(
+            landscape
         )
 
         prop.materialTexture.load(
@@ -206,7 +202,6 @@ object MGStreamLevel {
                 prop.materialTexture
             )
         )*/
-
 
 
         return MGMInstanceMesh(

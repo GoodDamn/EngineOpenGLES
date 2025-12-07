@@ -145,8 +145,9 @@ public final class MGTriggerMesh {
                 MGLoaderLevelLibrary.ID_DIFFUSE,
                 MGEnumTextureType.DIFFUSE
             );
-            builder.textureDiffuse(
-                obj.texturesDiffuseFileName[0]
+            builder.buildTexture(
+                obj.texturesDiffuseFileName[0],
+                MGEnumTextureType.DIFFUSE
             );
 
             shaderTextures.add(
@@ -169,8 +170,9 @@ public final class MGTriggerMesh {
                     MGLoaderLevelLibrary.ID_METALLIC
                 )
             );
-            builder.textureMetallic(
-                obj.texturesMetallicFileName[0]
+            builder.buildTexture(
+                obj.texturesMetallicFileName[0],
+                MGEnumTextureType.METALLIC
             );
             generatorMaterial.mapTexture(
                 MGLoaderLevelLibrary.ID_METALLIC,
@@ -199,8 +201,9 @@ public final class MGTriggerMesh {
                     MGLoaderLevelLibrary.ID_EMISSIVE
                 )
             );
-            builder.textureEmissive(
-                obj.texturesEmissiveFileName[0]
+            builder.buildTexture(
+                obj.texturesEmissiveFileName[0],
+                MGEnumTextureType.EMISSIVE
             );
             generatorMaterial.mapTexture(
                 MGLoaderLevelLibrary.ID_EMISSIVE,

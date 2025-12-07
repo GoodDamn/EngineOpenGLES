@@ -21,6 +21,7 @@ import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
+import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.executor.MGHandlerGlExecutor
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
@@ -114,8 +115,9 @@ class MGRendererLevelEditor(
         ConcurrentHashMap(50),
         MGSky(
             MGMaterialTexture.Builder()
-                .textureDiffuse(
-                    "sky.png"
+                .buildTexture(
+                    "sky.png",
+                    MGEnumTextureType.DIFFUSE
                 ).build(),
             MGArrayVertexConfigurator(
                 MGEnumArrayVertexConfiguration.SHORT

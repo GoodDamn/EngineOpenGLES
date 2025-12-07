@@ -125,83 +125,21 @@ class MGMaterialTexture private constructor(
             MGMTexturePart
         >()
 
-        fun textureDiffuse(
-            textureName: String
+        fun buildTexture(
+            textureName: String,
+            type: MGEnumTextureType
         ): Builder {
             map.put(
-                MGEnumTextureType.DIFFUSE.v,
+                type.v,
                 MGMTexturePart(
-                    MGEnumTextureType.DIFFUSE,
+                    type,
                     MGDrawerMaterialTexture(
                         DEFAULT
                     ),
                     textureName
                 )
             )
-            return this
-        }
 
-        fun textureMetallic(
-            textureName: String
-        ): Builder {
-            map.put(
-                MGEnumTextureType.METALLIC.v,
-                MGMTexturePart(
-                    MGEnumTextureType.METALLIC,
-                    MGDrawerMaterialTexture(
-                        DEFAULT
-                    ),
-                    textureName
-                )
-            )
-            return this
-        }
-
-        fun textureEmissive(
-            textureName: String
-        ): Builder {
-            map.put(
-                MGEnumTextureType.EMISSIVE.v,
-                MGMTexturePart(
-                    MGEnumTextureType.EMISSIVE,
-                    MGDrawerMaterialTexture(
-                        DEFAULT
-                    ),
-                    textureName
-                )
-            )
-            return this
-        }
-
-        fun textureOpacity(
-            textureName: String
-        ): Builder {
-            map.put(
-                MGEnumTextureType.OPACITY.v,
-                MGMTexturePart(
-                    MGEnumTextureType.OPACITY,
-                    MGDrawerMaterialTexture(
-                        DEFAULT
-                    ),
-                    textureName
-                )
-            )
-            return this
-        }
-
-        fun textureNormal(
-            textureName: String
-        ): Builder {
-            map.put(
-                MGEnumTextureType.NORMAL.v,
-                MGMTexturePart(
-                    MGEnumTextureType.NORMAL,
-                    MGDrawerMaterialTexture(
-                        DEFAULT
-                    ),
-                    textureName
-                )
-            )
             return this
         }
 
