@@ -1,5 +1,7 @@
 package good.damn.engine.loaders
 
+import android.util.Log
+import good.damn.engine.models.MGMGeneratorMaterial
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGProp
 import good.damn.engine.models.json.MGMLevelInfoMesh
@@ -34,6 +36,7 @@ class MGLoaderLevelLibrary(
         const val ID_EMISSIVE = "textEmissive"
         const val ID_OPACITY = "textOpacity"
         const val ID_NORMAL = "textNormal"
+        const val ID_BLEND = "textBlend"
         private const val EXTENSION_TEXTURE = ".jpg"
     }
 
@@ -116,100 +119,135 @@ class MGLoaderLevelLibrary(
         mesh: MGMLevelInfoMesh,
     ): MGProp {
         val fileName = mesh.a3dMesh
-        val diffuse = mesh.textures.textures[
-            0
-        ].diffuseMapName
+        val textures = mesh.textures.textures
 
         val builderMaterial = MGMaterialTexture.Builder()
-
-        val generatorMaterial = MGGeneratorMaterial(
-            informator.shaders.source
-        )
 
         val generatorShader = MGGeneratorShader(
             informator.shaders.source
         )
 
-        val shaderTextures = LinkedList<
-            MGShaderTexture
-        >()
+        val shaderMaterials = LinkedList<MGShaderMaterial>()
+        val codeMaterials = LinkedList<MGMGeneratorMaterial>()
 
-        buildTextureMap(
-            generatorMaterial,
-            builderMaterial,
-            "${diffuse}$EXTENSION_TEXTURE",
-            1.0f,
-            shaderTextures,
-            MGEnumTextureType.DIFFUSE,
-            ID_DIFFUSE
-        )
+        for (index in textures.indices) {
+            val generatorMaterial = MGGeneratorMaterial(
+                informator.shaders.source
+            )
 
-        buildTextureMap(
-            generatorMaterial,
-            builderMaterial,
-            "${diffuse}_m$EXTENSION_TEXTURE",
-            0.0f,
-            shaderTextures,
-            MGEnumTextureType.METALLIC,
-            ID_METALLIC
-        ).run {
-            if (this) {
-                generatorShader.specular()
-            } else {
-                generatorShader.specularNo()
+            val shaderTextures = LinkedList<
+                MGShaderTexture
+            >()
+
+            val diffuse = textures[index].diffuseMapName
+            val controlMapName = textures[index].controlMapName
+
+            buildTextureMap(
+                generatorMaterial,
+                builderMaterial,
+                "${diffuse}$EXTENSION_TEXTURE",
+                1.0f,
+                shaderTextures,
+                MGEnumTextureType.DIFFUSE,
+                "${ID_DIFFUSE}$index"
+            )
+
+            buildTextureMap(
+                generatorMaterial,
+                builderMaterial,
+                "${diffuse}_m$EXTENSION_TEXTURE",
+                0.0f,
+                shaderTextures,
+                MGEnumTextureType.METALLIC,
+                "${ID_METALLIC}$index"
+            ).run {
+                if (index == 0) {
+                    if (this) {
+                        generatorShader.specular()
+                    } else {
+                        generatorShader.specularNo()
+                    }
+                }
+            }
+
+            buildTextureMap(
+                generatorMaterial,
+                builderMaterial,
+                "${diffuse}_e$EXTENSION_TEXTURE",
+                0.0f,
+                shaderTextures,
+                MGEnumTextureType.EMISSIVE,
+                "${ID_EMISSIVE}$index"
+            )
+
+            buildTextureMap(
+                generatorMaterial,
+                builderMaterial,
+                "${diffuse}_o$EXTENSION_TEXTURE",
+                1.0f,
+                shaderTextures,
+                MGEnumTextureType.OPACITY,
+                "${ID_OPACITY}$index"
+            )
+
+            buildTexture(
+                builderMaterial,
+                "${diffuse}_n$EXTENSION_TEXTURE",
+                shaderTextures,
+                MGEnumTextureType.NORMAL,
+                "${ID_NORMAL}$index"
+            ).run {
+                if (this) {
+                    generatorMaterial.normalMapping(
+                        "${ID_NORMAL}$index"
+                    )
+                } else {
+                    generatorMaterial.normalVertex(
+                        "${ID_NORMAL}$index"
+                    )
+                }
+            }
+
+            buildTextureMap(
+                generatorMaterial,
+                builderMaterial,
+                "${controlMapName}$EXTENSION_TEXTURE",
+                1.0f,
+                shaderTextures,
+                MGEnumTextureType.BLEND,
+                "${ID_BLEND}$index"
+            )
+
+            val fragmentCodeMaterial = generatorMaterial.generate(
+                index.toString()
+            )
+
+            codeMaterials.add(
+                fragmentCodeMaterial
+            )
+
+            if (index == 0) {
+                generatorShader.lighting()
+            }
+
+            generatorShader.material(
+                fragmentCodeMaterial
+            )
+
+            shaderMaterials.add(
+                MGShaderMaterial(
+                    "shine",
+                    shaderTextures.toTypedArray()
+                )
+            )
+
+            if (controlMapName == null) {
+                break
             }
         }
-
-        buildTextureMap(
-            generatorMaterial,
-            builderMaterial,
-            "${diffuse}_e$EXTENSION_TEXTURE",
-            0.0f,
-            shaderTextures,
-            MGEnumTextureType.EMISSIVE,
-            ID_EMISSIVE
-        )
-
-        buildTextureMap(
-            generatorMaterial,
-            builderMaterial,
-            "${diffuse}_o$EXTENSION_TEXTURE",
-            1.0f,
-            shaderTextures,
-            MGEnumTextureType.OPACITY,
-            ID_OPACITY
-        )
-
-        buildTexture(
-            builderMaterial,
-            "${diffuse}_m$EXTENSION_TEXTURE",
-            shaderTextures,
-            MGEnumTextureType.NORMAL,
-            ID_NORMAL
-        ).run {
-            if (this) {
-                generatorMaterial.normalMapping(
-                    ID_NORMAL
-                )
-            } else {
-                generatorMaterial.normalVertex(
-                    ID_NORMAL
-                )
-            }
-        }
-
-        val idMaterial = "0"
-
-        val fragmentCodeMaterial = generatorMaterial.generate(
-            idMaterial
-        )
-
-        generatorShader.lighting().material(
-            fragmentCodeMaterial
-        )
 
         val fragmentCode = generatorShader.generate(
-            fragmentCodeMaterial
+            codeMaterials.toTypedArray()
         )
 
         var cachedShader = informator.shaders.opaqueGeneratedInstanced[
@@ -218,10 +256,10 @@ class MGLoaderLevelLibrary(
 
         if (cachedShader == null) {
             cachedShader = MGShaderOpaque(
-                MGShaderMaterial.singleMaterial(
-                    shaderTextures.toTypedArray()
-                )
+                shaderMaterials.toTypedArray()
             )
+
+            Log.d("TAG", "readProp: $fragmentCode")
             informator.shaders.opaqueGeneratedInstanced.cacheAndCompile(
                 fragmentCode,
                 informator.shaders.source.verti,

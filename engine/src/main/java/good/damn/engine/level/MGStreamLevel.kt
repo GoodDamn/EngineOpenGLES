@@ -194,15 +194,6 @@ object MGStreamLevel {
             informator.glLoaderTexture
         )
 
-        /*informator.glHandler.post(
-            MGRunnableGenerateLandscapeTexture(
-                Size(512, 512),
-                prop.textures,
-                MGShaderLandscapeTexture(),
-                prop.materialTexture
-            )
-        )*/
-
 
         return MGMInstanceMesh(
             prop.shaderOpaque,

@@ -7,5 +7,6 @@ enum class MGEnumTextureType(
     METALLIC(1),
     EMISSIVE(2),
     OPACITY(3),
-    NORMAL(4)
+    NORMAL(4),
+    BLEND(5)
 }

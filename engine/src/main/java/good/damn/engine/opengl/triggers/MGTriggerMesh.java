@@ -221,7 +221,7 @@ public final class MGTriggerMesh {
 
         @NonNull
         final String src = generatorShader.generate(
-            srcCodeMaterial
+            new MGMGeneratorMaterial[]{srcCodeMaterial}
         );
 
         @NonNull

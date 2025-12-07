@@ -46,13 +46,16 @@ class MGGeneratorShader(
     }
 
     fun generate(
-        material: MGMGeneratorMaterial
+        material: Array<MGMGeneratorMaterial>
     ): String {
+
         return mBuilderSourceFragment.append(
-            source.fragMain.replace(
-                "$0",
-                "${MGGeneratorMaterial.ID_MATERIAL_FUNC}${material.idMethod}();"
-            )
-        ).toString()
+                source.fragMain.replace(
+                    "$0",
+                    "${MGGeneratorMaterial.ID_MATERIAL_FUNC}${material[0].idMethod}();"
+                )
+            ).toString()
+
+
     }
 }
