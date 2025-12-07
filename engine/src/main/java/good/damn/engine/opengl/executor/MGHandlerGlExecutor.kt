@@ -1,21 +1,34 @@
 package good.damn.engine.opengl.executor
 
+import good.damn.engine.opengl.runnables.MGIRunnableBounds
+import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGHandlerGlExecutor {
 
-    val queue = ConcurrentLinkedQueue<Runnable>()
-    val queueTasks = ConcurrentLinkedQueue<Runnable>()
+    val queue = ConcurrentLinkedDeque<MGIRunnableBounds>()
+    val queueCycle = ConcurrentLinkedQueue<MGIRunnableBounds>()
 
-    fun runTasks() {
+    fun runTasksBounds(
+        width: Int,
+        height: Int
+    ) {
         while (queue.isNotEmpty()) {
-            queue.remove().run()
+            queue.removeLast().run(
+                width, height
+            )
         }
     }
 
-    fun runCycle() {
-        for (task in queueTasks) {
-            task.run()
+    fun runCycle(
+        width: Int,
+        height: Int
+    ) {
+        for (task in queueCycle) {
+            task.run(
+                width,
+                height
+            )
         }
     }
 }

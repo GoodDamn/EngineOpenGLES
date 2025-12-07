@@ -1,22 +1,26 @@
 package good.damn.engine.opengl.thread
 
+import good.damn.engine.opengl.runnables.MGIRunnableBounds
+import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGHandlerGl(
-    private val queue: ConcurrentLinkedQueue<Runnable>,
-    private val queueCycle: ConcurrentLinkedQueue<Runnable>
+    private val queue: ConcurrentLinkedDeque<MGIRunnableBounds>,
+    private val queueCycle: ConcurrentLinkedQueue<MGIRunnableBounds>
 ) {
     fun registerCycleTask(
-        run: Runnable
+        run: MGIRunnableBounds
     ) {
-        queue.add(
+        queueCycle.add(
             run
         )
     }
 
     fun post(
-        run: Runnable
-    ) = queue.add(
-        run
-    )
+        run: MGIRunnableBounds
+    ) {
+        queue.add(
+            run
+        )
+    }
 }

@@ -11,6 +11,7 @@ import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
+import good.damn.engine.opengl.runnables.MGIRunnableBounds
 import good.damn.engine.opengl.shaders.MGShaderLandscapeTexture
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.textures.MGTexture
@@ -23,7 +24,7 @@ class MGRunnableGenerateLandscapeTexture(
     private val textures: Array<MGMLandscapeTexture>,
     private val shader: MGShaderLandscapeTexture,
     private val materialTexture: MGMaterialTexture
-): Runnable {
+): MGIRunnableBounds {
 
     private val mFramebuffer = MGFramebuffer()
     private val mTextureResult = MGTextureAttachment(
@@ -38,7 +39,10 @@ class MGRunnableGenerateLandscapeTexture(
         mArrayVertexQuad
     )
 
-    override fun run() {
+    override fun run(
+        width: Int,
+        height: Int
+    ) {
         shader.setup(
             "shaders/post/vert.glsl",
             "shaders/post/frag_land.glsl",

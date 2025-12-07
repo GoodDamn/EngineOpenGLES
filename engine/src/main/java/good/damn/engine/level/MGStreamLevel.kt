@@ -198,14 +198,14 @@ object MGStreamLevel {
             informator.glHandler
         )
 
-        informator.glHandler.post(
+        /*informator.glHandler.post(
             MGRunnableGenerateLandscapeTexture(
                 Size(512, 512),
                 prop.textures,
                 MGShaderLandscapeTexture(),
                 prop.materialTexture
             )
-        )
+        )*/
 
 
 

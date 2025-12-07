@@ -5,6 +5,7 @@ import good.damn.engine.opengl.arrays.MGArrayVertexInstanced
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
+import good.damn.engine.opengl.runnables.MGIRunnableBounds
 import java.nio.Buffer
 import java.nio.FloatBuffer
 
@@ -16,9 +17,12 @@ class MGRunnableGenVertexArrayInstanced(
     private val matrixModel: FloatBuffer,
     private val matrixRotation: FloatBuffer,
     private val matrixSize: Int
-): Runnable {
+): MGIRunnableBounds {
 
-    override fun run() {
+    override fun run(
+        width: Int,
+        height: Int
+    ) {
         configurator.configure(
             bufferVertices,
             bufferIndices,

@@ -1,34 +1,26 @@
 package good.damn.engine.opengl.renderer
 
-import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
-import android.opengl.GLU
 import android.util.Log
 import android.util.SparseArray
 import android.view.MotionEvent
 import good.damn.engine.MGEngine
-import good.damn.engine.hud.MGHud
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.loaders.scripts.MGLoaderScripts
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInformatorShader
-import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.entities.MGMaterialTexture
-import good.damn.engine.opengl.entities.MGPostProcess
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
-import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.executor.MGHandlerGlExecutor
-import good.damn.engine.opengl.framebuffer.MGFramebuffer
-import good.damn.engine.opengl.framebuffer.MGFramebufferScene
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
@@ -36,7 +28,8 @@ import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.shaders.MGShaderPostProcess
+import good.damn.engine.opengl.runnables.MGHudScene
+import good.damn.engine.opengl.runnables.MGIRunnableBounds
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
 import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
@@ -44,8 +37,6 @@ import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.opengl.textures.MGTexture
-import good.damn.engine.opengl.textures.MGTextureAttachment
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.shader.MGShaderCache
@@ -88,7 +79,6 @@ class MGRendererLevelEditor(
         )
     )
 
-    private val mShaderPostProcess = MGShaderPostProcess()
 
     private val mPoolTextures = MGPoolTextures()
 
@@ -135,44 +125,44 @@ class MGRendererLevelEditor(
         MGPoolMeshesStatic(),
         MGHandlerGl(
             mHandlerGlExecutor.queue,
-            mHandlerGlExecutor.queueTasks
+            mHandlerGlExecutor.queueCycle,
         ),
         true
     )
 
-    private val mSwitcherDrawMode = MGSwitcherDrawMode(
+    private val mHudScene = MGHudScene(
+        requesterUserContent,
         mInformator
     )
 
-    private val mHud = MGHud(
-        requesterUserContent,
-        mInformator,
-        mSwitcherDrawMode
-    )
+    init {
+        mInformator.glHandler.post(
+            object: MGIRunnableBounds {
+                override fun run(
+                    width: Int,
+                    height: Int
+                ) {
+                    mHudScene.hud.layout(
+                        width.toFloat(),
+                        height.toFloat()
+                    )
+                }
+            }
+        )
+
+        mInformator.glHandler.registerCycleTask(
+            mHudScene.runnableCycle
+        )
+    }
 
     private var mWidth = 0
     private var mHeight = 0
-
-    private val mTextureAttachmentPost = MGTextureAttachment(
-        MGTexture(0)
-    )
-    private val mFramebufferScene = MGFramebufferScene()
-    private val mPostProcess = MGPostProcess()
 
     override fun onSurfaceCreated(
         gl: GL10?,
         config: EGLConfig?
     ) {
         MGUtilsFile.glWriteExtensions()
-
-        mShaderPostProcess.setup(
-            "shaders/post/vert.glsl",
-            "shaders/post/frag.glsl",
-            MGBinderAttribute.Builder()
-                .bindPosition()
-                .bindTextureCoordinates()
-                .build()
-        )
 
         setupShaders(
             mInformatorShader.map,
@@ -234,9 +224,6 @@ class MGRendererLevelEditor(
             mInformator.glHandler
         )
 
-        mPostProcess.configure()
-        mFramebufferScene.generate()
-
         mVerticesBox.configure(
             MGUtilsBuffer.createFloat(
                 MGUtilsVertIndices.createCubeVertices(
@@ -270,8 +257,6 @@ class MGRendererLevelEditor(
         glCullFace(
             GL_BACK
         )
-
-        mHandlerGlExecutor.runTasks()
     }
 
     override fun onSurfaceChanged(
@@ -280,86 +265,31 @@ class MGRendererLevelEditor(
         height: Int
     ) {
         Log.d(TAG, "onSurfaceChanged: ${Thread.currentThread().name}")
-        mWidth = width
-        mHeight = height
-
-        mInformator.glHandler.post {
-            mTextureAttachmentPost.texture.generate()
-            mTextureAttachmentPost.glTextureSetup(
-                width, height
-            )
-            mFramebufferScene.setupAttachment(
-                mTextureAttachmentPost,
-                mWidth,
-                mHeight,
-            )
-        }
 
         mInformator.camera.setPerspective(
             width,
             height
         )
 
-        mHud.layout(
-            width.toFloat(),
-            height.toFloat()
-        )
-
-
-        mHandlerGlExecutor.runTasks()
+        mWidth = width
+        mHeight = height
     }
 
     override fun onDrawFrame(
         gl: GL10?
     ) {
-        mHandlerGlExecutor.runTasks()
-        mHandlerGlExecutor.runCycle()
-
-        mFramebufferScene.bind()
-        glViewport(
-            0,
-            0,
-            mWidth,
-            mHeight
+        mHandlerGlExecutor.runTasksBounds(
+            mWidth, mHeight
         )
 
-        glClear(
-            GL_COLOR_BUFFER_BIT or
-            GL_DEPTH_BUFFER_BIT
-        )
-
-        glClearColor(
-            0.0f,
-            0.0f,
-            0.0f,
-            1.0f
-        )
-
-        glEnable(
-            GL_CULL_FACE
-        )
-
-        glEnable(
-            GL_DEPTH_TEST
-        )
-
-        mSwitcherDrawMode
-            .currentDrawerMode
-            .draw()
-
-        mFramebufferScene.unbind()
-
-        mPostProcess.draw(
-            mWidth,
-            mHeight,
-            mShaderPostProcess,
-            mTextureAttachmentPost
+        mHandlerGlExecutor.runCycle(
+            mWidth, mHeight
         )
     }
 
     fun onTouchEvent(
         event: MotionEvent
-    ) = mHud.touchEvent(
+    ) = mHudScene.hud.touchEvent(
         event
     )
 
