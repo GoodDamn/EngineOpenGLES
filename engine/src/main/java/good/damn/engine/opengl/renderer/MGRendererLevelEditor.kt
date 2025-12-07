@@ -37,6 +37,7 @@ import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
+import good.damn.engine.opengl.shaders.base.MGShaderSky
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
@@ -77,7 +78,8 @@ class MGRendererLevelEditor(
         MGMShader(
             MGShaderSingleMap(),
             MGShaderSingleMapInstanced()
-        )
+        ),
+        MGShaderSky()
     )
 
 
@@ -170,13 +172,21 @@ class MGRendererLevelEditor(
     ) {
         MGUtilsFile.glWriteExtensions()
 
+        val bindUv = MGBinderAttribute.Builder()
+            .bindPosition()
+            .bindTextureCoordinates()
+            .build()
+
+        mInformatorShader.sky.setup(
+            "shaders/diffuse/vert.glsl",
+            "shaders/diffuse/frag_sky.glsl",
+            bindUv
+        )
+
         setupShaders(
             mInformatorShader.map,
             "shaders/diffuse",
-            binderAttributeSingle = MGBinderAttribute.Builder()
-                .bindPosition()
-                .bindTextureCoordinates()
-                .build(),
+            binderAttributeSingle = bindUv,
             binderAttributeInstanced = MGBinderAttribute.Builder()
                 .bindPosition()
                 .bindTextureCoordinates()

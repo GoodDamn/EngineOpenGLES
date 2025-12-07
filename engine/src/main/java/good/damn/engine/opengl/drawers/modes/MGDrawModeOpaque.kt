@@ -14,7 +14,7 @@ data class MGDrawModeOpaque(
 
     override fun draw() {
 
-        val shaderSky = informator.shaders.map.single
+        val shaderSky = informator.shaders.sky
         val shaderTrigger = informator.shaders.wireframe.single
         val camera = informator.camera
         val drawerLightDirectional = informator.drawerLightDirectional
@@ -23,6 +23,9 @@ data class MGDrawModeOpaque(
         shaderSky.use()
         camera.draw(
             shaderSky
+        )
+        drawerLightDirectional.drawColor(
+            shaderSky.uniformColor
         )
 
         informator.meshSky.drawSingleTexture(

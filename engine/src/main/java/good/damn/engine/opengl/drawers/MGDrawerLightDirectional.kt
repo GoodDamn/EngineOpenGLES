@@ -44,14 +44,22 @@ class MGDrawerLightDirectional
         }
     }
 
-    override fun draw(
-        shader: MGShaderLightDirectional
+    fun drawColor(
+        shader: Int
     ) {
         glUniform3f(
-            shader.uniformColor,
+            shader,
             info.colorLight.x,
             info.colorLight.y,
             info.colorLight.z
+        )
+    }
+
+    override fun draw(
+        shader: MGShaderLightDirectional
+    ) {
+        drawColor(
+            shader.uniformColor
         )
 
         glUniform3f(
