@@ -47,15 +47,15 @@ class MGGeneratorShader(
 
     fun generate(
         material: Array<MGMGeneratorMaterial>
-    ): String {
-
-        return mBuilderSourceFragment.append(
-                source.fragMain.replace(
-                    "$0",
-                    "${MGGeneratorMaterial.ID_MATERIAL_FUNC}${material[0].idMethod}();"
-                )
-            ).toString()
-
-
-    }
+    ) = mBuilderSourceFragment.append(
+        source.fragMain.replace(
+            "$0",
+            StringBuilder().run {
+                for (m in material) {
+                    append("${MGGeneratorMaterial.ID_MATERIAL_FUNC}${m.idMethod}();")
+                }
+                toString()
+            }
+        )
+    ).toString()
 }
