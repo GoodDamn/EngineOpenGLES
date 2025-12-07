@@ -2,20 +2,21 @@ package good.damn.engine.opengl.thread
 
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class MGHandlerGl
-: Runnable {
-
-    private val mQueue = ConcurrentLinkedQueue<Runnable>()
-
-    override fun run() {
-        while (mQueue.isNotEmpty()) {
-            mQueue.remove().run()
-        }
+class MGHandlerGl(
+    private val queue: ConcurrentLinkedQueue<Runnable>,
+    private val queueCycle: ConcurrentLinkedQueue<Runnable>
+) {
+    fun registerCycleTask(
+        run: Runnable
+    ) {
+        queue.add(
+            run
+        )
     }
 
     fun post(
         run: Runnable
-    ) = mQueue.add(
+    ) = queue.add(
         run
     )
 }

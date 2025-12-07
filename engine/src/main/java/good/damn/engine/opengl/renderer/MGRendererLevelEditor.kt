@@ -26,6 +26,7 @@ import good.damn.engine.opengl.entities.MGPostProcess
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.enums.MGEnumTextureType
+import good.damn.engine.opengl.executor.MGHandlerGlExecutor
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import good.damn.engine.opengl.framebuffer.MGFramebufferScene
 import good.damn.engine.opengl.managers.MGManagerLight
@@ -103,6 +104,8 @@ class MGRendererLevelEditor(
         mVerticesBox
     )
 
+    private val mHandlerGlExecutor = MGHandlerGlExecutor()
+
     private val mInformator = MGMInformator(
         mInformatorShader,
         MGCameraFree(
@@ -130,7 +133,10 @@ class MGRendererLevelEditor(
         ),
         mPoolTextures,
         MGPoolMeshesStatic(),
-        MGHandlerGl(),
+        MGHandlerGl(
+            mHandlerGlExecutor.queue,
+            mHandlerGlExecutor.queueTasks
+        ),
         true
     )
 
@@ -193,25 +199,6 @@ class MGRendererLevelEditor(
                 .bindInstancedModel()
                 .build()
         )
-
-        /*setupShaders(
-            mInformatorShader.opaque,
-            "shaders/opaque",
-            binderAttributeSingle = MGBinderAttribute.Builder()
-                .bindPosition()
-                .bindTextureCoordinates()
-                .bindNormal()
-                .bindTangent()
-                .build(),
-            binderAttributeInstanced = MGBinderAttribute.Builder()
-                .bindPosition()
-                .bindTextureCoordinates()
-                .bindNormal()
-                .bindInstancedModel()
-                .bindInstancedRotationMatrix()
-                .bindTangent()
-                .build()
-        )*/
 
         setupShaders(
             mInformatorShader.texCoords,
@@ -284,9 +271,7 @@ class MGRendererLevelEditor(
             GL_BACK
         )
 
-        mInformator
-            .glHandler
-            .run()
+        mHandlerGlExecutor.runTasks()
     }
 
     override fun onSurfaceChanged(
@@ -320,17 +305,16 @@ class MGRendererLevelEditor(
             height.toFloat()
         )
 
-        mInformator
-            .glHandler
-            .run()
+
+        mHandlerGlExecutor.runTasks()
     }
 
     override fun onDrawFrame(
         gl: GL10?
     ) {
-        mInformator
-            .glHandler
-            .run()
+        mHandlerGlExecutor.runTasks()
+        mHandlerGlExecutor.runCycle()
+
         mFramebufferScene.bind()
         glViewport(
             0,

@@ -74,34 +74,9 @@ class MGRunnableGenerateLandscapeTexture(
         )
         mFramebuffer.unbind()
 
-        textures.forEach {
-            mFramebuffer.bind()
-            GLES30.glClear(
-                GLES30.GL_COLOR_BUFFER_BIT
-            )
-
-            GLES30.glClearColor(
-                1.0f,
-                0.0f,
-                1.0f,
-                1.0f
-            )
-
-            GLES30.glViewport(
-                0, 0,
-                landscapeBounds.width,
-                landscapeBounds.height
-            )
-
-            shader.use()
-            drawTextures(it)
-            mDrawerQuad.draw(
-                GLES30.GL_TRIANGLES
-            )
-            unbindTextures(it)
-
-            mFramebuffer.unbind()
-        }
+        processTexture(
+            textures[0]
+        )
 
         materialTexture.changeTextureByType(
             MGEnumTextureType.DIFFUSE,
@@ -109,9 +84,44 @@ class MGRunnableGenerateLandscapeTexture(
         )
     }
 
+    private inline fun processTexture(
+        it: MGMLandscapeTexture
+    ) {
+        mFramebuffer.bind()
+        GLES30.glClear(
+            GLES30.GL_COLOR_BUFFER_BIT
+        )
+
+        GLES30.glClearColor(
+            1.0f,
+            0.0f,
+            1.0f,
+            1.0f
+        )
+
+        GLES30.glViewport(
+            0, 0,
+            landscapeBounds.width,
+            landscapeBounds.height
+        )
+
+        shader.use()
+        drawTextures(it)
+        mDrawerQuad.draw(
+            GLES30.GL_TRIANGLES
+        )
+        unbindTextures(it)
+
+        mFramebuffer.unbind()
+    }
+
     private inline fun drawTextures(
         it: MGMLandscapeTexture
     ) {
+        mTextureResult.texture.draw(
+            shader.textureOutput
+        )
+
         it.diffuse.texture.draw(
             shader.textureDiffuse
         )
@@ -119,25 +129,20 @@ class MGRunnableGenerateLandscapeTexture(
         it.control.texture.draw(
             shader.textureControl
         )
-
-        mTextureResult.texture.draw(
-            shader.textureOutput
-        )
     }
 
     private inline fun unbindTextures(
         it: MGMLandscapeTexture
     ) {
+        mTextureResult.texture.unbind(
+            shader.textureOutput
+        )
         it.diffuse.texture.unbind(
             shader.textureDiffuse
         )
 
         it.control.texture.unbind(
             shader.textureControl
-        )
-
-        mTextureResult.texture.unbind(
-            shader.textureOutput
         )
     }
 }

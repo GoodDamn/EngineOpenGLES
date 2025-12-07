@@ -151,9 +151,9 @@ object MGStreamLevel {
                 localPathLibTextures,
                 mapProp
             )?.run {
-                flow.emit(
+                /*flow.emit(
                     this
-                )
+                )*/
             }
         }
 
@@ -185,7 +185,7 @@ object MGStreamLevel {
                     }
                 }
             ),
-            105f
+            1f
         ) ?: return null
 
         val prop = loaderProp.readLandscape(
@@ -206,6 +206,8 @@ object MGStreamLevel {
                 prop.materialTexture
             )
         )
+
+
 
         return MGMInstanceMesh(
             prop.shaderOpaque,
