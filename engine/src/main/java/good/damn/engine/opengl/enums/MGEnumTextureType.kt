@@ -8,5 +8,6 @@ enum class MGEnumTextureType(
     EMISSIVE(2),
     OPACITY(3),
     NORMAL(4),
-    BLEND(5)
+    BLEND(5),
+    AMBIENT_OCCLUSION(6)
 }

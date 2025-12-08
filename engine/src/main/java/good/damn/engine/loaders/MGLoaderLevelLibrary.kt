@@ -38,6 +38,7 @@ class MGLoaderLevelLibrary(
         const val ID_OPACITY = "textOpacity"
         const val ID_NORMAL = "textNormal"
         const val ID_BLEND = "textBlend"
+        const val ID_AMBIENT_OCCLUSION = "textAmbientOcclusion"
         private const val EXTENSION_TEXTURE = ".jpg"
     }
 
@@ -131,7 +132,7 @@ class MGLoaderLevelLibrary(
 
         val buildersMaterial = LinkedList<MGMaterialTexture>()
 
-        val texturesCount = 6
+        val texturesCount = 7
         var indexMaterial = 0
         for (index in textures.indices) {
             val diffuse = textures[index].diffuseMapName
@@ -239,6 +240,19 @@ class MGLoaderLevelLibrary(
                 "${ID_BLEND}$index",
                 1f
             )
+
+            buildTextureMap(
+                generatorMaterial,
+                builderMaterial,
+                "${mesh.ambientOcclusionMapName}$EXTENSION_TEXTURE",
+                1.0f,
+                shaderTextures,
+                MGEnumTextureType.AMBIENT_OCCLUSION,
+                indexMaterial,
+                "${ID_AMBIENT_OCCLUSION}$index",
+                1.0f
+            )
+
 
             val fragmentCodeMaterial = generatorMaterial.generate(
                 index.toString()
