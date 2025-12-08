@@ -131,7 +131,7 @@ class MGLoaderLevelLibrary(
 
         val buildersMaterial = LinkedList<MGMaterialTexture>()
 
-        val texturesCount = 5
+        val texturesCount = 6
         var indexMaterial = 0
         for (index in textures.indices) {
             val diffuse = textures[index].diffuseMapName
@@ -286,7 +286,6 @@ class MGLoaderLevelLibrary(
                 shaderMaterials.toTypedArray()
             )
 
-            Log.d("TAG", "readProp: $fragmentCode")
             informator.shaders.opaqueGeneratedInstanced.cacheAndCompile(
                 fragmentCode,
                 informator.shaders.source.verti,
