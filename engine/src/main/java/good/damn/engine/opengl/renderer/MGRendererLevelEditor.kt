@@ -32,12 +32,15 @@ import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.runnables.MGHudScene
 import good.damn.engine.opengl.runnables.MGIRunnableBounds
+import good.damn.engine.opengl.shaders.MGShaderGeometryPass
+import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
 import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleMode
 import good.damn.engine.opengl.shaders.MGShaderSingleModeInstanced
 import good.damn.engine.opengl.shaders.MGShaderSingleModeNormals
+import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.shaders.base.MGShaderSky
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.thread.MGHandlerGl
@@ -80,7 +83,21 @@ class MGRendererLevelEditor(
             MGShaderSingleMap(),
             MGShaderSingleMapInstanced()
         ),
-        MGShaderSky()
+        MGShaderSky(),
+        MGShaderGeometryPass(
+            arrayOf(
+                MGShaderMaterial(
+                    arrayOf(
+                        MGShaderTexture(
+                            "textDiffuse"
+                        ),
+                        MGShaderTexture(
+                            "textMetallic"
+                        )
+                    )
+                )
+            )
+        )
     )
 
 

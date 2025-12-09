@@ -13,13 +13,16 @@ import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleMap
 import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShader
 import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShaderNormals
 import good.damn.engine.opengl.enums.MGEnumDrawMode
+import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGSwitcherDrawMode(
-    private val informator: MGMInformator
+    private val informator: MGMInformator,
+    framebufferG: MGFramebuffer
 ) {
     private val drawerModeOpaque = MGDrawModeOpaque(
-        informator
+        informator,
+        framebufferG
     )
 
     private val drawerModeWireframe = MGDrawModeSingleShader(

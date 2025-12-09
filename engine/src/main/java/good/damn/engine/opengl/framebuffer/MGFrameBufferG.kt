@@ -6,13 +6,14 @@ import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.textures.MGTextureActive
 import good.damn.engine.opengl.textures.MGTextureAttachment
 
-class MGFrameBufferG {
+class MGFrameBufferG(
+    private val framebuffer: MGFramebuffer
+) {
 
     companion object {
         private const val TAG = "MGFrameBufferG"
     }
 
-    private val mFramebuffer = MGFramebuffer()
     private val mRenderBuffer = MGRenderBuffer()
 
     private val mTextureAttachmentPosition = MGTextureAttachment(
@@ -42,8 +43,8 @@ class MGFrameBufferG {
         width: Int,
         height: Int
     ) {
-        mFramebuffer.generate()
-        mFramebuffer.bind()
+        framebuffer.generate()
+        framebuffer.bind()
 
         val config = MGTextureAttachment.MGMConfig(
             GLES30.GL_RGBA16F,
@@ -91,11 +92,11 @@ class MGFrameBufferG {
             width, height
         )
 
-        if (!mFramebuffer.isComplete()) {
+        if (!framebuffer.isComplete()) {
             Log.d(TAG, "generate: frame buffer error")
         }
 
-        mFramebuffer.unbind()
+        framebuffer.unbind()
     }
 
     private inline fun generateAttachment(
@@ -112,7 +113,7 @@ class MGFrameBufferG {
         )
 
         texture.bind()
-        mFramebuffer.attachColorTexture(
+        framebuffer.attachColorTexture(
             this
         )
     }

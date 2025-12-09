@@ -11,6 +11,7 @@ import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.shaders.MGShaderGeometryPass
 import good.damn.engine.opengl.shaders.MGShaderOpaqueSingle
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.thread.MGHandlerGl
@@ -27,7 +28,7 @@ data class MGMInformator(
     >,
 
     val meshesInstanced: ConcurrentHashMap<
-        MGShaderOpaque,
+        MGShaderGeometryPass,
         ConcurrentLinkedQueue<MGDrawerMeshInstanced>
     >,
 

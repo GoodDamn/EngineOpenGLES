@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.runnables
 
+import android.opengl.GLES30
 import android.opengl.GLES30.GL_COLOR_ATTACHMENT0
 import android.opengl.GLES30.GL_COLOR_BUFFER_BIT
 import android.opengl.GLES30.GL_CULL_FACE
@@ -25,57 +26,10 @@ class MGRunnableCycleSwitcherDrawMode(
     private val switcherDrawMode: MGSwitcherDrawMode
 ): MGIRunnableBounds {
 
-    private val mShaderPostProcess = MGShaderPostProcess()
-
-    private val mTextureAttachmentPost = MGTextureAttachment(
-        GL_COLOR_ATTACHMENT0,
-        MGTexture(
-            MGTextureActive(0)
-        )
-    )
-    private val mFramebufferScene = MGFramebufferScene()
-    private val mPostProcess = MGPostProcess()
-
-    init {
-        informator.glHandler.post(
-            object: MGIRunnableBounds {
-                override fun run(
-                    width: Int,
-                    height: Int
-                ) {
-                    mShaderPostProcess.setup(
-                        "shaders/post/vert.glsl",
-                        "shaders/post/frag.glsl",
-                        MGBinderAttribute.Builder()
-                            .bindPosition()
-                            .bindTextureCoordinates()
-                            .build()
-                    )
-
-                    mTextureAttachmentPost.texture.generate()
-                    mTextureAttachmentPost.glTextureSetup(
-                        width, height
-                    )
-
-                    mPostProcess.configure()
-                    mFramebufferScene.generate()
-                    mFramebufferScene.setupAttachment(
-                        mTextureAttachmentPost,
-                        width,
-                        height
-                    )
-                }
-
-            }
-        )
-    }
-
-
     override fun run(
         width: Int,
         height: Int
     ) {
-        mFramebufferScene.bind()
         glViewport(
             0,
             0,
@@ -106,14 +60,5 @@ class MGRunnableCycleSwitcherDrawMode(
         switcherDrawMode
             .currentDrawerMode
             .draw()
-
-        mFramebufferScene.unbind()
-
-        mPostProcess.draw(
-            width,
-            height,
-            mShaderPostProcess,
-            mTextureAttachmentPost
-        )
     }
 }

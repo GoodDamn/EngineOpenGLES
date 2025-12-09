@@ -19,10 +19,10 @@ class MGMaterial(
     override fun draw(
         shader: MGShaderMaterial
     ) {
-        GLES30.glUniform1f(
+        /*GLES30.glUniform1f(
             shader.uniformShininess,
             shine
-        )
+        )*/
 
         materialTexture.draw(
             shader.textures

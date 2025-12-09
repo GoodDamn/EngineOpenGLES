@@ -118,12 +118,12 @@ class MGLoaderLevelLibrary(
     }
 
     fun readProp(
-        mesh: MGMLevelInfoMesh,
+        mesh: MGMLevelInfoMesh
     ): MGProp {
         val fileName = mesh.a3dMesh
         val textures = mesh.textures.textures
 
-        val generatorShader = MGGeneratorShader(
+        /*val generatorShader = MGGeneratorShader(
             informator.shaders.source
         )
 
@@ -285,9 +285,11 @@ class MGLoaderLevelLibrary(
             if (controlMapName == null) {
                 break
             }
-        }
+        }*/
 
-        val fragmentCode = generatorShader.generate(
+        val texture = textures[0]
+
+        /*val fragmentCode = generatorShader.generate(
             codeMaterials.toTypedArray()
         )
 
@@ -314,12 +316,21 @@ class MGLoaderLevelLibrary(
                     .bindTangent()
                     .build()
             )
-        }
+        }*/
 
         return MGProp(
             fileName,
-            buildersMaterial.toTypedArray(),
-            cachedShader,
+            arrayOf(
+                MGMaterialTexture.Builder()
+                    .buildTexture(
+                        "${texture.diffuseMapName}$EXTENSION_TEXTURE",
+                        MGEnumTextureType.DIFFUSE
+                    ).buildTexture(
+                        "${texture.diffuseMapName}_m$EXTENSION_TEXTURE",
+                        MGEnumTextureType.METALLIC
+                    ).build()
+            ),
+            informator.shaders.geometryPass,
             !(mNonCullFaceMeshes?.contains(
                 fileName
             ) ?: false),
