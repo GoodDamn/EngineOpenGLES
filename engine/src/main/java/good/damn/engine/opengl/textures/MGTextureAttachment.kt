@@ -10,11 +10,13 @@ import android.opengl.GLES30.glTexImage2D
 import android.opengl.GLES30.glTexParameteri
 
 class MGTextureAttachment(
+    val attachment: Int,
     val texture: MGTexture
 ) {
     fun glTextureSetup(
         width: Int,
-        height: Int
+        height: Int,
+        config: MGMConfig
     ) {
         texture.bind()
         glTexParameteri(
@@ -32,14 +34,20 @@ class MGTextureAttachment(
         glTexImage2D(
             GL_TEXTURE_2D,
             0,
-            GL_RGB,
+            config.internalFormat,
             width,
             height,
             0,
-            GL_RGB,
-            GL_UNSIGNED_BYTE,
+            config.outFormat,
+            config.type,
             null
         )
         texture.unbind()
     }
+
+    data class MGMConfig(
+        val internalFormat: Int,
+        val outFormat: Int,
+        val type: Int
+    )
 }

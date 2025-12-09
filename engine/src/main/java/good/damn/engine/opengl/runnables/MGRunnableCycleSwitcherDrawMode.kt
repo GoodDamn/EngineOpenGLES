@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.runnables
 
+import android.opengl.GLES30.GL_COLOR_ATTACHMENT0
 import android.opengl.GLES30.GL_COLOR_BUFFER_BIT
 import android.opengl.GLES30.GL_CULL_FACE
 import android.opengl.GLES30.GL_DEPTH_BUFFER_BIT
@@ -27,6 +28,7 @@ class MGRunnableCycleSwitcherDrawMode(
     private val mShaderPostProcess = MGShaderPostProcess()
 
     private val mTextureAttachmentPost = MGTextureAttachment(
+        GL_COLOR_ATTACHMENT0,
         MGTexture(
             MGTextureActive(0)
         )
