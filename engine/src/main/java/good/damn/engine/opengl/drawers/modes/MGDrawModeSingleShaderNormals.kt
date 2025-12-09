@@ -17,7 +17,10 @@ class MGDrawModeSingleShaderNormals(
     private val informator: MGMInformator
 ): MGIDrawer {
 
-    override fun draw() {
+    override fun draw(
+        width: Int,
+        height: Int
+    ) {
         shader.single.run {
             use()
             informator.camera.draw(this)

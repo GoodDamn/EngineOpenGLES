@@ -9,31 +9,16 @@ import good.damn.engine.opengl.framebuffer.MGFramebuffer
 
 class MGHudScene(
     requesterUserContent: MGIRequestUserContent,
-    informator: MGMInformator
+    informator: MGMInformator,
+    framebufferG: MGFramebuffer
 ) {
     val hud: MGHud
     val runnableCycle: MGIRunnableBounds
 
     init {
-        val framebuffer = MGFramebuffer()
-        val framebufferG = MGFrameBufferG(
-            framebuffer
-        )
-
         val switcherDrawMode = MGSwitcherDrawMode(
             informator,
-            framebuffer
-        )
-
-        informator.glHandler.post(
-            object: MGIRunnableBounds {
-                override fun run(width: Int, height: Int) {
-                    framebufferG.generate(
-                        width, height
-                    )
-                }
-
-            }
+            framebufferG
         )
 
         hud = MGHud(

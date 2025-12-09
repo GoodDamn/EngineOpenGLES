@@ -30,7 +30,7 @@ class MGRunnableCycleSwitcherDrawMode(
         width: Int,
         height: Int
     ) {
-        glViewport(
+        /*glViewport(
             0,
             0,
             width,
@@ -55,10 +55,12 @@ class MGRunnableCycleSwitcherDrawMode(
 
         glEnable(
             GL_DEPTH_TEST
-        )
+        )*/
 
         switcherDrawMode
             .currentDrawerMode
-            .draw()
+            .draw(
+                width, height
+            )
     }
 }

@@ -17,12 +17,15 @@ import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
+import good.damn.engine.opengl.drawers.MGDrawerLightPass
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.executor.MGHandlerGlExecutor
+import good.damn.engine.opengl.framebuffer.MGFrameBufferG
+import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
@@ -33,6 +36,7 @@ import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.runnables.MGHudScene
 import good.damn.engine.opengl.runnables.MGIRunnableBounds
 import good.damn.engine.opengl.shaders.MGShaderGeometryPass
+import good.damn.engine.opengl.shaders.MGShaderLightPass
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
@@ -97,7 +101,8 @@ class MGRendererLevelEditor(
                     )
                 )
             )
-        )
+        ),
+        MGShaderLightPass()
     )
 
 
@@ -115,11 +120,23 @@ class MGRendererLevelEditor(
         mVerticesBox
     )
 
+    private val mVerticesQuad = MGArrayVertexConfigurator(
+        MGEnumArrayVertexConfiguration.BYTE
+    )
+
+    private val mDrawerQuad = MGDrawerVertexArray(
+        mVerticesQuad
+    )
+
     private val mHandlerGlExecutor = MGHandlerGlExecutor()
 
     private val mHandlerGl = MGHandlerGl(
         mHandlerGlExecutor.queue,
         mHandlerGlExecutor.queueCycle,
+    )
+
+    private val mFramebufferG = MGFrameBufferG(
+        MGFramebuffer()
     )
 
     private val mInformator = MGMInformator(
@@ -128,6 +145,12 @@ class MGRendererLevelEditor(
             MGMatrixTranslate()
         ),
         MGDrawerLightDirectional(),
+        MGDrawerLightPass(
+            mFramebufferG.textureAttachmentPosition.texture,
+            mFramebufferG.textureAttachmentNormal.texture,
+            mFramebufferG.textureAttachmentColorSpec.texture,
+            mDrawerQuad
+        ),
         ConcurrentHashMap(15),
         ConcurrentHashMap(50),
         MGSky(
@@ -159,7 +182,8 @@ class MGRendererLevelEditor(
 
     private val mHudScene = MGHudScene(
         requesterUserContent,
-        mInformator
+        mInformator,
+        mFramebufferG.framebuffer
     )
 
     init {
@@ -169,6 +193,9 @@ class MGRendererLevelEditor(
                     width: Int,
                     height: Int
                 ) {
+                    mFramebufferG.generate(
+                        width, height
+                    )
                     mHudScene.hud.layout(
                         width.toFloat(),
                         height.toFloat()
@@ -191,10 +218,45 @@ class MGRendererLevelEditor(
     ) {
         MGUtilsFile.glWriteExtensions()
 
+        mVerticesQuad.configure(
+            MGUtilsBuffer.createFloat(
+                MGUtilsVertIndices.createQuadVertices()
+            ),
+            MGUtilsBuffer.createByte(
+                MGUtilsVertIndices.createQuadIndices()
+            ),
+            MGPointerAttribute.Builder()
+                .pointPosition2()
+                .pointTextureCoordinates()
+                .build()
+        )
+
         val bindUv = MGBinderAttribute.Builder()
             .bindPosition()
             .bindTextureCoordinates()
             .build()
+
+        mInformatorShader.geometryPass.setup(
+            "shaders/opaque/vert_i.glsl",
+            "shaders/opaque/frag_defer.glsl",
+            binderAttribute = MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindTextureCoordinates()
+                .bindNormal()
+                .bindInstancedModel()
+                .bindInstancedRotationMatrix()
+                .bindTangent()
+                .build()
+        )
+
+        mInformatorShader.lightPass.setup(
+            "shaders/post/vert.glsl",
+            "shaders/opaque/frag_defer_light.glsl",
+            MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindTextureCoordinates()
+                .build()
+        )
 
         mInformatorShader.sky.setup(
             "shaders/diffuse/vert.glsl",

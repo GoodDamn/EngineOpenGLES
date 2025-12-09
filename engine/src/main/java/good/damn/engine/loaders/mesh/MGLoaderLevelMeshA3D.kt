@@ -1,5 +1,6 @@
 package good.damn.engine.loaders.mesh
 
+import android.util.Log
 import good.damn.engine.models.MGMInstanceArray
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal

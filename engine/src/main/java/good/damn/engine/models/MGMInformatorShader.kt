@@ -2,6 +2,7 @@ package good.damn.engine.models
 
 import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.shaders.MGShaderGeometryPass
+import good.damn.engine.opengl.shaders.MGShaderLightPass
 import good.damn.engine.opengl.shaders.MGShaderOpaqueSingle
 import good.damn.engine.opengl.shaders.MGShaderOpaque
 import good.damn.engine.opengl.shaders.MGShaderSingleMap
@@ -22,7 +23,8 @@ data class MGMInformatorShader(
     val texCoords: MGMShader<MGShaderSingleMode, MGShaderSingleModeInstanced>,
     val map: MGMShader<MGShaderSingleMap, MGShaderSingleMapInstanced>,
     val sky: MGShaderSky,
-    val geometryPass: MGShaderGeometryPass
+    val geometryPass: MGShaderGeometryPass,
+    val lightPass: MGShaderLightPass
 ) {
     companion object {
         const val SIZE_LIGHT_POINT = 4

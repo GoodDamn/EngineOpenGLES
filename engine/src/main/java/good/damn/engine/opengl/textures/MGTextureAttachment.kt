@@ -1,6 +1,7 @@
 package good.damn.engine.opengl.textures
 
 import android.opengl.GLES30.GL_LINEAR
+import android.opengl.GLES30.GL_NEAREST
 import android.opengl.GLES30.GL_RGB
 import android.opengl.GLES30.GL_TEXTURE_2D
 import android.opengl.GLES30.GL_TEXTURE_MAG_FILTER
@@ -22,13 +23,13 @@ class MGTextureAttachment(
         glTexParameteri(
             GL_TEXTURE_2D,
             GL_TEXTURE_MIN_FILTER,
-            GL_LINEAR
+            GL_NEAREST
         )
 
         glTexParameteri(
             GL_TEXTURE_2D,
             GL_TEXTURE_MAG_FILTER,
-            GL_LINEAR
+            GL_NEAREST
         )
 
         glTexImage2D(

@@ -24,7 +24,6 @@ import java.nio.charset.Charset
 import java.util.LinkedList
 
 class MGLoaderLevelLibrary(
-    private val scope: CoroutineScope,
     private val informator: MGMInformator,
     private val localPathLibTextures: String,
     localPath: String,
@@ -70,25 +69,23 @@ class MGLoaderLevelLibrary(
             return false
         }
 
-        scope.launch {
-            val rootJson = fileToJson(
-                mFile
-            )
+        val rootJson = fileToJson(
+            mFile
+        )
 
-            mJson = rootJson.getJSONArray(
-                "groups"
-            ).getJSONObject(
-                0
-            ).getJSONArray(
-                "props"
-            )
+        mJson = rootJson.getJSONArray(
+            "groups"
+        ).getJSONObject(
+            0
+        ).getJSONArray(
+            "props"
+        )
 
-            terrain = MGMLevelInfoMesh.createFromJson(
-                rootJson.getJSONObject("terrain")
-            )
+        terrain = MGMLevelInfoMesh.createFromJson(
+            rootJson.getJSONObject("terrain")
+        )
 
-            isLoadLibrary = true
-        }
+        isLoadLibrary = true
 
         return true
     }
@@ -324,10 +321,10 @@ class MGLoaderLevelLibrary(
                 MGMaterialTexture.Builder()
                     .buildTexture(
                         "${texture.diffuseMapName}$EXTENSION_TEXTURE",
-                        MGEnumTextureType.DIFFUSE
-                    ).buildTexture(
-                        "${texture.diffuseMapName}_m$EXTENSION_TEXTURE",
-                        MGEnumTextureType.METALLIC
+                        MGEnumTextureType.DIFFUSE,
+                        MGTextureActive(
+                            MGEnumTextureType.DIFFUSE
+                        )
                     ).build()
             ),
             informator.shaders.geometryPass,
@@ -402,32 +399,29 @@ class MGLoaderLevelLibrary(
     }
 
     fun readProps() {
-        scope.launch {
-            while (mJson == null) {}
-            val json = mJson
-                ?: return@launch
+        val json = mJson
+            ?: return
 
-            val lMeshes = HashMap<
-                String, MGProp
+        val lMeshes = HashMap<
+            String, MGProp
             >(json.length())
 
-            for (i in 0 until json.length()) {
-                val lJson = json.getJSONObject(i)
-                val name = lJson.getString(
-                    "name"
-                )
+        for (i in 0 until json.length()) {
+            val lJson = json.getJSONObject(i)
+            val name = lJson.getString(
+                "name"
+            )
 
-                val mesh = MGMLevelInfoMesh.createFromJson(
-                    lJson.getJSONObject("mesh")
-                )
+            val mesh = MGMLevelInfoMesh.createFromJson(
+                lJson.getJSONObject("mesh")
+            )
 
-                lMeshes[name] = readProp(
-                    mesh
-                )
-            }
-
-            meshes = lMeshes
+            lMeshes[name] = readProp(
+                mesh
+            )
         }
+
+        meshes = lMeshes
     }
 
     private inline fun textureExists(

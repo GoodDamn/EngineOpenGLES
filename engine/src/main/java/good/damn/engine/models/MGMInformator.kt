@@ -3,6 +3,7 @@ package good.damn.engine.models
 import good.damn.engine.loaders.texture.MGLoaderTextureAsync
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
+import good.damn.engine.opengl.drawers.MGDrawerLightPass
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
 import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
 import good.damn.engine.opengl.entities.MGSky
@@ -22,6 +23,7 @@ data class MGMInformator(
     val shaders: MGMInformatorShader,
     val camera: MGCameraFree,
     val drawerLightDirectional: MGDrawerLightDirectional,
+    val drawerLightPass: MGDrawerLightPass,
     val meshes: ConcurrentHashMap<
         MGShaderOpaqueSingle,
         ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>

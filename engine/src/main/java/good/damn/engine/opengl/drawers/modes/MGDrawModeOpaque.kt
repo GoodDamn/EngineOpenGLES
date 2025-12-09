@@ -1,5 +1,18 @@
 package good.damn.engine.opengl.drawers.modes
 
+import android.icu.text.ListFormatter.Width
+import android.opengl.GLES30
+import android.opengl.GLES30.GL_BACK
+import android.opengl.GLES30.GL_COLOR_BUFFER_BIT
+import android.opengl.GLES30.GL_CULL_FACE
+import android.opengl.GLES30.GL_DEPTH_BUFFER_BIT
+import android.opengl.GLES30.GL_DEPTH_TEST
+import android.opengl.GLES30.glClear
+import android.opengl.GLES30.glClearColor
+import android.opengl.GLES30.glCullFace
+import android.opengl.GLES30.glDisable
+import android.opengl.GLES30.glEnable
+import android.opengl.GLES30.glViewport
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
@@ -15,39 +28,79 @@ data class MGDrawModeOpaque(
         informator.managerTriggerLight
     )
 
-    override fun draw() {
+    override fun draw(
+        width: Int,
+        height: Int
+    ) {
+        glViewport(
+            0, 0,
+            width, height
+        )
         val camera = informator.camera
         val drawerLightDirectional = informator.drawerLightDirectional
         val managerLight = informator.managerLight
 
         // Geometry pass
         framebufferG.bind()
+        glClear(
+            GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
+        )
+        glEnable(
+            GL_DEPTH_TEST
+        )
+        glEnable(
+            GL_CULL_FACE
+        )
+        glCullFace(
+            GL_BACK
+        )
+        glClearColor(
+            0.0f,
+            0.0f,
+            0.0f,
+            1.0f
+        )
         informator.meshesInstanced.forEach {
-            it.key.run {
+            informator.shaders.geometryPass.run {
                 use()
                 camera.draw(
                     this
                 )
-                /*camera.drawPosition(
-                    this
-                )
-                drawerLightDirectional.draw(
-                    lightDirectional
-                )*/
-
                 it.value.forEach {
                     it.draw(
                         materials
                     )
                 }
-
-                /*managerLight.draw(
-                    lightPoints
-                )*/
             }
         }
         framebufferG.unbind()
         // Light (final) pass
+        glClear(
+            GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
+        )
+        glDisable(
+            GL_DEPTH_TEST
+        )
+        glDisable(
+            GL_CULL_FACE
+        )
+        informator.shaders.lightPass.run {
+            use()
+            camera.drawPosition(
+                this
+            )
+
+            drawerLightDirectional.draw(
+                lightDirectional
+            )
+
+            informator.drawerLightPass.draw(
+                this
+            )
+            /*managerLight.draw(
+                    lightPoints
+                )*/
+        }
 
         /*val shaderSky = informator.shaders.sky
         val shaderTrigger = informator.shaders.wireframe.single

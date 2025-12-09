@@ -14,7 +14,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class MGLoaderLevelTextures(
-    private val scope: CoroutineScope,
     private val handlerGl: MGHandlerGl,
     private val poolTextures: MGPoolTextures,
     private val localPathLibTextures: String
@@ -54,48 +53,34 @@ class MGLoaderLevelTextures(
     private inline fun loadMaps(
         atlas: MIMAtlasRect
     ) {
-        scope.launch {
-            poolTexture(
-                "${atlas.name}.jpg",
-                MGEnumTextureType.DIFFUSE
-            )
-        }
+        poolTexture(
+            "${atlas.name}.jpg",
+            MGEnumTextureType.DIFFUSE
+        )
 
-        scope.launch {
-            poolTexture(
-                "${atlas.name}_m.jpg",
-                MGEnumTextureType.METALLIC
-            )
-        }
+        poolTexture(
+            "${atlas.name}_m.jpg",
+            MGEnumTextureType.METALLIC
+        )
 
-        scope.launch {
-            poolTexture(
-                "${atlas.name}_e.jpg",
-                MGEnumTextureType.EMISSIVE
-            )
-        }
+        poolTexture(
+            "${atlas.name}_e.jpg",
+            MGEnumTextureType.EMISSIVE
+        )
 
-        scope.launch {
-            poolTexture(
-                "${atlas.name}_o.jpg",
-                MGEnumTextureType.OPACITY
-            )
-        }
+        poolTexture(
+            "${atlas.name}_o.jpg",
+            MGEnumTextureType.OPACITY
+        )
 
-        scope.launch {
-            poolTexture(
-                "${atlas.name}_n.jpg",
-                MGEnumTextureType.NORMAL
-            )
-        }
+        poolTexture(
+            "${atlas.name}_n.jpg",
+            MGEnumTextureType.NORMAL
+        )
     }
 
     private inline fun incrementIndex() {
-        synchronized(
-            mLock
-        ) {
-            mCurrentIndex++
-        }
+        mCurrentIndex++
     }
 
     private fun poolTexture(

@@ -8,9 +8,7 @@ import good.damn.mapimporter.models.MIMProp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class MGLoaderLevelMatrices(
-    private val scope: CoroutineScope
-) {
+class MGLoaderLevelMatrices {
 
     companion object {
         @JvmStatic
@@ -61,30 +59,28 @@ class MGLoaderLevelMatrices(
         map: MIMMap
     ) {
         isLoadMatrices = false
-        scope.launch {
-            for (prop in map.props) {
-                val mesh = meshes[
-                    prop.name
-                ] ?: continue
+        for (prop in map.props) {
+            val mesh = meshes[
+                prop.name
+            ] ?: continue
 
-                mesh.matrices.add(
-                    MGMatrixTransformationNormal(
-                        MGMatrixScaleRotation()
-                    ).apply {
-                        fillModelMatrix(
-                            model,
-                            prop
-                        )
+            mesh.matrices.add(
+                MGMatrixTransformationNormal(
+                    MGMatrixScaleRotation()
+                ).apply {
+                    fillModelMatrix(
+                        model,
+                        prop
+                    )
 
-                        normal.apply {
-                            calculateInvertModel()
-                            calculateNormalMatrix()
-                        }
+                    normal.apply {
+                        calculateInvertModel()
+                        calculateNormalMatrix()
                     }
-                )
-            }
-
-            isLoadMatrices = true
+                }
+            )
         }
+
+        isLoadMatrices = true
     }
 }

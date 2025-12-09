@@ -1,5 +1,6 @@
 package good.damn.engine.level
 
+import android.util.Log
 import android.util.Size
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.loaders.MGLoaderLevelLibrary
@@ -51,7 +52,6 @@ object MGStreamLevel {
         val localPathLibTextures = "textures/$libName"
         val localPathLibObj = "objs/$libName"
         val loaderLib = MGLoaderLevelLibrary(
-            scope,
             informator,
             localPathLibTextures,
             "levels/$libName/library.txt",
@@ -59,7 +59,6 @@ object MGStreamLevel {
         )
 
         val loaderTextures = MGLoaderLevelTextures(
-            scope,
             informator.glHandler,
             informator.poolTextures,
             localPathLibTextures
@@ -68,21 +67,15 @@ object MGStreamLevel {
         loaderTextures.loadTextures(
             map
         )
-
-        if (!loaderLib.loadLibrary()) {
-            return
-        }
+        loaderLib.loadLibrary()
 
         loaderLib.readProps()
 
         loaderLib.loadNonCullFaceList()
 
-        while (loaderLib.meshes == null) {}
         val meshes = loaderLib.meshes!!
 
-        val loaderMatrices = MGLoaderLevelMatrices(
-            scope
-        )
+        val loaderMatrices = MGLoaderLevelMatrices()
 
         loaderMatrices.loadMatrices(
             meshes,
@@ -94,49 +87,40 @@ object MGStreamLevel {
             informator.glHandler
         )
 
-        while (
-            !(loaderMatrices.isLoadMatrices ||
-                loaderTextures.isLoadCompleted
-                )
-        ) {}
-
         meshes.forEach {
-            scope.launch {
-                val prop = it.value
-                val v = loaderMeshes.loadInstanceArray(
-                    prop.fileNameA3d,
-                    prop.matrices,
-                    1f
-                ) ?: return@launch
+            val prop = it.value
+            val v = loaderMeshes.loadInstanceArray(
+                prop.fileNameA3d,
+                prop.matrices,
+                1f
+            ) ?: return
 
-                prop.materialTexture.forEach {
-                    it.load(
-                        informator.poolTextures,
-                        localPathLibTextures,
-                        informator.glLoaderTexture
-                    )
-                }
-
-                flow.emit(
-                    MGMInstanceMesh(
-                        prop.shaderOpaque,
-                        v.vertexArray,
-                        Array(
-                            prop.materialTexture.size
-                        ) {
-                            MGMaterial(
-                                prop.materialTexture[it]
-                            )
-                        },
-                        prop.enableCullFace,
-                        v.modelMatrices
-                    )
+            prop.materialTexture.forEach {
+                it.load(
+                    informator.poolTextures,
+                    localPathLibTextures,
+                    informator.glLoaderTexture
                 )
             }
+
+            flow.emit(
+                MGMInstanceMesh(
+                    prop.shaderOpaque,
+                    v.vertexArray,
+                    Array(
+                        prop.materialTexture.size
+                    ) {
+                        MGMaterial(
+                            prop.materialTexture[it]
+                        )
+                    },
+                    prop.enableCullFace,
+                    v.modelMatrices
+                )
+            )
         }
 
-        scope.launch {
-            while (loaderLib.terrain == null) { }
+        //scope.launch {
             val terrain = loaderLib.terrain!!
 
             val mapProp = map.props.find {
@@ -155,7 +139,7 @@ object MGStreamLevel {
                     this
                 )
             }
-        }
+        //}
 
     }
 
