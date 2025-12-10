@@ -166,17 +166,6 @@ class MGLoaderLevelLibrary(
 
             buildTexture(
                 generatorShader,
-                src.fragDeferOpacity,
-                src.fragDeferOpacityNo,
-                builderMaterial,
-                "${diffuse}_o$EXTENSION_TEXTURE",
-                shaderTextures,
-                MGEnumTextureType.OPACITY,
-                ID_OPACITY
-            )
-
-            buildTexture(
-                generatorShader,
                 src.fragDeferEmissive,
                 src.fragDeferEmissiveNo,
                 builderMaterial,
@@ -184,6 +173,17 @@ class MGLoaderLevelLibrary(
                 shaderTextures,
                 MGEnumTextureType.EMISSIVE,
                 ID_EMISSIVE
+            )
+
+            buildTexture(
+                generatorShader,
+                src.fragDeferOpacity,
+                src.fragDeferOpacityNo,
+                builderMaterial,
+                "${diffuse}_o$EXTENSION_TEXTURE",
+                shaderTextures,
+                MGEnumTextureType.OPACITY,
+                ID_OPACITY
             )
 
 
@@ -255,6 +255,7 @@ class MGLoaderLevelLibrary(
         ]
 
         if (cachedShader == null) {
+            Log.d("TAG", "readProp: SRC_FRAG: $fragmentCode")
             cachedShader = MGShaderOpaqueDefer(
                 shaderMaterials.toTypedArray()
             )
