@@ -1,6 +1,8 @@
 package good.damn.engine.sdk
 
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 
 class MGVector3(
@@ -50,6 +52,10 @@ class MGVector3(
         y * vect2.z - vect2.y * z,
         z * vect2.x - vect2.z * x,
         x * vect2.y - vect2.x * y
+    )
+
+    fun maxValue() = max(
+        x, max(y, z)
     )
 
     operator fun minusAssign(

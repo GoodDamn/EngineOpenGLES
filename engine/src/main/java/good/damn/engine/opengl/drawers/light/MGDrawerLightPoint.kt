@@ -8,8 +8,8 @@ class MGDrawerLightPoint {
 
     var isActive = 1
     var constant = 1.0f
-    var linear = 0.0014f
-    var quad = 0.000007f
+    var linear = 0.014f
+    var quad = 0.0007f
     var radius = 600f
     val position = MGVector3(0f)
     val color = MGVector3(0f)
@@ -54,11 +54,6 @@ class MGDrawerLightPoint {
         GLES30.glUniform1f(
             shader.uniformRadius,
             radius
-        )
-
-        GLES30.glUniform1f(
-            shader.uniformRadiusClip,
-            8000f
         )
     }
 }

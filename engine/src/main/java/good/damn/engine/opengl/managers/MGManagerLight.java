@@ -67,6 +67,18 @@ public final class MGManagerLight {
                 matrix.getPosition()
             );
 
+            drawer.setConstant(
+                light.getConstant()
+            );
+
+            drawer.setLinear(
+                light.getConstant()
+            );
+
+            drawer.setQuad(
+                light.getQuad()
+            );
+
             drawer.draw(
                 shaderLightPoint
             );

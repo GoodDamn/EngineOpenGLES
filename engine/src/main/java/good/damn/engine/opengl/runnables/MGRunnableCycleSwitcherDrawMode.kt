@@ -22,7 +22,6 @@ import good.damn.engine.opengl.textures.MGTextureActive
 import good.damn.engine.opengl.textures.MGTextureAttachment
 
 class MGRunnableCycleSwitcherDrawMode(
-    informator: MGMInformator,
     private val switcherDrawMode: MGSwitcherDrawMode
 ): MGIRunnableBounds {
 
@@ -30,33 +29,6 @@ class MGRunnableCycleSwitcherDrawMode(
         width: Int,
         height: Int
     ) {
-        /*glViewport(
-            0,
-            0,
-            width,
-            height
-        )
-
-        glClear(
-            GL_COLOR_BUFFER_BIT or
-                GL_DEPTH_BUFFER_BIT
-        )
-
-        glClearColor(
-            0.0f,
-            0.0f,
-            0.0f,
-            1.0f
-        )
-
-        glEnable(
-            GL_CULL_FACE
-        )
-
-        glEnable(
-            GL_DEPTH_TEST
-        )*/
-
         switcherDrawMode
             .currentDrawerMode
             .draw(

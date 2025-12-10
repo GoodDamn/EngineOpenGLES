@@ -18,14 +18,13 @@ implements MGIUniform {
     private int mUniformColor;
 
     private int mUniformRadius;
-    private int mUniformRadiusClip;
 
     private final String mId;
 
     public MGShaderLightPoint(
-        final int id
+        final int index
     ) {
-        mId = "lightPoints[" + id + "].";
+        mId = "lightPoints[" + index + "].";
     }
 
     @Override
@@ -66,11 +65,6 @@ implements MGIUniform {
             program,
             mId+"radius"
         );
-
-        mUniformRadiusClip = glGetUniformLocation(
-            program,
-            mId+"radiusClip"
-        );
     }
 
     public final int getUniformActive() {
@@ -93,8 +87,5 @@ implements MGIUniform {
     }
     public final int getUniformRadius() {
         return mUniformRadius;
-    }
-    public final int getUniformRadiusClip() {
-        return mUniformRadiusClip;
     }
 }

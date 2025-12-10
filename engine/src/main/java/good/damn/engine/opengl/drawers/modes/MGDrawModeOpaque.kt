@@ -38,7 +38,6 @@ data class MGDrawModeOpaque(
         )
         val camera = informator.camera
         val drawerLightDirectional = informator.drawerLightDirectional
-        val managerLight = informator.managerLight
 
         // Geometry pass
         framebufferG.bind()
@@ -98,13 +97,32 @@ data class MGDrawModeOpaque(
             informator.drawerLightPass.draw(
                 this
             )
-            /*managerLight.draw(
-                    lightPoints
-                )*/
+            informator.managerLight.draw(
+                lightPoints
+            )
         }
 
+        if (!informator.canDrawTriggers) {
+            return
+        }
+
+        glEnable(GL_DEPTH_TEST)
+
+        informator.shaders.wireframe.single.run {
+            use()
+            camera.draw(
+                this
+            )
+            mTriggerManagers.forEach {
+                it.draw(
+                    this
+                )
+            }
+        }
+
+
         /*val
-        val shaderTrigger = informator.shaders.wireframe.single
+        val shaderTrigger =
         informator.meshes.forEach {
             it.key.run {
                 use()
@@ -132,19 +150,7 @@ data class MGDrawModeOpaque(
             }
         }*/
 
-        /*if (!informator.canDrawTriggers) {
-            return
-        }
-
-        shaderTrigger.use()
-        camera.draw(
-            shaderTrigger
-        )
-        mTriggerManagers.forEach {
-            it.draw(
-                shaderTrigger
-            )
-        }*/
+        /**/
     }
 
 }

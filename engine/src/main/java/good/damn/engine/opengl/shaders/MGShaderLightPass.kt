@@ -1,6 +1,7 @@
 package good.damn.engine.opengl.shaders
 
 import android.opengl.GLES30
+import good.damn.engine.models.MGMInformatorShader
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
@@ -8,7 +9,8 @@ import good.damn.engine.opengl.shaders.base.MGShaderBase
 
 class MGShaderLightPass
 : MGShaderSingleModeInstanced(),
-MGIShaderCameraPosition {
+MGIShaderCameraPosition,
+MGIShaderLight {
 
     val texturePosition = MGShaderTexture(
         "gPosition"
@@ -29,7 +31,13 @@ MGIShaderCameraPosition {
     override var uniformCameraPosition = 0
         private set
 
-    val lightDirectional = MGShaderLightDirectional()
+    override val lightDirectional = MGShaderLightDirectional()
+
+    override val lightPoints = Array(
+        MGMInformatorShader.SIZE_LIGHT_POINT
+    ) {
+        MGShaderLightPoint(it)
+    }
 
     override fun setupUniforms(
         program: Int
@@ -62,5 +70,11 @@ MGIShaderCameraPosition {
             program,
             "cameraPosition"
         )
+
+        lightPoints.forEach {
+            it.setupUniforms(
+                program
+            )
+        }
     }
 }

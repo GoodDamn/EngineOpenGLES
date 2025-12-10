@@ -101,6 +101,14 @@ class MGRendererLevelEditor(
         MGEnumArrayVertexConfiguration.BYTE
     )
 
+    private val mVerticesSphere = MGArrayVertexConfigurator(
+        MGEnumArrayVertexConfiguration.BYTE
+    )
+
+    private val mDrawerSphere = MGDrawerVertexArray(
+        mVerticesSphere
+    )
+
     private val mDrawerBox = MGDrawerVertexArray(
         mVerticesBox
     )
@@ -152,7 +160,7 @@ class MGRendererLevelEditor(
         managerLight,
         MGManagerTriggerLight(
             managerLight,
-            mDrawerBox
+            mDrawerSphere
         ),
         MGManagerTriggerMesh(
             mDrawerBox
@@ -294,20 +302,32 @@ class MGRendererLevelEditor(
             mPoolTextures
         )
 
-        mVerticesBox.configure(
-            MGUtilsBuffer.createFloat(
-                MGUtilsVertIndices.createCubeVertices(
-                    MGTriggerMethodBox.MIN,
-                    MGTriggerMethodBox.MAX
-                )
-            ),
-            MGUtilsBuffer.createByte(
-                MGUtilsVertIndices.createCubeIndices()
-            ),
-            MGPointerAttribute.Builder()
+        MGUtilsVertIndices.createSphere(
+            23
+        ).run {
+            val pointPosition = MGPointerAttribute.Builder()
                 .pointPosition()
                 .build()
-        )
+
+            mVerticesSphere.configure(
+                second,
+                first,
+                pointPosition
+            )
+
+            mVerticesBox.configure(
+                MGUtilsBuffer.createFloat(
+                    MGUtilsVertIndices.createCubeVertices(
+                        MGTriggerMethodBox.MIN,
+                        MGTriggerMethodBox.MAX
+                    )
+                ),
+                MGUtilsBuffer.createByte(
+                    MGUtilsVertIndices.createCubeIndices()
+                ),
+                pointPosition
+            )
+        }
 
         mInformator.camera.run {
             modelMatrix.setPosition(
@@ -348,6 +368,11 @@ class MGRendererLevelEditor(
     override fun onDrawFrame(
         gl: GL10?
     ) {
+        mInformator.managerTriggerLight.loopTriggers(
+            mInformator.camera.modelMatrix.x,
+            mInformator.camera.modelMatrix.y,
+            mInformator.camera.modelMatrix.z,
+        )
         mHandlerGlExecutor.runTasksBounds(
             mWidth, mHeight
         )

@@ -169,7 +169,7 @@ object MGStreamLevel {
                     }
                 }
             ),
-            1f
+            105f
         ) ?: return null
 
         val prop = loaderProp.readProp(
