@@ -35,7 +35,6 @@ import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.runnables.MGHudScene
 import good.damn.engine.opengl.runnables.MGIRunnableBounds
-import good.damn.engine.opengl.shaders.MGShaderGeometryPass
 import good.damn.engine.opengl.shaders.MGShaderLightPass
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.MGShaderBase
@@ -88,20 +87,6 @@ class MGRendererLevelEditor(
             MGShaderSingleMapInstanced()
         ),
         MGShaderSky(),
-        MGShaderGeometryPass(
-            arrayOf(
-                MGShaderMaterial(
-                    arrayOf(
-                        MGShaderTexture(
-                            "textDiffuse"
-                        ),
-                        MGShaderTexture(
-                            "textMetallic"
-                        )
-                    )
-                )
-            )
-        ),
         MGShaderLightPass()
     )
 
@@ -236,22 +221,10 @@ class MGRendererLevelEditor(
             .bindTextureCoordinates()
             .build()
 
-        mInformatorShader.geometryPass.setup(
-            "shaders/opaque/vert_i.glsl",
-            "shaders/opaque/frag_defer.glsl",
-            binderAttribute = MGBinderAttribute.Builder()
-                .bindPosition()
-                .bindTextureCoordinates()
-                .bindNormal()
-                .bindInstancedModel()
-                .bindInstancedRotationMatrix()
-                .bindTangent()
-                .build()
-        )
 
         mInformatorShader.lightPass.setup(
             "shaders/post/vert.glsl",
-            "shaders/opaque/frag_defer_light.glsl",
+            "shaders/opaque/defer/frag_defer_light.glsl",
             MGBinderAttribute.Builder()
                 .bindPosition()
                 .bindTextureCoordinates()

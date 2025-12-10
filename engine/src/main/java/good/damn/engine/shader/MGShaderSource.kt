@@ -26,11 +26,44 @@ class MGShaderSource(
 
     val fragLight: String
 
+    val fragDefer1: String
+    val fragDeferMain: String
+    val fragDeferSpecular: String
+    val fragDeferSpecularNo: String
+
+    val fragDeferDiffuse: String
+    val fragDeferDiffuseNo: String
+
     val verti: String
     val vert: String
 
     init {
         val localFullPath = "$FOLDER/$localPath"
+        val deferPath = "$localFullPath/defer"
+        fragDefer1 = loadSourceCode(
+            "$deferPath/frag1.glsl"
+        )
+
+        fragDeferMain = loadSourceCode(
+            "$deferPath/frag_defer.glsl"
+        )
+
+        fragDeferSpecular = loadSourceCode(
+            "$deferPath/frag_defer_spec.glsl"
+        )
+
+        fragDeferSpecularNo = loadSourceCode(
+            "$deferPath/frag_defer_spec_no.glsl"
+        )
+
+        fragDeferDiffuse = loadSourceCode(
+            "$deferPath/frag_defer_diffuse.glsl"
+        )
+
+        fragDeferDiffuseNo = loadSourceCode(
+            "$deferPath/frag_defer_diffuse_no.glsl"
+        )
+
         frag1 = loadSourceCode(
             "$localFullPath/frag1.glsl"
         )

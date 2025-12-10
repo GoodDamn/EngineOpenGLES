@@ -9,10 +9,12 @@ import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.MGShaderOpaque
+import good.damn.engine.opengl.shaders.MGShaderOpaqueDefer
 import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.textures.MGTextureActive
 import good.damn.engine.shader.generators.MGGeneratorMaterial
+import good.damn.engine.shader.generators.MGGeneratorMaterialG
 import good.damn.engine.shader.generators.MGGeneratorShader
 import good.damn.engine.utils.MGUtilsFile
 import kotlinx.coroutines.CoroutineScope
@@ -120,24 +122,16 @@ class MGLoaderLevelLibrary(
         val fileName = mesh.a3dMesh
         val textures = mesh.textures.textures
 
-        /*val generatorShader = MGGeneratorShader(
+        val generatorShader = MGGeneratorMaterialG(
             informator.shaders.source
         )
 
         val shaderMaterials = LinkedList<MGShaderMaterial>()
-        val codeMaterials = LinkedList<MGMGeneratorMaterial>()
-
         val buildersMaterial = LinkedList<MGMaterialTexture>()
 
-        val texturesCount = 7
-        var indexMaterial = 0
-        for (index in textures.indices) {
+        for (index in 0 until 1) {
             val diffuse = textures[index].diffuseMapName
             val controlMapName = textures[index].controlMapName
-
-            val generatorMaterial = MGGeneratorMaterial(
-                informator.shaders.source
-            )
 
             val builderMaterial = MGMaterialTexture.Builder()
 
@@ -149,38 +143,45 @@ class MGLoaderLevelLibrary(
                 controlMapName == null
             ) 1f else 105f
 
-
-            buildTextureMap(
-                generatorMaterial,
+            buildTexture(
                 builderMaterial,
                 "${diffuse}$EXTENSION_TEXTURE",
-                1.0f,
                 shaderTextures,
                 MGEnumTextureType.DIFFUSE,
-                indexMaterial,
-                "${ID_DIFFUSE}$index",
-                texCoordScale
-            )
-
-            buildTextureMap(
-                generatorMaterial,
-                builderMaterial,
-                "${diffuse}_m$EXTENSION_TEXTURE",
-                0.0f,
-                shaderTextures,
-                MGEnumTextureType.METALLIC,
-                indexMaterial,
-                "${ID_METALLIC}$index",
-                texCoordScale
+                ID_DIFFUSE
             ).run {
-                if (index == 0) {
-                    if (this) {
-                        generatorShader.specular()
-                    } else {
-                        generatorShader.specularNo()
-                    }
+                if (this) {
+                    generatorShader.diffuse()
+                } else {
+                    generatorShader.diffuseNo()
                 }
             }
+
+            buildTexture(
+                builderMaterial,
+                "${diffuse}_m$EXTENSION_TEXTURE",
+                shaderTextures,
+                MGEnumTextureType.METALLIC,
+                ID_METALLIC
+            ).run {
+                if (this) {
+                    generatorShader.specular()
+                } else {
+                    generatorShader.specularNo()
+                }
+            }
+
+            /*buildTextureMap(
+                generatorMaterial,
+                builderMaterial,
+                "${diffuse}_o$EXTENSION_TEXTURE",
+                1.0f,
+                shaderTextures,
+                MGEnumTextureType.OPACITY,
+                indexMaterial,
+                "${ID_OPACITY}$index",
+                texCoordScale
+            )
 
             buildTextureMap(
                 generatorMaterial,
@@ -191,18 +192,6 @@ class MGLoaderLevelLibrary(
                 MGEnumTextureType.EMISSIVE,
                 indexMaterial,
                 "${ID_EMISSIVE}$index",
-                texCoordScale
-            )
-
-            buildTextureMap(
-                generatorMaterial,
-                builderMaterial,
-                "${diffuse}_o$EXTENSION_TEXTURE",
-                1.0f,
-                shaderTextures,
-                MGEnumTextureType.OPACITY,
-                indexMaterial,
-                "${ID_OPACITY}$index",
                 texCoordScale
             )
 
@@ -248,28 +237,10 @@ class MGLoaderLevelLibrary(
                 indexMaterial,
                 "${ID_AMBIENT_OCCLUSION}$index",
                 1.0f
-            )
-
-
-            val fragmentCodeMaterial = generatorMaterial.generate(
-                index.toString()
-            )
-
-            codeMaterials.add(
-                fragmentCodeMaterial
-            )
-
-            if (index == 0) {
-                generatorShader.lighting()
-            }
-
-            generatorShader.material(
-                fragmentCodeMaterial
-            )
+            )*/
 
             shaderMaterials.add(
                 MGShaderMaterial(
-                    "shine",
                     shaderTextures.toTypedArray()
                 )
             )
@@ -277,25 +248,20 @@ class MGLoaderLevelLibrary(
             buildersMaterial.add(
                 builderMaterial.build()
             )
-            indexMaterial += texturesCount
 
             if (controlMapName == null) {
                 break
             }
-        }*/
+        }
 
-        val texture = textures[0]
-
-        /*val fragmentCode = generatorShader.generate(
-            codeMaterials.toTypedArray()
-        )
+        val fragmentCode = generatorShader.build()
 
         var cachedShader = informator.shaders.opaqueGeneratedInstanced[
             fragmentCode
         ]
 
         if (cachedShader == null) {
-            cachedShader = MGShaderOpaque(
+            cachedShader = MGShaderOpaqueDefer(
                 shaderMaterials.toTypedArray()
             )
 
@@ -313,21 +279,12 @@ class MGLoaderLevelLibrary(
                     .bindTangent()
                     .build()
             )
-        }*/
+        }
 
         return MGProp(
             fileName,
-            arrayOf(
-                MGMaterialTexture.Builder()
-                    .buildTexture(
-                        "${texture.diffuseMapName}$EXTENSION_TEXTURE",
-                        MGEnumTextureType.DIFFUSE,
-                        MGTextureActive(
-                            MGEnumTextureType.DIFFUSE
-                        )
-                    ).build()
-            ),
-            informator.shaders.geometryPass,
+            buildersMaterial.toTypedArray(),
+            cachedShader,
             !(mNonCullFaceMeshes?.contains(
                 fileName
             ) ?: false),
@@ -340,7 +297,6 @@ class MGLoaderLevelLibrary(
         textureName: String,
         shaderTextures: MutableList<MGShaderTexture>,
         type: MGEnumTextureType,
-        indexMaterial: Int,
         idUniform: String
     ): Boolean {
         if (textureExists(textureName)) {
@@ -352,10 +308,7 @@ class MGLoaderLevelLibrary(
 
             builderMaterial.buildTexture(
                 textureName,
-                type,
-                MGTextureActive(
-                    indexMaterial + type.v
-                )
+                type
             )
             return true
         }
@@ -363,40 +316,6 @@ class MGLoaderLevelLibrary(
         return false
     }
 
-    private fun buildTextureMap(
-        generatorMaterial: MGGeneratorMaterial,
-        builderMaterial: MGMaterialTexture.Builder,
-        textureName: String,
-        defaultValue: Float,
-        shaderTextures: MutableList<MGShaderTexture>,
-        type: MGEnumTextureType,
-        indexMaterial: Int,
-        idUniform: String,
-        texCoordScale: Float
-    ): Boolean {
-        if (buildTexture(
-            builderMaterial,
-            textureName,
-            shaderTextures,
-            type,
-            indexMaterial,
-            idUniform
-        )) {
-            generatorMaterial.mapTexture(
-                idUniform,
-                type,
-                texCoordScale
-            )
-            return true
-        }
-
-        generatorMaterial.mapTextureNo(
-            idUniform,
-            type,
-            defaultValue
-        )
-        return false
-    }
 
     fun readProps() {
         val json = mJson

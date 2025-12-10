@@ -45,23 +45,11 @@ data class MGDrawModeOpaque(
         glClear(
             GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
         )
-        glEnable(
-            GL_DEPTH_TEST
-        )
-        glEnable(
-            GL_CULL_FACE
-        )
-        glCullFace(
-            GL_BACK
-        )
-        glClearColor(
-            0.0f,
-            0.0f,
-            0.0f,
-            1.0f
-        )
+        glEnable(GL_DEPTH_TEST)
+        glEnable(GL_CULL_FACE)
+        glCullFace(GL_BACK)
         informator.meshesInstanced.forEach {
-            informator.shaders.geometryPass.run {
+            it.key.run {
                 use()
                 camera.draw(
                     this
@@ -78,12 +66,7 @@ data class MGDrawModeOpaque(
         glClear(
             GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
         )
-        glDisable(
-            GL_DEPTH_TEST
-        )
-        glDisable(
-            GL_CULL_FACE
-        )
+        glDisable(GL_CULL_FACE)
         informator.shaders.lightPass.run {
             use()
             camera.drawPosition(
