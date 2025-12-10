@@ -48,6 +48,22 @@ data class MGDrawModeOpaque(
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
         glCullFace(GL_BACK)
+
+        informator.shaders.sky.run {
+            use()
+            camera.draw(
+                this
+            )
+            drawerLightDirectional.drawColor(
+                uniformColor
+            )
+
+            informator.meshSky.drawSingleTexture(
+                this,
+                this
+            )
+        }
+
         informator.meshesInstanced.forEach {
             it.key.run {
                 use()
@@ -67,6 +83,8 @@ data class MGDrawModeOpaque(
             GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
         )
         glDisable(GL_CULL_FACE)
+        glDisable(GL_DEPTH_TEST)
+
         informator.shaders.lightPass.run {
             use()
             camera.drawPosition(
@@ -85,22 +103,8 @@ data class MGDrawModeOpaque(
                 )*/
         }
 
-        /*val shaderSky = informator.shaders.sky
+        /*val
         val shaderTrigger = informator.shaders.wireframe.single
-
-        shaderSky.use()
-        camera.draw(
-            shaderSky
-        )
-        drawerLightDirectional.drawColor(
-            shaderSky.uniformColor
-        )
-
-        informator.meshSky.drawSingleTexture(
-            shaderSky,
-            shaderSky
-        )
-
         informator.meshes.forEach {
             it.key.run {
                 use()

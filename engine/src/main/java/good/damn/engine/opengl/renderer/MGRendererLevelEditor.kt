@@ -234,7 +234,7 @@ class MGRendererLevelEditor(
 
         mInformatorShader.sky.setup(
             "shaders/diffuse/vert.glsl",
-            "shaders/diffuse/frag_sky.glsl",
+            "shaders/diffuse/frag_sky_defer.glsl",
             bindUv
         )
 
