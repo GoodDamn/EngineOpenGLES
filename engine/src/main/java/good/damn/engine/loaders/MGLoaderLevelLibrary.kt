@@ -186,28 +186,18 @@ class MGLoaderLevelLibrary(
                 ID_OPACITY
             )
 
-
-            /*
-
             buildTexture(
+                generatorShader,
+                src.fragDeferNormal,
+                src.fragDeferNormalVertex,
                 builderMaterial,
                 "${diffuse}_n$EXTENSION_TEXTURE",
                 shaderTextures,
                 MGEnumTextureType.NORMAL,
-                indexMaterial,
-                "${ID_NORMAL}$index"
-            ).run {
-                if (this) {
-                    generatorMaterial.normalMapping(
-                        "${ID_NORMAL}$index",
-                        texCoordScale
-                    )
-                } else {
-                    generatorMaterial.normalVertex(
-                        "${ID_NORMAL}$index"
-                    )
-                }
-            }
+                ID_NORMAL
+            )
+
+            /*
 
             buildTextureMap(
                 generatorMaterial,
