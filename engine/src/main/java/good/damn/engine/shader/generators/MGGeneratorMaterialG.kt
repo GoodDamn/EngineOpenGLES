@@ -9,35 +9,11 @@ class MGGeneratorMaterialG(
         source.fragDefer1
     )
 
-    fun diffuse() = mBuilderSrcFragment.append(
-        source.fragDeferDiffuse
-    )
-
-    fun diffuseNo() = mBuilderSrcFragment.append(
-        source.fragDeferDiffuseNo
-    )
-
-    fun specular() = apply {
+    fun componeEntity(
+        src: String
+    ) = apply {
         mBuilderSrcFragment.append(
-            source.fragDeferSpecular
-        )
-    }
-
-    fun specularNo() = apply {
-        mBuilderSrcFragment.append(
-            source.fragDeferSpecularNo
-        )
-    }
-
-    fun opacity() = apply {
-        mBuilderSrcFragment.append(
-            source.fragDeferOpacity
-        )
-    }
-
-    fun opacityNo() = apply {
-        mBuilderSrcFragment.append(
-            source.fragDeferOpacityNo
+            src
         )
     }
 

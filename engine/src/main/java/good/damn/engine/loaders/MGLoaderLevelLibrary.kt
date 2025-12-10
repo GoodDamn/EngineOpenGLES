@@ -121,10 +121,9 @@ class MGLoaderLevelLibrary(
     ): MGProp {
         val fileName = mesh.a3dMesh
         val textures = mesh.textures.textures
+        val src = informator.shaders.source
 
-        val generatorShader = MGGeneratorMaterialG(
-            informator.shaders.source
-        )
+        val generatorShader = MGGeneratorMaterialG(src)
 
         val shaderMaterials = LinkedList<MGShaderMaterial>()
         val buildersMaterial = LinkedList<MGMaterialTexture>()
@@ -144,70 +143,50 @@ class MGLoaderLevelLibrary(
             ) 1f else 105f
 
             buildTexture(
+                generatorShader,
+                src.fragDeferDiffuse,
+                src.fragDeferDiffuseNo,
                 builderMaterial,
                 "${diffuse}$EXTENSION_TEXTURE",
                 shaderTextures,
                 MGEnumTextureType.DIFFUSE,
                 ID_DIFFUSE
-            ).run {
-                if (this) {
-                    generatorShader.diffuse()
-                } else {
-                    generatorShader.diffuseNo()
-                }
-            }
+            )
 
             buildTexture(
+                generatorShader,
+                src.fragDeferSpecular,
+                src.fragDeferSpecularNo,
                 builderMaterial,
                 "${diffuse}_m$EXTENSION_TEXTURE",
                 shaderTextures,
                 MGEnumTextureType.METALLIC,
                 ID_METALLIC
-            ).run {
-                if (this) {
-                    generatorShader.specular()
-                } else {
-                    generatorShader.specularNo()
-                }
-            }
+            )
 
             buildTexture(
+                generatorShader,
+                src.fragDeferOpacity,
+                src.fragDeferOpacityNo,
                 builderMaterial,
                 "${diffuse}_o$EXTENSION_TEXTURE",
                 shaderTextures,
                 MGEnumTextureType.OPACITY,
                 ID_OPACITY
-            ).run {
-                if (this) {
-                    generatorShader.opacity()
-                } else {
-                    generatorShader.opacityNo()
-                }
-            }
-
-            /*buildTextureMap(
-                generatorMaterial,
-                builderMaterial,
-                "${diffuse}_o$EXTENSION_TEXTURE",
-                1.0f,
-                shaderTextures,
-                MGEnumTextureType.OPACITY,
-                indexMaterial,
-                "${ID_OPACITY}$index",
-                texCoordScale
             )
 
-            buildTextureMap(
-                generatorMaterial,
+            /*buildTexture(
+                generatorShader,
+                src.fragDeferEmissive,
+                src.fragDeferEmissiveNo,
                 builderMaterial,
                 "${diffuse}_e$EXTENSION_TEXTURE",
-                0.0f,
                 shaderTextures,
                 MGEnumTextureType.EMISSIVE,
-                indexMaterial,
-                "${ID_EMISSIVE}$index",
-                texCoordScale
-            )
+                ID_EMISSIVE
+            )*/
+
+            /*
 
             buildTexture(
                 builderMaterial,
@@ -307,12 +286,15 @@ class MGLoaderLevelLibrary(
     }
 
     private fun buildTexture(
+        generatorShader: MGGeneratorMaterialG,
+        srcCodeFragment: String,
+        srcCodeFragmentNo: String,
         builderMaterial: MGMaterialTexture.Builder,
         textureName: String,
         shaderTextures: MutableList<MGShaderTexture>,
         type: MGEnumTextureType,
         idUniform: String
-    ): Boolean {
+    ) {
         if (textureExists(textureName)) {
             shaderTextures.add(
                 MGShaderTexture(
@@ -324,10 +306,16 @@ class MGLoaderLevelLibrary(
                 textureName,
                 type
             )
-            return true
+
+            generatorShader.componeEntity(
+                srcCodeFragment
+            )
+            return
         }
 
-        return false
+        generatorShader.componeEntity(
+            srcCodeFragmentNo
+        )
     }
 
 
