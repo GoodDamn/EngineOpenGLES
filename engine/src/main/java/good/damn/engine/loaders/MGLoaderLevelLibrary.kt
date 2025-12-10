@@ -175,7 +175,7 @@ class MGLoaderLevelLibrary(
                 ID_OPACITY
             )
 
-            /*buildTexture(
+            buildTexture(
                 generatorShader,
                 src.fragDeferEmissive,
                 src.fragDeferEmissiveNo,
@@ -184,7 +184,8 @@ class MGLoaderLevelLibrary(
                 shaderTextures,
                 MGEnumTextureType.EMISSIVE,
                 ID_EMISSIVE
-            )*/
+            )
+
 
             /*
 

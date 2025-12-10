@@ -37,6 +37,9 @@ class MGShaderSource(
     val fragDeferOpacity: String
     val fragDeferOpacityNo: String
 
+    val fragDeferEmissive: String
+    val fragDeferEmissiveNo: String
+
     val verti: String
     val vert: String
 
@@ -73,6 +76,14 @@ class MGShaderSource(
 
         fragDeferOpacityNo = loadSourceCode(
             "$deferPath/frag_defer_opacity_no.glsl"
+        )
+
+        fragDeferEmissive = loadSourceCode(
+            "$deferPath/frag_defer_emissive.glsl"
+        )
+
+        fragDeferEmissiveNo = loadSourceCode(
+            "$deferPath/frag_defer_emissive_no.glsl"
         )
 
         frag1 = loadSourceCode(
