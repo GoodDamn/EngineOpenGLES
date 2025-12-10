@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.textures
 
+import android.opengl.GLES30
 import android.opengl.GLES30.GL_LINEAR
 import android.opengl.GLES30.GL_NEAREST
 import android.opengl.GLES30.GL_RGB
@@ -50,5 +51,14 @@ class MGTextureAttachment(
         val internalFormat: Int,
         val outFormat: Int,
         val type: Int
-    )
+    ) {
+        companion object {
+            @JvmField
+            val rgba = MGMConfig(
+                GLES30.GL_RGBA,
+                GLES30.GL_RGBA,
+                GL_UNSIGNED_BYTE
+            )
+        }
+    }
 }

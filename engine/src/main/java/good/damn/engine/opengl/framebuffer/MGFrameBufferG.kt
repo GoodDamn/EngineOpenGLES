@@ -39,6 +39,13 @@ class MGFrameBufferG(
         )
     )
 
+    val textureAttachmentMisc = MGTextureAttachment(
+        GLES30.GL_COLOR_ATTACHMENT3,
+        MGTexture(
+            MGTextureActive(3)
+        )
+    )
+
     fun generate(
         width: Int,
         height: Int
@@ -56,6 +63,7 @@ class MGFrameBufferG(
             textureAttachmentPosition.attachment,
             textureAttachmentNormal.attachment,
             textureAttachmentColorSpec.attachment,
+            textureAttachmentMisc.attachment
         )
 
         generateAttachment(
@@ -73,11 +81,13 @@ class MGFrameBufferG(
         generateAttachment(
             textureAttachmentColorSpec,
             width, height,
-            MGTextureAttachment.MGMConfig(
-                GLES30.GL_RGBA,
-                GLES30.GL_RGBA,
-                GLES30.GL_UNSIGNED_BYTE
-            )
+            MGTextureAttachment.MGMConfig.rgba
+        )
+
+        generateAttachment(
+            textureAttachmentMisc,
+            width, height,
+            MGTextureAttachment.MGMConfig.rgba
         )
 
         GLES30.glDrawBuffers(

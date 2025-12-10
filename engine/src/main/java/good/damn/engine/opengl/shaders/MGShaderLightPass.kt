@@ -22,6 +22,10 @@ MGIShaderCameraPosition {
         "gNormal"
     )
 
+    val textureMisc = MGShaderTexture(
+        "gMisc"
+    )
+
     override var uniformCameraPosition = 0
         private set
 
@@ -47,6 +51,10 @@ MGIShaderCameraPosition {
         )
 
         textureNormal.setupUniforms(
+            program
+        )
+
+        textureMisc.setupUniforms(
             program
         )
 
