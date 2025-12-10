@@ -5,37 +5,40 @@ import good.damn.engine.shader.MGShaderSource
 class MGGeneratorMaterialG(
     private val source: MGShaderSource
 ) {
-
     private val mBuilderSrcFragment = StringBuilder().append(
         source.fragDefer1
     )
 
-    fun diffuse(): MGGeneratorMaterialG {
-        mBuilderSrcFragment.append(
-            source.fragDeferDiffuse
-        )
-        return this
-    }
+    fun diffuse() = mBuilderSrcFragment.append(
+        source.fragDeferDiffuse
+    )
 
-    fun diffuseNo(): MGGeneratorMaterialG {
-        mBuilderSrcFragment.append(
-            source.fragDeferDiffuseNo
-        )
-        return this
-    }
+    fun diffuseNo() = mBuilderSrcFragment.append(
+        source.fragDeferDiffuseNo
+    )
 
-    fun specular(): MGGeneratorMaterialG {
+    fun specular() = apply {
         mBuilderSrcFragment.append(
             source.fragDeferSpecular
         )
-        return this
     }
 
-    fun specularNo(): MGGeneratorMaterialG {
+    fun specularNo() = apply {
         mBuilderSrcFragment.append(
             source.fragDeferSpecularNo
         )
-        return this
+    }
+
+    fun opacity() = apply {
+        mBuilderSrcFragment.append(
+            source.fragDeferOpacity
+        )
+    }
+
+    fun opacityNo() = apply {
+        mBuilderSrcFragment.append(
+            source.fragDeferOpacityNo
+        )
     }
 
     fun build() = mBuilderSrcFragment.append(

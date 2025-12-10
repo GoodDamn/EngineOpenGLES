@@ -171,6 +171,20 @@ class MGLoaderLevelLibrary(
                 }
             }
 
+            buildTexture(
+                builderMaterial,
+                "${diffuse}_o$EXTENSION_TEXTURE",
+                shaderTextures,
+                MGEnumTextureType.OPACITY,
+                ID_OPACITY
+            ).run {
+                if (this) {
+                    generatorShader.opacity()
+                } else {
+                    generatorShader.opacityNo()
+                }
+            }
+
             /*buildTextureMap(
                 generatorMaterial,
                 builderMaterial,
