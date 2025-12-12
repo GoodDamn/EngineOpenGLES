@@ -18,7 +18,11 @@ import good.damn.engine.opengl.triggers.methods.MGITriggerMethod
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodSphere
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.sdk.MGVector3
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -35,9 +39,9 @@ class MGHudScene(
             informator,
             framebufferG
         )
-        val lightCount = 4
+        val lightCount = 8
         val dpi = (PI * 2 / lightCount).toFloat()
-        val radius = 2100f
+        val radius = 1600f
         var current = 0f
         for (i in 0 until lightCount) {
             val light = MGLight(
@@ -46,19 +50,20 @@ class MGHudScene(
                     .784f,
                     .515f
                 ),
-                1.0f,
-                0.007f,
-                0.0002f
+                0.6f,
+                0.4f,
+                0.25f,
+                2700f
             )
             MGTriggerLight.createFromLight(
                 light
             ).run {
+                matrix.radius = 10000f
                 matrix.setPosition(
-                    radius * sin(current),
-                    260.65f,
-                    radius * cos(current)
+                    250f + radius * sin(current),
+                    2160.65f,
+                    250f + radius * cos(current)
                 )
-                matrix.radius = light.radius
                 matrix.invalidatePosition()
                 matrix.invalidateRadius()
                 matrix.calculateInvertTrigger()

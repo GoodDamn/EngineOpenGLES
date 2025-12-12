@@ -28,12 +28,16 @@ MGIListenerMove {
         dx: Float,
         dy: Float
     ) {
-        camera.addRotation(
-            dx * 0.001f,
-            dy * 0.001f
-        )
-        camera.invalidatePosition()
-        updateIntersection()
+        synchronized(
+            camera.modelMatrix
+        ) {
+            camera.addRotation(
+                dx * 0.001f,
+                dy * 0.001f
+            )
+            camera.invalidatePosition()
+            updateIntersection()
+        }
     }
 
     override fun onMove(
@@ -42,13 +46,17 @@ MGIListenerMove {
         directionX: Float,
         directionY: Float
     ) {
-        camera.addPosition(
-            x, y,
-            directionX,
-            directionY
-        )
-        camera.invalidatePosition()
-        updateIntersection()
+        synchronized(
+            camera.modelMatrix
+        ) {
+            camera.addPosition(
+                x, y,
+                directionX,
+                directionY
+            )
+            camera.invalidatePosition()
+            updateIntersection()
+        }
     }
 
     private inline fun updateIntersection() {

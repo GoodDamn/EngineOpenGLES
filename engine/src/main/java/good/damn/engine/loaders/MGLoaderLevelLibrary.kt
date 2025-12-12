@@ -245,7 +245,6 @@ class MGLoaderLevelLibrary(
         ]
 
         if (cachedShader == null) {
-            Log.d("TAG", "readProp: SRC_FRAG: $fragmentCode")
             cachedShader = MGShaderOpaqueDefer(
                 shaderMaterials.toTypedArray()
             )

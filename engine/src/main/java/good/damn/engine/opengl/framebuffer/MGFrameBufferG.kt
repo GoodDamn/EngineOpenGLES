@@ -96,6 +96,7 @@ class MGFrameBufferG(
             0
         )
 
+        framebuffer.bind()
         mRenderBuffer.generate()
         mRenderBuffer.bind()
         mRenderBuffer.allocateStorage(

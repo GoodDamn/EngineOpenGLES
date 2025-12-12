@@ -7,6 +7,7 @@ import android.opengl.GLES30.GL_COLOR_BUFFER_BIT
 import android.opengl.GLES30.GL_CULL_FACE
 import android.opengl.GLES30.GL_DEPTH_BUFFER_BIT
 import android.opengl.GLES30.GL_DEPTH_TEST
+import android.opengl.GLES30.GL_STENCIL_BUFFER_BIT
 import android.opengl.GLES30.glClear
 import android.opengl.GLES30.glClearColor
 import android.opengl.GLES30.glCullFace
@@ -32,10 +33,6 @@ data class MGDrawModeOpaque(
         width: Int,
         height: Int
     ) {
-        glViewport(
-            0, 0,
-            width, height
-        )
         val camera = informator.camera
         val drawerLightDirectional = informator.drawerLightDirectional
 
@@ -46,7 +43,6 @@ data class MGDrawModeOpaque(
         )
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
-        glCullFace(GL_BACK)
 
         informator.shaders.sky.run {
             use()
@@ -81,6 +77,10 @@ data class MGDrawModeOpaque(
         glClear(
             GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
         )
+        glViewport(
+            0, 0,
+            width, height
+        )
         glDisable(GL_CULL_FACE)
         glDisable(GL_DEPTH_TEST)
 
@@ -102,7 +102,7 @@ data class MGDrawModeOpaque(
             )
         }
 
-        if (!informator.canDrawTriggers) {
+        /*if (!informator.canDrawTriggers) {
             return
         }
 
@@ -118,10 +118,10 @@ data class MGDrawModeOpaque(
                     this
                 )
             }
-        }
+        }*/
 
 
-        /*val
+        /*
         val shaderTrigger =
         informator.meshes.forEach {
             it.key.run {

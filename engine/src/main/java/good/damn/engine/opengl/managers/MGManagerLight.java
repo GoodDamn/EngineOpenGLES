@@ -1,5 +1,7 @@
 package good.damn.engine.opengl.managers;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -56,7 +58,7 @@ public final class MGManagerLight {
             drawer.setActive(1);
 
             drawer.setRadius(
-                matrix.getRadius()
+                light.getRadiusClip()
             );
 
             drawer.getColor().copy(

@@ -7,7 +7,8 @@ data class MGLight(
     var color: MGVector3,
     var constant: Float,
     var linear: Float,
-    var quad: Float
+    var quad: Float,
+    var radiusClip: Float
 ) {
     val radius: Float
         get() = (
