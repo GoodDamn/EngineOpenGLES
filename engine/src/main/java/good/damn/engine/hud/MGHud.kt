@@ -12,12 +12,9 @@ import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
 import good.damn.engine.opengl.callbacks.MGCallbackOnScale
 import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
-import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleMap
-import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShader
-import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShaderNormals
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.runnables.MGCallbackModelSpawn
-import good.damn.engine.sdk.MGVector3
+import good.damn.engine.sdk.SDVector3
 import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickImport
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
@@ -115,7 +112,7 @@ class MGHud(
     )
 
     override fun onIntersectPosition(
-        p: MGVector3
+        p: SDVector3
     ) {
         mBridgeMatrix.matrix?.run {
             setPosition(

@@ -5,15 +5,15 @@ import android.util.Pair;
 import androidx.annotation.NonNull;
 
 import good.damn.engine.opengl.shaders.MGShaderOpaqueSingle;
-import good.damn.engine.sdk.MGVector3;
+import good.damn.engine.sdk.SDVector3;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
 import good.damn.engine.opengl.entities.MGMaterial;
 
 public final class MGMPoolMeshMutable {
     @NonNull public MGArrayVertexManager vertexArray;
-    @NonNull public Pair<MGVector3, MGVector3> pointMinMax;
+    @NonNull public Pair<SDVector3, SDVector3> pointMinMax;
     @NonNull public MGMaterial material;
-    @NonNull public MGVector3 pointMiddle;
+    @NonNull public SDVector3 pointMiddle;
 
     @NonNull public MGShaderOpaqueSingle shaderOpaque;
 

@@ -1,6 +1,6 @@
 package good.damn.engine.opengl.callbacks
 
-import good.damn.engine.sdk.MGVector3
+import good.damn.engine.sdk.SDVector3
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.rays.MGRayIntersection
@@ -16,7 +16,7 @@ MGIListenerMove {
     private var mListenerIntersect: MGIListenerOnIntersectPosition? = null
 
     private val mRayIntersection = MGRayIntersection()
-    private val mPointCamera = MGVector3(0f)
+    private val mPointCamera = SDVector3(0f)
 
     fun setListenerIntersection(
         v: MGIListenerOnIntersectPosition?

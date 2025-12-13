@@ -1,7 +1,6 @@
 package good.damn.engine.opengl.triggers;
 
 import android.opengl.GLES30;
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -23,7 +22,7 @@ import good.damn.engine.opengl.shaders.MGShaderMaterial;
 import good.damn.engine.opengl.shaders.MGShaderOpaqueSingle;
 import good.damn.engine.opengl.shaders.MGShaderTexture;
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute;
-import good.damn.engine.sdk.MGVector3;
+import good.damn.engine.sdk.SDVector3;
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals;
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity;
@@ -315,10 +314,10 @@ public final class MGTriggerMesh {
         @NonNull final MGITrigger triggerAction
     ) {
         @NonNull final Pair<
-            MGVector3, MGVector3
+            SDVector3, SDVector3
         > pointMinMax = poolMesh.getPointMinMax();
 
-        @NonNull final MGVector3 pointMiddle = poolMesh
+        @NonNull final SDVector3 pointMiddle = poolMesh
             .getPointMiddle();
 
         @NonNull

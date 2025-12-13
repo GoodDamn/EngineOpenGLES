@@ -1,7 +1,7 @@
 package good.damn.engine.opengl.drawers.light
 
 import android.opengl.GLES30
-import good.damn.engine.sdk.MGVector3
+import good.damn.engine.sdk.SDVector3
 import good.damn.engine.opengl.shaders.MGShaderLightPoint
 
 class MGDrawerLightPoint {
@@ -11,8 +11,8 @@ class MGDrawerLightPoint {
     var linear = 0.014f
     var quad = 0.0007f
     var radius = 600f
-    val position = MGVector3(0f)
-    val color = MGVector3(0f)
+    val position = SDVector3(0f)
+    val color = SDVector3(0f)
 
     fun draw(
         shader: MGShaderLightPoint

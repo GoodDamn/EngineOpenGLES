@@ -1,15 +1,15 @@
 package good.damn.engine.opengl.models
 
 import android.util.Pair
-import good.damn.engine.sdk.MGVector3
+import good.damn.engine.sdk.SDVector3
 import good.damn.engine.opengl.arrays.MGArrayVertexManager
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.shaders.MGShaderOpaqueSingle
 
 data class MGMPoolMesh(
     val vertexArray: MGArrayVertexManager,
-    val pointMinMax: Pair<MGVector3, MGVector3>,
+    val pointMinMax: Pair<SDVector3, SDVector3>,
     val material: MGMaterial,
-    val pointMiddle: MGVector3,
+    val pointMiddle: SDVector3,
     val shader: MGShaderOpaqueSingle
 )

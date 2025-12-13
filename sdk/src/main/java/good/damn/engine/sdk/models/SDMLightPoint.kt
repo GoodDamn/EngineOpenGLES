@@ -1,10 +1,10 @@
-package good.damn.engine.opengl.entities
+package good.damn.engine.sdk.models
 
-import good.damn.engine.sdk.MGVector3
+import good.damn.engine.sdk.SDVector3
 import kotlin.math.sqrt
 
-data class MGLight(
-    var color: MGVector3,
+data class SDMLightPoint(
+    var color: SDVector3,
     var constant: Float,
     var linear: Float,
     var quad: Float,

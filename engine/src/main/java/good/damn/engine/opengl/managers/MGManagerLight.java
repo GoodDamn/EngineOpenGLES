@@ -1,12 +1,10 @@
 package good.damn.engine.opengl.managers;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint;
-import good.damn.engine.opengl.entities.MGLight;
+import good.damn.engine.sdk.models.SDMLightPoint;
 import good.damn.engine.opengl.shaders.MGShaderLightPoint;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerLight;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight;
@@ -50,7 +48,7 @@ public final class MGManagerLight {
             }
 
             @NonNull
-            final MGLight light = state.getLight();
+            final SDMLightPoint light = state.getLight();
 
             @NonNull
             final MGMatrixTriggerLight matrix = state.getModelMatrix();

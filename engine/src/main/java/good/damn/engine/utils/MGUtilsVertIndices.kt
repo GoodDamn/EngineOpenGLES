@@ -1,6 +1,6 @@
 package good.damn.engine.utils
 
-import good.damn.engine.sdk.MGVector3
+import good.damn.engine.sdk.SDVector3
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import kotlin.math.cos
@@ -189,8 +189,8 @@ object MGUtilsVertIndices {
 
     @JvmStatic
     fun createCubeVertices(
-        min: MGVector3,
-        max: MGVector3
+        min: SDVector3,
+        max: SDVector3
     ) = floatArrayOf(
         // top-left
         min.x, min.y, min.z, // down 0

@@ -2,7 +2,7 @@ package good.damn.engine.opengl.triggers;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.sdk.MGVector3;
+import good.damn.engine.sdk.SDVector3;
 import good.damn.engine.opengl.matrices.MGMatrixScale;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
 
@@ -13,7 +13,7 @@ public final class MGMatrixTriggerLight {
         MGMatrixScale
     > matrixTrigger;
     @NonNull
-    private final MGVector3 mLightPosition;
+    private final SDVector3 mLightPosition;
 
     private float mRadius = 0f;
 
@@ -24,7 +24,7 @@ public final class MGMatrixTriggerLight {
     ) {
         this.matrixTrigger = matrixTrigger;
 
-        mLightPosition = new MGVector3(
+        mLightPosition = new SDVector3(
             0f, 0f, 0f
         );
 
@@ -74,7 +74,7 @@ public final class MGMatrixTriggerLight {
     }
 
     @NonNull
-    public final MGVector3 getPosition() {
+    public final SDVector3 getPosition() {
         return mLightPosition;
     }
 

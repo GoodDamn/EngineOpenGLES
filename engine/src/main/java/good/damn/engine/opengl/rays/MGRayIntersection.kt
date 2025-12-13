@@ -1,13 +1,13 @@
 package good.damn.engine.opengl.rays
 
-import good.damn.engine.sdk.MGVector3
+import good.damn.engine.sdk.SDVector3
 
 class MGRayIntersection {
 
     fun intersect(
-        position: MGVector3,
-        direction: MGVector3,
-        outResult: MGVector3
+        position: SDVector3,
+        direction: SDVector3,
+        outResult: SDVector3
     ) {
         outResult.x = position.x + direction.x * 200f
         outResult.y = position.y + direction.y * 200f
