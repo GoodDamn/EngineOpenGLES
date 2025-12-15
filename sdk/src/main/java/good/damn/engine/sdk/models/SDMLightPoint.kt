@@ -10,14 +10,17 @@ data class SDMLightPoint(
     var quad: Float,
     var radiusClip: Float
 ) {
+    companion object {
+        @JvmField
+        val COLOR_DIVISOR = 256f / 5f
+    }
+
     val radius: Float
         get() = (
             -linear + sqrt(
                 linear * linear - 4 * quad * (
-                    constant - (
-                        256f / 5f
-                        ) * color.maxValue()
-                    )
+                    constant - COLOR_DIVISOR * color.maxValue()
+                )
             )
         ) / (2 * quad)
 }

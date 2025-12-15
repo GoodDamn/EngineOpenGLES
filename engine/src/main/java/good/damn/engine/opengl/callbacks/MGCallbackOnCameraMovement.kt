@@ -29,7 +29,7 @@ MGIListenerMove {
         dy: Float
     ) {
         synchronized(
-            camera.modelMatrix
+            camera
         ) {
             camera.addRotation(
                 dx * 0.001f,
@@ -47,7 +47,7 @@ MGIListenerMove {
         directionY: Float
     ) {
         synchronized(
-            camera.modelMatrix
+            camera
         ) {
             camera.addPosition(
                 x, y,

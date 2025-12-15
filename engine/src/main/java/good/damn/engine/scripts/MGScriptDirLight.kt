@@ -15,7 +15,7 @@ class MGScriptDirLight(
         try {
             val loader = DexClassLoader(
                 "$dirScripts/MGLightDir.jar",
-                MGEngine.DIR_DATA.path,
+                dirScripts.path,
                 null,
                 javaClass.classLoader
             )

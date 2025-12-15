@@ -68,10 +68,9 @@ object MGStreamLevel {
             map
         )
         loaderLib.loadLibrary()
+        loaderLib.loadNonCullFaceList()
 
         loaderLib.readProps()
-
-        loaderLib.loadNonCullFaceList()
 
         val meshes = loaderLib.meshes!!
 

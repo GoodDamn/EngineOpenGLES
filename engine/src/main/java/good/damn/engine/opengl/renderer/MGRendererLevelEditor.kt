@@ -49,6 +49,7 @@ import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.shader.MGShaderCache
+import good.damn.engine.shader.MGShaderSource
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsVertIndices
@@ -60,6 +61,12 @@ class MGRendererLevelEditor(
 
     companion object {
         private const val TAG = "MGRendererLevelEditor"
+    }
+
+    init {
+        MGEngine.shaderSource = MGShaderSource(
+            "opaque"
+        )
     }
 
     private val mInformatorShader = MGMInformatorShader(

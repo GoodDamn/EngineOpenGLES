@@ -53,10 +53,6 @@ class MGEngine {
                 "temp"
             )
 
-            shaderSource = MGShaderSource(
-                "opaque"
-            )
-
             createPublicDir(
                 DIR_PUBLIC
             )
