@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.renderer
 
+import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -15,6 +16,9 @@ import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInformatorShader
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
+import good.damn.engine.opengl.buffers.MGBuffer
+import good.damn.engine.opengl.buffers.MGBufferUniform
+import good.damn.engine.opengl.buffers.MGBufferUniformCamera
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerLightPass
@@ -139,9 +143,18 @@ class MGRendererLevelEditor(
         MGFramebuffer()
     )
 
+    private val mBufferUniform = MGBuffer(
+        GL_UNIFORM_BUFFER
+    )
+
+    private val mBufferUniformCamera = MGBufferUniformCamera(
+        mBufferUniform
+    )
+
     private val mInformator = MGMInformator(
         mInformatorShader,
         MGCameraFree(
+            mBufferUniformCamera,
             MGMatrixTranslate()
         ),
         MGDrawerLightDirectional(),
@@ -218,6 +231,12 @@ class MGRendererLevelEditor(
         config: EGLConfig?
     ) {
         MGUtilsFile.glWriteExtensions()
+
+        mBufferUniform.generate()
+        MGBufferUniform.setupBindingPoint(
+            mBufferUniform,
+            2 * 64
+        )
 
         mVerticesQuad.configure(
             MGUtilsBuffer.createFloat(
@@ -365,7 +384,8 @@ class MGRendererLevelEditor(
 
         mInformator.camera.setPerspective(
             width,
-            height
+            height,
+            mInformator.glHandler
         )
 
         mWidth = width

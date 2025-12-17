@@ -35,6 +35,7 @@ class MGHud(
 
     private val mCallbackOnCameraMove = MGCallbackOnCameraMovement(
         informator.camera,
+        informator.glHandler,
         mBridgeMatrix
     ).apply {
         setListenerIntersection(

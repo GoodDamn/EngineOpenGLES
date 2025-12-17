@@ -22,9 +22,6 @@ class MGDrawModeSingleMap(
     ) {
         shader.single.run {
             use()
-            informator.camera.draw(
-                this
-            )
             informator.meshes.forEach {
                 it.value.forEach {
                     it.drawSingleTexture(
@@ -37,9 +34,6 @@ class MGDrawModeSingleMap(
 
         shader.instanced.run {
             use()
-            informator.camera.draw(
-                this
-            )
             informator.meshesInstanced.forEach {
                 it.value.forEach {
                     it.drawSingleTexture(

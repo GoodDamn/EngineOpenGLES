@@ -22,9 +22,6 @@ class MGDrawModeSingleShader(
     ) {
         shader.single.run {
             use()
-            informator.camera.draw(
-                this
-            )
 
             informator.meshSky.drawVertices(
                 this
@@ -41,9 +38,6 @@ class MGDrawModeSingleShader(
 
         shader.instanced.run {
             use()
-            informator.camera.draw(
-                this
-            )
             informator.meshesInstanced.forEach {
                 it.value.forEach {
                     it.drawVertices()

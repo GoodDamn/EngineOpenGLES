@@ -46,9 +46,6 @@ data class MGDrawModeOpaque(
 
         informator.shaders.sky.run {
             use()
-            camera.draw(
-                this
-            )
             drawerLightDirectional.drawColor(
                 uniformColor
             )
@@ -62,9 +59,6 @@ data class MGDrawModeOpaque(
         informator.meshesInstanced.forEach {
             it.key.run {
                 use()
-                camera.draw(
-                    this
-                )
                 it.value.forEach {
                     it.draw(
                         materials
