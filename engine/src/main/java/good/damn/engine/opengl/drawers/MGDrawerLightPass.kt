@@ -9,6 +9,7 @@ class MGDrawerLightPass(
     private val textureNormal: MGTexture,
     private val textureColorSpec: MGTexture,
     private val textureMisc: MGTexture,
+    private val textureDepth: MGTexture,
     private val quad: MGDrawerVertexArray
 ) {
 
@@ -31,6 +32,10 @@ class MGDrawerLightPass(
             shader.textureMisc
         )
 
+        textureDepth.draw(
+            shader.textureDepth
+        )
+
         quad.draw(
             GLES30.GL_TRIANGLES
         )
@@ -49,6 +54,10 @@ class MGDrawerLightPass(
 
         textureMisc.unbind(
             shader.textureMisc
+        )
+
+        textureDepth.unbind(
+            shader.textureDepth
         )
     }
 }

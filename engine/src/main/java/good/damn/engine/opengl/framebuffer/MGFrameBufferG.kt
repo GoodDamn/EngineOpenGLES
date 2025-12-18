@@ -46,6 +46,13 @@ class MGFrameBufferG(
         )
     )
 
+    val textureAttachmentDepth = MGTextureAttachment(
+        GLES30.GL_COLOR_ATTACHMENT4,
+        MGTexture(
+            MGTextureActive(4)
+        )
+    )
+
     fun generate(
         width: Int,
         height: Int
@@ -63,7 +70,8 @@ class MGFrameBufferG(
             textureAttachmentPosition.attachment,
             textureAttachmentNormal.attachment,
             textureAttachmentColorSpec.attachment,
-            textureAttachmentMisc.attachment
+            textureAttachmentMisc.attachment,
+            textureAttachmentDepth.attachment
         )
 
         generateAttachment(
@@ -88,6 +96,16 @@ class MGFrameBufferG(
             textureAttachmentMisc,
             width, height,
             MGTextureAttachment.MGMConfig.rgba
+        )
+
+        generateAttachment(
+            textureAttachmentDepth,
+            width, height,
+            MGTextureAttachment.MGMConfig(
+                GLES30.GL_R16F,
+                GLES30.GL_RED,
+                GLES30.GL_FLOAT
+            )
         )
 
         GLES30.glDrawBuffers(

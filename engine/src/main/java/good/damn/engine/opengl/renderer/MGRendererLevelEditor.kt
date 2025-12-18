@@ -163,6 +163,7 @@ class MGRendererLevelEditor(
             mFramebufferG.textureAttachmentNormal.texture,
             mFramebufferG.textureAttachmentColorSpec.texture,
             mFramebufferG.textureAttachmentMisc.texture,
+            mFramebufferG.textureAttachmentDepth.texture,
             mDrawerQuad
         ),
         ConcurrentHashMap(15),

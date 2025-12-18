@@ -28,6 +28,10 @@ MGIShaderLight {
         "gMisc"
     )
 
+    val textureDepth = MGShaderTexture(
+        "gDepth"
+    )
+
     override var uniformCameraPosition = 0
         private set
 
@@ -63,6 +67,10 @@ MGIShaderLight {
         )
 
         textureMisc.setupUniforms(
+            program
+        )
+
+        textureDepth.setupUniforms(
             program
         )
 
