@@ -1,31 +1,25 @@
 package good.damn.engine.opengl.shaders
 
+import android.opengl.GLES30.glGetUniformBlockIndex
 import android.opengl.GLES30.glGetUniformLocation
+import android.opengl.GLES30.glUniformBlockBinding
 import androidx.annotation.CallSuper
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 
 open class MGShaderSingleModeInstanced
-: MGShaderBase(),
-MGIShaderCamera {
-
-    final override var uniformCameraProjection = 0
-        private set
-
-    final override var uniformCameraView = 0
-        private set
+: MGShaderBase() {
 
     @CallSuper
     override fun setupUniforms(
         program: Int
     ) {
-        uniformCameraProjection = glGetUniformLocation(
+        glUniformBlockBinding(
             program,
-            "projection"
-        )
-
-        uniformCameraView = glGetUniformLocation(
-            program,
-            "view"
+            glGetUniformBlockIndex(
+                program,
+                "Camera"
+            ),
+            0
         )
     }
 }

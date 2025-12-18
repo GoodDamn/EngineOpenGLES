@@ -1,6 +1,8 @@
 package good.damn.engine.opengl.shaders
 
+import android.opengl.GLES30.glGetUniformBlockIndex
 import android.opengl.GLES30.glGetUniformLocation
+import android.opengl.GLES30.glUniformBlockBinding
 import androidx.annotation.CallSuper
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 
@@ -8,7 +10,6 @@ class MGShaderOpaqueDefer(
     override val materials: Array<MGShaderMaterial>
 ): MGShaderBase(),
 MGIShaderNormal,
-MGIShaderCamera,
 MGIShaderCameraPosition,
 MGIShaderMaterial {
 
@@ -16,12 +17,6 @@ MGIShaderMaterial {
         private set
 
     final override var uniformNormalMatrix = 0
-        private set
-
-    final override var uniformCameraProjection = 0
-        private set
-
-    final override var uniformCameraView = 0
         private set
 
     @CallSuper
@@ -34,15 +29,13 @@ MGIShaderMaterial {
             )
         }
 
-        // Uniforms
-        uniformCameraProjection = glGetUniformLocation(
+        glUniformBlockBinding(
             program,
-            "projection"
-        )
-
-        uniformCameraView = glGetUniformLocation(
-            program,
-            "view"
+            glGetUniformBlockIndex(
+                program,
+                "Camera"
+            ),
+            0
         )
 
         uniformNormalMatrix = glGetUniformLocation(
