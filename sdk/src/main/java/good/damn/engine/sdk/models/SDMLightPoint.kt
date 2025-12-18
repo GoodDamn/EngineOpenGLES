@@ -5,10 +5,7 @@ import kotlin.math.sqrt
 
 data class SDMLightPoint(
     var color: SDVector3,
-    var constant: Float,
-    var linear: Float,
-    var quad: Float,
-    var radiusClip: Float
+    var interpolation: SDMLightPointInterpolation
 ) {
     companion object {
         @JvmField
@@ -16,11 +13,12 @@ data class SDMLightPoint(
     }
 
     val radius: Float
-        get() = (
-            -linear + sqrt(
-                linear * linear - 4 * quad * (
-                    constant - COLOR_DIVISOR * color.maxValue()
+        get() = interpolation.run {
+            (-linear + sqrt(
+                    linear * linear - 4 * quad * (
+                        constant - COLOR_DIVISOR * color.maxValue()
+                    )
                 )
-            )
-        ) / (2 * quad)
+            ) / (2 * quad)
+        }
 }

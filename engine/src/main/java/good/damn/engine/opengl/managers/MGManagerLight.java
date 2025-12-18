@@ -8,6 +8,7 @@ import good.damn.engine.sdk.models.SDMLightPoint;
 import good.damn.engine.opengl.shaders.MGShaderLightPoint;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerLight;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight;
+import good.damn.engine.sdk.models.SDMLightPointInterpolation;
 
 public final class MGManagerLight {
 
@@ -53,10 +54,13 @@ public final class MGManagerLight {
             @NonNull
             final MGMatrixTriggerLight matrix = state.getModelMatrix();
 
+            @NonNull
+            final SDMLightPointInterpolation interp = light.getInterpolation();
+
             drawer.setActive(1);
 
             drawer.setRadius(
-                light.getRadiusClip()
+                interp.getRadiusClip()
             );
 
             drawer.getColor().copy(
@@ -68,15 +72,15 @@ public final class MGManagerLight {
             );
 
             drawer.setConstant(
-                light.getConstant()
+                interp.getConstant()
             );
 
             drawer.setLinear(
-                light.getConstant()
+                interp.getConstant()
             );
 
             drawer.setQuad(
-                light.getQuad()
+                interp.getQuad()
             );
 
             drawer.draw(
