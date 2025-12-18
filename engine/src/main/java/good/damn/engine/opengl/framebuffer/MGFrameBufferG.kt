@@ -1,6 +1,7 @@
 package good.damn.engine.opengl.framebuffer
 
 import android.opengl.GLES30
+import android.opengl.GLES30.GL_UNSIGNED_BYTE
 import android.util.Log
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.textures.MGTextureActive
@@ -95,7 +96,11 @@ class MGFrameBufferG(
         generateAttachment(
             textureAttachmentMisc,
             width, height,
-            MGTextureAttachment.MGMConfig.rgba
+            MGTextureAttachment.MGMConfig(
+                GLES30.GL_R8,
+                GLES30.GL_RED,
+                GL_UNSIGNED_BYTE
+            )
         )
 
         generateAttachment(
