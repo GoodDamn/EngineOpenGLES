@@ -1,24 +1,16 @@
 package good.damn.engine.loaders
 
-import android.util.Log
-import good.damn.engine.models.MGMGeneratorMaterial
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGProp
 import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.shaders.MGShaderMaterial
-import good.damn.engine.opengl.shaders.MGShaderOpaque
-import good.damn.engine.opengl.shaders.MGShaderOpaqueDefer
+import good.damn.engine.opengl.shaders.MGShaderGeometryPassInstanced
 import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.opengl.textures.MGTextureActive
-import good.damn.engine.shader.generators.MGGeneratorMaterial
 import good.damn.engine.shader.generators.MGGeneratorMaterialG
-import good.damn.engine.shader.generators.MGGeneratorShader
 import good.damn.engine.utils.MGUtilsFile
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -245,7 +237,7 @@ class MGLoaderLevelLibrary(
         ]
 
         if (cachedShader == null) {
-            cachedShader = MGShaderOpaqueDefer(
+            cachedShader = MGShaderGeometryPassInstanced(
                 shaderMaterials.toTypedArray()
             )
 

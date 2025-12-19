@@ -15,13 +15,14 @@ import android.opengl.GLES30.glDisable
 import android.opengl.GLES30.glEnable
 import android.opengl.GLES30.glViewport
 import good.damn.engine.models.MGMInformator
+import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
 
 data class MGDrawModeOpaque(
     private val informator: MGMInformator,
-    private val framebufferG: MGFramebuffer
+    private val drawerFramebufferG: MGDrawerFramebufferG
 ): MGIDrawer {
 
     private val mTriggerManagers = arrayOf(
@@ -37,19 +38,9 @@ data class MGDrawModeOpaque(
         val drawerLightDirectional = informator.drawerLightDirectional
 
         // Geometry pass
-        framebufferG.bind()
-        glClear(
-            GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
-        )
-        glEnable(GL_DEPTH_TEST)
-        glEnable(GL_CULL_FACE)
-
+        drawerFramebufferG.bind()
         informator.shaders.sky.run {
             use()
-            drawerLightDirectional.drawColor(
-                uniformColor
-            )
-
             informator.meshSky.drawSingleTexture(
                 this,
                 this
@@ -66,19 +57,13 @@ data class MGDrawModeOpaque(
                 }
             }
         }
-        framebufferG.unbind()
-        // Light (final) pass
-        glClear(
-            GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT
-        )
-        glViewport(
-            0, 0,
-            width, height
-        )
-        glDisable(GL_CULL_FACE)
-        glDisable(GL_DEPTH_TEST)
 
-        informator.shaders.lightPass.run {
+        drawerFramebufferG.unbind(
+            width,
+            height
+        )
+
+        informator.shaders.lightPassOpaque.run {
             use()
             camera.drawPosition(
                 this

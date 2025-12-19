@@ -2,35 +2,13 @@ package good.damn.engine.opengl.shaders
 
 import android.opengl.GLES30
 import good.damn.engine.models.MGMInformatorShader
-import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.entities.MGMaterialTexture
-import good.damn.engine.opengl.enums.MGEnumTextureType
-import good.damn.engine.opengl.shaders.base.MGShaderBase
+import java.util.LinkedList
 
-class MGShaderLightPass
-: MGShaderSingleModeInstanced(),
+class MGShaderLightPass private constructor(
+    val textures: Array<MGShaderTexture>
+): MGShaderProjectionView(),
 MGIShaderCameraPosition,
 MGIShaderLight {
-
-    val texturePosition = MGShaderTexture(
-        "gPosition"
-    )
-
-    val textureColorSpec = MGShaderTexture(
-        "gColorSpec"
-    )
-
-    val textureNormal = MGShaderTexture(
-        "gNormal"
-    )
-
-    val textureMisc = MGShaderTexture(
-        "gMisc"
-    )
-
-    val textureDepth = MGShaderTexture(
-        "gDepth"
-    )
 
     override var uniformCameraPosition = 0
         private set
@@ -54,25 +32,11 @@ MGIShaderLight {
             program
         )
 
-        texturePosition.setupUniforms(
-            program
-        )
-
-        textureColorSpec.setupUniforms(
-            program
-        )
-
-        textureNormal.setupUniforms(
-            program
-        )
-
-        textureMisc.setupUniforms(
-            program
-        )
-
-        textureDepth.setupUniforms(
-            program
-        )
+        textures.forEach {
+            it.setupUniforms(
+                program
+            )
+        }
 
         uniformCameraPosition = GLES30.glGetUniformLocation(
             program,
@@ -82,6 +46,53 @@ MGIShaderLight {
         lightPoints.forEach {
             it.setupUniforms(
                 program
+            )
+        }
+    }
+
+
+    class Builder {
+        private val list = LinkedList<
+            MGShaderTexture
+        >()
+
+        fun attachPosition() = attachTexture(
+            "gPosition"
+        )
+
+        fun attachNormal() = attachTexture(
+            "gNormal"
+        )
+
+        fun attachColorSpec() = attachTexture(
+            "gColorSpec"
+        )
+
+        fun attachMisc() = attachTexture(
+            "gMisc"
+        )
+
+        fun attachDepth() = attachTexture(
+            "gDepth"
+        )
+
+        inline fun attachAll() = attachPosition()
+            .attachNormal()
+            .attachColorSpec()
+            .attachMisc()
+            .attachDepth()
+
+        fun build() = MGShaderLightPass(
+            list.toTypedArray()
+        )
+
+        private inline fun attachTexture(
+            name: String
+        ) = apply {
+            list.add(
+                MGShaderTexture(
+                    name
+                )
             )
         }
     }

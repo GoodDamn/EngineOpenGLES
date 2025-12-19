@@ -2,22 +2,23 @@ package good.damn.engine.opengl.shaders
 
 import android.opengl.GLES30.glGetUniformLocation
 
-class MGShaderSingleModeNormals
-: MGShaderSingleMode(),
-MGIShaderNormal {
+class MGShaderProjectionViewModelTexture
+: MGShaderProjectionViewTexture(),
+MGIShaderModel {
 
-    override var uniformNormalMatrix = 0
+    final override var uniformModelView = 0
         private set
 
     override fun setupUniforms(
         program: Int
     ) {
-        uniformNormalMatrix = glGetUniformLocation(
+        uniformModelView = glGetUniformLocation(
             program,
-            "normalMatrix"
+            "model"
         )
         super.setupUniforms(
             program
         )
     }
+
 }

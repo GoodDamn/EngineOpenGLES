@@ -2,47 +2,29 @@ package good.damn.engine.opengl
 
 import good.damn.engine.MGEngine
 import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
-import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
-import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals
-import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
+import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.opengl.drawers.MGIDrawer
-import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
 import good.damn.engine.opengl.drawers.modes.MGDrawModeOpaque
-import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleMap
-import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShader
-import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShaderNormals
+import good.damn.engine.opengl.drawers.modes.MGDrawModeTexture
 import good.damn.engine.opengl.enums.MGEnumDrawMode
-import good.damn.engine.opengl.framebuffer.MGFramebuffer
-import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGSwitcherDrawMode(
     private val informator: MGMInformator,
-    framebufferG: MGFramebuffer
+    drawerFramebufferG: MGDrawerFramebufferG
 ) {
     private val drawerModeOpaque = MGDrawModeOpaque(
         informator,
-        framebufferG
+        drawerFramebufferG
     )
 
-    private val drawerModeWireframe = MGDrawModeSingleShader(
+    /*private val drawerModeWireframe = MGDrawModeSingleShader(
         informator.shaders.wireframe,
         informator
-    )
+    )*/
 
-    private val drawerModeNormals = MGDrawModeSingleShaderNormals(
-        informator.shaders.normals,
-        informator
-    )
-
-    private val drawerModeTexCoords = MGDrawModeSingleShader(
-        informator.shaders.texCoords,
-        informator
-    )
-
-    private val drawerModeTexture = MGDrawModeSingleMap(
-        informator.shaders.map,
-        informator
+    private val drawerModeDiffuse = MGDrawModeTexture(
+        informator,
+        drawerFramebufferG
     )
 
     var currentDrawerMode: MGIDrawer = drawerModeOpaque
@@ -52,6 +34,15 @@ class MGSwitcherDrawMode(
         MGEngine.drawMode
     ) {
         MGEnumDrawMode.OPAQUE -> switchDrawMode(
+            MGEnumDrawMode.DIFFUSE,
+            drawerModeDiffuse
+        )
+
+        else -> switchDrawMode(
+            MGEnumDrawMode.OPAQUE,
+            drawerModeOpaque
+        )
+        /*MGEnumDrawMode.OPAQUE -> switchDrawMode(
             MGEnumDrawMode.WIREFRAME,
             drawerModeWireframe
         )
@@ -89,7 +80,7 @@ class MGSwitcherDrawMode(
         MGEnumDrawMode.NORMAL_MAP -> switchDrawMode(
             MGEnumDrawMode.OPAQUE,
             drawerModeOpaque
-        )
+        )*/
     }
 
 
@@ -100,7 +91,7 @@ class MGSwitcherDrawMode(
         MGEngine.drawMode = drawMode
         currentDrawerMode = currentDrawer
 
-        informator.meshSky.switchDrawMode(
+        /*informator.meshSky.switchDrawMode(
             drawMode
         )
 
@@ -118,6 +109,6 @@ class MGSwitcherDrawMode(
                     drawMode
                 )
             }
-        }
+        }*/
     }
 }

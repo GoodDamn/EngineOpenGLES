@@ -1,13 +1,10 @@
 package good.damn.engine.opengl.shaders
 
-import android.opengl.GLES30.glGetAttribLocation
 import android.opengl.GLES30.glGetUniformLocation
-import android.opengl.GLES30.glUseProgram
-import android.util.Log
 import androidx.annotation.CallSuper
 
-open class MGShaderSingleMode
-: MGShaderSingleModeInstanced(),
+open class MGShaderProjectionViewModel
+: MGShaderProjectionView(),
 MGIShaderModel {
 
     final override var uniformModelView = 0

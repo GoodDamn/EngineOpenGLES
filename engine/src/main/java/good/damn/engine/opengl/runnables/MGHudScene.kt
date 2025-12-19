@@ -4,6 +4,7 @@ import good.damn.engine.hud.MGHud
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
+import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import good.damn.engine.opengl.triggers.MGTriggerLight
@@ -25,7 +26,9 @@ class MGHudScene(
     init {
         val switcherDrawMode = MGSwitcherDrawMode(
             informator,
-            framebufferG
+            MGDrawerFramebufferG(
+                framebufferG
+            )
         )
 
         val scriptLightPlacement = MGScriptLightPlacement(

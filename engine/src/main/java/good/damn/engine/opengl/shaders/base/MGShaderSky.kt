@@ -2,16 +2,13 @@ package good.damn.engine.opengl.shaders.base
 
 import android.opengl.GLES30.glGetUniformLocation
 import good.damn.engine.opengl.shaders.MGIShaderModel
-import good.damn.engine.opengl.shaders.MGShaderSingleMapInstanced
+import good.damn.engine.opengl.shaders.MGShaderProjectionViewTexture
 
 class MGShaderSky
-: MGShaderSingleMapInstanced(),
+: MGShaderProjectionViewTexture(),
 MGIShaderModel {
 
     final override var uniformModelView = 0
-        private set
-
-    var uniformColor = 0
         private set
 
     override fun setupUniforms(
@@ -20,10 +17,6 @@ MGIShaderModel {
         uniformModelView = glGetUniformLocation(
             program,
             "model"
-        )
-        uniformColor = glGetUniformLocation(
-            program,
-            "color"
         )
 
         super.setupUniforms(

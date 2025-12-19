@@ -4,11 +4,10 @@ import good.damn.engine.opengl.arrays.MGArrayVertexInstanced
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
-import good.damn.engine.opengl.shaders.MGShaderOpaque
-import good.damn.engine.opengl.shaders.MGShaderOpaqueDefer
+import good.damn.engine.opengl.shaders.MGShaderGeometryPassInstanced
 
 data class MGMInstanceMesh(
-    val shader: MGShaderOpaqueDefer,
+    val shader: MGShaderGeometryPassInstanced,
     val vertexArray: MGArrayVertexInstanced,
     val material: Array<MGMaterial>,
     val enableCullFace: Boolean,

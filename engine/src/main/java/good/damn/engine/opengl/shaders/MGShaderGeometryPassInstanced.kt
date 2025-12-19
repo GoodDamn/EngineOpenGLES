@@ -6,7 +6,7 @@ import android.opengl.GLES30.glUniformBlockBinding
 import androidx.annotation.CallSuper
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 
-class MGShaderOpaqueDefer(
+class MGShaderGeometryPassInstanced(
     override val materials: Array<MGShaderMaterial>
 ): MGShaderBase(),
 MGIShaderNormal,
