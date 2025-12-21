@@ -45,6 +45,7 @@ import good.damn.engine.opengl.shaders.base.MGShaderSky
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
+import good.damn.engine.runnables.MGManagerTriggerLoop
 import good.damn.engine.shader.MGShaderCache
 import good.damn.engine.shader.MGShaderSource
 import good.damn.engine.utils.MGUtilsBuffer
@@ -191,6 +192,10 @@ class MGRendererLevelEditor(
         mFramebufferG.framebuffer
     )
 
+    private val managerTriggerLoop = MGManagerTriggerLoop(
+        mInformator
+    )
+
     init {
         mInformator.glHandler.post(
             object: MGIRunnableBounds {
@@ -212,10 +217,16 @@ class MGRendererLevelEditor(
         mInformator.glHandler.registerCycleTask(
             mHudScene.runnableCycle
         )
+
+        managerTriggerLoop.start()
     }
 
     private var mWidth = 0
     private var mHeight = 0
+
+    fun stop() {
+        managerTriggerLoop.stop()
+    }
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -341,11 +352,7 @@ class MGRendererLevelEditor(
     override fun onDrawFrame(
         gl: GL10?
     ) {
-        mInformator.managerTriggerLight.loopTriggers(
-            mInformator.camera.modelMatrix.x,
-            mInformator.camera.modelMatrix.y,
-            mInformator.camera.modelMatrix.z,
-        )
+
         mHandlerGlExecutor.runTasksBounds(
             mWidth, mHeight
         )
