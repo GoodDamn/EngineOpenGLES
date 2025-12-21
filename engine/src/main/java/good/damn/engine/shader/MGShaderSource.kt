@@ -10,22 +10,6 @@ class MGShaderSource(
         private const val FOLDER = "shaders"
     }
 
-    val frag1: String
-    val fragMain: String
-
-    val fragNormalNo: String
-    val fragNormalMap: String
-
-    val fragSpecularNo: String
-    val fragSpecular: String
-
-    val fragTexture: String
-    val fragTextureNo: String
-
-    val fragMaterial: String
-
-    val fragLight: String
-
     val fragDefer1: String
     val fragDeferMain: String
     val fragDeferSpecular: String
@@ -95,49 +79,6 @@ class MGShaderSource(
 
         fragDeferNormalVertex = loadSourceCode(
             "$deferPath/frag_normal_no.glsl"
-        )
-
-        frag1 = loadSourceCode(
-            "$localFullPath/frag1.glsl"
-        )
-
-        fragMain = loadSourceCode(
-            "$localFullPath/frag_main.glsl"
-        )
-
-        fragNormalNo = loadSourceCode(
-            "$localFullPath/frag_normal_no.glsl"
-        )
-
-        fragNormalMap = loadSourceCode(
-            "$localFullPath/frag_normal.glsl"
-        )
-
-
-        fragSpecular = loadSourceCode(
-            "$localFullPath/frag_spec.glsl"
-        )
-
-        fragSpecularNo = loadSourceCode(
-            "$localFullPath/frag_spec_no.glsl"
-        )
-
-        fragTexture = loadSourceCode(
-            "$localFullPath/frag_texture.glsl"
-        )
-
-        fragTextureNo = loadSourceCode(
-            "$localFullPath/frag_texture_no.glsl"
-        )
-
-
-        fragMaterial = loadSourceCode(
-            "$localFullPath/frag_material.glsl"
-        )
-
-
-        fragLight = loadSourceCode(
-            "$localFullPath/frag_light.glsl"
         )
 
         verti = loadSourceCode(
