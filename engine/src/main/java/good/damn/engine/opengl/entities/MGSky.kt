@@ -5,8 +5,8 @@ import android.opengl.GLES30.GL_CLAMP_TO_EDGE
 import good.damn.engine.loaders.texture.MGLoaderTexture
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
+import good.damn.engine.opengl.drawers.MGDrawerMeshMaterial
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
-import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.matrices.MGMatrixScale
@@ -19,7 +19,7 @@ import good.damn.engine.utils.MGUtilsBitmap
 class MGSky(
     private val materialTexture: MGMaterialTexture,
     private val verticesSky: MGArrayVertexConfigurator
-): MGDrawerMeshTextureSwitch(
+): MGDrawerMeshMaterial(
     arrayOf(
         MGMaterial(
             materialTexture

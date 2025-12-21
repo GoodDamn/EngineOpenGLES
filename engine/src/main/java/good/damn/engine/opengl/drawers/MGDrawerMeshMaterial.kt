@@ -2,16 +2,30 @@ package good.damn.engine.opengl.drawers
 
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.shaders.MGIShaderModel
+import good.damn.engine.opengl.shaders.MGIShaderNormal
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 
-class MGDrawerMeshMaterialSwitch(
+open class MGDrawerMeshMaterial(
     private val material: Array<MGMaterial>,
-    drawMesh: MGDrawerMeshSwitch
-): MGDrawerMeshTextureSwitch(
-    material,
-    drawMesh
+    private val drawerMesh: MGDrawerMeshSwitch
 ) {
-    fun drawMaterial(
+    fun drawNormals(
+        shader: MGIShaderNormal
+    ) {
+        drawerMesh.drawNormals(
+            shader
+        )
+    }
+
+    fun drawVertices(
+        shader: MGIShaderModel
+    ) {
+        drawerMesh.draw(
+            shader
+        )
+    }
+
+    fun drawMaterials(
         shaderMaterial: Array<MGShaderMaterial>,
         shaderModel: MGIShaderModel
     ) {
@@ -21,7 +35,7 @@ class MGDrawerMeshMaterialSwitch(
             )
         }
 
-        mDrawerMesh.draw(
+        drawerMesh.draw(
             shaderModel
         )
 

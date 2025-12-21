@@ -92,25 +92,5 @@ class MGSwitcherDrawMode(
     ) {
         MGEngine.drawMode = drawMode
         currentDrawerMode = currentDrawer
-
-        /*informator.meshSky.switchDrawMode(
-            drawMode
-        )
-
-        informator.meshes.forEach {
-            it.value.forEach {
-                it.switchDrawMode(
-                    drawMode
-                )
-            }
-        }
-
-        informator.meshesInstanced.forEach {
-            it.value.forEach {
-                it.switchDrawMode(
-                    drawMode
-                )
-            }
-        }*/
     }
 }

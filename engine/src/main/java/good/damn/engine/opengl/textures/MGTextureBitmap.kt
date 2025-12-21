@@ -1,6 +1,8 @@
 package good.damn.engine.opengl.textures
 
 import android.graphics.Bitmap
+import android.opengl.GLES11Ext
+import android.opengl.GLES30
 import android.opengl.GLES30.GL_CLAMP_TO_EDGE
 import android.opengl.GLES30.GL_LINEAR
 import android.opengl.GLES30.GL_LINEAR_MIPMAP_LINEAR
@@ -103,7 +105,13 @@ class MGTextureBitmap(
         glTexParameterf(
             GL_TEXTURE_2D,
             GL_MAX_TEXTURE_LOD_BIAS,
-            -1f
+            2.0f
+        )
+
+        glTexParameteri(
+            GL_TEXTURE_2D,
+            GLES11Ext.GL_TEXTURE_MAX_ANISOTROPY_EXT,
+            16
         )
 
         val error = glGetError()

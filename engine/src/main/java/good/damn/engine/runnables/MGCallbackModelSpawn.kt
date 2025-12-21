@@ -4,7 +4,7 @@ import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.MGTriggerMeshGroup
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
-import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
+import good.damn.engine.opengl.drawers.MGDrawerMeshMaterial
 import good.damn.engine.opengl.models.MGMPoolMesh
 import good.damn.engine.opengl.models.MGMPoolMeshMutable
 import good.damn.engine.opengl.triggers.MGIMatrixTrigger
@@ -141,7 +141,7 @@ class MGCallbackModelSpawn(
         }
 
         val queue = ConcurrentLinkedQueue<
-            MGDrawerMeshMaterialSwitch
+            MGDrawerMeshMaterial
         >()
 
         informator.meshes[
@@ -155,7 +155,7 @@ class MGCallbackModelSpawn(
     }
 
     private inline fun addMeshToShader(
-        queue: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>,
+        queue: ConcurrentLinkedQueue<MGDrawerMeshMaterial>,
         mesh: MGTriggerMesh
     ) {
         queue.add(

@@ -24,8 +24,8 @@ class MGDrawModeTexture(
 
         informator.shaders.sky.run {
             use()
-            informator.meshSky.drawSingleTexture(
-                this,
+            informator.meshSky.drawMaterials(
+                materials,
                 this
             )
         }
@@ -38,6 +38,7 @@ class MGDrawModeTexture(
                 }
             }
         }
+
         drawerFramebufferG.unbind(
             width, height
         )
