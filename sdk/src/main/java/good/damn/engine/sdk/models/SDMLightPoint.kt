@@ -5,7 +5,8 @@ import kotlin.math.sqrt
 
 data class SDMLightPoint(
     var color: SDVector3,
-    var interpolation: SDMLightPointInterpolation
+    var interpolation: SDMLightPointInterpolation,
+    var alpha: Float = 1.0f
 ) {
     companion object {
         @JvmField

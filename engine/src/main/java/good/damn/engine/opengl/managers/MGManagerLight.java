@@ -83,6 +83,10 @@ public final class MGManagerLight {
                 interp.getQuad()
             );
 
+            drawer.setAlpha(
+                light.getAlpha()
+            );
+
             drawer.draw(
                 shaderLightPoint
             );
