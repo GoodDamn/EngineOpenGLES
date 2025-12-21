@@ -17,6 +17,15 @@ class MGDrawModeTexture(
         height: Int
     ) {
         drawerFramebufferG.bind()
+
+        informator.shaders.sky.run {
+            use()
+            informator.meshSky.drawSingleTexture(
+                this,
+                this
+            )
+        }
+
         informator.meshesInstanced.forEach {
             it.key.run {
                 use()
@@ -29,8 +38,12 @@ class MGDrawModeTexture(
             width, height
         )
 
-        informator.drawerLightPassDiffuse.draw(
-            informator.shaders.lightPassDiffuse
-        )
+        informator.shaders.lightPassDiffuse.run {
+            use()
+            informator.drawerLightPassDiffuse.draw(
+                this
+            )
+        }
+
     }
 }
