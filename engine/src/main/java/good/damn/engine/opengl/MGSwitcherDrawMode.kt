@@ -24,6 +24,8 @@ class MGSwitcherDrawMode(
 
     private val drawerModeDiffuse = MGDrawModeTexture(
         informator,
+        informator.drawerLightPassDiffuse,
+        informator.shaders.lightPassDiffuse,
         drawerFramebufferG
     )
 

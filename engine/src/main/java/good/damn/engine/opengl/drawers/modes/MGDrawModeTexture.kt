@@ -2,13 +2,17 @@ package good.damn.engine.opengl.drawers.modes
 
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
+import good.damn.engine.opengl.drawers.MGDrawerLightPass
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.models.MGMShader
+import good.damn.engine.opengl.shaders.MGShaderLightPass
 import good.damn.engine.opengl.shaders.MGShaderProjectionViewModelTexture
 import good.damn.engine.opengl.shaders.MGShaderProjectionViewTexture
 
 class MGDrawModeTexture(
     private val informator: MGMInformator,
+    private val lightPassDrawer: MGDrawerLightPass,
+    private val lightPassShader: MGShaderLightPass,
     private val drawerFramebufferG: MGDrawerFramebufferG
 ): MGIDrawer {
 
@@ -38,9 +42,9 @@ class MGDrawModeTexture(
             width, height
         )
 
-        informator.shaders.lightPassDiffuse.run {
+        lightPassShader.run {
             use()
-            informator.drawerLightPassDiffuse.draw(
+            lightPassDrawer.draw(
                 this
             )
         }
