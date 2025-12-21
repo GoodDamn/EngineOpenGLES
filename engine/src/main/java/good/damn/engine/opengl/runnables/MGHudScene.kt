@@ -35,6 +35,7 @@ class MGHudScene(
             MGUtilsFile.getPublicFile(
                 "scripts"
             ),
+            informator.managerProcessTime,
             informator.managerTriggerLight
         )
         scriptLightPlacement.execute()

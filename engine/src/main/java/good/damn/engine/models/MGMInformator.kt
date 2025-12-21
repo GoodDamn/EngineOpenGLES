@@ -15,6 +15,7 @@ import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassInstanced
 import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.engine.runnables.MGManagerProcessTime
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -39,6 +40,7 @@ data class MGMInformator(
     val managerLight: MGManagerLight,
     val managerTriggerLight: MGManagerTriggerLight,
     val managerTrigger: MGManagerTriggerMesh,
+    val managerProcessTime: MGManagerProcessTime,
 
     val poolTextures: MGPoolTextures,
     val poolMeshes: MGPoolMeshesStatic,

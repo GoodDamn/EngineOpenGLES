@@ -1,15 +1,16 @@
 package good.damn.engine.scripts
 
 import dalvik.system.DexClassLoader
-import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.triggers.MGTriggerLight
-import good.damn.engine.sdk.models.SDMLight
+import good.damn.engine.runnables.MGManagerProcessTime
 import good.damn.engine.sdk.models.SDMLightPointEntity
+import good.damn.engine.sdk.process.SDIProcessTime
 import java.io.File
 
 class MGScriptLightPlacement(
     private val dirScripts: File,
+    private val managerProcessTime: MGManagerProcessTime,
     private val managerTriggerLight: MGManagerTriggerLight
 ): MGIScript {
 
@@ -23,15 +24,27 @@ class MGScriptLightPlacement(
             )
 
             val c = loader.loadClass("sdk.engine.SDSceneLight")
-            val method = c.getMethod(
+            val methodLightPoints = c.getMethod(
                 "getLightPoints"
+            )
+
+            val methodProcessTime = c.getMethod(
+                "getProcessTimeExecutor"
             )
 
             val clazz = c.newInstance()
 
-            val lightPoints = method.invoke(
+            val lightPoints = methodLightPoints.invoke(
                 clazz
             ) as? Array<SDMLightPointEntity>
+
+            (methodProcessTime.invoke(
+                clazz
+            ) as? SDIProcessTime)?.let {
+                managerProcessTime.registerLoopProcessTime(
+                    it
+                )
+            }
 
             lightPoints?.forEach {
                 MGTriggerLight.createFromLight(

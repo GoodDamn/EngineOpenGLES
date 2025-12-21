@@ -38,14 +38,14 @@ import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.runnables.MGHudScene
 import good.damn.engine.opengl.runnables.MGIRunnableBounds
-import good.damn.engine.opengl.shaders.MGShaderGeometryPassInstanced
 import good.damn.engine.opengl.shaders.MGShaderLightPass
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.base.MGShaderSky
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
-import good.damn.engine.runnables.MGManagerTriggerLoop
+import good.damn.engine.runnables.MGManagerProcessTime
+import good.damn.engine.runnables.MGRunnableTriggerLoop
 import good.damn.engine.shader.MGShaderCache
 import good.damn.engine.shader.MGShaderSource
 import good.damn.engine.utils.MGUtilsBuffer
@@ -177,6 +177,7 @@ class MGRendererLevelEditor(
         MGManagerTriggerMesh(
             mDrawerBox
         ),
+        MGManagerProcessTime(),
         mPoolTextures,
         MGPoolMeshesStatic(),
         mHandlerGl,
@@ -190,10 +191,6 @@ class MGRendererLevelEditor(
         requesterUserContent,
         mInformator,
         mFramebufferG.framebuffer
-    )
-
-    private val managerTriggerLoop = MGManagerTriggerLoop(
-        mInformator
     )
 
     init {
@@ -218,14 +215,24 @@ class MGRendererLevelEditor(
             mHudScene.runnableCycle
         )
 
-        managerTriggerLoop.start()
+        mInformator.managerProcessTime.run {
+            registerLoopProcessTime(
+                MGRunnableTriggerLoop(
+                    mInformator
+                )
+            )
+            start()
+        }
     }
 
     private var mWidth = 0
     private var mHeight = 0
 
     fun stop() {
-        managerTriggerLoop.stop()
+        mInformator.managerProcessTime.run {
+            stop()
+            unregisterAll()
+        }
     }
 
     override fun onSurfaceCreated(
