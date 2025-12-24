@@ -17,7 +17,8 @@ class MGManagerProcessTime {
 
     private val mRunnable = MGRunnableProcessTimeLoop(
         mLoopRunnables,
-        mHandler
+        mHandler,
+        16L
     )
 
     val isRunning: Boolean

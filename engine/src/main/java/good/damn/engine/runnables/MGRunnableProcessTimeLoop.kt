@@ -5,7 +5,8 @@ import good.damn.engine.sdk.process.SDIProcessTime
 
 class MGRunnableProcessTimeLoop(
     private val callbacksProcessTime: List<SDIProcessTime>,
-    private val handler: Handler
+    private val handler: Handler,
+    private val delayMillis: Long
 ): Runnable {
     var isRunning = false
 
@@ -25,7 +26,7 @@ class MGRunnableProcessTimeLoop(
         if (isRunning) {
             handler.postDelayed(
                 this,
-                16L
+                delayMillis
             )
         }
     }
