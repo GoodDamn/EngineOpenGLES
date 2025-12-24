@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import good.damn.engine.imports.MGImportImplA3D
 import good.damn.engine.imports.MGImportImplModel
 import good.damn.engine.imports.MGImportImplLevel
+import good.damn.engine.imports.MGMImportMisc
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
@@ -54,27 +55,25 @@ class MGHud(
     )
 
     private val mLayerEditor = MGUILayerEditor(
-        clickLoadUserContent = Handler(
-            Looper.getMainLooper()
+        clickLoadUserContent = MGMImportMisc(
+            Handler(
+                Looper.getMainLooper()
+            ),
+            informator.poolMeshes,
+            mCallbackModelSpawn,
+            ByteArray(1024)
         ).run {
-            val buffer = ByteArray(8192)
             MGClickImport(
                 arrayOf(
                     MGImportImplModel(
-                        this,
-                        informator.poolMeshes,
-                        mCallbackModelSpawn
+                        this
                     ),
                     MGImportImplLevel(
                         this,
-                        buffer,
                         informator
                     ),
                     MGImportImplA3D(
-                        this,
-                        informator.poolMeshes,
-                        mCallbackModelSpawn,
-                        buffer
+                        this
                     )
                 ),
                 requesterUserContent

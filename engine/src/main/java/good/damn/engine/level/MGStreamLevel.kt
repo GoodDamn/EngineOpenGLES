@@ -83,7 +83,8 @@ object MGStreamLevel {
 
         val loaderMeshes = MGLoaderLevelMeshA3D(
             localPathLibObj,
-            informator.glHandler
+            informator.glHandler,
+            bufferMap
         )
 
         meshes.forEach {

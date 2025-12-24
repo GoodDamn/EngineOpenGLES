@@ -7,9 +7,7 @@ import good.damn.engine.runnables.MGICallbackModel
 import java.io.File
 
 class MGImportImplModel(
-    private val handler: Handler,
-    private val poolMeshes: MGPoolMeshesStatic,
-    private val modelsCallback: MGICallbackModel
+    private val misc: MGMImportMisc
 ): MGImportImplTempFile() {
 
     override fun isValidExtension(
@@ -25,17 +23,17 @@ class MGImportImplModel(
     override fun onProcessTempFile(
         file: File
     ) {
-        poolMeshes[
+        misc.poolMeshes[
             file.name
         ]?.run {
-            modelsCallback.onGetObjectsCached(
+            misc.modelsCallback.onGetObjectsCached(
                 this
             )
             return
         }
-        handler.post(
+        misc.handler.post(
             MGRunnableLoadModel(
-                modelsCallback,
+                misc.modelsCallback,
                 file
             )
         )

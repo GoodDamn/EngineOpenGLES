@@ -11,10 +11,7 @@ import java.io.File
 import java.io.FileInputStream
 
 class MGImportImplA3D(
-    private val handler: Handler,
-    private val poolMeshes: MGPoolMeshesStatic,
-    private val modelsCallback: MGICallbackModel,
-    private val buffer: ByteArray
+    private val misc: MGMImportMisc
 ): MGImportImplTempFile() {
 
     override fun isValidExtension(
@@ -26,44 +23,42 @@ class MGImportImplA3D(
     override fun onProcessTempFile(
         file: File
     ) {
-        poolMeshes[
+        misc.poolMeshes[
             file.name
         ]?.run {
-            modelsCallback.onGetObjectsCached(
+            misc.modelsCallback.onGetObjectsCached(
                 this
             )
             return
         }
 
-        handler.post(
+        misc.handler.post(
             MGRunnableA3D(
                 file,
-                buffer,
-                modelsCallback,
+                misc
             )
         )
     }
 
     private class MGRunnableA3D(
         private val file: File,
-        private val buffer: ByteArray,
-        private val modelsCallback: MGICallbackModel
+        private val misc: MGMImportMisc
     ): Runnable {
         override fun run() {
             val asset = A3DImport.createFromStream(
                 A3DInputStream(
-                    buffer,
+                    misc.buffer,
                     FileInputStream(
                         file
                     )
                 ),
-                buffer
+                misc.buffer
             ) ?: return
 
             val mesh = asset.meshes[0]
             val configIndices = mesh.subMeshes[0].indices
 
-            modelsCallback.onGetObjects(
+            misc.modelsCallback.onGetObjects(
                 file.name,
                 arrayOf(
                     MGObject3d(

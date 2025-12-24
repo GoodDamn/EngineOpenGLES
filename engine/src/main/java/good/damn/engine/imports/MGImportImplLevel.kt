@@ -11,8 +11,7 @@ import java.io.FileInputStream
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGImportImplLevel(
-    private val handler: Handler,
-    private val buffer: ByteArray,
+    private val misc: MGMImportMisc,
     private val informator: MGMInformator
 ): MGImportImplTempFile() {
 
@@ -25,19 +24,19 @@ class MGImportImplLevel(
     final override fun onProcessTempFile(
         file: File
     ) {
-        handler.post(
+        misc. handler.post(
             MGRunnableMap(
-                buffer,
                 file,
-                informator
+                informator,
+                misc
             )
         )
     }
 
     private class MGRunnableMap(
-        private val buffer: ByteArray,
         private val file: File,
-        private val informator: MGMInformator
+        private val informator: MGMInformator,
+        private val misc: MGMImportMisc
     ): Runnable {
         override fun run() {
             MGStreamLevel.readBin(
@@ -67,7 +66,7 @@ class MGImportImplLevel(
                     file
                 ),
                 informator,
-                buffer
+                misc.buffer
             )
         }
 
