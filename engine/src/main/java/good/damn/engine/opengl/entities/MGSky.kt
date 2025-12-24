@@ -1,25 +1,21 @@
 package good.damn.engine.opengl.entities
 
 import android.opengl.GLES30
-import android.opengl.GLES30.GL_CLAMP_TO_EDGE
 import good.damn.engine.loaders.texture.MGLoaderTexture
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
-import good.damn.engine.opengl.drawers.MGDrawerMeshMaterial
+import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.textures.MGTexture
-import good.damn.engine.opengl.thread.MGHandlerGl
-import good.damn.engine.utils.MGUtilsBitmap
 
 class MGSky(
     private val materialTexture: MGMaterialTexture,
     private val verticesSky: MGArrayVertexConfigurator
-): MGDrawerMeshMaterial(
+): MGDrawerMeshMaterialMutable(
     arrayOf(
         MGMaterial(
             materialTexture

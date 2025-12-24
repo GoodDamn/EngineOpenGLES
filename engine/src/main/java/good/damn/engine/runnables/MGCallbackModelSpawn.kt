@@ -1,16 +1,16 @@
 package good.damn.engine.runnables
 
 import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.MGTriggerMeshGroup
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
-import good.damn.engine.opengl.drawers.MGDrawerMeshMaterial
-import good.damn.engine.opengl.models.MGMPoolMesh
+import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
+import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.models.MGMPoolMeshMutable
+import good.damn.engine.opengl.models.MGMPoolVertexArray
+import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.triggers.MGIMatrixTrigger
 import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGTriggerMesh
-import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGCallbackModelSpawn(
     private val bridgeRay: MGBridgeRayIntersect,
@@ -19,7 +19,7 @@ class MGCallbackModelSpawn(
 ): MGICallbackModel {
 
     override fun onGetObjectsCached(
-        poolMesh: Array<MGMPoolMesh>
+        poolMesh: Array<MGMPoolVertexArray>
     ) {
         if (poolMesh.isEmpty()) {
             return
@@ -27,6 +27,9 @@ class MGCallbackModelSpawn(
 
         if (poolMesh.size == 1) {
             processMesh(
+                getCachedMaterial(
+                    null
+                ),
                 MGTriggerMesh.createFromMeshPool(
                     poolMesh[0],
                     triggerAction
@@ -63,7 +66,9 @@ class MGCallbackModelSpawn(
                 informator.poolMeshes[fileName] = arrayOf(
                     outPoolMesh.toImmutable()
                 )
-                processMesh(this)
+                processMesh(
+                    this
+                )
             }
             return
         }
@@ -89,11 +94,39 @@ class MGCallbackModelSpawn(
     }
 
     private fun processMesh(
+        material: MGMaterial,
         mesh: MGTriggerMesh
     ) {
-        addMesh(mesh)
+        addMesh(
+            arrayOf(material),
+            mesh
+        )
         setupMatrix(
             mesh.matrix
+        )
+    }
+
+    private inline fun getCachedMaterial(
+        fileNameDiffuse: String?
+    ): MGMaterial? {
+        val poolMaterials = informator
+            .poolMaterials
+
+        if (fileNameDiffuse == null) {
+            return null
+        }
+
+        val cachedMaterial = poolMaterials[
+            fileNameDiffuse
+        ]
+
+        if (cachedMaterial != null) {
+            return cachedMaterial
+        }
+
+        return MGMaterial.generateShaderAndMaterial(
+            fileNameDiffuse,
+            informator
         )
     }
 
@@ -128,39 +161,16 @@ class MGCallbackModelSpawn(
     }
 
     private inline fun addMesh(
+        materials: Array<MGMaterial>,
         mesh: MGTriggerMesh
     ) {
-        informator.meshes[
-            mesh.shaderOpaque
-        ]?.run {
-            addMeshToShader(
-                this,
-                mesh
+        informator.meshes.add(
+            MGDrawerMeshMaterialMutable(
+                materials,
+                mesh.mesh
             )
-            return
-        }
-
-        val queue = ConcurrentLinkedQueue<
-            MGDrawerMeshMaterial
-        >()
-
-        informator.meshes[
-            mesh.shaderOpaque
-        ] = queue
-
-        addMeshToShader(
-            queue,
-            mesh
         )
-    }
 
-    private inline fun addMeshToShader(
-        queue: ConcurrentLinkedQueue<MGDrawerMeshMaterial>,
-        mesh: MGTriggerMesh
-    ) {
-        queue.add(
-            mesh.mesh
-        )
         informator.managerTrigger.addTrigger(
             mesh.triggerState
         )

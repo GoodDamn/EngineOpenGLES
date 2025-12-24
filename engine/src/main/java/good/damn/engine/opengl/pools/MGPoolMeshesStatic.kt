@@ -1,28 +1,34 @@
 package good.damn.engine.opengl.pools
 
-import good.damn.engine.opengl.models.MGMPoolMesh
+import android.util.SparseArray
+import good.damn.engine.opengl.models.MGMPoolVertexArray
 
 class MGPoolMeshesStatic {
 
-    private val map = HashMap<
-        String,
-        Array<MGMPoolMesh>
+    private val map = SparseArray<
+        Array<MGMPoolVertexArray>
     >()
 
     fun remove(
-        name: String
+        fileNameModel: String
     ) {
-        map.remove(name)
+        map.remove(
+            fileNameModel.hashCode()
+        )
     }
 
     operator fun set(
-        name: String,
-        arrayVertex: Array<MGMPoolMesh>
+        fileNameModel: String,
+        arrayVertex: Array<MGMPoolVertexArray>
     ) {
-        map[name] = arrayVertex
+        map[
+            fileNameModel.hashCode()
+        ] = arrayVertex
     }
 
     operator fun get(
-        n: String
-    ) = map[n]
+        fileNameModel: String
+    ) = map[
+        fileNameModel.hashCode()
+    ]
 }

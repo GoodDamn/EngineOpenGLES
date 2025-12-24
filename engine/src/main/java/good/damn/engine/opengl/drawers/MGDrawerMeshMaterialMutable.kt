@@ -5,9 +5,9 @@ import good.damn.engine.opengl.shaders.MGIShaderModel
 import good.damn.engine.opengl.shaders.MGIShaderNormal
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 
-open class MGDrawerMeshMaterial(
-    private val material: Array<MGMaterial>,
-    private val drawerMesh: MGDrawerMeshSwitch
+open class MGDrawerMeshMaterialMutable(
+    var material: Array<MGMaterial>,
+    var drawerMesh: MGDrawerMeshSwitch
 ) {
     fun drawNormals(
         shader: MGIShaderNormal

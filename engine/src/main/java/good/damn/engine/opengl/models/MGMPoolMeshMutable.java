@@ -4,27 +4,23 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
+import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel;
 import good.damn.engine.sdk.SDVector3;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
 import good.damn.engine.opengl.entities.MGMaterial;
 
 public final class MGMPoolMeshMutable {
-    @NonNull public MGArrayVertexManager vertexArray;
+    @NonNull public MGDrawerVertexArray drawerVertexArray;
     @NonNull public Pair<SDVector3, SDVector3> pointMinMax;
-    @NonNull public MGMaterial material;
     @NonNull public SDVector3 pointMiddle;
 
-    @NonNull public MGShaderGeometryPassModel shaderOpaque;
-
     @NonNull
-    public final MGMPoolMesh toImmutable() {
-        return new MGMPoolMesh(
-            vertexArray,
+    public final MGMPoolVertexArray toImmutable() {
+        return new MGMPoolVertexArray(
+            drawerVertexArray,
             pointMinMax,
-            material,
-            pointMiddle,
-            shaderOpaque
+            pointMiddle
         );
     }
 }

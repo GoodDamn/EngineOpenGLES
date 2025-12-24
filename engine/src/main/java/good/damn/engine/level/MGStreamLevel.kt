@@ -44,10 +44,6 @@ object MGStreamLevel {
             bufferMap
         )
 
-        val scope = CoroutineScope(
-            Dispatchers.IO
-        )
-
         val libName = map.atlases[0].rects[0].libraryName
         val localPathLibTextures = "textures/$libName"
         val localPathLibObj = "objs/$libName"

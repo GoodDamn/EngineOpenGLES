@@ -4,15 +4,15 @@ import good.damn.engine.loaders.texture.MGLoaderTextureAsync
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerLightPass
-import good.damn.engine.opengl.drawers.MGDrawerMeshMaterial
+import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
+import good.damn.engine.opengl.pools.MGPoolMaterials
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassInstanced
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.runnables.MGManagerProcessTime
@@ -25,9 +25,8 @@ data class MGMInformator(
     val drawerLightDirectional: MGDrawerLightDirectional,
     val drawerLightPass: MGDrawerLightPass,
     val drawerLightPassDiffuse: MGDrawerLightPass,
-    val meshes: ConcurrentHashMap<
-        MGShaderGeometryPassModel,
-        ConcurrentLinkedQueue<MGDrawerMeshMaterial>
+    val meshes: ConcurrentLinkedQueue<
+        MGDrawerMeshMaterialMutable
     >,
 
     val meshesInstanced: ConcurrentHashMap<
@@ -44,6 +43,7 @@ data class MGMInformator(
 
     val poolTextures: MGPoolTextures,
     val poolMeshes: MGPoolMeshesStatic,
+    val poolMaterials: MGPoolMaterials,
 
     val glHandler: MGHandlerGl,
     val glLoaderTexture: MGLoaderTextureAsync,
