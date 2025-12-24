@@ -14,7 +14,8 @@ import java.io.FileInputStream
 
 class MGLoaderLevelMeshA3D(
     private val localPathLibObj: String,
-    private val handlerGl: MGHandlerGl
+    private val handlerGl: MGHandlerGl,
+    private val buffer: ByteArray
 ) {
     fun loadInstanceArray(
         fileNameA3D: String,
@@ -31,7 +32,6 @@ class MGLoaderLevelMeshA3D(
             return null
         }
 
-        val buffer = ByteArray(1024)
         val obj = A3DImport.createFromStream(
             A3DInputStream(
                 buffer,
