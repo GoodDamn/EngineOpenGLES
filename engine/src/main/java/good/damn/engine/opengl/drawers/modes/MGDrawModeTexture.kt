@@ -22,12 +22,14 @@ class MGDrawModeTexture(
     ) {
         drawerFramebufferG.bind()
 
-        informator.shaders.sky.run {
-            use()
-            informator.meshSky.drawMaterials(
-                materials,
-                this
-            )
+        informator.meshSky.meshMaterial.run {
+            shader.run {
+                use()
+                drawer.drawMaterials(
+                    materials,
+                    this
+                )
+            }
         }
 
         informator.meshesInstanced.forEach {

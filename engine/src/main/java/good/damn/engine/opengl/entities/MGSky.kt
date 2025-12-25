@@ -9,26 +9,24 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.matrices.MGMatrixScale
+import good.damn.engine.opengl.models.MGMMeshMaterial
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGIShaderModel
+import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 
-class MGSky(
-    private val materialTexture: MGMaterialTexture,
-    private val verticesSky: MGArrayVertexConfigurator
-) {
-
-    private lateinit var mDrawerMesh: MGDrawerMeshMaterialMutable
+class MGSky {
+    lateinit var meshMaterial: MGMMeshMaterial
+        private set
 
     fun configure(
         informator: MGMInformator
     ) {
-        materialTexture.load(
-            informator.poolTextures,
-            "textures/sky",
-            MGLoaderTexture.INSTANCE
+        val verticesSky = MGArrayVertexConfigurator(
+            MGEnumArrayVertexConfiguration.SHORT
         )
 
         MGObject3d.createFromAssets(
@@ -43,39 +41,31 @@ class MGSky(
 
         val materialShader = MGMaterial.generateShaderAndMaterial(
             "sky.png",
-            informator
+            informator,
+            "textures/sky"
         )
 
-        mDrawerMesh = MGDrawerMeshMaterialMutable(
+        meshMaterial = MGMMeshMaterial(
             materialShader.shader,
-            materialShader.material,
-            MGDrawerMeshSwitch(
-                MGDrawerVertexArray(
-                    verticesSky
-                ),
-                MGDrawerPositionEntity(
-                    MGMatrixScale().apply {
-                        setScale(
-                            2000000f,
-                            2000000f,
-                            2000000f
-                        )
-                        invalidateScale()
-                    }
-                ),
-                GLES30.GL_CW
+            MGDrawerMeshMaterialMutable(
+                materialShader.material,
+                MGDrawerMeshSwitch(
+                    MGDrawerVertexArray(
+                        verticesSky
+                    ),
+                    MGDrawerPositionEntity(
+                        MGMatrixScale().apply {
+                            setScale(
+                                2000000f,
+                                2000000f,
+                                2000000f
+                            )
+                            invalidateScale()
+                        }
+                    ),
+                    GLES30.GL_CW
+                )
             )
         )
     }
-
-    fun drawMaterials(
-        shaderMaterial: Array<MGShaderMaterial>,
-        shaderModel: MGIShaderModel
-    ) {
-        mDrawerMesh.drawMaterials(
-            shaderMaterial,
-            shaderModel
-        )
-    }
-
 }

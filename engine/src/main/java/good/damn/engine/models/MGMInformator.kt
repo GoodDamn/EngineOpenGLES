@@ -10,6 +10,7 @@ import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
+import good.damn.engine.opengl.models.MGMMeshMaterial
 import good.damn.engine.opengl.pools.MGPoolMaterials
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
@@ -26,7 +27,7 @@ data class MGMInformator(
     val drawerLightPass: MGDrawerLightPass,
     val drawerLightPassDiffuse: MGDrawerLightPass,
     val meshes: ConcurrentLinkedQueue<
-        MGDrawerMeshMaterialMutable
+        MGMMeshMaterial
     >,
 
     val meshesInstanced: ConcurrentHashMap<

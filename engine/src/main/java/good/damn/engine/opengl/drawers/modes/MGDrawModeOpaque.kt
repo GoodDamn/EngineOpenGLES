@@ -23,21 +23,23 @@ data class MGDrawModeOpaque(
 
         // Geometry pass
         drawerFramebufferG.bind()
-        informator.shaders.sky.run {
-            use()
-            informator.meshSky.drawMaterials(
-                materials,
-                this
-            )
+        informator.meshSky.meshMaterial.run {
+            shader.run {
+                use()
+                drawer.drawMaterials(
+                    materials,
+                    this
+                )
+            }
         }
 
         informator.meshes.forEach {
             it.shader.run {
                 use()
-                it.drawNormals(
+                it.drawer.drawNormals(
                     this
                 )
-                it.drawMaterials(
+                it.drawer.drawMaterials(
                     materials,
                     this
                 )

@@ -87,8 +87,7 @@ class MGRendererLevelEditor(
             .build(),
         lightPassOpaque = MGShaderLightPass.Builder()
             .attachAll()
-            .build(),
-        sky = MGShaderSky()
+            .build()
     )
 
 
@@ -166,16 +165,7 @@ class MGRendererLevelEditor(
         ),
         ConcurrentLinkedQueue(),
         ConcurrentHashMap(50),
-        MGSky(
-            MGMaterialTexture.Builder()
-                .buildTexture(
-                    "sky.png",
-                    MGEnumTextureType.DIFFUSE
-                ).build(),
-            MGArrayVertexConfigurator(
-                MGEnumArrayVertexConfiguration.SHORT
-            )
-        ),
+        meshSky = MGSky(),
         managerLight,
         MGManagerTriggerLight(
             managerLight,
@@ -293,12 +283,6 @@ class MGRendererLevelEditor(
                     this
                 )
             }
-
-        mInformatorShader.sky.setup(
-            "shaders/diffuse/vert.glsl",
-            "shaders/diffuse/frag_sky_defer.glsl",
-            bindUv
-        )
 
         mInformator.meshSky.configure(
             mInformator

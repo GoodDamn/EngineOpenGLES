@@ -7,7 +7,6 @@ import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 
 class MGDrawerMeshMaterialMutable(
-    var shader: MGShaderGeometryPassModel,
     var material: Array<MGMaterial>,
     var drawerMesh: MGDrawerMeshSwitch
 ) {

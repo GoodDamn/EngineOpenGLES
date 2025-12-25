@@ -5,6 +5,7 @@ import good.damn.engine.opengl.MGTriggerMeshGroup
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.models.MGMMeshMaterial
 import good.damn.engine.opengl.models.MGMPoolMeshMutable
 import good.damn.engine.opengl.models.MGMPoolVertexArray
 import good.damn.engine.opengl.models.MGMShaderMaterialModel
@@ -40,12 +41,12 @@ class MGCallbackModelSpawn(
             return
         }
 
-        processGroupMesh(
+        /*processGroupMesh(
             MGTriggerMeshGroup.createFromPool(
                 poolMesh,
                 triggerAction
             )
-        )
+        )*/
     }
 
     override fun onGetObjects(
@@ -78,7 +79,7 @@ class MGCallbackModelSpawn(
             return
         }
 
-        val outPoolMeshes = Array(
+        /*val outPoolMeshes = Array(
             objs.size
         ) { MGMPoolMeshMutable() }
 
@@ -95,7 +96,7 @@ class MGCallbackModelSpawn(
             processGroupMesh(
                 this
             )
-        }
+        }*/
     }
 
     private inline fun processMesh(
@@ -135,7 +136,7 @@ class MGCallbackModelSpawn(
         )
     }
 
-    private fun processGroupMesh(
+    /*private fun processGroupMesh(
         meshGroup: MGTriggerMeshGroup
     ) {
         meshGroup.meshes.forEach {
@@ -145,7 +146,7 @@ class MGCallbackModelSpawn(
         setupMatrix(
             meshGroup.matrix
         )
-    }
+    }*/
 
     private inline fun setupMatrix(
         matrix: MGIMatrixTrigger
@@ -170,10 +171,12 @@ class MGCallbackModelSpawn(
         mesh: MGTriggerMesh
     ) {
         informator.meshes.add(
-            MGDrawerMeshMaterialMutable(
+            MGMMeshMaterial(
                 material.shader,
-                material.material,
-                mesh.mesh
+                MGDrawerMeshMaterialMutable(
+                    material.material,
+                    mesh.mesh
+                )
             )
         )
 

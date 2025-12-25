@@ -1,5 +1,6 @@
 package good.damn.engine.opengl.entities
 
+import android.util.Log
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGIDrawerTexture
@@ -170,7 +171,7 @@ class MGMaterial(
                     )
                 )
                 builder.buildTexture(
-                    fileNameEmissive!!,
+                    fileNameNormal,
                     MGEnumTextureType.NORMAL
                 )
                 generatorMaterial.componeEntity(
@@ -181,11 +182,12 @@ class MGMaterial(
             val src = generatorMaterial.build()
 
             var cachedShader = shaderCache[src]
+            Log.d("TAG", "generateShaderAndMaterial: $src")
 
             if (cachedShader == null) {
                 cachedShader = MGShaderGeometryPassModel(
                     singleMaterial(
-                        shaderTextures.toTypedArray<MGShaderTexture>()
+                        shaderTextures.toTypedArray()
                     )
                 )
                 shaderCache.cacheAndCompile(
@@ -211,7 +213,7 @@ class MGMaterial(
             )
 
             val material = MGMaterial(
-                builder.build()
+                materialTexture
             )
 
             return MGMShaderMaterialModel(
