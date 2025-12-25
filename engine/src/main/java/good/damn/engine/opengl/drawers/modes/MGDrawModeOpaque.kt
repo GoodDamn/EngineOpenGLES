@@ -32,17 +32,15 @@ data class MGDrawModeOpaque(
         }
 
         informator.meshes.forEach {
-            it.key.run {
+            it.shader.run {
                 use()
-                it.value.forEach {
-                    it.drawNormals(
-                        this
-                    )
-                    it.drawMaterials(
-                        materials,
-                        this
-                    )
-                }
+                it.drawNormals(
+                    this
+                )
+                it.drawMaterials(
+                    materials,
+                    this
+                )
             }
         }
 

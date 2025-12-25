@@ -22,6 +22,7 @@ import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerLightPass
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
+import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
@@ -34,11 +35,16 @@ import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMShader
+import good.damn.engine.opengl.models.MGMShaderMaterialModel
+import good.damn.engine.opengl.pools.MGPoolMaterials
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.runnables.MGHudScene
 import good.damn.engine.opengl.runnables.MGIRunnableBounds
+import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderLightPass
+import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.base.MGShaderSky
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
@@ -52,6 +58,7 @@ import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGRendererLevelEditor(
     requesterUserContent: MGIRequestUserContent
@@ -69,7 +76,7 @@ class MGRendererLevelEditor(
 
     private val mInformatorShader = MGMInformatorShader(
         MGEngine.shaderSource,
-        opaqueGenerated = MGShaderCache(
+        cacheGeometryPass = MGShaderCache(
             SparseArray(5)
         ),
         opaqueGeneratedInstanced = MGShaderCache(
@@ -157,7 +164,7 @@ class MGRendererLevelEditor(
             ),
             mDrawerQuad
         ),
-        ConcurrentHashMap(15),
+        ConcurrentLinkedQueue(),
         ConcurrentHashMap(50),
         MGSky(
             MGMaterialTexture.Builder()
@@ -180,6 +187,7 @@ class MGRendererLevelEditor(
         MGManagerProcessTime(),
         mPoolTextures,
         MGPoolMeshesStatic(),
+        MGPoolMaterials(),
         mHandlerGl,
         MGLoaderTextureAsync(
             mHandlerGl
@@ -241,6 +249,10 @@ class MGRendererLevelEditor(
     ) {
         MGUtilsFile.glWriteExtensions()
 
+        mInformator.poolMaterials.configureDefault(
+            mInformator
+        )
+
         mBufferUniform.generate()
         MGBufferUniform.setupBindingPoint(
             mBufferUniform,
@@ -289,7 +301,7 @@ class MGRendererLevelEditor(
         )
 
         mInformator.meshSky.configure(
-            mPoolTextures
+            mInformator
         )
 
         MGUtilsVertIndices.createSphere(

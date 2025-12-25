@@ -4,6 +4,7 @@ import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGIDrawerTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
+import good.damn.engine.opengl.models.MGMShaderMaterialModel
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.MGShaderMaterial.Companion.singleMaterial
@@ -28,7 +29,18 @@ class MGMaterial(
         fun generateShaderAndMaterial(
             fileNameDiffuse: String?,
             informator: MGMInformator
-        ): MGMaterial {
+        ) = generateShaderAndMaterial(
+            fileNameDiffuse,
+            informator,
+            "textures"
+        )
+
+        @JvmStatic
+        fun generateShaderAndMaterial(
+            fileNameDiffuse: String?,
+            informator: MGMInformator,
+            localDirPath: String
+        ): MGMShaderMaterialModel {
             val glHandler = informator
                 .glHandler
 
@@ -38,7 +50,7 @@ class MGMaterial(
             val shaders = informator
                 .shaders
 
-            val shaderCache = shaders.opaqueGenerated
+            val shaderCache = shaders.cacheGeometryPass
 
             val shaderSource = shaders
                 .source
@@ -194,7 +206,7 @@ class MGMaterial(
 
             materialTexture.load(
                 informator.poolTextures,
-                "textures",
+                localDirPath,
                 loaderTexture
             )
 
@@ -202,7 +214,12 @@ class MGMaterial(
                 builder.build()
             )
 
-            return material
+            return MGMShaderMaterialModel(
+                cachedShader,
+                arrayOf(
+                    material
+                )
+            )
         }
     }
 

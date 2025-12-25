@@ -3,9 +3,11 @@ package good.damn.engine.opengl.drawers
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.shaders.MGIShaderModel
 import good.damn.engine.opengl.shaders.MGIShaderNormal
+import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 
-open class MGDrawerMeshMaterialMutable(
+class MGDrawerMeshMaterialMutable(
+    var shader: MGShaderGeometryPassModel,
     var material: Array<MGMaterial>,
     var drawerMesh: MGDrawerMeshSwitch
 ) {

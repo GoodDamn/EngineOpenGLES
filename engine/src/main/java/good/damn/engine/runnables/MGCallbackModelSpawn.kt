@@ -7,7 +7,9 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.models.MGMPoolMeshMutable
 import good.damn.engine.opengl.models.MGMPoolVertexArray
+import good.damn.engine.opengl.models.MGMShaderMaterialModel
 import good.damn.engine.opengl.objects.MGObject3d
+import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.triggers.MGIMatrixTrigger
 import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGTriggerMesh
@@ -67,6 +69,9 @@ class MGCallbackModelSpawn(
                     outPoolMesh.toImmutable()
                 )
                 processMesh(
+                    getCachedMaterial(
+                        null
+                    ),
                     this
                 )
             }
@@ -93,12 +98,12 @@ class MGCallbackModelSpawn(
         }
     }
 
-    private fun processMesh(
-        material: MGMaterial,
+    private inline fun processMesh(
+        material: MGMShaderMaterialModel,
         mesh: MGTriggerMesh
     ) {
         addMesh(
-            arrayOf(material),
+            material,
             mesh
         )
         setupMatrix(
@@ -108,12 +113,12 @@ class MGCallbackModelSpawn(
 
     private inline fun getCachedMaterial(
         fileNameDiffuse: String?
-    ): MGMaterial? {
+    ): MGMShaderMaterialModel {
         val poolMaterials = informator
             .poolMaterials
 
         if (fileNameDiffuse == null) {
-            return null
+            return poolMaterials.default
         }
 
         val cachedMaterial = poolMaterials[
@@ -161,12 +166,13 @@ class MGCallbackModelSpawn(
     }
 
     private inline fun addMesh(
-        materials: Array<MGMaterial>,
+        material: MGMShaderMaterialModel,
         mesh: MGTriggerMesh
     ) {
         informator.meshes.add(
             MGDrawerMeshMaterialMutable(
-                materials,
+                material.shader,
+                material.material,
                 mesh.mesh
             )
         )

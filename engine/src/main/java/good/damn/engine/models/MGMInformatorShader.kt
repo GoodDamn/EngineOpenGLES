@@ -9,7 +9,7 @@ import good.damn.engine.shader.MGShaderSource
 
 data class MGMInformatorShader(
     val source: MGShaderSource,
-    val opaqueGenerated: MGShaderCache<MGShaderGeometryPassModel>,
+    val cacheGeometryPass: MGShaderCache<MGShaderGeometryPassModel>,
     val opaqueGeneratedInstanced: MGShaderCache<MGShaderGeometryPassInstanced>,
 
     val lightPassDiffuse: MGShaderLightPass,
