@@ -1,7 +1,6 @@
 package good.damn.engine.opengl.entities
 
 import android.util.Log
-import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGIDrawerTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
@@ -9,190 +8,65 @@ import good.damn.engine.opengl.models.MGMShaderMaterialModel
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.MGShaderMaterial.Companion.singleMaterial
-import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.shader.generators.MGGeneratorMaterialG
-import java.util.LinkedList
+import good.damn.engine.shader.generators.MGMaterialShader
 
 class MGMaterial(
     private val materialTexture: MGMaterialTexture
 ): MGIDrawerTexture<MGShaderMaterial> {
 
     companion object {
-        private inline fun makeTextureFileName(
-            fileNameDiffuse: String?,
-            extension: String
-        ): String? = if (
-            fileNameDiffuse == null
-        ) null else fileNameDiffuse + extension
-
         @JvmStatic
         fun generateShaderAndMaterial(
             fileNameDiffuse: String?,
             informator: MGMInformator
-        ) = generateShaderAndMaterial(
-            fileNameDiffuse,
-            informator,
-            "textures"
-        )
+        ) = "textures".run {
+            val materialShader = if (
+                fileNameDiffuse == null
+            ) MGMaterialShader.getDefault(
+                informator.shaders.source
+            ) else MGMaterialShader.Builder(
+                fileNameDiffuse,
+                this,
+                informator.shaders.source
+            ).diffuse()
+                .opacity()
+                .emissive(0.0f)
+                .normal()
+                .specular()
+                .useDepthFunc()
+                .build()
+
+            return@run generateShaderAndMaterial(
+                materialShader,
+                informator,
+                this
+            )
+        }
 
         @JvmStatic
         fun generateShaderAndMaterial(
-            fileNameDiffuse: String?,
+            materialShader: MGMaterialShader,
             informator: MGMInformator,
             localDirPath: String
         ): MGMShaderMaterialModel {
-            val glHandler = informator
-                .glHandler
-
-            val loaderTexture = informator
-                .glLoaderTexture
-
-            val shaders = informator
-                .shaders
-
+            val glHandler = informator.glHandler
+            val loaderTexture = informator.glLoaderTexture
+            val shaders = informator.shaders
             val shaderCache = shaders.cacheGeometryPass
 
-            val shaderSource = shaders
-                .source
-
-            val builder = MGMaterialTexture.Builder()
-
-            val generatorMaterial = MGGeneratorMaterialG(
-                shaderSource
-            )
-
-            val shaderTextures = LinkedList<MGShaderTexture>()
-
-            val fileNameMetallic = makeTextureFileName(
-                fileNameDiffuse, "_s.jpg"
-            )
-
-            val fileNameEmissive = makeTextureFileName(
-                fileNameDiffuse, "_e.jpg"
-            )
-
-            val fileNameNormal = makeTextureFileName(
-                fileNameDiffuse, "_n.jpg"
-            )
-
-            val fileNameOpacity = makeTextureFileName(
-                fileNameDiffuse, "_o.jpg"
-            )
-
-            if (fileNameDiffuse == null) {
-                generatorMaterial.componeEntity(
-                    shaderSource.fragDeferDiffuseNo
-                )
-            } else {
-                generatorMaterial.componeEntity(
-                    shaderSource.fragDeferDiffuse
-                )
-
-                builder.buildTexture(
-                    fileNameDiffuse,
-                    MGEnumTextureType.DIFFUSE
-                )
-
-                shaderTextures.add(
-                    MGShaderTexture(
-                        MGLoaderLevelLibrary.ID_DIFFUSE
-                    )
-                )
-            }
-
-            if (fileNameMetallic == null) {
-                generatorMaterial.componeEntity(
-                    shaderSource.fragDeferSpecularNo
-                )
-            } else {
-                shaderTextures.add(
-                    MGShaderTexture(
-                        MGLoaderLevelLibrary.ID_METALLIC
-                    )
-                )
-                builder.buildTexture(
-                    fileNameMetallic,
-                    MGEnumTextureType.METALLIC
-                )
-                generatorMaterial.componeEntity(
-                    shaderSource.fragDeferSpecular
-                )
-            }
-
-            if (fileNameOpacity == null) {
-                generatorMaterial.componeEntity(
-                    shaderSource.fragDeferOpacityNo
-                )
-            } else {
-                shaderTextures.add(
-                    MGShaderTexture(
-                        MGLoaderLevelLibrary.ID_OPACITY
-                    )
-                )
-
-                builder.buildTexture(
-                    fileNameOpacity,
-                    MGEnumTextureType.OPACITY
-                )
-
-                generatorMaterial.componeEntity(
-                    shaderSource.fragDeferOpacity
-                )
-            }
-
-            if (fileNameEmissive == null) {
-                generatorMaterial.componeEntity(
-                    shaderSource.fragDeferEmissiveNo
-                )
-            } else {
-                shaderTextures.add(
-                    MGShaderTexture(
-                        MGLoaderLevelLibrary.ID_EMISSIVE
-                    )
-                )
-                builder.buildTexture(
-                    fileNameEmissive,
-                    MGEnumTextureType.EMISSIVE
-                )
-                generatorMaterial.componeEntity(
-                    shaderSource.fragDeferEmissive
-                )
-            }
-
-            if (fileNameNormal == null) {
-                generatorMaterial.componeEntity(
-                    shaderSource.fragDeferNormalVertex
-                )
-            } else {
-                shaderTextures.add(
-                    MGShaderTexture(
-                        MGLoaderLevelLibrary.ID_NORMAL
-                    )
-                )
-                builder.buildTexture(
-                    fileNameNormal,
-                    MGEnumTextureType.NORMAL
-                )
-                generatorMaterial.componeEntity(
-                    shaderSource.fragDeferNormal
-                )
-            }
-
-            val src = generatorMaterial.build()
+            val src = materialShader.srcCodeMaterial
 
             var cachedShader = shaderCache[src]
-            Log.d("TAG", "generateShaderAndMaterial: $src")
-
             if (cachedShader == null) {
                 cachedShader = MGShaderGeometryPassModel(
                     singleMaterial(
-                        shaderTextures.toTypedArray()
+                        materialShader.shaderTextures.toTypedArray()
                     )
                 )
                 shaderCache.cacheAndCompile(
                     src,
-                    shaderSource.vert,
+                    shaders.source.vert,
                     cachedShader,
                     glHandler,
                     MGBinderAttribute.Builder()
@@ -203,8 +77,7 @@ class MGMaterial(
                 )
             }
 
-            val materialTexture = builder
-                .build()
+            val materialTexture = materialShader.materialTexture
 
             materialTexture.load(
                 informator.poolTextures,

@@ -17,6 +17,7 @@ import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGIShaderModel
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.engine.shader.generators.MGMaterialShader
 
 class MGSky {
     lateinit var meshMaterial: MGMMeshMaterial
@@ -39,10 +40,21 @@ class MGSky {
             )
         }
 
+        val localDirPath = "textures/sky"
         val materialShader = MGMaterial.generateShaderAndMaterial(
-            "sky.png",
+            MGMaterialShader.Builder(
+                "sky",
+                localDirPath,
+                informator.shaders.source
+            ).diffuse()
+                .opacity()
+                .emissive(1.0f)
+                .normal()
+                .useDepthConstant()
+                .specular()
+                .build(),
             informator,
-            "textures/sky"
+            localDirPath
         )
 
         meshMaterial = MGMMeshMaterial(

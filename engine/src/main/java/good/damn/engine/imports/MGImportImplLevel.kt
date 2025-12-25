@@ -6,6 +6,9 @@ import good.damn.engine.level.MGStreamLevel
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInstanceMesh
 import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileInputStream
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -39,35 +42,39 @@ class MGImportImplLevel(
         private val misc: MGMImportMisc
     ): Runnable {
         override fun run() {
-            MGStreamLevel.readBin(
-                MGFlowLevel {
-                    informator.meshesInstanced[
-                        it.shader
-                    ]?.run {
-                        addMesh(
-                            it,
-                            this
-                        )
-                        return@MGFlowLevel
-                    }
+            CoroutineScope(
+                Dispatchers.IO
+            ).launch {
+                MGStreamLevel.readBin(
+                    MGFlowLevel {
+                        informator.meshesInstanced[
+                            it.shader
+                        ]?.run {
+                            addMesh(
+                                it,
+                                this
+                            )
+                            return@MGFlowLevel
+                        }
 
-                    informator.meshesInstanced[
-                        it.shader
-                    ] = ConcurrentLinkedQueue<
-                        MGDrawerMeshInstanced
-                        >().apply {
-                        addMesh(
-                            it,
-                            this
-                        )
-                    }
-                },
-                FileInputStream(
-                    file
-                ),
-                informator,
-                misc.buffer
-            )
+                        informator.meshesInstanced[
+                            it.shader
+                        ] = ConcurrentLinkedQueue<
+                            MGDrawerMeshInstanced
+                            >().apply {
+                            addMesh(
+                                it,
+                                this
+                            )
+                        }
+                    },
+                    FileInputStream(
+                        file
+                    ),
+                    informator,
+                    misc.buffer
+                )
+            }
         }
 
         private inline fun addMesh(

@@ -1,5 +1,7 @@
 package good.damn.engine.shader
 
+import good.damn.engine.opengl.models.MGMShader
+import good.damn.engine.opengl.models.MGMShaderSourceFragDefer
 import good.damn.engine.utils.MGUtilsAsset
 import good.damn.engine.utils.MGUtilsFile
 
@@ -12,20 +14,13 @@ class MGShaderSource(
 
     val fragDefer1: String
     val fragDeferMain: String
-    val fragDeferSpecular: String
-    val fragDeferSpecularNo: String
 
-    val fragDeferDiffuse: String
-    val fragDeferDiffuseNo: String
-
-    val fragDeferOpacity: String
-    val fragDeferOpacityNo: String
-
-    val fragDeferEmissive: String
-    val fragDeferEmissiveNo: String
-
-    val fragDeferNormal: String
-    val fragDeferNormalVertex: String
+    val fragDeferSpecular: MGMShaderSourceFragDefer
+    val fragDeferDiffuse: MGMShaderSourceFragDefer
+    val fragDeferOpacity: MGMShaderSourceFragDefer
+    val fragDeferEmissive: MGMShaderSourceFragDefer
+    val fragDeferNormal: MGMShaderSourceFragDefer
+    val fragDeferDepth: MGMShaderSourceFragDefer
 
     val verti: String
     val vert: String
@@ -41,44 +36,70 @@ class MGShaderSource(
             "$deferPath/frag_defer.glsl"
         )
 
-        fragDeferSpecular = loadSourceCode(
-            "$deferPath/frag_defer_spec.glsl"
+        fragDeferSpecular = MGMShaderSourceFragDefer(
+            loadSourceCode(
+                "$deferPath/frag_defer_spec.glsl"
+            ),
+            loadSourceCode(
+                "$deferPath/frag_defer_spec_no.glsl"
+            ),
+            "textMetallic",
+            "_s.jpg"
         )
 
-        fragDeferSpecularNo = loadSourceCode(
-            "$deferPath/frag_defer_spec_no.glsl"
+        fragDeferDiffuse = MGMShaderSourceFragDefer(
+            loadSourceCode(
+                "$deferPath/frag_defer_diffuse.glsl"
+            ),
+            loadSourceCode(
+                "$deferPath/frag_defer_diffuse_no.glsl"
+            ),
+            "textDiffuse",
+            ".jpg"
         )
 
-        fragDeferDiffuse = loadSourceCode(
-            "$deferPath/frag_defer_diffuse.glsl"
+        fragDeferOpacity = MGMShaderSourceFragDefer(
+            loadSourceCode(
+                "$deferPath/frag_defer_opacity.glsl"
+            ),
+            loadSourceCode(
+                "$deferPath/frag_defer_opacity_no.glsl"
+            ),
+            "textOpacity",
+            "_o.jpg"
         )
 
-        fragDeferDiffuseNo = loadSourceCode(
-            "$deferPath/frag_defer_diffuse_no.glsl"
+        fragDeferEmissive = MGMShaderSourceFragDefer(
+            loadSourceCode(
+                "$deferPath/frag_defer_emissive.glsl"
+            ),
+            loadSourceCode(
+                "$deferPath/frag_defer_emissive_no.glsl"
+            ),
+            "textEmissive",
+            "_e.jpg"
         )
 
-        fragDeferOpacity = loadSourceCode(
-            "$deferPath/frag_defer_opacity.glsl"
+        fragDeferNormal = MGMShaderSourceFragDefer(
+            loadSourceCode(
+                "$deferPath/frag_normal.glsl"
+            ),
+            loadSourceCode(
+                "$deferPath/frag_normal_no.glsl"
+            ),
+            "textNormal",
+            "_n.jpg"
         )
 
-        fragDeferOpacityNo = loadSourceCode(
-            "$deferPath/frag_defer_opacity_no.glsl"
-        )
-
-        fragDeferEmissive = loadSourceCode(
-            "$deferPath/frag_defer_emissive.glsl"
-        )
-
-        fragDeferEmissiveNo = loadSourceCode(
-            "$deferPath/frag_defer_emissive_no.glsl"
-        )
-
-        fragDeferNormal = loadSourceCode(
-            "$deferPath/frag_normal.glsl"
-        )
-
-        fragDeferNormalVertex = loadSourceCode(
-            "$deferPath/frag_normal_no.glsl"
+        fragDeferDepth = MGMShaderSourceFragDefer(
+            loadSourceCode(
+                "$deferPath/frag_defer_depth_func.glsl"
+            ),
+            loadSourceCode(
+                "$deferPath/frag_defer_depth_const.glsl"
+            ),
+            "",
+            ""
         )
 
         verti = loadSourceCode(

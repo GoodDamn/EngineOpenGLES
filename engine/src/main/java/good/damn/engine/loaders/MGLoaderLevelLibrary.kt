@@ -1,5 +1,6 @@
 package good.damn.engine.loaders
 
+import android.util.Log
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGProp
 import good.damn.engine.models.json.MGMLevelInfoMesh
@@ -10,6 +11,7 @@ import good.damn.engine.opengl.shaders.MGShaderGeometryPassInstanced
 import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.shader.generators.MGGeneratorMaterialG
+import good.damn.engine.shader.generators.MGMaterialShader
 import good.damn.engine.utils.MGUtilsFile
 import org.json.JSONArray
 import org.json.JSONObject
@@ -23,17 +25,6 @@ class MGLoaderLevelLibrary(
     localPath: String,
     localPathCullFaceList: String
 ) {
-
-    companion object {
-        const val ID_DIFFUSE = "textDiffuse"
-        const val ID_METALLIC = "textMetallic"
-        const val ID_EMISSIVE = "textEmissive"
-        const val ID_OPACITY = "textOpacity"
-        const val ID_NORMAL = "textNormal"
-        const val ID_BLEND = "textBlend"
-        const val ID_AMBIENT_OCCLUSION = "textAmbientOcclusion"
-        private const val EXTENSION_TEXTURE = ".jpg"
-    }
 
     private val mFile = MGUtilsFile.getPublicFile(
         localPath
@@ -115,114 +106,42 @@ class MGLoaderLevelLibrary(
         val textures = mesh.textures.textures
         val src = informator.shaders.source
 
-        val generatorShader = MGGeneratorMaterialG(src)
-
         val shaderMaterials = LinkedList<MGShaderMaterial>()
         val buildersMaterial = LinkedList<MGMaterialTexture>()
+        val srcCodeBuilder = StringBuilder()
 
         for (index in 0 until 1) {
             val diffuse = textures[index].diffuseMapName
             val controlMapName = textures[index].controlMapName
 
-            val builderMaterial = MGMaterialTexture.Builder()
+            val materialShader = MGMaterialShader.Builder(
+                diffuse,
+                localPathLibTextures,
+                src
+            ).diffuse()
+                .opacity()
+                .specular()
+                .emissive(0.0f)
+                .useDepthFunc()
+                .normal()
+                .build()
 
-            val shaderTextures = LinkedList<
-                MGShaderTexture
-            >()
+            srcCodeBuilder.append(
+                materialShader.srcCodeMaterial
+            )
 
             val texCoordScale = if (
                 controlMapName == null
             ) 1f else 105f
 
-            buildTexture(
-                generatorShader,
-                src.fragDeferDiffuse,
-                src.fragDeferDiffuseNo,
-                builderMaterial,
-                "${diffuse}$EXTENSION_TEXTURE",
-                shaderTextures,
-                MGEnumTextureType.DIFFUSE,
-                ID_DIFFUSE
-            )
-
-            buildTexture(
-                generatorShader,
-                src.fragDeferSpecular,
-                src.fragDeferSpecularNo,
-                builderMaterial,
-                "${diffuse}_m$EXTENSION_TEXTURE",
-                shaderTextures,
-                MGEnumTextureType.METALLIC,
-                ID_METALLIC
-            )
-
-            buildTexture(
-                generatorShader,
-                src.fragDeferEmissive,
-                src.fragDeferEmissiveNo,
-                builderMaterial,
-                "${diffuse}_e$EXTENSION_TEXTURE",
-                shaderTextures,
-                MGEnumTextureType.EMISSIVE,
-                ID_EMISSIVE
-            )
-
-            buildTexture(
-                generatorShader,
-                src.fragDeferOpacity,
-                src.fragDeferOpacityNo,
-                builderMaterial,
-                "${diffuse}_o$EXTENSION_TEXTURE",
-                shaderTextures,
-                MGEnumTextureType.OPACITY,
-                ID_OPACITY
-            )
-
-            buildTexture(
-                generatorShader,
-                src.fragDeferNormal,
-                src.fragDeferNormalVertex,
-                builderMaterial,
-                "${diffuse}_n$EXTENSION_TEXTURE",
-                shaderTextures,
-                MGEnumTextureType.NORMAL,
-                ID_NORMAL
-            )
-
-            /*
-
-            buildTextureMap(
-                generatorMaterial,
-                builderMaterial,
-                "${controlMapName}$EXTENSION_TEXTURE",
-                1.0f,
-                shaderTextures,
-                MGEnumTextureType.BLEND,
-                indexMaterial,
-                "${ID_BLEND}$index",
-                1f
-            )
-
-            buildTextureMap(
-                generatorMaterial,
-                builderMaterial,
-                "${mesh.ambientOcclusionMapName}$EXTENSION_TEXTURE",
-                1.0f,
-                shaderTextures,
-                MGEnumTextureType.AMBIENT_OCCLUSION,
-                indexMaterial,
-                "${ID_AMBIENT_OCCLUSION}$index",
-                1.0f
-            )*/
-
             shaderMaterials.add(
                 MGShaderMaterial(
-                    shaderTextures.toTypedArray()
+                    materialShader.shaderTextures.toTypedArray()
                 )
             )
 
             buildersMaterial.add(
-                builderMaterial.build()
+                materialShader.materialTexture
             )
 
             if (controlMapName == null) {
@@ -230,7 +149,7 @@ class MGLoaderLevelLibrary(
             }
         }
 
-        val fragmentCode = generatorShader.build()
+        val fragmentCode = srcCodeBuilder.toString()
 
         var cachedShader = informator.shaders.opaqueGeneratedInstanced[
             fragmentCode
@@ -268,39 +187,6 @@ class MGLoaderLevelLibrary(
         )
     }
 
-    private fun buildTexture(
-        generatorShader: MGGeneratorMaterialG,
-        srcCodeFragment: String,
-        srcCodeFragmentNo: String,
-        builderMaterial: MGMaterialTexture.Builder,
-        textureName: String,
-        shaderTextures: MutableList<MGShaderTexture>,
-        type: MGEnumTextureType,
-        idUniform: String
-    ) {
-        if (textureExists(textureName)) {
-            shaderTextures.add(
-                MGShaderTexture(
-                    idUniform
-                )
-            )
-
-            builderMaterial.buildTexture(
-                textureName,
-                type
-            )
-
-            generatorShader.componeEntity(
-                srcCodeFragment
-            )
-            return
-        }
-
-        generatorShader.componeEntity(
-            srcCodeFragmentNo
-        )
-    }
-
 
     fun readProps() {
         val json = mJson
@@ -327,12 +213,6 @@ class MGLoaderLevelLibrary(
 
         meshes = lMeshes
     }
-
-    private inline fun textureExists(
-        textureName: String
-    ) = MGUtilsFile.getPublicFile(
-        "$localPathLibTextures/$textureName"
-    ).exists()
 
     private inline fun fileToJson(
         file: File
