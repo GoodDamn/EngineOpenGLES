@@ -231,10 +231,6 @@ class MGRendererLevelEditor(
     ) {
         MGUtilsFile.glWriteExtensions()
 
-        mInformator.poolMaterials.configureDefault(
-            mInformator
-        )
-
         mBufferUniform.generate()
         MGBufferUniform.setupBindingPoint(
             mBufferUniform,

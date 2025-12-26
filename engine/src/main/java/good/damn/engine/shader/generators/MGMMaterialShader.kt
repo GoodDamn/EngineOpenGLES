@@ -153,8 +153,6 @@ class MGMMaterialShader private constructor(
                 fragDeferTexture.fragDefer
             )
 
-            Log.d("TAG", "componeTexture: $fileName $textureType ${fragDeferTexture.fragDefer} ${fragDeferTexture.id}")
-
             mBuilder.buildTexture(
                 fileName,
                 textureType

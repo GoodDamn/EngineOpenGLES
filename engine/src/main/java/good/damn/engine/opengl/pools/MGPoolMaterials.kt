@@ -7,29 +7,9 @@ import good.damn.engine.shader.generators.MGMMaterialShader
 
 class MGPoolMaterials {
 
-    lateinit var default: MGMMaterialShader
-        private set
-
     private val map = SparseArray<
         MGMMaterialShader
     >()
-
-    fun configureDefault(
-        informator: MGMInformator
-    ) {
-        val materialShader = MGMMaterialShader.Builder(
-            "",
-            "",
-            informator.shaders.source
-        ).diffuse().opacity()
-            .emissive(0.0f)
-            .normal()
-            .useDepthFunc()
-            .specular()
-            .build()
-
-        default = materialShader
-    }
 
     fun remove(
         fileNameDiffuse: String

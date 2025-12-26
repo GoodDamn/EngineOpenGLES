@@ -123,7 +123,9 @@ class MGCallbackModelSpawn(
             .poolMaterials
 
         if (fileNameDiffuse == null) {
-            return poolMaterials.default
+            return MGMMaterialShader.getDefault(
+                informator.shaders.source
+            )
         }
 
         val cachedMaterial = poolMaterials[
