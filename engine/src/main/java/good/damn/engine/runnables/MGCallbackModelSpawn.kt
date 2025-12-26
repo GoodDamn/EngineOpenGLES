@@ -103,6 +103,7 @@ class MGCallbackModelSpawn(
         material: MGMMaterialShader,
         mesh: MGTriggerMesh
     ) {
+        mesh.mesh
         addMesh(
             MGMaterial.generateShaderModel(
                 material,
@@ -184,18 +185,21 @@ class MGCallbackModelSpawn(
         material: MGMMaterialShader,
         mesh: MGTriggerMesh
     ) {
-        informator.meshes.add(
-            MGMMeshMaterial(
-                shader,
-                MGDrawerMeshMaterialMutable(
-                    arrayOf(
-                        MGMaterial(
-                            material.materialTexture
-                        )
-                    ),
-                    mesh.mesh
-                )
+        val meshMaterial = MGMMeshMaterial(
+            shader,
+            MGDrawerMeshMaterialMutable(
+                arrayOf(
+                    MGMaterial(
+                        material.materialTexture
+                    )
+                ),
+                mesh.mesh
             )
+        )
+        informator.currentEditMesh = meshMaterial
+
+        informator.meshes.add(
+            meshMaterial
         )
 
         informator.managerTrigger.addTrigger(

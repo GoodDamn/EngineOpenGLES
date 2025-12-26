@@ -49,5 +49,7 @@ data class MGMInformator(
     val glHandler: MGHandlerGl,
     val glLoaderTexture: MGLoaderTextureAsync,
 
-    var canDrawTriggers: Boolean
-)
+    var canDrawTriggers: Boolean,
+) {
+    var currentEditMesh: MGMMeshMaterial? = null
+}

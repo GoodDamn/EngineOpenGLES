@@ -77,7 +77,7 @@ class MGHud(
                         this
                     ),
                     MGImportImage(
-                        informator.poolTextures,
+                        informator,
                         this
                     )
                 ),

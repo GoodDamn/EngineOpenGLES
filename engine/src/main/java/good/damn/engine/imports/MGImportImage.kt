@@ -1,6 +1,11 @@
 package good.damn.engine.imports
 
 import good.damn.engine.models.MGMInformator
+import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.entities.MGMaterialTexture
+import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
+import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.shader.generators.MGMMaterialShader
 import java.io.File
 
@@ -16,7 +21,7 @@ class MGImportImage(
     ): Boolean {
         mIndexSubString = fileName.indexOf(
             ".jpg"
-        ) - 1
+        )
         return mIndexSubString > 0
     }
 
@@ -30,15 +35,13 @@ class MGImportImage(
         informator.poolMaterials[
             fileNameDiffuse
         ]?.run {
-            // attach material to current edit model
+            processShader(
+                this
+            )
             return
         }
 
-        val folderName = file.parentFile?.run {
-            "/$name"
-        } ?: ""
-
-        val localPathDir = "textures$folderName"
+        val localPathDir = "textures/$fileNameDiffuse"
 
         // generate material
         val materialShader = MGMMaterialShader.Builder(
@@ -65,7 +68,64 @@ class MGImportImage(
             fileNameDiffuse
         ] = materialShader
 
-        // attach material to current edit model
+        // generate shader
+        processShader(
+            materialShader
+        )
+    }
 
+    private inline fun processShader(
+        materialShader: MGMMaterialShader
+    ) {
+        informator.shaders.cacheGeometryPass[
+            materialShader.srcCodeMaterial
+        ]?.run {
+            attachMaterial(
+                this,
+                materialShader
+            )
+            return
+        }
+
+        // Compile shader
+        val shader = MGShaderGeometryPassModel(
+            arrayOf(
+                MGShaderMaterial(
+                    materialShader.shaderTextures
+                )
+            )
+        )
+
+        informator.shaders.cacheGeometryPass.cacheAndCompile(
+            materialShader.srcCodeMaterial,
+            informator.shaders.source.vert,
+            shader,
+            informator.glHandler,
+            MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindTextureCoordinates()
+                .bindNormal()
+                .build()
+        )
+
+        attachMaterial(
+            shader,
+            materialShader
+        )
+    }
+
+    private inline fun attachMaterial(
+        shader: MGShaderGeometryPassModel,
+        materialShader: MGMMaterialShader
+    ) {
+        // attach material to model
+        informator.currentEditMesh?.apply {
+            drawer.material = arrayOf(
+                MGMaterial(
+                    materialShader.materialTexture
+                )
+            )
+            this.shader = shader
+        }
     }
 }
