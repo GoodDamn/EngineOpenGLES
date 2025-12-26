@@ -41,6 +41,19 @@ class MGDrawModeTexture(
             }
         }
 
+        informator.meshes.forEach {
+            it.shader.run {
+                use()
+                it.drawer.drawNormals(
+                    this
+                )
+                it.drawer.drawMaterials(
+                    materials,
+                    this
+                )
+            }
+        }
+
         drawerFramebufferG.unbind(
             width, height
         )
