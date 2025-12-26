@@ -29,6 +29,7 @@ class MGImportImplModel(
             misc.modelsCallback.onGetObjectsCached(
                 this
             )
+            file.delete()
             return
         }
         misc.handler.post(
@@ -53,6 +54,7 @@ class MGImportImplModel(
                 file.name,
                 arrModels
             )
+            file.delete()
         }
     }
 }

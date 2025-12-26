@@ -27,7 +27,7 @@ class MGImportImplLevel(
     final override fun onProcessTempFile(
         file: File
     ) {
-        misc. handler.post(
+        misc.handler.post(
             MGRunnableMap(
                 file,
                 informator,
@@ -74,6 +74,8 @@ class MGImportImplLevel(
                     informator,
                     misc.buffer
                 )
+
+                file.delete()
             }
         }
 

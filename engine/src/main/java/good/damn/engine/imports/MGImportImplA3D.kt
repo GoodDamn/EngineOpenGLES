@@ -29,6 +29,7 @@ class MGImportImplA3D(
             misc.modelsCallback.onGetObjectsCached(
                 this
             )
+            file.delete()
             return
         }
 
@@ -76,6 +77,8 @@ class MGImportImplA3D(
                     )
                 )
             )
+
+            file.delete()
         }
     }
 

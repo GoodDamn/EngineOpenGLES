@@ -3,6 +3,7 @@ package good.damn.engine.hud
 import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
+import good.damn.engine.imports.MGImportImage
 import good.damn.engine.imports.MGImportImplA3D
 import good.damn.engine.imports.MGImportImplModel
 import good.damn.engine.imports.MGImportImplLevel
@@ -73,6 +74,10 @@ class MGHud(
                         informator
                     ),
                     MGImportImplA3D(
+                        this
+                    ),
+                    MGImportImage(
+                        informator.poolTextures,
                         this
                     )
                 ),

@@ -250,11 +250,6 @@ class MGRendererLevelEditor(
                 .build()
         )
 
-        val bindUv = MGBinderAttribute.Builder()
-            .bindPosition()
-            .bindTextureCoordinates()
-            .build()
-
         MGBinderAttribute.Builder()
             .bindPosition()
             .bindTextureCoordinates()
