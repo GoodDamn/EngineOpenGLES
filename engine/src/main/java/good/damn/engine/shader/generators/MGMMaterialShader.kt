@@ -5,13 +5,15 @@ import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.models.MGMShaderSourceFragDefer
 import good.damn.engine.opengl.shaders.MGShaderTexture
+import good.damn.engine.opengl.textures.MGTexture
+import good.damn.engine.opengl.textures.MGTextureActive
 import good.damn.engine.shader.MGShaderSource
 import good.damn.engine.utils.MGUtilsFile
 import java.util.LinkedList
 
 class MGMMaterialShader private constructor(
     val srcCodeMaterial: String,
-    val shaderTextures: LinkedList<MGShaderTexture>,
+    val shaderTextures: Array<MGShaderTexture>,
     val materialTexture: MGMaterialTexture
 ) {
 
@@ -48,11 +50,10 @@ class MGMMaterialShader private constructor(
             shaderSource
         )
 
-        private val mShaderTextures = LinkedList<
-            MGShaderTexture
-        >()
-
+        private val mShaderTextures = LinkedList<MGShaderTexture>()
         private val mBuilder = MGMaterialTexture.Builder()
+
+        private var mCurrentIndex = 0
 
         fun diffuse() = apply {
             componeEntity(
@@ -106,7 +107,7 @@ class MGMMaterialShader private constructor(
 
         fun build() = MGMMaterialShader(
             mGeneratorMaterial.build(),
-            mShaderTextures,
+            mShaderTextures.toTypedArray(),
             mBuilder.build()
         )
 
@@ -155,7 +156,10 @@ class MGMMaterialShader private constructor(
 
             mBuilder.buildTexture(
                 fileName,
-                textureType
+                textureType,
+                MGTextureActive(
+                    mCurrentIndex++
+                )
             )
 
             mShaderTextures.add(

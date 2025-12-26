@@ -26,7 +26,7 @@ class MGMaterial(
 
             return shaderCache[src] ?: MGShaderGeometryPassModel(
                 singleMaterial(
-                    materialShader.shaderTextures.toTypedArray()
+                    materialShader.shaderTextures
                 )
             ).apply {
                 shaderCache.cacheAndCompile(
@@ -45,12 +45,6 @@ class MGMaterial(
     }
 
     var shine = 1f
-
-    fun getTextureByType(
-        type: MGEnumTextureType
-    ) = materialTexture.getTextureByType(
-        type
-    )
 
     override fun draw(
         shader: MGShaderMaterial

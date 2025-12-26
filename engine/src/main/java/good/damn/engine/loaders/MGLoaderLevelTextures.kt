@@ -54,28 +54,23 @@ class MGLoaderLevelTextures(
         atlas: MIMAtlasRect
     ) {
         poolTexture(
-            "${atlas.name}.jpg",
-            MGEnumTextureType.DIFFUSE
+            "${atlas.name}.jpg"
         )
 
         poolTexture(
-            "${atlas.name}_m.jpg",
-            MGEnumTextureType.METALLIC
+            "${atlas.name}_m.jpg"
         )
 
         poolTexture(
-            "${atlas.name}_e.jpg",
-            MGEnumTextureType.EMISSIVE
+            "${atlas.name}_e.jpg"
         )
 
         poolTexture(
-            "${atlas.name}_o.jpg",
-            MGEnumTextureType.OPACITY
+            "${atlas.name}_o.jpg"
         )
 
         poolTexture(
-            "${atlas.name}_n.jpg",
-            MGEnumTextureType.NORMAL
+            "${atlas.name}_n.jpg"
         )
     }
 
@@ -84,8 +79,7 @@ class MGLoaderLevelTextures(
     }
 
     private fun poolTexture(
-        textureName: String,
-        textureType: MGEnumTextureType
+        textureName: String
     ) {
         val texturePath = "$localPathLibTextures/$textureName"
         val bitmap = MGUtilsBitmap.loadBitmap(
@@ -98,9 +92,7 @@ class MGLoaderLevelTextures(
         }
 
         val texture = MGTexture(
-            MGTextureActive(
-                textureType
-            )
+            MGTextureActive.default
         )
 
         handlerGl.post(

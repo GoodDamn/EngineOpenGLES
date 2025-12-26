@@ -1,12 +1,9 @@
 package good.damn.engine.opengl.enums
 
-enum class MGEnumTextureType(
-    val v: Int
-) {
-    DIFFUSE(0),
-    METALLIC(1),
-    EMISSIVE(2),
-    OPACITY(3),
-    NORMAL(4),
-    BLEND(5)
+enum class MGEnumTextureType {
+    DIFFUSE,
+    METALLIC,
+    EMISSIVE,
+    OPACITY,
+    NORMAL
 }

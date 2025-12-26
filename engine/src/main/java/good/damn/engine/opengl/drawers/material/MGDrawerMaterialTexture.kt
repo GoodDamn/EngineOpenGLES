@@ -7,7 +7,7 @@ import good.damn.engine.opengl.textures.MGTextureActive
 
 class MGDrawerMaterialTexture(
     var texture: MGTexture,
-    var activeTexture: MGTextureActive
+    val activeTexture: MGTextureActive
 ): MGIDrawerTexture<MGShaderTexture> {
 
     override fun draw(

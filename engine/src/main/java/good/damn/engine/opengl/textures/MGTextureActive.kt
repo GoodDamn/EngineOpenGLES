@@ -3,18 +3,12 @@ package good.damn.engine.opengl.textures
 import android.opengl.GLES30.GL_TEXTURE0
 import good.damn.engine.opengl.enums.MGEnumTextureType
 
-class MGTextureActive {
+class MGTextureActive(
     val textureUniformId: Int
-    val activeTexture: Int
-
-    constructor(
-        textureUniformId: Int
-    ) {
-        this.textureUniformId = textureUniformId
-        activeTexture = GL_TEXTURE0 + textureUniformId
+) {
+    companion object {
+        @JvmStatic
+        val default = MGTextureActive(0)
     }
-
-    constructor(
-        type: MGEnumTextureType
-    ): this(type.v)
+    val activeTexture: Int = GL_TEXTURE0 + textureUniformId
 }

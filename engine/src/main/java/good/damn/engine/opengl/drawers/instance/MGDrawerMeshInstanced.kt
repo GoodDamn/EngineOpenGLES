@@ -14,39 +14,11 @@ class MGDrawerMeshInstanced(
     private val materials: Array<MGMaterial>
 ) {
 
-    private val mDrawerTextures = Array(
-        materials.size
-    ) {
-        materials[it].getTextureByType(
-            MGEnumTextureType.DIFFUSE
-        )
-    }
-
     private var mode = GLES30.GL_TRIANGLES
 
     fun switchDrawMode(
         drawMode: MGEnumDrawMode
     ) {
-        when (
-            drawMode
-        ) {
-            MGEnumDrawMode.METALLIC -> switchDrawerTexture(
-                MGEnumTextureType.METALLIC
-            )
-
-            MGEnumDrawMode.EMISSIVE -> switchDrawerTexture(
-                MGEnumTextureType.EMISSIVE
-            )
-
-            MGEnumDrawMode.NORMAL_MAP -> switchDrawerTexture(
-                MGEnumTextureType.NORMAL
-            )
-
-            else -> switchDrawerTexture(
-                MGEnumTextureType.DIFFUSE
-            )
-        }
-
         mode = if (
             drawMode == MGEnumDrawMode.WIREFRAME
         ) GLES30.GL_LINES else GLES30.GL_TRIANGLES
@@ -71,19 +43,6 @@ class MGDrawerMeshInstanced(
         )
     }
 
-    fun drawSingleTexture(
-        shaderTexture: MGIShaderTextureUniform
-    ) {
-        mDrawerTextures.forEach {
-            it?.draw(shaderTexture)
-        }
-        drawVertices()
-
-        mDrawerTextures.forEach {
-            it?.unbind(shaderTexture)
-        }
-    }
-
     fun draw(
         shaderMaterial: Array<
             MGShaderMaterial
@@ -98,16 +57,6 @@ class MGDrawerMeshInstanced(
         for (i in materials.indices) {
             materials[i].unbind(
                 shaderMaterial[i]
-            )
-        }
-    }
-
-    private inline fun switchDrawerTexture(
-        type: MGEnumTextureType
-    ) {
-        for (i in mDrawerTextures.indices) {
-            mDrawerTextures[i] = materials[i].getTextureByType(
-                type
             )
         }
     }

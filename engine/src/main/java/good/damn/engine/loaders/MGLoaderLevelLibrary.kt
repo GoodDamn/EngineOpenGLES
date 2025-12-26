@@ -134,7 +134,7 @@ class MGLoaderLevelLibrary(
 
         shaderMaterials.add(
             MGShaderMaterial(
-                materialShader.shaderTextures.toTypedArray()
+                materialShader.shaderTextures
             )
         )
 
