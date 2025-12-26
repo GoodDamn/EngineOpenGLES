@@ -44,7 +44,7 @@ class MGShaderSource(
                 "$deferPath/frag_defer_spec_no.glsl"
             ),
             "textMetallic",
-            "_s.jpg"
+            "_m.jpg"
         )
 
         fragDeferDiffuse = MGMShaderSourceFragDefer(

@@ -3,25 +3,32 @@ package good.damn.engine.opengl.pools
 import android.util.SparseArray
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.models.MGMPoolVertexArray
-import good.damn.engine.opengl.models.MGMShaderMaterialModel
+import good.damn.engine.shader.generators.MGMMaterialShader
 
 class MGPoolMaterials {
 
-    lateinit var default: MGMShaderMaterialModel
+    lateinit var default: MGMMaterialShader
         private set
 
     private val map = SparseArray<
-        MGMShaderMaterialModel
+        MGMMaterialShader
     >()
 
     fun configureDefault(
         informator: MGMInformator
     ) {
-        default = MGMaterial.generateShaderAndMaterial(
-            null,
-            informator
-        )
+        val materialShader = MGMMaterialShader.Builder(
+            "",
+            "",
+            informator.shaders.source
+        ).diffuse().opacity()
+            .emissive(0.0f)
+            .normal()
+            .useDepthFunc()
+            .specular()
+            .build()
+
+        default = materialShader
     }
 
     fun remove(
@@ -34,7 +41,7 @@ class MGPoolMaterials {
 
     operator fun set(
         fileNameDiffuse: String,
-        material: MGMShaderMaterialModel
+        material: MGMMaterialShader
     ) {
         map[
             fileNameDiffuse.hashCode()
@@ -43,7 +50,7 @@ class MGPoolMaterials {
 
     operator fun get(
         fileNameDiffuse: String
-    ): MGMShaderMaterialModel? = map[
+    ): MGMMaterialShader? = map[
         fileNameDiffuse.hashCode()
     ]
 }

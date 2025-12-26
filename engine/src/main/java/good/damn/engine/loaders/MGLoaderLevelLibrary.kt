@@ -1,17 +1,13 @@
 package good.damn.engine.loaders
 
-import android.util.Log
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGProp
 import good.damn.engine.models.json.MGMLevelInfoMesh
-import good.damn.engine.opengl.entities.MGMaterialTexture
-import good.damn.engine.opengl.enums.MGEnumTextureType
+import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassInstanced
-import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.shader.generators.MGGeneratorMaterialG
-import good.damn.engine.shader.generators.MGMaterialShader
+import good.damn.engine.shader.generators.MGMMaterialShader
 import good.damn.engine.utils.MGUtilsFile
 import org.json.JSONArray
 import org.json.JSONObject
@@ -106,52 +102,51 @@ class MGLoaderLevelLibrary(
         val textures = mesh.textures.textures
         val src = informator.shaders.source
 
-        val shaderMaterials = LinkedList<MGShaderMaterial>()
-        val buildersMaterial = LinkedList<MGMaterialTexture>()
-        val srcCodeBuilder = StringBuilder()
+        val diffuse = textures[0].diffuseMapName
+        val controlMapName = textures[0].controlMapName
 
-        for (index in 0 until 1) {
-            val diffuse = textures[index].diffuseMapName
-            val controlMapName = textures[index].controlMapName
-
-            val materialShader = MGMaterialShader.Builder(
-                diffuse,
-                localPathLibTextures,
-                src
-            ).diffuse()
-                .opacity()
-                .specular()
-                .emissive(0.0f)
-                .useDepthFunc()
-                .normal()
-                .build()
-
-            srcCodeBuilder.append(
-                materialShader.srcCodeMaterial
-            )
-
-            val texCoordScale = if (
-                controlMapName == null
-            ) 1f else 105f
-
-            shaderMaterials.add(
-                MGShaderMaterial(
-                    materialShader.shaderTextures.toTypedArray()
+        val materialShader = informator.poolMaterials[
+            diffuse
+        ] ?: MGMMaterialShader.Builder(
+            diffuse,
+            localPathLibTextures,
+            src
+        ).diffuse()
+            .opacity()
+            .specular()
+            .emissive(0.0f)
+            .useDepthFunc()
+            .normal()
+            .build().apply {
+                materialTexture.load(
+                    informator.poolTextures,
+                    localPathLibTextures,
+                    informator.glLoaderTexture
                 )
-            )
 
-            buildersMaterial.add(
+                informator.poolMaterials[
+                    diffuse
+                ] = this
+            }
+
+        val shaderMaterials = LinkedList<MGShaderMaterial>()
+        val buildersMaterial = LinkedList<MGMaterial>()
+
+        shaderMaterials.add(
+            MGShaderMaterial(
+                materialShader.shaderTextures.toTypedArray()
+            )
+        )
+
+        buildersMaterial.add(
+            MGMaterial(
                 materialShader.materialTexture
             )
+        )
 
-            if (controlMapName == null) {
-                break
-            }
-        }
+        val fragmentCode = materialShader.srcCodeMaterial
 
-        val fragmentCode = srcCodeBuilder.toString()
-
-        var cachedShader = informator.shaders.opaqueGeneratedInstanced[
+        var cachedShader = informator.shaders.cacheGeometryPassInstanced[
             fragmentCode
         ]
 
@@ -160,7 +155,7 @@ class MGLoaderLevelLibrary(
                 shaderMaterials.toTypedArray()
             )
 
-            informator.shaders.opaqueGeneratedInstanced.cacheAndCompile(
+            informator.shaders.cacheGeometryPassInstanced.cacheAndCompile(
                 fragmentCode,
                 informator.shaders.source.verti,
                 cachedShader,

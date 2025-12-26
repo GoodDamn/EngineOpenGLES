@@ -1,7 +1,5 @@
 package good.damn.engine.level
 
-import android.util.Log
-import android.util.Size
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.loaders.MGLoaderLevelMatrices
@@ -10,18 +8,13 @@ import good.damn.engine.loaders.mesh.MGLoaderLevelMeshA3D
 import good.damn.engine.loaders.MGLoaderLevelTextures
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInstanceMesh
-import good.damn.engine.models.MGMLandscapeTexture
 import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.mapimporter.MIImportMap
 import good.damn.mapimporter.models.MIMProp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.DataInputStream
 import java.io.InputStream
@@ -91,25 +84,11 @@ object MGStreamLevel {
                 1f
             ) ?: return
 
-            prop.materialTexture.forEach {
-                it.load(
-                    informator.poolTextures,
-                    localPathLibTextures,
-                    informator.glLoaderTexture
-                )
-            }
-
             flow.emit(
                 MGMInstanceMesh(
                     prop.shaderOpaque,
                     v.vertexArray,
-                    Array(
-                        prop.materialTexture.size
-                    ) {
-                        MGMaterial(
-                            prop.materialTexture[it]
-                        )
-                    },
+                    prop.materials,
                     prop.enableCullFace,
                     v.modelMatrices
                 )
@@ -171,25 +150,11 @@ object MGStreamLevel {
         val prop = loaderProp.readProp(
             landscape
         )
-        prop.materialTexture.forEach {
-            it.load(
-                informator.poolTextures,
-                localLibPathTextures,
-                informator.glLoaderTexture
-            )
-        }
-
 
         return MGMInstanceMesh(
             prop.shaderOpaque,
             instanceArray.vertexArray,
-            Array(
-                prop.materialTexture.size
-            ) {
-                MGMaterial(
-                    prop.materialTexture[it]
-                )
-            },
+            prop.materials,
             true,
             instanceArray.modelMatrices
         )

@@ -1,7 +1,6 @@
 package good.damn.engine.opengl.entities
 
 import android.opengl.GLES30
-import good.damn.engine.loaders.texture.MGLoaderTexture
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
@@ -13,11 +12,7 @@ import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.models.MGMMeshMaterial
 import good.damn.engine.opengl.objects.MGObject3d
-import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.shaders.MGIShaderModel
-import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
-import good.damn.engine.opengl.shaders.MGShaderMaterial
-import good.damn.engine.shader.generators.MGMaterialShader
+import good.damn.engine.shader.generators.MGMMaterialShader
 
 class MGSky {
     lateinit var meshMaterial: MGMMeshMaterial
@@ -41,26 +36,37 @@ class MGSky {
         }
 
         val localDirPath = "textures/sky"
-        val materialShader = MGMaterial.generateShaderAndMaterial(
-            MGMaterialShader.Builder(
-                "sky",
-                localDirPath,
-                informator.shaders.source
-            ).diffuse()
-                .opacity()
-                .emissive(1.0f)
-                .normal()
-                .useDepthConstant()
-                .specular()
-                .build(),
-            informator,
-            localDirPath
+        val materialShader = MGMMaterialShader.Builder(
+            "sky",
+            localDirPath,
+            informator.shaders.source
+        ).diffuse()
+            .opacity()
+            .emissive(1.0f)
+            .normal()
+            .useDepthConstant()
+            .specular()
+            .build()
+
+        materialShader.materialTexture.load(
+            informator.poolTextures,
+            localDirPath,
+            informator.glLoaderTexture
+        )
+
+        val shader = MGMaterial.generateShaderModel(
+            materialShader,
+            informator
         )
 
         meshMaterial = MGMMeshMaterial(
-            materialShader.shader,
+            shader,
             MGDrawerMeshMaterialMutable(
-                materialShader.material,
+                arrayOf(
+                    MGMaterial(
+                        materialShader.materialTexture
+                    )
+                ),
                 MGDrawerMeshSwitch(
                     MGDrawerVertexArray(
                         verticesSky

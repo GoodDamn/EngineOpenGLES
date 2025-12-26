@@ -9,19 +9,19 @@ import good.damn.engine.shader.MGShaderSource
 import good.damn.engine.utils.MGUtilsFile
 import java.util.LinkedList
 
-class MGMaterialShader private constructor(
+class MGMMaterialShader private constructor(
     val srcCodeMaterial: String,
     val shaderTextures: LinkedList<MGShaderTexture>,
     val materialTexture: MGMaterialTexture
 ) {
 
     companion object {
-        private var default: MGMaterialShader? = null
+        private var default: MGMMaterialShader? = null
 
         @JvmStatic
         fun getDefault(
             shaderSource: MGShaderSource
-        ): MGMaterialShader {
+        ): MGMMaterialShader {
             default?.apply {
                 return this
             }
@@ -104,7 +104,7 @@ class MGMaterialShader private constructor(
             )
         }
 
-        fun build() = MGMaterialShader(
+        fun build() = MGMMaterialShader(
             mGeneratorMaterial.build(),
             mShaderTextures,
             mBuilder.build()
@@ -114,18 +114,10 @@ class MGMaterialShader private constructor(
             fragDeferTexture: MGMShaderSourceFragDefer,
             textureType: MGEnumTextureType
         ) {
-            val fileName = "${textureRootName}${fragDeferTexture.extension}"
-            if (textureExists(fileName)) {
-                componeTexture(
-                    fragDeferTexture,
-                    fileName,
-                    textureType,
-                )
-                return
-            }
-
-            mGeneratorMaterial.componeEntity(
-                fragDeferTexture.fragDeferNo
+            componeEntity(
+                fragDeferTexture,
+                textureType,
+                0.0f
             )
         }
 
@@ -160,6 +152,8 @@ class MGMaterialShader private constructor(
             mGeneratorMaterial.componeEntity(
                 fragDeferTexture.fragDefer
             )
+
+            Log.d("TAG", "componeTexture: $fileName $textureType ${fragDeferTexture.fragDefer} ${fragDeferTexture.id}")
 
             mBuilder.buildTexture(
                 fileName,

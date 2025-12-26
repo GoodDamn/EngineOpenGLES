@@ -1,19 +1,18 @@
 package good.damn.engine.runnables
 
 import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.MGTriggerMeshGroup
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.models.MGMMeshMaterial
 import good.damn.engine.opengl.models.MGMPoolMeshMutable
 import good.damn.engine.opengl.models.MGMPoolVertexArray
-import good.damn.engine.opengl.models.MGMShaderMaterialModel
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.triggers.MGIMatrixTrigger
 import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGTriggerMesh
+import good.damn.engine.shader.generators.MGMMaterialShader
 
 class MGCallbackModelSpawn(
     private val bridgeRay: MGBridgeRayIntersect,
@@ -69,6 +68,7 @@ class MGCallbackModelSpawn(
                 informator.poolMeshes[fileName] = arrayOf(
                     outPoolMesh.toImmutable()
                 )
+
                 processMesh(
                     getCachedMaterial(
                         null
@@ -100,10 +100,14 @@ class MGCallbackModelSpawn(
     }
 
     private inline fun processMesh(
-        material: MGMShaderMaterialModel,
+        material: MGMMaterialShader,
         mesh: MGTriggerMesh
     ) {
         addMesh(
+            MGMaterial.generateShaderModel(
+                material,
+                informator
+            ),
             material,
             mesh
         )
@@ -114,7 +118,7 @@ class MGCallbackModelSpawn(
 
     private inline fun getCachedMaterial(
         fileNameDiffuse: String?
-    ): MGMShaderMaterialModel {
+    ): MGMMaterialShader {
         val poolMaterials = informator
             .poolMaterials
 
@@ -130,10 +134,17 @@ class MGCallbackModelSpawn(
             return cachedMaterial
         }
 
-        return MGMaterial.generateShaderAndMaterial(
+        return MGMMaterialShader.Builder(
             fileNameDiffuse,
-            informator
-        )
+            "textures",
+            informator.shaders.source
+        ).diffuse()
+            .opacity()
+            .emissive(0.0f)
+            .normal()
+            .specular()
+            .useDepthFunc()
+            .build()
     }
 
     /*private fun processGroupMesh(
@@ -167,14 +178,19 @@ class MGCallbackModelSpawn(
     }
 
     private inline fun addMesh(
-        material: MGMShaderMaterialModel,
+        shader: MGShaderGeometryPassModel,
+        material: MGMMaterialShader,
         mesh: MGTriggerMesh
     ) {
         informator.meshes.add(
             MGMMeshMaterial(
-                material.shader,
+                shader,
                 MGDrawerMeshMaterialMutable(
-                    material.material,
+                    arrayOf(
+                        MGMaterial(
+                            material.materialTexture
+                        )
+                    ),
                     mesh.mesh
                 )
             )

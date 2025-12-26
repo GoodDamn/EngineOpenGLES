@@ -91,13 +91,6 @@ class MGMaterialTexture private constructor(
         type.v
     ]?.drawer?.texture
 
-    fun changeTextureByType(
-        type: MGEnumTextureType,
-        texture: MGTexture
-    ) {
-        list[type.v]?.drawer?.texture = texture
-    }
-
     fun load(
         poolTextures: MGPoolTextures,
         localPath: String,
