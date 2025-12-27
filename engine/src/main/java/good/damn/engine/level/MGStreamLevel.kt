@@ -9,11 +9,20 @@ import good.damn.engine.loaders.MGLoaderLevelTextures
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInstanceMesh
 import good.damn.engine.models.json.MGMLevelInfoMesh
+import good.damn.engine.models.json.spawn.MGMLevelSpawnInfo
+import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
+import good.damn.engine.opengl.models.MGMMeshMaterial
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.triggers.MGTriggerMesh
+import good.damn.engine.opengl.triggers.MGTriggerSimple
+import good.damn.engine.shader.generators.MGMMaterialShader
+import good.damn.engine.utils.MGUtilsFile
+import good.damn.engine.utils.MGUtilsJson
 import good.damn.mapimporter.MIImportMap
+import good.damn.mapimporter.models.MIMMap
 import good.damn.mapimporter.models.MIMProp
 import java.io.BufferedReader
 import java.io.DataInputStream
@@ -38,13 +47,21 @@ object MGStreamLevel {
         )
 
         val libName = map.atlases[0].rects[0].libraryName
+        val localPathDir = "levels/$libName"
         val localPathLibTextures = "textures/$libName"
         val localPathLibObj = "objs/$libName"
+
+        processSpawnPoints(
+            map,
+            localPathDir,
+            informator
+        )
+
         val loaderLib = MGLoaderLevelLibrary(
             informator,
             localPathLibTextures,
-            "levels/$libName/library.txt",
-            "levels/$libName/culling.txt"
+            "$localPathDir/library.txt",
+            "$localPathDir/culling.txt"
         )
 
         val loaderTextures = MGLoaderLevelTextures(
@@ -116,6 +133,89 @@ object MGStreamLevel {
             }
         //}
 
+    }
+
+    private inline fun processSpawnPoints(
+        map: MIMMap,
+        localPathDir: String,
+        informator: MGMInformator
+    ) {
+        val json = MGMLevelSpawnInfo.createFromJson(
+            MGUtilsJson.createFromFile(
+                MGUtilsFile.getPublicFile(
+                    "$localPathDir/spawnpoints.txt"
+                )
+            )
+        )
+        // it only processes with cached object, material and shader
+        // may be you won't spawn present boxes :)
+        val mesh = informator.poolMeshes[
+            json.mesh
+        ] ?: return
+
+        val meshes = Array(
+            json.info.size
+        ) {
+            val material = informator.poolMaterials[
+                json.info[it].texture
+            ] ?: MGMMaterialShader.getDefault(
+                informator.shaders.source
+            )
+
+            return@Array Pair(
+                material,
+                informator.shaders.cacheGeometryPass[
+                    material.srcCodeMaterial
+                ]
+            )
+        }
+
+        val triggerAction = MGTriggerSimple(
+            informator.drawerLightDirectional
+        )
+
+        map.spawnPoints.forEachIndexed { i, it ->
+            val triggerMesh = MGTriggerMesh.createFromMeshPool(
+                mesh[0],
+                triggerAction
+            )
+
+            triggerMesh.matrix.run {
+                setPosition(
+                    it.position.x,
+                    it.position.z+json.positionYDt,
+                    it.position.y,
+                )
+                addRotation(
+                    it.rotation.x+json.rotX,
+                    it.rotation.z,
+                    it.rotation.y,
+                )
+                invalidateScaleRotation()
+                invalidatePosition()
+
+                calculateInvertTrigger()
+                calculateNormals()
+            }
+
+            val meshh = meshes[
+                i % meshes.size
+            ]
+
+            informator.meshes.add(
+                MGMMeshMaterial(
+                    meshh.second,
+                    MGDrawerMeshMaterialMutable(
+                        arrayOf(
+                            MGMaterial(
+                                meshh.first.materialTexture
+                            )
+                        ),
+                        triggerMesh.mesh
+                    )
+                )
+            )
+        }
     }
 
     private inline fun loadLandscape(

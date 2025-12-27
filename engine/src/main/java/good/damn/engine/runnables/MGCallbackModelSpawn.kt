@@ -103,7 +103,6 @@ class MGCallbackModelSpawn(
         material: MGMMaterialShader,
         mesh: MGTriggerMesh
     ) {
-        mesh.mesh
         addMesh(
             MGMaterial.generateShaderModel(
                 material,

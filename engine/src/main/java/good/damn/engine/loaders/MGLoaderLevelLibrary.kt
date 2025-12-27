@@ -9,6 +9,7 @@ import good.damn.engine.opengl.shaders.MGShaderGeometryPassInstanced
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.shader.generators.MGMMaterialShader
 import good.damn.engine.utils.MGUtilsFile
+import good.damn.engine.utils.MGUtilsJson
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -50,7 +51,7 @@ class MGLoaderLevelLibrary(
             return false
         }
 
-        val rootJson = fileToJson(
+        val rootJson = MGUtilsJson.createFromFile(
             mFile
         )
 
@@ -76,7 +77,7 @@ class MGLoaderLevelLibrary(
             return
         }
 
-        val jsonList = fileToJson(
+        val jsonList = MGUtilsJson.createFromFile(
             mFileCullFace
         ).getJSONArray(
             "meshes"
@@ -208,18 +209,4 @@ class MGLoaderLevelLibrary(
 
         meshes = lMeshes
     }
-
-    private inline fun fileToJson(
-        file: File
-    ) = JSONObject(
-        String(
-            file.inputStream().run {
-                val b = readBytes()
-                close()
-                return@run b
-            },
-            Charset.forName("UTF-8")
-        )
-    )
-
 }
