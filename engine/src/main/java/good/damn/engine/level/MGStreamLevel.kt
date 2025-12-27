@@ -1,5 +1,6 @@
 package good.damn.engine.level
 
+import android.graphics.Color
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.loaders.MGLoaderLevelMatrices
@@ -10,14 +11,19 @@ import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInstanceMesh
 import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.models.json.spawn.MGMLevelSpawnInfo
+import good.damn.engine.models.json.spawn.MGMLevelSpawnLight
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.models.MGMMeshMaterial
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.triggers.MGTriggerLight
 import good.damn.engine.opengl.triggers.MGTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerSimple
+import good.damn.engine.sdk.SDVector3
+import good.damn.engine.sdk.models.SDMLightPoint
+import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine.shader.generators.MGMMaterialShader
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsJson
@@ -153,17 +159,50 @@ object MGStreamLevel {
             json.mesh
         ] ?: return
 
-        val meshes = Array(
+        val lightInterpolation = SDMLightPointInterpolation(
+            json.lightConstant,
+            json.lightLinear,
+            0f,
+            json.lightRadius
+        )
+
+        val pointsInfo = Array(
             json.info.size
         ) {
+            val info = json.info[it]
             val material = informator.poolMaterials[
-                json.info[it].texture
+                info.texture
             ] ?: MGMMaterialShader.getDefault(
                 informator.shaders.source
             )
 
+            val lightJson = MGMLevelSpawnLight.createFromJson(
+                MGUtilsJson.createFromFile(
+                    MGUtilsFile.getPublicFile(
+                        "lights/${info.light}.txt"
+                    )
+                )
+            )
+
             return@Array Pair(
-                material,
+                Pair(
+                    material,
+                    SDMLightPoint(
+                        SDVector3(
+                            Color.red(
+                                lightJson.color
+                            ) / 255f,
+                            Color.green(
+                                lightJson.color
+                            ) / 255f,
+                            Color.blue(
+                                lightJson.color
+                            ) / 255f
+                        ),
+                        lightInterpolation,
+                        1.0f
+                    )
+                ),
                 informator.shaders.cacheGeometryPass[
                     material.srcCodeMaterial
                 ]
@@ -178,6 +217,14 @@ object MGStreamLevel {
             val triggerMesh = MGTriggerMesh.createFromMeshPool(
                 mesh[0],
                 triggerAction
+            )
+
+            val pointInfo = pointsInfo[
+                i % pointsInfo.size
+            ]
+
+            val triggerLight = MGTriggerLight.createFromLight(
+                pointInfo.first.second
             )
 
             triggerMesh.matrix.run {
@@ -198,22 +245,34 @@ object MGStreamLevel {
                 calculateNormals()
             }
 
-            val meshh = meshes[
-                i % meshes.size
-            ]
+            triggerLight.matrix.run {
+                setPosition(
+                    it.position.x,
+                    it.position.z+json.positionYDt,
+                    it.position.y,
+                )
+                radius = 20000f
+                invalidatePosition()
+                invalidateRadius()
+                calculateInvertTrigger()
+            }
 
             informator.meshes.add(
                 MGMMeshMaterial(
-                    meshh.second,
+                    pointInfo.second,
                     MGDrawerMeshMaterialMutable(
                         arrayOf(
                             MGMaterial(
-                                meshh.first.materialTexture
+                                pointInfo.first.first.materialTexture
                             )
                         ),
                         triggerMesh.mesh
                     )
                 )
+            )
+
+            informator.managerTriggerLight.addTrigger(
+                triggerLight.triggerState
             )
         }
     }

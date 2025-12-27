@@ -15,6 +15,6 @@ data class MGMInformatorShader(
     val lightPassOpaque: MGShaderLightPass,
 ) {
     companion object {
-        const val SIZE_LIGHT_POINT = 16
+        const val SIZE_LIGHT_POINT = 64
     }
 }
