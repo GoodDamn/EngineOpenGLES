@@ -23,13 +23,9 @@ class MGLoaderLevelTextures(
     ) {
         for (j in map.atlases) {
             for (atlas in j.rects) {
-                if (poolTextures[
-                        atlas.name
-                ] == null) {
-                    loadMaps(
-                        atlas
-                    )
-                }
+                loadMaps(
+                    atlas
+                )
             }
         }
     }

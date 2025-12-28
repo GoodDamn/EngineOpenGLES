@@ -15,18 +15,6 @@ class MGPoolTextures(
         MGTexture
     >(127)
 
-    operator fun get(
-        name: String
-    ) = map[name]
-
-
-    operator fun set(
-        name: String,
-        texture: MGTexture
-    ) {
-        map[name] = texture
-    }
-
     fun remove(
         name: String
     ) {
@@ -62,5 +50,17 @@ class MGPoolTextures(
         )
 
         return texture
+    }
+
+    private operator fun get(
+        name: String
+    ) = map[name]
+
+
+    private operator fun set(
+        name: String,
+        texture: MGTexture
+    ) {
+        map[name] = texture
     }
 }

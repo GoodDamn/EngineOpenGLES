@@ -4,7 +4,6 @@ import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.opengl.drawers.MGDrawerLightPass
 import good.damn.engine.opengl.drawers.MGIDrawer
-import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.shaders.MGShaderLightPass
 import good.damn.engine.opengl.shaders.MGShaderProjectionViewModelTexture
 import good.damn.engine.opengl.shaders.MGShaderProjectionViewTexture

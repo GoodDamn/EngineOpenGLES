@@ -51,7 +51,7 @@ class MGPoolMeshesStatic {
         return poolMesh
     }
 
-    operator fun set(
+    private operator fun set(
         fileNameModel: String,
         arrayVertex: Array<MGMPoolVertexArray>
     ) {
@@ -60,7 +60,7 @@ class MGPoolMeshesStatic {
         ] = arrayVertex
     }
 
-    operator fun get(
+    private operator fun get(
         fileNameModel: String
     ) = map[
         fileNameModel.hashCode()

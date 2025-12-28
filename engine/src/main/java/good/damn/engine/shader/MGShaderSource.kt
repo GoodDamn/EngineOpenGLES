@@ -1,6 +1,5 @@
 package good.damn.engine.shader
 
-import good.damn.engine.opengl.models.MGMShader
 import good.damn.engine.opengl.models.MGMShaderSourceFragDefer
 import good.damn.engine.utils.MGUtilsAsset
 import good.damn.engine.utils.MGUtilsFile

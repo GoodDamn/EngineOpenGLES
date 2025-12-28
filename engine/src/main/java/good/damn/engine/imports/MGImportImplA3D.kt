@@ -23,16 +23,6 @@ class MGImportImplA3D(
     override fun onProcessTempFile(
         file: File
     ) {
-        misc.poolMeshes[
-            file.name
-        ]?.run {
-            misc.modelsCallback.onGetObjectsCached(
-                this
-            )
-            file.delete()
-            return
-        }
-
         misc.handler.post(
             MGRunnableA3D(
                 file,

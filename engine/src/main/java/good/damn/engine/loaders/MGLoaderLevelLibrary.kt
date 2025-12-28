@@ -115,28 +115,11 @@ class MGLoaderLevelLibrary(
         val diffuse = textures[0].diffuseMapName
         val controlMapName = textures[0].controlMapName
 
-        val materialShader = informator.poolMaterials[
-            diffuse
-        ] ?: MGMMaterialShader.Builder(
+        val materialShader = informator.poolMaterials.loadOrGetFromCache(
             diffuse,
             localPathLibTextures,
-            src
-        ).diffuse()
-            .opacity()
-            .specular()
-            .emissive(0.0f)
-            .useDepthFunc()
-            .normal()
-            .build().apply {
-                materialTexture.load(
-                    informator.poolTextures,
-                    localPathLibTextures
-                )
-
-                informator.poolMaterials[
-                    diffuse
-                ] = this
-            }
+            informator
+        )
 
         val shaderMaterials = LinkedList<MGShaderMaterial>()
         val buildersMaterial = LinkedList<MGMaterial>()

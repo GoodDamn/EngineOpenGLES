@@ -49,7 +49,7 @@ class MGPoolMaterials {
         return materialShader
     }
 
-    operator fun set(
+    private operator fun set(
         fileNameDiffuse: String,
         material: MGMMaterialShader
     ) {
@@ -58,7 +58,7 @@ class MGPoolMaterials {
         ] = material
     }
 
-    operator fun get(
+    private operator fun get(
         fileNameDiffuse: String
     ): MGMMaterialShader? = map[
         fileNameDiffuse.hashCode()

@@ -23,15 +23,6 @@ class MGImportImplModel(
     override fun onProcessTempFile(
         file: File
     ) {
-        misc.poolMeshes[
-            file.name
-        ]?.run {
-            misc.modelsCallback.onGetObjectsCached(
-                this
-            )
-            file.delete()
-            return
-        }
         misc.handler.post(
             MGRunnableLoadModel(
                 misc.modelsCallback,
@@ -39,7 +30,6 @@ class MGImportImplModel(
             )
         )
     }
-
 
     private class MGRunnableLoadModel(
         private val modelsCallback: MGICallbackModel,

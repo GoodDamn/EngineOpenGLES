@@ -28,34 +28,6 @@ class MGCallbackModelSpawn(
         .bindNormal()
         .build()
 
-    override fun onGetObjectsCached(
-        poolMesh: Array<MGMPoolVertexArray>
-    ) {
-        if (poolMesh.isEmpty()) {
-            return
-        }
-
-        if (poolMesh.size == 1) {
-            processMesh(
-                getCachedMaterial(
-                    null
-                ),
-                MGTriggerMesh.createFromMeshPool(
-                    poolMesh[0],
-                    triggerAction
-                )
-            )
-            return
-        }
-
-        /*processGroupMesh(
-            MGTriggerMeshGroup.createFromPool(
-                poolMesh,
-                triggerAction
-            )
-        )*/
-    }
-
     override fun onGetObjects(
         fileName: String,
         objs: Array<MGObject3d>?
@@ -72,8 +44,8 @@ class MGCallbackModelSpawn(
             ) ?: return
 
             processMesh(
-                getCachedMaterial(
-                    null
+                MGMMaterialShader.getDefault(
+                    informator.shaders.source
                 ),
                 MGTriggerMesh.createFromMeshPool(
                     poolMesh[0],
@@ -125,39 +97,6 @@ class MGCallbackModelSpawn(
         setupMatrix(
             mesh.matrix
         )
-    }
-
-    private inline fun getCachedMaterial(
-        fileNameDiffuse: String?
-    ): MGMMaterialShader {
-        val poolMaterials = informator
-            .poolMaterials
-
-        if (fileNameDiffuse == null) {
-            return MGMMaterialShader.getDefault(
-                informator.shaders.source
-            )
-        }
-
-        val cachedMaterial = poolMaterials[
-            fileNameDiffuse
-        ]
-
-        if (cachedMaterial != null) {
-            return cachedMaterial
-        }
-
-        return MGMMaterialShader.Builder(
-            fileNameDiffuse,
-            "textures",
-            informator.shaders.source
-        ).diffuse()
-            .opacity()
-            .emissive(0.0f)
-            .normal()
-            .specular()
-            .useDepthFunc()
-            .build()
     }
 
     /*private fun processGroupMesh(

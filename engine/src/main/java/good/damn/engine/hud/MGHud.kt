@@ -60,7 +60,6 @@ class MGHud(
             Handler(
                 Looper.getMainLooper()
             ),
-            informator.poolMeshes,
             mCallbackModelSpawn,
             ByteArray(1024)
         ).run {
