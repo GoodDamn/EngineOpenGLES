@@ -45,6 +45,15 @@ class MGLoaderLevelLibrary(
     var terrain: MGMLevelInfoMesh? = null
         private set
 
+    private val mBinderAttribute = MGBinderAttribute.Builder()
+        .bindPosition()
+        .bindTextureCoordinates()
+        .bindNormal()
+        .bindInstancedModel()
+        .bindInstancedRotationMatrix()
+        .bindTangent()
+        .build()
+
     fun loadLibrary(): Boolean {
         isLoadLibrary = false
         if (!mFile.exists()) {
@@ -121,8 +130,7 @@ class MGLoaderLevelLibrary(
             .build().apply {
                 materialTexture.load(
                     informator.poolTextures,
-                    localPathLibTextures,
-                    informator.glLoaderTexture
+                    localPathLibTextures
                 )
 
                 informator.poolMaterials[
@@ -145,37 +153,17 @@ class MGLoaderLevelLibrary(
             )
         )
 
-        val fragmentCode = materialShader.srcCodeMaterial
-
-        var cachedShader = informator.shaders.cacheGeometryPassInstanced[
-            fragmentCode
-        ]
-
-        if (cachedShader == null) {
-            cachedShader = MGShaderGeometryPassInstanced(
-                shaderMaterials.toTypedArray()
-            )
-
-            informator.shaders.cacheGeometryPassInstanced.cacheAndCompile(
-                fragmentCode,
-                informator.shaders.source.verti,
-                cachedShader,
-                informator.glHandler,
-                MGBinderAttribute.Builder()
-                    .bindPosition()
-                    .bindTextureCoordinates()
-                    .bindNormal()
-                    .bindInstancedModel()
-                    .bindInstancedRotationMatrix()
-                    .bindTangent()
-                    .build()
-            )
-        }
+        val shader = informator.shaders.cacheGeometryPassInstanced.loadOrGetFromCache(
+            materialShader.srcCodeMaterial,
+            informator.shaders.source.verti,
+            mBinderAttribute,
+            shaderMaterials.toTypedArray()
+        )
 
         return MGProp(
             fileName,
             buildersMaterial.toTypedArray(),
-            cachedShader,
+            shader,
             !(mNonCullFaceMeshes?.contains(
                 fileName
             ) ?: false),

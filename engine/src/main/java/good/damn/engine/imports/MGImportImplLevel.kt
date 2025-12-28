@@ -42,9 +42,7 @@ class MGImportImplLevel(
         private val misc: MGMImportMisc
     ): Runnable {
         override fun run() {
-            CoroutineScope(
-                Dispatchers.IO
-            ).launch {
+            Thread {
                 MGStreamLevel.readBin(
                     MGFlowLevel {
                         informator.meshesInstanced[
@@ -76,7 +74,7 @@ class MGImportImplLevel(
                 )
 
                 file.delete()
-            }
+            }.start()
         }
 
         private inline fun addMesh(

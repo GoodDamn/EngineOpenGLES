@@ -14,6 +14,12 @@ class MGImportImage(
     private val misc: MGMImportMisc
 ): MGImportImplTempFile() {
 
+    private val mBinderAttribute = MGBinderAttribute.Builder()
+        .bindPosition()
+        .bindTextureCoordinates()
+        .bindNormal()
+        .build()
+
     private var mIndexSubString = -1
 
     override fun isValidExtension(
@@ -32,63 +38,24 @@ class MGImportImage(
             0, mIndexSubString
         )
 
-        informator.poolMaterials[
-            fileNameDiffuse
-        ]?.run {
-            processShader(
-                this
-            )
-            return
-        }
-
-        val localPathDir = "textures/$fileNameDiffuse"
-
-        // generate material
-        val materialShader = MGMMaterialShader.Builder(
+        val material = informator.poolMaterials.loadOrGetFromCache(
             fileNameDiffuse,
-            localPathDir,
-            informator.shaders.source
-        ).diffuse() // generate textures
-            .opacity()
-            .specular()
-            .normal()
-            .emissive(0.0f)
-            .useDepthFunc()
-            .build()
-
-        // pool textures
-        materialShader.materialTexture.load(
-            informator.poolTextures,
-            localPathDir,
-            informator.glLoaderTexture
+            "textures/$fileNameDiffuse",
+            informator
         )
 
-        // pool material
-        informator.poolMaterials[
-            fileNameDiffuse
-        ] = materialShader
-
-        // generate shader
         processShader(
-            materialShader
+            material
         )
     }
 
     private inline fun processShader(
         materialShader: MGMMaterialShader
     ) {
-        informator.shaders.cacheGeometryPass[
-            materialShader.srcCodeMaterial
-        ]?.run {
-            attachMaterial(
-                this,
-                materialShader
-            )
-            return
-        }
-
-        // Compile shader
-        val shader = MGShaderGeometryPassModel(
+        val shader = informator.shaders.cacheGeometryPass.loadOrGetFromCache(
+            materialShader.srcCodeMaterial,
+            informator.shaders.source.vert,
+            mBinderAttribute,
             arrayOf(
                 MGShaderMaterial(
                     materialShader.shaderTextures
@@ -96,22 +63,19 @@ class MGImportImage(
             )
         )
 
-        informator.shaders.cacheGeometryPass.cacheAndCompile(
-            materialShader.srcCodeMaterial,
-            informator.shaders.source.vert,
-            shader,
-            informator.glHandler,
-            MGBinderAttribute.Builder()
-                .bindPosition()
-                .bindTextureCoordinates()
-                .bindNormal()
-                .build()
-        )
-
         attachMaterial(
             shader,
             materialShader
         )
+
+        // Compile shader
+        /*val shader = MGShaderGeometryPassModel(
+            arrayOf(
+                MGShaderMaterial(
+                    materialShader.shaderTextures
+                )
+            )
+        )*/
     }
 
     private inline fun attachMaterial(

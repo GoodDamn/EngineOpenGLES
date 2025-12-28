@@ -40,6 +40,8 @@ import good.damn.engine.opengl.runnables.MGIRunnableBounds
 import good.damn.engine.opengl.shaders.MGShaderLightPass
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
+import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassInstanced
+import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassModel
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGManagerProcessTime
@@ -66,13 +68,30 @@ class MGRendererLevelEditor(
         )
     }
 
+    private val mHandlerGlExecutor = MGHandlerGlExecutor()
+
+    private val mHandlerGl = MGHandlerGl(
+        mHandlerGlExecutor.queue,
+        mHandlerGlExecutor.queueCycle,
+    )
+
+    private val mPoolTextures = MGPoolTextures(
+        MGLoaderTextureAsync(
+            mHandlerGl
+        )
+    )
+
     private val mInformatorShader = MGMInformatorShader(
         MGEngine.shaderSource,
         cacheGeometryPass = MGShaderCache(
-            SparseArray(5)
+            SparseArray(5),
+            mHandlerGl,
+            MGShaderCreatorGeomPassModel()
         ),
         cacheGeometryPassInstanced = MGShaderCache(
-            SparseArray(5)
+            SparseArray(5),
+            mHandlerGl,
+            MGShaderCreatorGeomPassInstanced()
         ),
         lightPassDiffuse = MGShaderLightPass.Builder()
             .attachColorSpec()
@@ -81,9 +100,6 @@ class MGRendererLevelEditor(
             .attachAll()
             .build()
     )
-
-
-    private val mPoolTextures = MGPoolTextures()
 
     private val managerLight = MGManagerLight(
         MGMInformatorShader.SIZE_LIGHT_POINT
@@ -111,13 +127,6 @@ class MGRendererLevelEditor(
 
     private val mDrawerQuad = MGDrawerVertexArray(
         mVerticesQuad
-    )
-
-    private val mHandlerGlExecutor = MGHandlerGlExecutor()
-
-    private val mHandlerGl = MGHandlerGl(
-        mHandlerGlExecutor.queue,
-        mHandlerGlExecutor.queueCycle,
     )
 
     private val mFramebufferG = MGFrameBufferG(
@@ -171,9 +180,6 @@ class MGRendererLevelEditor(
         MGPoolMeshesStatic(),
         MGPoolMaterials(),
         mHandlerGl,
-        MGLoaderTextureAsync(
-            mHandlerGl
-        ),
         true
     )
 
@@ -353,27 +359,4 @@ class MGRendererLevelEditor(
     ) = mHudScene.hud.touchEvent(
         event
     )
-
-    private inline fun <
-        T: MGShaderBase,
-        M: MGShaderBase
-    > setupShaders(
-        shader: MGMShader<T, M>,
-        localPath: String,
-        binderAttributeSingle: MGBinderAttribute,
-        binderAttributeInstanced: MGBinderAttribute
-    ) {
-        val pathFragment = "$localPath/frag.glsl"
-        shader.single.setup(
-            "$localPath/vert.glsl",
-            pathFragment,
-            binderAttributeSingle
-        )
-
-        shader.instanced.setup(
-            "$localPath/vert_i.glsl",
-            pathFragment,
-            binderAttributeInstanced
-        )
-    }
 }

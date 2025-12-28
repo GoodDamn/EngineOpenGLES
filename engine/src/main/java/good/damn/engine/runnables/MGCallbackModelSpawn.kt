@@ -9,6 +9,8 @@ import good.damn.engine.opengl.models.MGMPoolMeshMutable
 import good.damn.engine.opengl.models.MGMPoolVertexArray
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
+import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.triggers.MGIMatrixTrigger
 import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGTriggerMesh
@@ -19,6 +21,12 @@ class MGCallbackModelSpawn(
     private val triggerAction: MGITrigger,
     private val informator: MGMInformator
 ): MGICallbackModel {
+
+    private val mBinderAttr = MGBinderAttribute.Builder()
+        .bindPosition()
+        .bindTextureCoordinates()
+        .bindNormal()
+        .build()
 
     override fun onGetObjectsCached(
         poolMesh: Array<MGMPoolVertexArray>
@@ -101,9 +109,15 @@ class MGCallbackModelSpawn(
         mesh: MGTriggerMesh
     ) {
         addMesh(
-            MGMaterial.generateShaderModel(
-                material,
-                informator
+            informator.shaders.cacheGeometryPass.loadOrGetFromCache(
+                material.srcCodeMaterial,
+                informator.shaders.source.vert,
+                mBinderAttr,
+                arrayOf(
+                    MGShaderMaterial(
+                        material.shaderTextures
+                    )
+                )
             ),
             material,
             mesh

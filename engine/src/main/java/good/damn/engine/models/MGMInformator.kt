@@ -47,7 +47,6 @@ data class MGMInformator(
     val poolMaterials: MGPoolMaterials,
 
     val glHandler: MGHandlerGl,
-    val glLoaderTexture: MGLoaderTextureAsync,
 
     var canDrawTriggers: Boolean,
 ) {

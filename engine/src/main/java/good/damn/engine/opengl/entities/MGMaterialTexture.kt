@@ -22,46 +22,6 @@ class MGMaterialTexture private constructor(
 ): MGIDrawerTexture<
     Array<MGShaderTexture>
 > {
-    companion object {
-        @JvmStatic
-        fun loadTextureDrawerCached(
-            textureActive: MGTextureActive,
-            textureName: String,
-            localPath: String,
-            poolTextures: MGPoolTextures,
-            textureLoader: MGILoaderTexture
-        ): MGTexture? {
-            var texture = poolTextures.get(
-                textureName
-            )
-
-            if (texture != null) {
-                texture.textureActive = textureActive
-                return texture
-            }
-
-            val bitmap = MGUtilsBitmap.loadBitmap(
-                "$localPath/$textureName"
-            ) ?: return null
-
-            texture = MGTexture(
-                textureActive
-            )
-
-            textureLoader.loadTexture(
-                bitmap,
-                texture
-            )
-
-            poolTextures.add(
-                textureName,
-                texture
-            )
-
-            return texture
-        }
-    }
-
     override fun draw(
         shader: Array<MGShaderTexture>
     ) {
@@ -88,16 +48,12 @@ class MGMaterialTexture private constructor(
 
     fun load(
         poolTextures: MGPoolTextures,
-        localPath: String,
-        textureLoader: MGILoaderTexture
+        localPath: String
     ) {
         list.forEach {
-            loadTextureDrawerCached(
-                it.drawer.activeTexture,
+            poolTextures.loadOrGetFromCache(
                 it.textureName,
-                localPath,
-                poolTextures,
-                textureLoader
+                localPath
             )?.run {
                 it.drawer.texture = this
             }

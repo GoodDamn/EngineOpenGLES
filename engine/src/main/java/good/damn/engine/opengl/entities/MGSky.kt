@@ -12,6 +12,8 @@ import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.matrices.MGMatrixScale
 import good.damn.engine.opengl.models.MGMMeshMaterial
 import good.damn.engine.opengl.objects.MGObject3d
+import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.shader.generators.MGMMaterialShader
 
 class MGSky {
@@ -50,13 +52,21 @@ class MGSky {
 
         materialShader.materialTexture.load(
             informator.poolTextures,
-            localDirPath,
-            informator.glLoaderTexture
+            localDirPath
         )
 
-        val shader = MGMaterial.generateShaderModel(
-            materialShader,
-            informator
+        val shader = informator.shaders.cacheGeometryPass.loadOrGetFromCache(
+            materialShader.srcCodeMaterial,
+            informator.shaders.source.vert,
+            MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindTextureCoordinates()
+                .build(),
+            arrayOf(
+                MGShaderMaterial(
+                    materialShader.shaderTextures
+                )
+            )
         )
 
         meshMaterial = MGMMeshMaterial(

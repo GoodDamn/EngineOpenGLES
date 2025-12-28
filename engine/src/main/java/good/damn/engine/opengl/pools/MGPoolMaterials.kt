@@ -19,6 +19,36 @@ class MGPoolMaterials {
         )
     }
 
+    fun loadOrGetFromCache(
+        fileNameDiffuse: String,
+        localPathDir: String,
+        informator: MGMInformator
+    ): MGMMaterialShader {
+        get(fileNameDiffuse)?.run {
+            return this
+        }
+
+        val materialShader = MGMMaterialShader.Builder(
+            fileNameDiffuse,
+            localPathDir,
+            informator.shaders.source
+        ).diffuse() // generate textures
+            .opacity()
+            .specular()
+            .normal()
+            .emissive(0.0f)
+            .useDepthFunc()
+            .build()
+
+        // pool textures
+        materialShader.materialTexture.load(
+            informator.poolTextures,
+            localPathDir
+        )
+
+        return materialShader
+    }
+
     operator fun set(
         fileNameDiffuse: String,
         material: MGMMaterialShader

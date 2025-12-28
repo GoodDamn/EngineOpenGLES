@@ -18,6 +18,8 @@ import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.models.MGMMeshMaterial
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.triggers.MGTriggerLight
 import good.damn.engine.opengl.triggers.MGTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerSimple
@@ -71,7 +73,6 @@ object MGStreamLevel {
         )
 
         val loaderTextures = MGLoaderLevelTextures(
-            informator.glHandler,
             informator.poolTextures,
             localPathLibTextures
         )
@@ -139,7 +140,7 @@ object MGStreamLevel {
 
     }
 
-    private inline fun processSpawnPoints(
+    private fun processSpawnPoints(
         map: MIMMap,
         localPathDir: String,
         informator: MGMInformator
@@ -168,14 +169,19 @@ object MGStreamLevel {
             json.lightRadius
         )
 
+        val binderAttr = MGBinderAttribute.Builder()
+            .bindPosition()
+            .bindTextureCoordinates()
+            .bindNormal()
+            .build()
         val pointsInfo = Array(
             json.info.size
         ) {
             val info = json.info[it]
-            val material = informator.poolMaterials[
-                info.texture
-            ] ?: MGMMaterialShader.getDefault(
-                informator.shaders.source
+            val material = informator.poolMaterials.loadOrGetFromCache(
+                info.texture,
+                "textures/${info.texture}",
+                informator
             )
 
             val lightJson = MGMLevelSpawnLight.createFromJson(
@@ -205,9 +211,16 @@ object MGStreamLevel {
                         1.0f
                     )
                 ),
-                informator.shaders.cacheGeometryPass[
-                    material.srcCodeMaterial
-                ]
+                informator.shaders.cacheGeometryPass.loadOrGetFromCache(
+                    material.srcCodeMaterial,
+                    informator.shaders.source.vert,
+                    binderAttr,
+                    arrayOf(
+                        MGShaderMaterial(
+                            material.shaderTextures
+                        )
+                    )
+                )
             )
         }
 
@@ -275,7 +288,7 @@ object MGStreamLevel {
         }
     }
 
-    private inline fun loadLandscape(
+    private fun loadLandscape(
         landscape: MGMLevelInfoMesh,
         loaderMesh: MGLoaderLevelMeshA3D,
         loaderProp: MGLoaderLevelLibrary,

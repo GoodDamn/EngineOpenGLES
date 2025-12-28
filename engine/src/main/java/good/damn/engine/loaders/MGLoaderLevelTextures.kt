@@ -14,38 +14,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class MGLoaderLevelTextures(
-    private val handlerGl: MGHandlerGl,
     private val poolTextures: MGPoolTextures,
     private val localPathLibTextures: String
 ) {
 
-    val isLoadCompleted: Boolean
-        get() = mCurrentIndex >= mCountTextures
-
-    private val mLock = Any()
-
-    private var mCurrentIndex = 0
-    private var mCountTextures = 0
-
     fun loadTextures(
         map: MIMMap
     ) {
-        mCountTextures = 0
-        mCurrentIndex = 0
         for (j in map.atlases) {
             for (atlas in j.rects) {
-                if (poolTextures.get(
+                if (poolTextures[
                         atlas.name
-                    ) != null
-                ) {
-                    incrementIndex()
-                    continue
+                ] == null) {
+                    loadMaps(
+                        atlas
+                    )
                 }
-
-                loadMaps(
-                    atlas
-                )
-                mCountTextures += 5
             }
         }
     }
@@ -53,63 +37,30 @@ class MGLoaderLevelTextures(
     private inline fun loadMaps(
         atlas: MIMAtlasRect
     ) {
-        poolTexture(
-            "${atlas.name}.jpg"
+        poolTextures.loadOrGetFromCache(
+            "${atlas.name}.jpg",
+            localPathLibTextures
         )
 
-        poolTexture(
-            "${atlas.name}_m.jpg"
+        poolTextures.loadOrGetFromCache(
+            "${atlas.name}_m.jpg",
+            localPathLibTextures
         )
 
-        poolTexture(
-            "${atlas.name}_e.jpg"
+        poolTextures.loadOrGetFromCache(
+            "${atlas.name}_e.jpg",
+            localPathLibTextures
         )
 
-        poolTexture(
-            "${atlas.name}_o.jpg"
+        poolTextures.loadOrGetFromCache(
+            "${atlas.name}_o.jpg",
+            localPathLibTextures
         )
 
-        poolTexture(
-            "${atlas.name}_n.jpg"
+        poolTextures.loadOrGetFromCache(
+            "${atlas.name}_n.jpg",
+            localPathLibTextures
         )
-    }
-
-    private inline fun incrementIndex() {
-        mCurrentIndex++
-    }
-
-    private fun poolTexture(
-        textureName: String
-    ) {
-        val texturePath = "$localPathLibTextures/$textureName"
-        val bitmap = MGUtilsBitmap.loadBitmap(
-            texturePath
-        )
-
-        if (bitmap == null) {
-            incrementIndex()
-            return
-        }
-
-        val texture = MGTexture(
-            MGTextureActive.default
-        )
-
-        handlerGl.post(
-            MGRunnableTextureSetupBitmap(
-                MGTextureBitmap(
-                    texture
-                ),
-                bitmap
-            )
-        )
-
-        poolTextures.add(
-            textureName,
-            texture
-        )
-
-        incrementIndex()
     }
 
 }

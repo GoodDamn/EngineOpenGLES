@@ -13,37 +13,6 @@ class MGMaterial(
     private val materialTexture: MGMaterialTexture
 ): MGIDrawerTexture<MGShaderMaterial> {
 
-    companion object {
-        @JvmStatic
-        fun generateShaderModel(
-            materialShader: MGMMaterialShader,
-            informator: MGMInformator
-        ): MGShaderGeometryPassModel {
-            val glHandler = informator.glHandler
-            val shaders = informator.shaders
-            val shaderCache = shaders.cacheGeometryPass
-            val src = materialShader.srcCodeMaterial
-
-            return shaderCache[src] ?: MGShaderGeometryPassModel(
-                singleMaterial(
-                    materialShader.shaderTextures
-                )
-            ).apply {
-                shaderCache.cacheAndCompile(
-                    src,
-                    shaders.source.vert,
-                    this,
-                    glHandler,
-                    MGBinderAttribute.Builder()
-                        .bindPosition()
-                        .bindTextureCoordinates()
-                        .bindNormal()
-                        .build()
-                )
-            }
-        }
-    }
-
     var shine = 1f
 
     override fun draw(
