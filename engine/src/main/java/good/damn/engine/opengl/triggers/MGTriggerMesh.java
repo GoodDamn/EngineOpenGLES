@@ -65,11 +65,9 @@ public final class MGTriggerMesh {
     }
 
     @NonNull
-    public static MGTriggerMesh createFromObject(
+    public static MGMPoolVertexArray createFromObject(
         @NonNull final MGObject3d obj,
-        @NonNull final MGMInformator informator,
-        @NonNull final MGMPoolMeshMutable outPoolMesh,
-        @NonNull final MGITrigger triggerAction
+        @NonNull final MGMInformator informator
     ) {
         @NonNull
         final MGArrayVertexManager arrayVertex = new MGArrayVertexManager(
@@ -94,41 +92,37 @@ public final class MGTriggerMesh {
         );
 
         return createFromVertexArray(
-            arrayVertex,
-            outPoolMesh,
-            triggerAction
+            arrayVertex
         );
     }
 
     @NonNull
-    public static MGTriggerMesh createFromVertexArray(
-        @NonNull final MGArrayVertexManager vertexArray,
-        @NonNull final MGMPoolMeshMutable outPoolMesh,
-        @NonNull final MGITrigger triggerAction
+    public static MGMPoolVertexArray createFromVertexArray(
+        @NonNull final MGArrayVertexManager vertexArray
     ) {
-        outPoolMesh.pointMinMax = MGUtilsAlgo.findMinMaxPoints(
+        @NonNull
+        final MGMPoolMeshMutable poolMesh = new MGMPoolMeshMutable();
+
+        poolMesh.pointMinMax = MGUtilsAlgo.findMinMaxPoints(
             vertexArray
         );
 
-        outPoolMesh.pointMiddle = outPoolMesh.pointMinMax.first.interpolate(
-            outPoolMesh.pointMinMax.second,
+        poolMesh.pointMiddle = poolMesh.pointMinMax.first.interpolate(
+            poolMesh.pointMinMax.second,
             0.5f
         );
 
         MGUtilsAlgo.offsetAnchorPoint(
             vertexArray,
-            outPoolMesh.pointMiddle
+            poolMesh.pointMiddle
         );
 
         vertexArray.unkeepBufferVertices();
-        outPoolMesh.drawerVertexArray = new MGDrawerVertexArray(
+        poolMesh.drawerVertexArray = new MGDrawerVertexArray(
             vertexArray
         );
 
-        return createFromMeshPool(
-            outPoolMesh.toImmutable(),
-            triggerAction
-        );
+        return poolMesh.toImmutable();
     }
 
     @NonNull

@@ -129,8 +129,6 @@ object MGStreamLevel {
                 terrain,
                 loaderMeshes,
                 loaderLib,
-                informator,
-                localPathLibTextures,
                 mapProp
             )?.run {
                 flow.emit(
@@ -153,11 +151,15 @@ object MGStreamLevel {
                 )
             )
         )
-        // it only processes with cached object, material and shader
-        // may be you won't spawn present boxes :)
-        val mesh = informator.poolMeshes[
-            json.mesh
-        ] ?: return
+
+        val poolMesh = informator.poolMeshes.loadOrGetFromCache(
+            json.mesh,
+            informator
+        ) ?: return
+
+        val triggerAction = MGTriggerSimple(
+            informator.drawerLightDirectional
+        )
 
         val lightInterpolation = SDMLightPointInterpolation(
             json.lightConstant,
@@ -209,13 +211,9 @@ object MGStreamLevel {
             )
         }
 
-        val triggerAction = MGTriggerSimple(
-            informator.drawerLightDirectional
-        )
-
         map.spawnPoints.forEachIndexed { i, it ->
             val triggerMesh = MGTriggerMesh.createFromMeshPool(
-                mesh[0],
+                poolMesh[0],
                 triggerAction
             )
 
@@ -281,8 +279,6 @@ object MGStreamLevel {
         landscape: MGMLevelInfoMesh,
         loaderMesh: MGLoaderLevelMeshA3D,
         loaderProp: MGLoaderLevelLibrary,
-        informator: MGMInformator,
-        localLibPathTextures: String,
         mapProp: MIMProp?,
     ): MGMInstanceMesh? {
         val instanceArray = loaderMesh.loadInstanceArray(
@@ -318,99 +314,4 @@ object MGStreamLevel {
             instanceArray.modelMatrices
         )
     }
-
-    fun read(
-        input: InputStream,
-        poolTextures: MGPoolTextures
-    ): Array<MGMInstanceMesh>? {
-        return null
-        /*val bufferedReader = BufferedReader(
-            InputStreamReader(
-                input
-            )
-        )
-
-        val meshesCount = bufferedReader.readLineValueInt()
-            ?: return null
-
-        val output = Array(
-            meshesCount
-        ) {
-            val meshNameCount = bufferedReader
-                .readLine()!!
-                .split("\\s+".toRegex())
-
-            val meshCount = meshNameCount[1]
-                .toInt()
-
-            val meshName = meshNameCount[0]
-
-            val modelMatrices = Array(
-                meshCount
-            ) {
-                MGMatrixTransformationNormal(
-                    MGMatrixScaleRotation()
-                ).apply {
-                    model.run {
-                        val strPosition = bufferedReader
-                            .readLine()!!
-                            .split("\\s+".toRegex())
-
-                        setPosition(
-                            strPosition.getOrNull(0)?.toFloatOrNull() ?: 0f,
-                            strPosition.getOrNull(1)?.toFloatOrNull() ?: 0f,
-                            strPosition.getOrNull(2)?.toFloatOrNull() ?: 0f,
-                        )
-
-                        val scale = strPosition.getOrNull(3)?.toFloatOrNull() ?: 0f
-                        setScale(
-                            scale,
-                            scale,
-                            scale
-                        )
-
-                        setRotation(
-                            strPosition.getOrNull(4)?.toFloatOrNull() ?: 0f,
-                            strPosition.getOrNull(5)?.toFloatOrNull() ?: 0f,
-                            strPosition.getOrNull(6)?.toFloatOrNull() ?: 0f,
-                        )
-
-                        invalidatePosition()
-                        invalidateScaleRotation()
-                    }
-
-                    normal.run {
-                        calculateInvertModel()
-                        calculateNormalMatrix()
-                    }
-                }
-            }
-
-            val obj = MGObject3d.createFromAssets(
-                "objs/$meshName"
-            )?.get(0)!!
-
-            val material = MGMaterial.createWithPath(
-                poolTextures,
-                obj.texturesDiffuseFileName?.get(0),
-                obj.texturesMetallicFileName?.get(0),
-                obj.texturesEmissiveFileName?.get(0),
-                "textures"
-            )
-
-            return@Array loaderMesh.createVertexArrayInstance(
-                MGEnumArrayVertexConfiguration.INT,
-                obj.vertices,
-                obj.indices,
-                modelMatrices,
-                material
-            )
-        }
-        bufferedReader.close()
-
-        return output*/
-    }
-
-    private fun BufferedReader.readLineValueInt() =
-        readLine().toIntOrNull()
 }

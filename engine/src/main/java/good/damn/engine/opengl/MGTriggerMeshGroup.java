@@ -49,7 +49,7 @@ public final class MGTriggerMeshGroup {
         );
     }
 
-    @NonNull
+    /*@NonNull
     public static MGTriggerMeshGroup createFromPool(
         @NonNull final MGMPoolVertexArray[] poolMeshes,
         @NonNull final MGITrigger triggerAction
@@ -104,5 +104,5 @@ public final class MGTriggerMeshGroup {
         return createFromTriggerMeshes(
             triggerMeshes
         );
-    }
+    }*/
 }

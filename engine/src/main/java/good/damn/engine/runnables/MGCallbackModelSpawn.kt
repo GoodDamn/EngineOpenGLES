@@ -58,24 +58,21 @@ class MGCallbackModelSpawn(
         }
 
         if (objs.size == 1) {
-            val outPoolMesh = MGMPoolMeshMutable()
-            MGTriggerMesh.createFromObject(
-                objs[0],
-                informator,
-                outPoolMesh,
-                triggerAction,
-            ).run {
-                informator.poolMeshes[fileName] = arrayOf(
-                    outPoolMesh.toImmutable()
-                )
+            val poolMesh = informator.poolMeshes.loadOrGetFromCache(
+                fileName,
+                informator
+            ) ?: return
 
-                processMesh(
-                    getCachedMaterial(
-                        null
-                    ),
-                    this
+            processMesh(
+                getCachedMaterial(
+                    null
+                ),
+                MGTriggerMesh.createFromMeshPool(
+                    poolMesh[0],
+                    triggerAction
                 )
-            }
+            )
+
             return
         }
 
