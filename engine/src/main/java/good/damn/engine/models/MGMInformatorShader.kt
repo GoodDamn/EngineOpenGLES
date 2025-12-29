@@ -20,6 +20,8 @@ data class MGMInformatorShader(
         Array<MGShaderMaterial>
     >,
 
+    val wireframe: MGShaderGeometryPassModel,
+
     val lightPasses: Array<MGMLightPass>,
 ) {
     companion object {

@@ -61,19 +61,16 @@ class MGDrawModeOpaque(
             }
         }
 
-        /*if (informator.canDrawTriggers) {
-            informator.shaders.wireframe.single.run {
+        if (informator.canDrawTriggers) {
+            informator.shaders.wireframe.apply {
                 use()
-                camera.draw(
-                    this
-                )
                 mTriggerManagers.forEach {
                     it.draw(
                         this
                     )
                 }
             }
-        }*/
+        }
 
         drawerFramebufferG.unbind(
             width,

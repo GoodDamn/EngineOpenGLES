@@ -37,7 +37,9 @@ import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.runnables.MGHudScene
 import good.damn.engine.opengl.runnables.MGIRunnableBounds
+import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderLightPass
+import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassInstanced
@@ -84,14 +86,17 @@ class MGRendererLevelEditor(
     private val mInformatorShader = MGMInformatorShader(
         MGEngine.shaderSource,
         cacheGeometryPass = MGShaderCache(
-            SparseArray(5),
+            SparseArray(50),
             mHandlerGl,
             MGShaderCreatorGeomPassModel()
         ),
         cacheGeometryPassInstanced = MGShaderCache(
-            SparseArray(5),
+            SparseArray(50),
             mHandlerGl,
             MGShaderCreatorGeomPassInstanced()
+        ),
+        wireframe = MGShaderGeometryPassModel(
+            MGShaderMaterial.empty
         ),
         lightPasses = arrayOf(
             MGMLightPass(
@@ -259,6 +264,14 @@ class MGRendererLevelEditor(
             MGPointerAttribute.Builder()
                 .pointPosition2()
                 .pointTextureCoordinates()
+                .build()
+        )
+
+        mInformatorShader.wireframe.setup(
+            "shaders/opaque/vert.glsl",
+            "shaders/wireframe/frag_defer.glsl",
+            MGBinderAttribute.Builder()
+                .bindPosition()
                 .build()
         )
 
