@@ -2,10 +2,14 @@ package good.damn.engine.opengl.drawers.modes
 
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
+import good.damn.engine.opengl.drawers.MGDrawerLightPass
 import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.engine.opengl.shaders.MGShaderLightPass
 
-data class MGDrawModeOpaque(
+class MGDrawModeOpaque(
     private val informator: MGMInformator,
+    private val lightPassDrawer: MGDrawerLightPass,
+    private val lightPassShader: MGShaderLightPass,
     private val drawerFramebufferG: MGDrawerFramebufferG
 ): MGIDrawer {
 
@@ -76,7 +80,7 @@ data class MGDrawModeOpaque(
             height
         )
 
-        informator.shaders.lightPassOpaque.run {
+        lightPassShader.run {
             use()
             camera.drawPosition(
                 this
@@ -86,7 +90,7 @@ data class MGDrawModeOpaque(
                 lightDirectional
             )
 
-            informator.drawerLightPass.draw(
+            lightPassDrawer.draw(
                 this
             )
             informator.managerLight.draw(
