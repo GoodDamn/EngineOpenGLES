@@ -174,6 +174,7 @@ object MGStreamLevel {
             .bindTextureCoordinates()
             .bindNormal()
             .build()
+
         val pointsInfo = Array(
             json.info.size
         ) {
@@ -280,6 +281,10 @@ object MGStreamLevel {
                         triggerMesh.mesh
                     )
                 )
+            )
+
+            informator.managerTrigger.addTrigger(
+                triggerMesh.triggerState
             )
 
             informator.managerTriggerLight.addTrigger(
