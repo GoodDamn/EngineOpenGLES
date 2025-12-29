@@ -98,22 +98,22 @@ class MGRendererLevelEditor(
                 MGShaderLightPass.Builder()
                     .attachAll()
                     .build(),
-                "shaders/post/vert.glsl",
+                "shaders/lightPass/vert.glsl",
                 "shaders/opaque/defer/frag_defer_light.glsl",
             ),
             MGMLightPass(
                 MGShaderLightPass.Builder()
                     .attachColorSpec()
                     .build(),
-                "shaders/post/vert.glsl",
-                "shaders/diffuse/frag_defer.glsl"
+                "shaders/lightPass/vert.glsl",
+                "shaders/lightPass/frag_defer.glsl"
             ),
             MGMLightPass(
                 MGShaderLightPass.Builder()
                     .attachDepth()
                     .build(),
-                "shaders/post/vert.glsl",
-                "shaders/diffuse/frag_defer.glsl"
+                "shaders/lightPass/vert.glsl",
+                "shaders/lightPass/frag_defer_depth.glsl"
             )
         )
     )

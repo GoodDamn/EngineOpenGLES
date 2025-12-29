@@ -4,5 +4,6 @@ enum class MGEnumDrawMode {
     OPAQUE,
     WIREFRAME,
     DIFFUSE,
-    EMISSIVE
+    EMISSIVE,
+    DEPTH
 }

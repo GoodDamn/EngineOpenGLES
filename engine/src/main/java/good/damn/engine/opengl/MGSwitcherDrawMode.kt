@@ -70,7 +70,10 @@ class MGSwitcherDrawMode(
             drawerModeDiffuse
         )
 
-
+        MGEnumDrawMode.DIFFUSE -> switchDrawMode(
+            MGEnumDrawMode.DEPTH,
+            drawerModeDepth
+        )
 
         else -> switchDrawMode(
             MGEnumDrawMode.OPAQUE,
