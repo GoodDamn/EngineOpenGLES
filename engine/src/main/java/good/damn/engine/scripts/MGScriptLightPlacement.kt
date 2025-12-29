@@ -1,9 +1,10 @@
 package good.damn.engine.scripts
 
 import dalvik.system.DexClassLoader
+import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.managers.MGManagerLight
-import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.triggers.MGTriggerLight
+import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.runnables.MGManagerProcessTime
 import good.damn.engine.sdk.models.SDMLightPointEntity
 import good.damn.engine.sdk.process.SDIProcessTime
@@ -51,7 +52,6 @@ class MGScriptLightPlacement(
                 MGTriggerLight.createFromLight(
                     it.light
                 ).run {
-                    matrix.radius = it.radiusTrigger
                     matrix.setPosition(
                         it.position.x,
                         it.position.y,
@@ -62,7 +62,9 @@ class MGScriptLightPlacement(
                     matrix.calculateInvertTrigger()
 
                     managerTriggerLight.register(
-                        triggerState
+                        MGDrawerLightPoint(
+                            this
+                        )
                     )
                 }
             }

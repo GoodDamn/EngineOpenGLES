@@ -129,9 +129,7 @@ class MGRendererLevelEditor(
         )
     )
 
-    private val managerLight = MGManagerLight(
-        MGMInformatorShader.SIZE_LIGHT_POINT
-    )
+    private val managerLight = MGManagerLight()
 
     private val mVerticesBox = MGArrayVertexConfigurator(
         MGEnumArrayVertexConfiguration.BYTE

@@ -13,6 +13,7 @@ import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.models.json.spawn.MGMLevelSpawnInfo
 import good.damn.engine.models.json.spawn.MGMLevelSpawnLight
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
+import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
@@ -285,7 +286,9 @@ object MGStreamLevel {
             )
 
             informator.managerLight.register(
-                triggerLight.triggerState
+                MGDrawerLightPoint(
+                    triggerLight
+                )
             )
         }
     }

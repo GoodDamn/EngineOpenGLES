@@ -1,19 +1,26 @@
 package good.damn.engine.opengl.drawers.light
 
 import android.opengl.GLES30
-import good.damn.engine.sdk.SDVector3
 import good.damn.engine.opengl.shaders.MGShaderLightPoint
+import good.damn.engine.opengl.triggers.MGTriggerLight
+import good.damn.engine.sdk.models.SDMLightPointEntity
 
-class MGDrawerLightPoint {
+class MGDrawerLightPoint(
+    private val entity: MGTriggerLight
+) {
+    companion object {
+        @JvmStatic
+        fun drawNull(
+            shader: MGShaderLightPoint
+        ) {
+            GLES30.glUniform1i(
+                shader.uniformActive,
+                0
+            )
+        }
+    }
 
     var isActive = 1
-    var constant = 1.0f
-    var linear = 0.014f
-    var quad = 0.0007f
-    var radius = 600f
-    var alpha = 1.0f
-    val position = SDVector3(0f)
-    val color = SDVector3(0f)
 
     fun draw(
         shader: MGShaderLightPoint
@@ -23,39 +30,44 @@ class MGDrawerLightPoint {
             isActive
         )
 
-        GLES30.glUniform1f(
-            shader.uniformConstant,
-            constant
-        )
+        val light = entity.triggerState.light
+        light.interpolation.apply {
+            GLES30.glUniform1f(
+                shader.uniformConstant,
+                constant
+            )
 
-        GLES30.glUniform1f(
-            shader.uniformLinear,
-            linear
-        )
+            GLES30.glUniform1f(
+                shader.uniformLinear,
+                linear
+            )
 
-        GLES30.glUniform1f(
-            shader.uniformQuad,
-            quad
-        )
+            GLES30.glUniform1f(
+                shader.uniformQuad,
+                quad
+            )
 
-        GLES30.glUniform3f(
-            shader.uniformPosition,
-            position.x,
-            position.y,
-            position.z,
-        )
+            GLES30.glUniform1f(
+                shader.uniformRadius,
+                radius
+            )
+        }
 
-        GLES30.glUniform4f(
-            shader.uniformColor,
-            color.x,
-            color.y,
-            color.z,
-            alpha
-        )
+        entity.matrix.position.run {
+            GLES30.glUniform3f(
+                shader.uniformPosition,
+                x, y, z
+            )
+        }
 
-        GLES30.glUniform1f(
-            shader.uniformRadius,
-            radius
-        )
+        light.color.apply {
+            GLES30.glUniform4f(
+                shader.uniformColor,
+                x, y, z,
+                light.alpha
+            )
+        }
+
+
     }
 }

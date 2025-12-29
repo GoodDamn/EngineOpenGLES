@@ -5,6 +5,5 @@ import kotlin.math.sqrt
 
 data class SDMLightPointEntity(
     val position: SDVector3,
-    val radiusTrigger: Float,
     val light: SDMLightPoint
 )

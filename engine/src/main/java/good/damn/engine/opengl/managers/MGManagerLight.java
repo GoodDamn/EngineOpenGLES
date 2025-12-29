@@ -3,7 +3,11 @@ package good.damn.engine.opengl.managers;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint;
+import good.damn.engine.sdk.models.SDMLight;
 import good.damn.engine.sdk.models.SDMLightPoint;
 import good.damn.engine.opengl.shaders.MGShaderLightPoint;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerLight;
@@ -12,148 +16,50 @@ import good.damn.engine.sdk.models.SDMLightPointInterpolation;
 
 public final class MGManagerLight {
 
-    private final MGLightWrapper[] mPullLights;
+    private final ConcurrentLinkedQueue<
+        MGDrawerLightPoint
+    > mPullLights = new ConcurrentLinkedQueue<>();
 
-    public MGManagerLight(
-        final int countLights
-    ) {
-        mPullLights = new MGLightWrapper[
-            countLights
-        ];
-
-        for (int i = 0; i < mPullLights.length; i++) {
-            mPullLights[i] = new MGLightWrapper();
-        }
-    }
 
     public final void draw(
         @NonNull final MGShaderLightPoint[] lightPoints
     ) {
-        for (
-            short i = 0;
-            i < lightPoints.length;
-            i++
-        ) {
-            final MGLightWrapper wrapper = mPullLights[i];
-            final MGDrawerLightPoint drawer = wrapper.drawer;
-            final MGShaderLightPoint shaderLightPoint = lightPoints[i];
+        @NonNull
+        final Iterator<
+            MGDrawerLightPoint
+        > iterator = mPullLights.iterator();
 
-            @Nullable
-            final MGDrawerTriggerStateableLight state = wrapper.state;
-            if (state == null) {
-                drawer.setActive(0);
-                drawer.draw(
-                    shaderLightPoint
+        for (
+            @NonNull
+            final MGShaderLightPoint lightPoint
+            : lightPoints
+        ) {
+            if (iterator.hasNext()) {
+                iterator.next().draw(
+                    lightPoint
                 );
                 continue;
             }
 
-            @NonNull
-            final SDMLightPoint light = state.getLight();
-
-            @NonNull
-            final MGMatrixTriggerLight matrix = state.getModelMatrix();
-
-            @NonNull
-            final SDMLightPointInterpolation interp = light.getInterpolation();
-
-            drawer.setActive(1);
-
-            drawer.setRadius(
-                interp.getRadiusClip()
-            );
-
-            drawer.getColor().copy(
-                light.getColor()
-            );
-
-            drawer.getPosition().copy(
-                matrix.getPosition()
-            );
-
-            drawer.setConstant(
-                interp.getConstant()
-            );
-
-            drawer.setLinear(
-                interp.getConstant()
-            );
-
-            drawer.setQuad(
-                interp.getQuad()
-            );
-
-            drawer.setAlpha(
-                light.getAlpha()
-            );
-
-            drawer.draw(
-                shaderLightPoint
+            MGDrawerLightPoint.drawNull(
+                lightPoint
             );
         }
     }
 
     public final void register(
-        @NonNull final MGDrawerTriggerStateableLight state
+        @NonNull final MGDrawerLightPoint drawer
     ) {
-        final int foundIndex = findFreeIndex();
-        if (foundIndex == -1) {
-            return;
-        }
-
-        mPullLights[
-            foundIndex
-        ].state = state;
+        mPullLights.add(
+            drawer
+        );
     }
 
     public final void unregister(
-        @NonNull final MGDrawerTriggerStateableLight state
+        @NonNull final MGDrawerLightPoint drawer
     ) {
-        final int lockIndex = findLockIndex(
-            state
+        mPullLights.remove(
+            drawer
         );
-
-        if (lockIndex == -1) {
-            return;
-        }
-
-        mPullLights[
-            lockIndex
-        ].state = null;
-    }
-
-    private final int findFreeIndex() {
-        for (int i = 0; i < mPullLights.length; i++) {
-            if (mPullLights[i].state == null) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private final int findLockIndex(
-        @NonNull final MGDrawerTriggerStateableLight target
-    ) {
-        for (int i = 0; i < mPullLights.length; i++) {
-            @Nullable
-            final MGDrawerTriggerStateableLight foundState = mPullLights[i].state;
-            if (foundState == null) {
-                continue;
-            }
-
-            if (foundState.hashCode() == target.hashCode()) {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    private static class MGLightWrapper {
-        @Nullable
-        MGDrawerTriggerStateableLight state;
-
-        @NonNull
-        final MGDrawerLightPoint drawer = new MGDrawerLightPoint();
     }
 }
