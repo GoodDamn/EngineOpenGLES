@@ -1,54 +1,30 @@
 package good.damn.engine.opengl.entities
 
 import android.opengl.GLES30
-import android.opengl.GLES30.GL_CLAMP_TO_EDGE
+import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
+import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
-import good.damn.engine.opengl.drawers.MGDrawerMeshTextureSwitch
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
+import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.engine.opengl.matrices.MGMatrixScale
+import good.damn.engine.opengl.models.MGMMeshMaterial
 import good.damn.engine.opengl.objects.MGObject3d
-import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.textures.MGTexture
-import good.damn.engine.opengl.thread.MGHandlerGl
-import good.damn.engine.utils.MGUtilsBitmap
+import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
+import good.damn.engine.shader.generators.MGMMaterialShader
 
-class MGSky(
-    private val materialTexture: MGMaterialTexture,
-    private val verticesSky: MGArrayVertexConfigurator
-): MGDrawerMeshTextureSwitch(
-    arrayOf(
-        MGMaterial(
-            materialTexture
-        )
-    ),
-    MGDrawerMeshSwitch(
-        MGDrawerVertexArray(
-            verticesSky
-        ),
-        MGDrawerPositionEntity(
-            MGMatrixScale().apply {
-                setScale(
-                    2000000f,
-                    2000000f,
-                    2000000f
-                )
-                invalidateScale()
-            }
-        ),
-        GLES30.GL_CW
-    )
-) {
+class MGSky {
+    lateinit var meshMaterial: MGMMeshMaterial
+        private set
+
     fun configure(
-        poolTextures: MGPoolTextures,
-        glHandler: MGHandlerGl
+        informator: MGMInformator
     ) {
-        materialTexture.load(
-            poolTextures,
-            "textures/sky",
-            glHandler
+        val verticesSky = MGArrayVertexConfigurator(
+            MGEnumArrayVertexConfiguration.SHORT
         )
 
         MGObject3d.createFromAssets(
@@ -60,6 +36,64 @@ class MGSky(
                 MGPointerAttribute.defaultNoTangent
             )
         }
-    }
 
+        val localDirPath = "textures/sky"
+        val materialShader = MGMMaterialShader.Builder(
+            "sky",
+            localDirPath,
+            informator.shaders.source
+        ).diffuse()
+            .opacity()
+            .emissive(1.0f)
+            .normal()
+            .useDepthConstant()
+            .specular()
+            .build()
+
+        materialShader.materialTexture.load(
+            informator.poolTextures,
+            localDirPath
+        )
+
+        val shader = informator.shaders.cacheGeometryPass.loadOrGetFromCache(
+            materialShader.srcCodeMaterial,
+            informator.shaders.source.vert,
+            MGBinderAttribute.Builder()
+                .bindPosition()
+                .bindTextureCoordinates()
+                .build(),
+            arrayOf(
+                MGShaderMaterial(
+                    materialShader.shaderTextures
+                )
+            )
+        )
+
+        meshMaterial = MGMMeshMaterial(
+            shader,
+            MGDrawerMeshMaterialMutable(
+                arrayOf(
+                    MGMaterial(
+                        materialShader.materialTexture
+                    )
+                ),
+                MGDrawerMeshSwitch(
+                    MGDrawerVertexArray(
+                        verticesSky
+                    ),
+                    MGDrawerPositionEntity(
+                        MGMatrixScale().apply {
+                            setScale(
+                                2000000f,
+                                2000000f,
+                                2000000f
+                            )
+                            invalidateScale()
+                        }
+                    ),
+                    GLES30.GL_CW
+                )
+            )
+        )
+    }
 }

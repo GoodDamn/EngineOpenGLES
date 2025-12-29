@@ -2,6 +2,7 @@ package good.damn.wrapper.views
 
 import android.content.Context
 import android.opengl.GLSurfaceView
+import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.renderer.MGRendererLevelEditor
@@ -44,6 +45,11 @@ class LevelEditorView(
         renderMode = RENDERMODE_CONTINUOUSLY
     }
 
+    override fun onDetachedFromWindow() {
+        Log.d(TAG, "onDetachedFromWindow: ")
+        mRenderer.stop()
+        super.onDetachedFromWindow()
+    }
 
     override fun onTouchEvent(
         event: MotionEvent?

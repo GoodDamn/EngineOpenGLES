@@ -1,9 +1,13 @@
 package good.damn.engine.hud
 
+import android.os.Handler
+import android.os.Looper
 import android.view.MotionEvent
-import good.damn.engine.imports.MGImportA3D
-import good.damn.engine.imports.MGImportLevel
-import good.damn.engine.imports.MGImportMesh
+import good.damn.engine.imports.MGImportImage
+import good.damn.engine.imports.MGImportImplA3D
+import good.damn.engine.imports.MGImportImplModel
+import good.damn.engine.imports.MGImportImplLevel
+import good.damn.engine.imports.MGMImportMisc
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
@@ -12,12 +16,9 @@ import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
 import good.damn.engine.opengl.callbacks.MGCallbackOnScale
 import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
-import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleMap
-import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShader
-import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShaderNormals
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.runnables.MGCallbackModelSpawn
-import good.damn.engine.sdk.MGVector3
+import good.damn.engine.sdk.SDVector3
 import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickImport
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
@@ -38,6 +39,7 @@ class MGHud(
 
     private val mCallbackOnCameraMove = MGCallbackOnCameraMovement(
         informator.camera,
+        informator.glHandler,
         mBridgeMatrix
     ).apply {
         setListenerIntersection(
@@ -54,20 +56,33 @@ class MGHud(
     )
 
     private val mLayerEditor = MGUILayerEditor(
-        clickLoadUserContent = MGClickImport(
-            MGImportLevel(
-                informator
+        clickLoadUserContent = MGMImportMisc(
+            Handler(
+                Looper.getMainLooper()
             ),
-            MGImportMesh(
-                informator.poolMeshes,
-                mCallbackModelSpawn
-            ),
-            MGImportA3D(
-                informator.poolMeshes,
-                mCallbackModelSpawn
-            ),
-            requesterUserContent
-        ),
+            mCallbackModelSpawn,
+            ByteArray(1024)
+        ).run {
+            MGClickImport(
+                arrayOf(
+                    MGImportImplModel(
+                        this
+                    ),
+                    MGImportImplLevel(
+                        this,
+                        informator
+                    ),
+                    MGImportImplA3D(
+                        this
+                    ),
+                    MGImportImage(
+                        informator,
+                        this
+                    )
+                ),
+                requesterUserContent
+            )
+        },
         clickPlaceMesh = MGClickPlaceMesh(
             mBridgeMatrix
         ),
@@ -115,7 +130,7 @@ class MGHud(
     )
 
     override fun onIntersectPosition(
-        p: MGVector3
+        p: SDVector3
     ) {
         mBridgeMatrix.matrix?.run {
             setPosition(

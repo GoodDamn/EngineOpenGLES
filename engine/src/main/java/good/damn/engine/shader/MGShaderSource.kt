@@ -1,5 +1,6 @@
 package good.damn.engine.shader
 
+import good.damn.engine.opengl.models.MGMShaderSourceFragDefer
 import good.damn.engine.utils.MGUtilsAsset
 import good.damn.engine.utils.MGUtilsFile
 
@@ -10,68 +11,94 @@ class MGShaderSource(
         private const val FOLDER = "shaders"
     }
 
-    val frag1: String
-    val fragMain: String
+    val fragDefer1: String
+    val fragDeferMain: String
 
-    val fragNormalNo: String
-    val fragNormalMap: String
-
-    val fragSpecularNo: String
-    val fragSpecular: String
-
-    val fragTexture: String
-    val fragTextureNo: String
-
-    val fragMaterial: String
-
-    val fragLight: String
+    val fragDeferSpecular: MGMShaderSourceFragDefer
+    val fragDeferDiffuse: MGMShaderSourceFragDefer
+    val fragDeferOpacity: MGMShaderSourceFragDefer
+    val fragDeferEmissive: MGMShaderSourceFragDefer
+    val fragDeferNormal: MGMShaderSourceFragDefer
+    val fragDeferDepth: MGMShaderSourceFragDefer
 
     val verti: String
     val vert: String
 
     init {
         val localFullPath = "$FOLDER/$localPath"
-        frag1 = loadSourceCode(
-            "$localFullPath/frag1.glsl"
+        val deferPath = "$localFullPath/defer"
+        fragDefer1 = loadSourceCode(
+            "$deferPath/frag1.glsl"
         )
 
-        fragMain = loadSourceCode(
-            "$localFullPath/frag_main.glsl"
+        fragDeferMain = loadSourceCode(
+            "$deferPath/frag_defer.glsl"
         )
 
-        fragNormalNo = loadSourceCode(
-            "$localFullPath/frag_normal_no.glsl"
+        fragDeferSpecular = MGMShaderSourceFragDefer(
+            loadSourceCode(
+                "$deferPath/frag_defer_spec.glsl"
+            ),
+            loadSourceCode(
+                "$deferPath/frag_defer_spec_no.glsl"
+            ),
+            "textMetallic",
+            "_m.jpg"
         )
 
-        fragNormalMap = loadSourceCode(
-            "$localFullPath/frag_normal.glsl"
+        fragDeferDiffuse = MGMShaderSourceFragDefer(
+            loadSourceCode(
+                "$deferPath/frag_defer_diffuse.glsl"
+            ),
+            loadSourceCode(
+                "$deferPath/frag_defer_diffuse_no.glsl"
+            ),
+            "textDiffuse",
+            ".jpg"
         )
 
-
-        fragSpecular = loadSourceCode(
-            "$localFullPath/frag_spec.glsl"
+        fragDeferOpacity = MGMShaderSourceFragDefer(
+            loadSourceCode(
+                "$deferPath/frag_defer_opacity.glsl"
+            ),
+            loadSourceCode(
+                "$deferPath/frag_defer_opacity_no.glsl"
+            ),
+            "textOpacity",
+            "_o.jpg"
         )
 
-        fragSpecularNo = loadSourceCode(
-            "$localFullPath/frag_spec_no.glsl"
+        fragDeferEmissive = MGMShaderSourceFragDefer(
+            loadSourceCode(
+                "$deferPath/frag_defer_emissive.glsl"
+            ),
+            loadSourceCode(
+                "$deferPath/frag_defer_emissive_no.glsl"
+            ),
+            "textEmissive",
+            "_e.jpg"
         )
 
-        fragTexture = loadSourceCode(
-            "$localFullPath/frag_texture.glsl"
+        fragDeferNormal = MGMShaderSourceFragDefer(
+            loadSourceCode(
+                "$deferPath/frag_normal.glsl"
+            ),
+            loadSourceCode(
+                "$deferPath/frag_normal_no.glsl"
+            ),
+            "textNormal",
+            "_n.jpg"
         )
 
-        fragTextureNo = loadSourceCode(
-            "$localFullPath/frag_texture_no.glsl"
-        )
-
-
-        fragMaterial = loadSourceCode(
-            "$localFullPath/frag_material.glsl"
-        )
-
-
-        fragLight = loadSourceCode(
-            "$localFullPath/frag_light.glsl"
+        fragDeferDepth = MGMShaderSourceFragDefer(
+            loadSourceCode(
+                "$deferPath/frag_defer_depth_func.glsl"
+            ),
+            loadSourceCode(
+                "$deferPath/frag_defer_depth_const.glsl"
+            ),
+            "",
+            ""
         )
 
         verti = loadSourceCode(

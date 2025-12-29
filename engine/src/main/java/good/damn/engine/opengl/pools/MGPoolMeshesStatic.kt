@@ -1,28 +1,68 @@
 package good.damn.engine.opengl.pools
 
-import good.damn.engine.opengl.models.MGMPoolMesh
+import android.util.SparseArray
+import good.damn.engine.models.MGMInformator
+import good.damn.engine.opengl.arrays.MGArrayVertexManager
+import good.damn.engine.opengl.models.MGMPoolMeshMutable
+import good.damn.engine.opengl.models.MGMPoolVertexArray
+import good.damn.engine.opengl.objects.MGObject3d
+import good.damn.engine.opengl.triggers.MGITrigger
+import good.damn.engine.opengl.triggers.MGTriggerMesh
+import good.damn.engine.utils.MGUtilsBuffer
 
 class MGPoolMeshesStatic {
 
-    private val map = HashMap<
-        String,
-        Array<MGMPoolMesh>
+    private val map = SparseArray<
+        Array<MGMPoolVertexArray>
     >()
 
     fun remove(
-        name: String
+        fileNameModel: String
     ) {
-        map.remove(name)
+        map.remove(
+            fileNameModel.hashCode()
+        )
     }
 
-    operator fun set(
-        name: String,
-        arrayVertex: Array<MGMPoolMesh>
-    ) {
-        map[name] = arrayVertex
+    fun loadOrGetFromCache(
+        fileNameModel: String,
+        informator: MGMInformator
+    ): Array<MGMPoolVertexArray>? {
+        get(fileNameModel)?.run {
+            return this
+        }
+
+        val obj = MGObject3d.createFromAssets(
+            "objs/$fileNameModel"
+        ) ?: return null
+
+        val poolMesh = arrayOf(
+            MGTriggerMesh.createFromObject(
+                obj[0],
+                informator
+            )
+        )
+
+        set(
+            fileNameModel,
+            poolMesh
+        )
+
+        return poolMesh
     }
 
-    operator fun get(
-        n: String
-    ) = map[n]
+    private operator fun set(
+        fileNameModel: String,
+        arrayVertex: Array<MGMPoolVertexArray>
+    ) {
+        map[
+            fileNameModel.hashCode()
+        ] = arrayVertex
+    }
+
+    private operator fun get(
+        fileNameModel: String
+    ) = map[
+        fileNameModel.hashCode()
+    ]
 }

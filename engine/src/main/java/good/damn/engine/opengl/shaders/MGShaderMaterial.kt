@@ -4,7 +4,6 @@ import android.opengl.GLES30.glGetUniformLocation
 import good.damn.engine.opengl.drawers.MGIUniform
 
 class MGShaderMaterial(
-    private val nameShine: String,
     val textures: Array<MGShaderTexture>
 ): MGIUniform {
 
@@ -14,14 +13,10 @@ class MGShaderMaterial(
             textures: Array<MGShaderTexture>
         ) = arrayOf(
             MGShaderMaterial(
-                "shine",
                 textures
             )
         )
     }
-
-    var uniformShininess = 0
-        private set
 
     override fun setupUniforms(
         program: Int
@@ -31,10 +26,5 @@ class MGShaderMaterial(
                 program
             )
         }
-
-        uniformShininess = glGetUniformLocation(
-            program,
-            nameShine
-        )
     }
 }

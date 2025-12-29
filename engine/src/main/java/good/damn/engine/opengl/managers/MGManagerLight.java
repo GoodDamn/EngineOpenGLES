@@ -4,10 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint;
-import good.damn.engine.opengl.entities.MGLight;
+import good.damn.engine.sdk.models.SDMLightPoint;
 import good.damn.engine.opengl.shaders.MGShaderLightPoint;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerLight;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight;
+import good.damn.engine.sdk.models.SDMLightPointInterpolation;
 
 public final class MGManagerLight {
 
@@ -48,15 +49,18 @@ public final class MGManagerLight {
             }
 
             @NonNull
-            final MGLight light = state.getLight();
+            final SDMLightPoint light = state.getLight();
 
             @NonNull
             final MGMatrixTriggerLight matrix = state.getModelMatrix();
 
+            @NonNull
+            final SDMLightPointInterpolation interp = light.getInterpolation();
+
             drawer.setActive(1);
 
             drawer.setRadius(
-                matrix.getRadius()
+                interp.getRadiusClip()
             );
 
             drawer.getColor().copy(
@@ -65,6 +69,22 @@ public final class MGManagerLight {
 
             drawer.getPosition().copy(
                 matrix.getPosition()
+            );
+
+            drawer.setConstant(
+                interp.getConstant()
+            );
+
+            drawer.setLinear(
+                interp.getConstant()
+            );
+
+            drawer.setQuad(
+                interp.getQuad()
+            );
+
+            drawer.setAlpha(
+                light.getAlpha()
             );
 
             drawer.draw(

@@ -50,6 +50,18 @@ class MGPointerAttribute private constructor(
         >()
 
         private var mOffset = 0
+        fun pointPosition2(): Builder {
+            list.add(
+                MGMPointerAttribute(
+                    0,
+                    mOffset,
+                    2
+                )
+            )
+
+            mOffset += 2 * 4
+            return this
+        }
 
         fun pointPosition(): Builder {
             list.add(

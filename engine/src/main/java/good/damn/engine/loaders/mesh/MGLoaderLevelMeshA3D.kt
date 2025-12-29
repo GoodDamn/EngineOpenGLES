@@ -1,5 +1,6 @@
 package good.damn.engine.loaders.mesh
 
+import android.util.Log
 import good.damn.engine.models.MGMInstanceArray
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
@@ -13,13 +14,15 @@ import java.io.FileInputStream
 
 class MGLoaderLevelMeshA3D(
     private val localPathLibObj: String,
-    private val handlerGl: MGHandlerGl
+    private val handlerGl: MGHandlerGl,
+    private val buffer: ByteArray
 ) {
     fun loadInstanceArray(
         fileNameA3D: String,
         matrices: List<
             MGMatrixTransformationNormal<MGMatrixScaleRotation>
-        >
+        >,
+        uvScale: Float
     ): MGMInstanceArray? {
         val file = MGUtilsFile.getPublicFile(
             "$localPathLibObj/$fileNameA3D"
@@ -29,7 +32,6 @@ class MGLoaderLevelMeshA3D(
             return null
         }
 
-        val buffer = ByteArray(1024)
         val obj = A3DImport.createFromStream(
             A3DInputStream(
                 buffer,
@@ -49,7 +51,7 @@ class MGLoaderLevelMeshA3D(
             ),
             MGUtilsA3D.createMergedVertexBuffer(
                 mesh,
-                1f
+                uvScale
             ),
             configIndices.buffer,
             matrices,

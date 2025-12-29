@@ -3,11 +3,9 @@ package good.damn.engine.opengl;
 import androidx.annotation.NonNull;
 
 import good.damn.engine.models.MGMInformator;
-import good.damn.engine.opengl.models.MGMPoolMesh;
+import good.damn.engine.opengl.models.MGMPoolVertexArray;
 import good.damn.engine.opengl.models.MGMPoolMeshMutable;
 import good.damn.engine.opengl.objects.MGObject3d;
-import good.damn.engine.opengl.pools.MGPoolTextures;
-import good.damn.engine.opengl.thread.MGHandlerGl;
 import good.damn.engine.opengl.triggers.MGITrigger;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerGroup;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh;
@@ -51,9 +49,9 @@ public final class MGTriggerMeshGroup {
         );
     }
 
-    @NonNull
+    /*@NonNull
     public static MGTriggerMeshGroup createFromPool(
-        @NonNull final MGMPoolMesh[] poolMeshes,
+        @NonNull final MGMPoolVertexArray[] poolMeshes,
         @NonNull final MGITrigger triggerAction
     ) {
         @NonNull
@@ -106,5 +104,5 @@ public final class MGTriggerMeshGroup {
         return createFromTriggerMeshes(
             triggerMeshes
         );
-    }
+    }*/
 }

@@ -1,8 +1,7 @@
 package good.damn.engine.opengl.drawers
 
 import android.opengl.GLES30.glUniform3f
-import android.util.Log
-import good.damn.engine.sdk.MGVector3
+import good.damn.engine.sdk.SDVector3
 import good.damn.engine.opengl.shaders.MGShaderLightDirectional
 import good.damn.engine.sdk.models.SDMLight
 
@@ -10,17 +9,17 @@ class MGDrawerLightDirectional
 : MGIDrawerShader<MGShaderLightDirectional> {
 
     val info = SDMLight(
-        MGVector3(
+        SDVector3(
             0.1f,
             0.1f,
             0.1f
         ),
-        MGVector3(
+        SDVector3(
             .119f,
             .377f,
             .601f
         ),
-        MGVector3(
+        SDVector3(
             1f,
             1f,
             -100f
@@ -43,6 +42,7 @@ class MGDrawerLightDirectional
             normalize()
         }
     }
+
 
     override fun draw(
         shader: MGShaderLightDirectional

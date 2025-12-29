@@ -1,27 +1,15 @@
 package good.damn.engine.loaders
 
-import android.util.Log
 import good.damn.engine.models.MGMInformator
-import good.damn.engine.models.MGMInformatorShader
 import good.damn.engine.models.MGProp
-import good.damn.engine.models.json.MGMLevelInfoDiffuse
 import good.damn.engine.models.json.MGMLevelInfoMesh
-import good.damn.engine.models.json.MGMLevelInfoTextures
-import good.damn.engine.opengl.entities.MGMaterialTexture
-import good.damn.engine.opengl.enums.MGEnumTextureType
-import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.shaders.MGShaderMaterial
-import good.damn.engine.opengl.shaders.MGShaderOpaque
-import good.damn.engine.opengl.shaders.MGShaderTexture
+import good.damn.engine.opengl.shaders.MGShaderGeometryPassInstanced
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.runnables.MGRunnableCompileShaders
-import good.damn.engine.shader.MGShaderSource
-import good.damn.engine.shader.generators.MGGeneratorMaterial
-import good.damn.engine.shader.generators.MGGeneratorShader
-import good.damn.engine.utils.MGUtilsAsset
+import good.damn.engine.shader.generators.MGMMaterialShader
 import good.damn.engine.utils.MGUtilsFile
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import good.damn.engine.utils.MGUtilsJson
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -29,20 +17,11 @@ import java.nio.charset.Charset
 import java.util.LinkedList
 
 class MGLoaderLevelLibrary(
-    private val scope: CoroutineScope,
     private val informator: MGMInformator,
     private val localPathLibTextures: String,
     localPath: String,
     localPathCullFaceList: String
 ) {
-
-    companion object {
-        const val ID_DIFFUSE = "textDiffuse"
-        const val ID_METALLIC = "textMetallic"
-        const val ID_EMISSIVE = "textEmissive"
-        const val ID_OPACITY = "textOpacity"
-        const val ID_NORMAL = "textNormal"
-    }
 
     private val mFile = MGUtilsFile.getPublicFile(
         localPath
@@ -66,31 +45,38 @@ class MGLoaderLevelLibrary(
     var terrain: MGMLevelInfoMesh? = null
         private set
 
+    private val mBinderAttribute = MGBinderAttribute.Builder()
+        .bindPosition()
+        .bindTextureCoordinates()
+        .bindNormal()
+        .bindInstancedModel()
+        .bindInstancedRotationMatrix()
+        .bindTangent()
+        .build()
+
     fun loadLibrary(): Boolean {
         isLoadLibrary = false
         if (!mFile.exists()) {
             return false
         }
 
-        scope.launch {
-            val rootJson = fileToJson(
-                mFile
-            )
+        val rootJson = MGUtilsJson.createFromFile(
+            mFile
+        )
 
-            mJson = rootJson.getJSONArray(
-                "groups"
-            ).getJSONObject(
-                0
-            ).getJSONArray(
-                "props"
-            )
+        mJson = rootJson.getJSONArray(
+            "groups"
+        ).getJSONObject(
+            0
+        ).getJSONArray(
+            "props"
+        )
 
-            terrain = MGMLevelInfoMesh.createFromJson(
-                rootJson.getJSONObject("terrain")
-            )
+        terrain = MGMLevelInfoMesh.createFromJson(
+            rootJson.getJSONObject("terrain")
+        )
 
-            isLoadLibrary = true
-        }
+        isLoadLibrary = true
 
         return true
     }
@@ -100,7 +86,7 @@ class MGLoaderLevelLibrary(
             return
         }
 
-        val jsonList = fileToJson(
+        val jsonList = MGUtilsJson.createFromFile(
             mFileCullFace
         ).getJSONArray(
             "meshes"
@@ -120,182 +106,47 @@ class MGLoaderLevelLibrary(
     }
 
     fun readProp(
-        mesh: MGMLevelInfoMesh,
-        extension: String,
+        mesh: MGMLevelInfoMesh
     ): MGProp {
         val fileName = mesh.a3dMesh
-        val diffuse = mesh.textures.textures[
-            0
-        ].diffuseMapName
+        val textures = mesh.textures.textures
+        val src = informator.shaders.source
 
-        val builderMaterial = MGMaterialTexture.Builder()
+        val diffuse = textures[0].diffuseMapName
+        val controlMapName = textures[0].controlMapName
 
-        val generatorMaterial = MGGeneratorMaterial(
-            informator.shaders.source
+        val materialShader = informator.poolMaterials.loadOrGetFromCache(
+            diffuse,
+            localPathLibTextures,
+            informator
         )
 
-        val generatorShader = MGGeneratorShader(
-            informator.shaders.source
+        val shaderMaterials = LinkedList<MGShaderMaterial>()
+        val buildersMaterial = LinkedList<MGMaterial>()
+
+        shaderMaterials.add(
+            MGShaderMaterial(
+                materialShader.shaderTextures
+            )
         )
 
-        val shaderTextures = LinkedList<
-            MGShaderTexture
-        >()
-
-        "${diffuse}.$extension".let {
-            if (textureExists(it)) {
-                shaderTextures.add(
-                    MGShaderTexture(
-                        ID_DIFFUSE
-                    )
-                )
-                builderMaterial.textureDiffuse(it)
-                generatorMaterial.mapTexture(
-                    ID_DIFFUSE,
-                    MGEnumTextureType.DIFFUSE
-                )
-                return@let
-            }
-
-            generatorMaterial.mapTextureNo(
-                ID_DIFFUSE,
-                MGEnumTextureType.DIFFUSE,
-                1.0f
+        buildersMaterial.add(
+            MGMaterial(
+                materialShader.materialTexture
             )
-        }
-
-        "${diffuse}_m.$extension".let {
-            if (textureExists(it)) {
-                shaderTextures.add(
-                    MGShaderTexture(
-                        ID_METALLIC
-                    )
-                )
-                builderMaterial.textureMetallic(it)
-                generatorMaterial.mapTexture(
-                    ID_METALLIC,
-                    MGEnumTextureType.METALLIC
-                )
-                generatorShader.specular()
-                return@let
-            }
-
-
-            generatorShader.specularNo()
-            generatorMaterial.mapTextureNo(
-                ID_METALLIC,
-                MGEnumTextureType.METALLIC,
-                0.0f
-            )
-        }
-
-        "${diffuse}_e.$extension".let {
-            if (textureExists(it)) {
-                shaderTextures.add(
-                    MGShaderTexture(
-                        ID_EMISSIVE
-                    )
-                )
-                builderMaterial.textureEmissive(it)
-                generatorMaterial.mapTexture(
-                    ID_EMISSIVE,
-                    MGEnumTextureType.EMISSIVE
-                )
-                return@let
-            }
-
-            generatorMaterial.mapTextureNo(
-                ID_EMISSIVE,
-                MGEnumTextureType.EMISSIVE,
-                0.0f
-            )
-        }
-
-
-        "${diffuse}_o.$extension".let {
-            if (textureExists(it)) {
-                shaderTextures.add(
-                    MGShaderTexture(
-                        "textOpacity"
-                    )
-                )
-                builderMaterial.textureOpacity(it)
-                generatorMaterial.mapTexture(
-                    ID_OPACITY,
-                    MGEnumTextureType.OPACITY
-                )
-                return@let
-            }
-            generatorMaterial.mapTextureNo(
-                ID_OPACITY,
-                MGEnumTextureType.OPACITY,
-                1.0f
-            )
-        }
-
-
-        "${diffuse}_n.$extension".let {
-            if (textureExists(it)) {
-                shaderTextures.add(
-                    MGShaderTexture(
-                        ID_NORMAL
-                    )
-                )
-                builderMaterial.textureNormal(it)
-                generatorMaterial.normalMapping(
-                    ID_NORMAL
-                )
-                return@let
-            }
-            generatorMaterial.normalVertex(
-                ID_NORMAL
-            )
-        }
-        val idMaterial = "0"
-
-        val fragmentCodeMaterial = generatorMaterial.generate(
-            idMaterial
         )
 
-        generatorShader.lighting().material(
-            fragmentCodeMaterial
+        val shader = informator.shaders.cacheGeometryPassInstanced.loadOrGetFromCache(
+            materialShader.srcCodeMaterial,
+            informator.shaders.source.verti,
+            mBinderAttribute,
+            shaderMaterials.toTypedArray()
         )
-
-        val fragmentCode = generatorShader.generate(
-            fragmentCodeMaterial
-        )
-
-
-        var cachedShader = informator.shaders.opaqueGeneratedInstanced[
-            fragmentCode
-        ]
-
-        if (cachedShader == null) {
-            cachedShader = MGShaderOpaque(
-                MGShaderMaterial.singleMaterial(
-                    shaderTextures.toTypedArray()
-                )
-            )
-            informator.shaders.opaqueGeneratedInstanced.cacheAndCompile(
-                fragmentCode,
-                informator.shaders.source.verti,
-                cachedShader,
-                informator.glHandler,
-                MGBinderAttribute.Builder()
-                    .bindPosition()
-                    .bindTextureCoordinates()
-                    .bindNormal()
-                    .bindInstancedModel()
-                    .bindInstancedRotationMatrix()
-                    .bindTangent()
-                    .build()
-            )
-        }
 
         return MGProp(
             fileName,
-            builderMaterial.build(),
-            cachedShader,
+            buildersMaterial.toTypedArray(),
+            shader,
             !(mNonCullFaceMeshes?.contains(
                 fileName
             ) ?: false),
@@ -303,63 +154,30 @@ class MGLoaderLevelLibrary(
         )
     }
 
-    fun readProps() {
-        scope.launch {
-            while (mJson == null) {}
-            val json = mJson
-                ?: return@launch
 
-            val lMeshes = HashMap<
-                String, MGProp
+    fun readProps() {
+        val json = mJson
+            ?: return
+
+        val lMeshes = HashMap<
+            String, MGProp
             >(json.length())
 
-            for (i in 0 until json.length()) {
-                val lJson = json.getJSONObject(i)
-                val name = lJson.getString(
-                    "name"
-                )
+        for (i in 0 until json.length()) {
+            val lJson = json.getJSONObject(i)
+            val name = lJson.getString(
+                "name"
+            )
 
-                val mesh = MGMLevelInfoMesh.createFromJson(
-                    lJson.getJSONObject("mesh")
-                )
+            val mesh = MGMLevelInfoMesh.createFromJson(
+                lJson.getJSONObject("mesh")
+            )
 
-                lMeshes[name] = readProp(
-                    mesh,
-                    "jpg"
-                )
-            }
-
-            meshes = lMeshes
+            lMeshes[name] = readProp(
+                mesh
+            )
         }
+
+        meshes = lMeshes
     }
-
-    private inline fun textureExists(
-        textureName: String
-    ) = MGUtilsFile.getPublicFile(
-        "$localPathLibTextures/$textureName"
-    ).exists()
-
-    private inline fun buildTextureIfExists(
-        textureName: String,
-        call: ((String)->Unit)
-    ) {
-        if (textureExists(textureName)) {
-            call(textureName)
-            return
-        }
-    }
-
-    private inline fun fileToJson(
-        file: File
-    ) = JSONObject(
-        String(
-            file.inputStream().run {
-                val b = readBytes()
-                close()
-                return@run b
-            },
-            Charset.forName("UTF-8")
-        )
-    )
-
 }

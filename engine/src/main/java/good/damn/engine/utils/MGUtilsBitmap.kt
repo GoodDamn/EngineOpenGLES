@@ -20,6 +20,14 @@ object MGUtilsBitmap {
 
     @JvmStatic
     fun loadBitmap(
+        localPath: String,
+        textureName: String
+    ) = loadBitmap(
+        "$localPath/$textureName"
+    )
+
+    @JvmStatic
+    fun loadBitmap(
         localPath: String
     ): Bitmap? {
         val filePub = MGUtilsFile.getPublicFile(

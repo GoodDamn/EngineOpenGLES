@@ -1,9 +1,9 @@
 package good.damn.engine.opengl.callbacks
 
-import good.damn.engine.sdk.MGVector3
+import good.damn.engine.sdk.SDVector3
 
 interface MGIListenerOnIntersectPosition {
     fun onIntersectPosition(
-        p: MGVector3
+        p: SDVector3
     )
 }

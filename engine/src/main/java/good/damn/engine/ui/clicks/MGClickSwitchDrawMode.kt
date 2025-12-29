@@ -8,10 +8,8 @@ import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.modes.MGDrawModeOpaque
-import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleMap
-import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShader
-import good.damn.engine.opengl.drawers.modes.MGDrawModeSingleShaderNormals
 import good.damn.engine.opengl.enums.MGEnumDrawMode
+import good.damn.engine.opengl.runnables.MGIRunnableBounds
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.ui.MGIClick
 
@@ -19,7 +17,7 @@ class MGClickSwitchDrawMode(
     private val informator: MGMInformator,
     private val switcher: MGSwitcherDrawMode,
 ): MGIClick,
-Runnable {
+MGIRunnableBounds {
 
     override fun onClick() {
         informator.glHandler.post(
@@ -27,7 +25,10 @@ Runnable {
         )
     }
 
-    override fun run() {
+    override fun run(
+        width: Int,
+        height: Int
+    ) {
         switcher.switchDrawMode()
     }
 }

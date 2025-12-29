@@ -4,14 +4,14 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.sdk.MGVector3;
+import good.damn.engine.sdk.SDVector3;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
 
 public final class MGUtilsAlgo {
 
     public static void offsetAnchorPoint(
         @NonNull MGArrayVertexManager vertexArray,
-        @NonNull MGVector3 dt
+        @NonNull SDVector3 dt
     ) {
         int index = 0;
         vertexArray.bindVertexBuffer();
@@ -46,7 +46,7 @@ public final class MGUtilsAlgo {
         vertexArray.unbindVertexBuffer();
     }
 
-    public static Pair<MGVector3, MGVector3> findMinMaxPoints(
+    public static Pair<SDVector3, SDVector3> findMinMaxPoints(
         @NonNull MGArrayVertexManager vertices
     ) {
         float maxX = Float.MIN_VALUE;
@@ -101,10 +101,10 @@ public final class MGUtilsAlgo {
         }
 
         return new Pair<>(
-            new MGVector3(
+            new SDVector3(
                 minX, minY, minZ
             ),
-            new MGVector3(
+            new SDVector3(
                 maxX, maxY, maxZ
             )
         );

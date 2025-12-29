@@ -1,5 +1,6 @@
 package good.damn.engine.runnables
 
+import good.damn.engine.opengl.runnables.MGIRunnableBounds
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 
@@ -8,9 +9,12 @@ class MGRunnableCompileShaders(
     private val shader: MGShaderBase,
     private val srcVertex: String,
     private val bindAttr: MGBinderAttribute
-): Runnable {
+): MGIRunnableBounds {
 
-    override fun run() {
+    override fun run(
+        width: Int,
+        height: Int
+    ) {
         shader.setupFromSource(
             srcVertex,
             srcFragment,

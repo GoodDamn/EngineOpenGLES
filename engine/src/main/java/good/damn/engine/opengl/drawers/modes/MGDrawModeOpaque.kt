@@ -1,10 +1,12 @@
 package good.damn.engine.opengl.drawers.modes
 
 import good.damn.engine.models.MGMInformator
+import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.opengl.drawers.MGIDrawer
 
 data class MGDrawModeOpaque(
-    private val informator: MGMInformator
+    private val informator: MGMInformator,
+    private val drawerFramebufferG: MGDrawerFramebufferG
 ): MGIDrawer {
 
     private val mTriggerManagers = arrayOf(
@@ -12,90 +14,83 @@ data class MGDrawModeOpaque(
         informator.managerTriggerLight
     )
 
-    override fun draw() {
-
-        val shaderSky = informator.shaders.map.single
-        val shaderTrigger = informator.shaders.wireframe.single
+    override fun draw(
+        width: Int,
+        height: Int
+    ) {
         val camera = informator.camera
         val drawerLightDirectional = informator.drawerLightDirectional
-        val managerLight = informator.managerLight
 
-        shaderSky.use()
-        camera.draw(
-            shaderSky
-        )
-
-        informator.meshSky.drawSingleTexture(
-            shaderSky,
-            shaderSky
-        )
-
-        informator.meshes.forEach {
-            it.key.run {
+        // Geometry pass
+        drawerFramebufferG.bind()
+        informator.meshSky.meshMaterial.run {
+            shader.run {
                 use()
-                camera.draw(
+                drawer.drawMaterials(
+                    materials,
                     this
-                )
-                camera.drawPosition(
-                    this
-                )
-                drawerLightDirectional.draw(
-                    lightDirectional
-                )
-                it.value.forEach {
-                    it.drawNormals(
-                        this
-                    )
-                    it.drawMaterial(
-                        material,
-                        this
-                    )
-                }
-                managerLight.draw(
-                    lightPoints
                 )
             }
         }
 
+        informator.meshes.forEach {
+            it.shader.run {
+                use()
+                it.drawer.drawNormals(
+                    this
+                )
+                it.drawer.drawMaterials(
+                    materials,
+                    this
+                )
+            }
+        }
 
         informator.meshesInstanced.forEach {
             it.key.run {
                 use()
-                camera.draw(
-                    this
-                )
-                camera.drawPosition(
-                    this
-                )
-                drawerLightDirectional.draw(
-                    lightDirectional
-                )
-
                 it.value.forEach {
                     it.draw(
-                        material
+                        materials
                     )
                 }
-
-                managerLight.draw(
-                    lightPoints
-                )
             }
         }
 
+        /*if (informator.canDrawTriggers) {
+            informator.shaders.wireframe.single.run {
+                use()
+                camera.draw(
+                    this
+                )
+                mTriggerManagers.forEach {
+                    it.draw(
+                        this
+                    )
+                }
+            }
+        }*/
 
-
-        if (!informator.canDrawTriggers) {
-            return
-        }
-
-        shaderTrigger.use()
-        camera.draw(
-            shaderTrigger
+        drawerFramebufferG.unbind(
+            width,
+            height
         )
-        mTriggerManagers.forEach {
-            it.draw(
-                shaderTrigger
+
+        informator.shaders.lightPassOpaque.run {
+            use()
+            camera.drawPosition(
+                this
+            )
+
+            drawerLightDirectional.draw(
+                lightDirectional
+            )
+
+            informator.drawerLightPass.draw(
+                this
+            )
+            informator.managerLight.draw(
+                lightPoints
             )
         }
     }

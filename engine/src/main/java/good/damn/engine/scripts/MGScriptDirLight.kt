@@ -3,7 +3,6 @@ package good.damn.engine.scripts
 import dalvik.system.DexClassLoader
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
-import good.damn.engine.sdk.MGVector3
 import good.damn.engine.sdk.models.SDMLight
 import java.io.File
 
@@ -16,7 +15,7 @@ class MGScriptDirLight(
         try {
             val loader = DexClassLoader(
                 "$dirScripts/MGLightDir.jar",
-                MGEngine.DIR_DATA.path,
+                dirScripts.path,
                 null,
                 javaClass.classLoader
             )

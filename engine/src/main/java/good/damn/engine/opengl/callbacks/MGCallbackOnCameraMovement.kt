@@ -1,14 +1,16 @@
 package good.damn.engine.opengl.callbacks
 
-import good.damn.engine.sdk.MGVector3
+import good.damn.engine.sdk.SDVector3
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.rays.MGRayIntersection
+import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.touch.MGIListenerDelta
 import good.damn.engine.touch.MGIListenerMove
 
 class MGCallbackOnCameraMovement(
     private val camera: MGCameraFree,
+    private val glHandler: MGHandlerGl,
     private val bridge: MGBridgeRayIntersect
 ): MGIListenerDelta,
 MGIListenerMove {
@@ -16,7 +18,7 @@ MGIListenerMove {
     private var mListenerIntersect: MGIListenerOnIntersectPosition? = null
 
     private val mRayIntersection = MGRayIntersection()
-    private val mPointCamera = MGVector3(0f)
+    private val mPointCamera = SDVector3(0f)
 
     fun setListenerIntersection(
         v: MGIListenerOnIntersectPosition?
@@ -32,7 +34,9 @@ MGIListenerMove {
             dx * 0.001f,
             dy * 0.001f
         )
-        camera.invalidatePosition()
+        camera.invalidatePosition(
+            glHandler
+        )
         updateIntersection()
     }
 
@@ -47,7 +51,9 @@ MGIListenerMove {
             directionX,
             directionY
         )
-        camera.invalidatePosition()
+        camera.invalidatePosition(
+            glHandler
+        )
         updateIntersection()
     }
 

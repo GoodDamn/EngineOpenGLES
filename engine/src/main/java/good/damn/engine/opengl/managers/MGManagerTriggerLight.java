@@ -2,7 +2,7 @@ package good.damn.engine.opengl.managers;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.sdk.MGVector3;
+import good.damn.engine.sdk.SDVector3;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.enums.MGEnumStateTrigger;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight;
@@ -30,7 +30,7 @@ extends MGManagerTrigger<
         float checkZ
     ) {
         @NonNull
-        MGVector3 lightPosition;
+        SDVector3 lightPosition;
 
         for (
             @NonNull

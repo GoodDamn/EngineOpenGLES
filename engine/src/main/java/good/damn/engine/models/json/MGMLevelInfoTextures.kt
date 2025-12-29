@@ -1,10 +1,9 @@
 package good.damn.engine.models.json
 
 import org.json.JSONArray
-import org.json.JSONObject
 
 data class MGMLevelInfoTextures(
-    val textures: Array<MGMLevelInfoDiffuse>
+    val textures: Array<MGMLevelInfoTexture>
 ) {
     companion object {
         @JvmStatic
@@ -12,7 +11,7 @@ data class MGMLevelInfoTextures(
             json: JSONArray
         ) = MGMLevelInfoTextures(
             Array(json.length()) {
-                MGMLevelInfoDiffuse.createFromJson(
+                MGMLevelInfoTexture.createFromJson(
                     json.getJSONObject(it)
                 )
             }

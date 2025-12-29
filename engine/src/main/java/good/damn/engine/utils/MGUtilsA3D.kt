@@ -1,15 +1,9 @@
 package good.damn.engine.utils
 
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
-import good.damn.engine.opengl.objects.MGObject3d
-import good.damn.engine.sdk.MGVector3
 import good.damn.ia3d.enums.A3DEnumTypeBufferVertex
-import good.damn.ia3d.misc.A3DMVector2
-import good.damn.ia3d.misc.A3DMVector3
-import good.damn.ia3d.models.A3DMAsset
 import good.damn.ia3d.models.A3DMConfigIndices
 import good.damn.ia3d.models.A3DMMesh
-import kotlin.math.tan
 
 object MGUtilsA3D {
 
