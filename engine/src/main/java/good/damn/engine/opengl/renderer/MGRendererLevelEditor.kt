@@ -142,14 +142,6 @@ class MGRendererLevelEditor(
         MGEnumArrayVertexConfiguration.BYTE
     )
 
-    private val mDrawerQuad = MGDrawerVertexArray(
-        mVerticesQuad
-    )
-
-    private val mFramebufferG = MGFrameBufferG(
-        MGFramebuffer()
-    )
-
     private val mBufferUniform = MGBuffer(
         GL_UNIFORM_BUFFER
     )
@@ -165,23 +157,13 @@ class MGRendererLevelEditor(
             MGMatrixTranslate()
         ),
         MGDrawerLightDirectional(),
-        drawerLightPass = MGDrawerLightPass(
-            arrayOf(
-                mFramebufferG.textureAttachmentPosition.texture,
-                mFramebufferG.textureAttachmentNormal.texture,
-                mFramebufferG.textureAttachmentColorSpec.texture,
-                mFramebufferG.textureAttachmentMisc.texture,
-                mFramebufferG.textureAttachmentDepth.texture,
-            ),
-            mDrawerQuad
-        ),
-        drawerLightPassDiffuse = MGDrawerLightPass(
-            arrayOf(
-                mFramebufferG.textureAttachmentColorSpec.texture,
-            ),
-            mDrawerQuad
+        MGDrawerVertexArray(
+            mVerticesQuad
         ),
         ConcurrentLinkedQueue(),
+        MGFrameBufferG(
+            MGFramebuffer()
+        ),
         ConcurrentHashMap(50),
         meshSky = MGSky(),
         managerLight,
@@ -203,7 +185,7 @@ class MGRendererLevelEditor(
     private val mHudScene = MGHudScene(
         requesterUserContent,
         mInformator,
-        mFramebufferG.framebuffer
+        mInformator.framebufferG.framebuffer
     )
 
     init {
@@ -213,7 +195,7 @@ class MGRendererLevelEditor(
                     width: Int,
                     height: Int
                 ) {
-                    mFramebufferG.generate(
+                    mInformator.framebufferG.generate(
                         width, height
                     )
                     mHudScene.hud.layout(

@@ -5,8 +5,10 @@ import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerLightPass
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
+import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
 import good.damn.engine.opengl.entities.MGSky
+import good.damn.engine.opengl.framebuffer.MGFrameBufferG
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
@@ -24,11 +26,12 @@ data class MGMInformator(
     val shaders: MGMInformatorShader,
     val camera: MGCameraFree,
     val drawerLightDirectional: MGDrawerLightDirectional,
-    val drawerLightPass: MGDrawerLightPass,
-    val drawerLightPassDiffuse: MGDrawerLightPass,
+    val drawerQuad: MGDrawerVertexArray,
     val meshes: ConcurrentLinkedQueue<
         MGMMeshMaterial
     >,
+
+    val framebufferG: MGFrameBufferG,
 
     val meshesInstanced: ConcurrentHashMap<
         MGShaderGeometryPassInstanced,
