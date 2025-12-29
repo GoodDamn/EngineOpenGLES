@@ -76,7 +76,7 @@ data class MGDrawModeOpaque(
             height
         )
 
-        informator.shaders.lightPassOpaque.run {
+        informator.shaders.lightPasses[0].shader.run {
             use()
             camera.drawPosition(
                 this

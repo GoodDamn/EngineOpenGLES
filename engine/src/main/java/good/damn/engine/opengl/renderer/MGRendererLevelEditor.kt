@@ -31,6 +31,7 @@ import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
+import good.damn.engine.opengl.models.MGMLightPass
 import good.damn.engine.opengl.pools.MGPoolMaterials
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
@@ -92,12 +93,29 @@ class MGRendererLevelEditor(
             mHandlerGl,
             MGShaderCreatorGeomPassInstanced()
         ),
-        lightPassDiffuse = MGShaderLightPass.Builder()
-            .attachColorSpec()
-            .build(),
-        lightPassOpaque = MGShaderLightPass.Builder()
-            .attachAll()
-            .build()
+        lightPasses = arrayOf(
+            MGMLightPass(
+                MGShaderLightPass.Builder()
+                    .attachAll()
+                    .build(),
+                "shaders/post/vert.glsl",
+                "shaders/opaque/defer/frag_defer_light.glsl",
+            ),
+            MGMLightPass(
+                MGShaderLightPass.Builder()
+                    .attachColorSpec()
+                    .build(),
+                "shaders/post/vert.glsl",
+                "shaders/diffuse/frag_defer.glsl"
+            ),
+            MGMLightPass(
+                MGShaderLightPass.Builder()
+                    .attachDepth()
+                    .build(),
+                "shaders/post/vert.glsl",
+                "shaders/diffuse/frag_defer.glsl"
+            )
+        )
     )
 
     private val managerLight = MGManagerLight(
@@ -259,17 +277,13 @@ class MGRendererLevelEditor(
             .bindPosition()
             .bindTextureCoordinates()
             .build().run {
-                mInformatorShader.lightPassOpaque.setup(
-                    "shaders/post/vert.glsl",
-                    "shaders/opaque/defer/frag_defer_light.glsl",
-                    this
-                )
-
-                mInformatorShader.lightPassDiffuse.setup(
-                    "shaders/post/vert.glsl",
-                    "shaders/diffuse/frag_defer.glsl",
-                    this
-                )
+                mInformatorShader.lightPasses.forEach {
+                    it.shader.setup(
+                        it.vertPath,
+                        it.fragPath,
+                        this
+                    )
+                }
             }
 
         mInformator.meshSky.configure(

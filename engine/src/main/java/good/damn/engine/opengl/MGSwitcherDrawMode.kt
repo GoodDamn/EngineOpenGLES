@@ -25,7 +25,7 @@ class MGSwitcherDrawMode(
     private val drawerModeDiffuse = MGDrawModeTexture(
         informator,
         informator.drawerLightPassDiffuse,
-        informator.shaders.lightPassDiffuse,
+        informator.shaders.lightPasses[1].shader,
         drawerFramebufferG
     )
 
@@ -40,49 +40,12 @@ class MGSwitcherDrawMode(
             drawerModeDiffuse
         )
 
+
+
         else -> switchDrawMode(
             MGEnumDrawMode.OPAQUE,
             drawerModeOpaque
         )
-        /*MGEnumDrawMode.OPAQUE -> switchDrawMode(
-            MGEnumDrawMode.WIREFRAME,
-            drawerModeWireframe
-        )
-
-        MGEnumDrawMode.WIREFRAME -> switchDrawMode(
-            MGEnumDrawMode.NORMALS,
-            drawerModeNormals
-        )
-
-        MGEnumDrawMode.NORMALS -> switchDrawMode(
-            MGEnumDrawMode.TEX_COORDS,
-            drawerModeTexCoords
-        )
-
-        MGEnumDrawMode.TEX_COORDS -> switchDrawMode(
-            MGEnumDrawMode.DIFFUSE,
-            drawerModeTexture
-        )
-
-        MGEnumDrawMode.DIFFUSE -> switchDrawMode(
-            MGEnumDrawMode.METALLIC,
-            drawerModeTexture
-        )
-
-        MGEnumDrawMode.METALLIC -> switchDrawMode(
-            MGEnumDrawMode.EMISSIVE,
-            drawerModeTexture
-        )
-
-        MGEnumDrawMode.EMISSIVE -> switchDrawMode(
-            MGEnumDrawMode.NORMAL_MAP,
-            drawerModeTexture
-        )
-
-        MGEnumDrawMode.NORMAL_MAP -> switchDrawMode(
-            MGEnumDrawMode.OPAQUE,
-            drawerModeOpaque
-        )*/
     }
 
 

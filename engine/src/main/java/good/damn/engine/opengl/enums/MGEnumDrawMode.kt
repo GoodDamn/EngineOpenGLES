@@ -3,10 +3,6 @@ package good.damn.engine.opengl.enums
 enum class MGEnumDrawMode {
     OPAQUE,
     WIREFRAME,
-    NORMALS,
-    TEX_COORDS,
     DIFFUSE,
-    METALLIC,
-    EMISSIVE,
-    NORMAL_MAP
+    EMISSIVE
 }
