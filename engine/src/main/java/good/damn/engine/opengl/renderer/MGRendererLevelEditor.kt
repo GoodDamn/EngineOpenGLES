@@ -173,10 +173,10 @@ class MGRendererLevelEditor(
             mVerticesQuad
         ),
         ConcurrentLinkedQueue(),
+        ConcurrentLinkedQueue(),
         MGFrameBufferG(
             MGFramebuffer()
         ),
-        ConcurrentHashMap(50),
         meshSky = MGSky(),
         managerLight,
         MGManagerTriggerLight(

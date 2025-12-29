@@ -1,17 +1,12 @@
 package good.damn.engine.imports
 
-import android.os.Handler
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.level.MGStreamLevel
 import good.damn.engine.models.MGMInformator
-import good.damn.engine.models.MGMInstanceMesh
 import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import good.damn.engine.opengl.models.MGMMeshDrawer
 import java.io.File
 import java.io.FileInputStream
-import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGImportImplLevel(
     private val misc: MGMImportMisc,
@@ -45,26 +40,16 @@ class MGImportImplLevel(
             Thread {
                 MGStreamLevel.readBin(
                     MGFlowLevel {
-                        informator.meshesInstanced[
-                            it.shader
-                        ]?.run {
-                            addMesh(
-                                it,
-                                this
+                        informator.meshesInstanced.add(
+                            MGMMeshDrawer(
+                                it.shader,
+                                MGDrawerMeshInstanced(
+                                    it.enableCullFace,
+                                    it.vertexArray,
+                                    it.material
+                                )
                             )
-                            return@MGFlowLevel
-                        }
-
-                        informator.meshesInstanced[
-                            it.shader
-                        ] = ConcurrentLinkedQueue<
-                            MGDrawerMeshInstanced
-                            >().apply {
-                            addMesh(
-                                it,
-                                this
-                            )
-                        }
+                        )
                     },
                     FileInputStream(
                         file
@@ -75,19 +60,6 @@ class MGImportImplLevel(
 
                 file.delete()
             }.start()
-        }
-
-        private inline fun addMesh(
-            mesh: MGMInstanceMesh,
-            queue: ConcurrentLinkedQueue<MGDrawerMeshInstanced>
-        ) {
-            queue.add(
-                MGDrawerMeshInstanced(
-                    mesh.enableCullFace,
-                    mesh.vertexArray,
-                    mesh.material
-                )
-            )
         }
     }
 

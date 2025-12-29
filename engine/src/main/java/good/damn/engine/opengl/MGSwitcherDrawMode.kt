@@ -136,11 +136,9 @@ class MGSwitcherDrawMode(
             }
 
             informator.meshesInstanced.forEach {
-                it.value.forEach {
-                    it.setIsWireframe(
-                        enableWireframe
-                    )
-                }
+                it.drawer.setIsWireframe(
+                    enableWireframe
+                )
             }
         }
     }

@@ -4,9 +4,7 @@ import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.models.MGMMeshMaterial
-import good.damn.engine.opengl.models.MGMPoolMeshMutable
-import good.damn.engine.opengl.models.MGMPoolVertexArray
+import good.damn.engine.opengl.models.MGMMeshDrawer
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderMaterial
@@ -134,7 +132,7 @@ class MGCallbackModelSpawn(
         material: MGMMaterialShader,
         mesh: MGTriggerMesh
     ) {
-        val meshMaterial = MGMMeshMaterial(
+        val meshMaterial = MGMMeshDrawer(
             shader,
             MGDrawerMeshMaterialMutable(
                 arrayOf(

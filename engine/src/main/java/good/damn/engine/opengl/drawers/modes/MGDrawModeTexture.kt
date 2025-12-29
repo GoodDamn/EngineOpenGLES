@@ -36,11 +36,11 @@ class MGDrawModeTexture(
         }
 
         informator.meshesInstanced.forEach {
-            it.key.run {
+            it.shader.run {
                 use()
-                it.value.forEach {
-                    it.draw(materials)
-                }
+                it.drawer.draw(
+                    materials
+                )
             }
         }
 

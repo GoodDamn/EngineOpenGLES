@@ -16,8 +16,7 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
-import good.damn.engine.opengl.models.MGMMeshMaterial
-import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.models.MGMMeshDrawer
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.triggers.MGTriggerLight
@@ -26,13 +25,11 @@ import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
-import good.damn.engine.shader.generators.MGMMaterialShader
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsJson
 import good.damn.mapimporter.MIImportMap
 import good.damn.mapimporter.models.MIMMap
 import good.damn.mapimporter.models.MIMProp
-import java.io.BufferedReader
 import java.io.DataInputStream
 import java.io.InputStream
 
@@ -270,7 +267,7 @@ object MGStreamLevel {
             }
 
             informator.meshes.add(
-                MGMMeshMaterial(
+                MGMMeshDrawer(
                     pointInfo.second,
                     MGDrawerMeshMaterialMutable(
                         arrayOf(
