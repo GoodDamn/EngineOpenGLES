@@ -11,7 +11,7 @@ import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.shaders.MGShaderLightPass
 
 class MGSwitcherDrawMode(
-    private val informator: MGMInformator,
+    informator: MGMInformator,
     drawerFramebufferG: MGDrawerFramebufferG
 ) {
     private val drawerModeOpaque = MGDrawModeOpaque(
@@ -26,7 +26,9 @@ class MGSwitcherDrawMode(
             ),
             informator.drawerQuad
         ),
-        informator.shaders.lightPasses[0].shader,
+        informator.shaders.lightPasses[
+            MGEnumDrawMode.OPAQUE.ordinal
+        ].shader,
         drawerFramebufferG
     )
 
@@ -43,7 +45,9 @@ class MGSwitcherDrawMode(
             ),
             informator.drawerQuad
         ),
-        informator.shaders.lightPasses[1].shader,
+        informator.shaders.lightPasses[
+            MGEnumDrawMode.DIFFUSE.ordinal
+        ].shader,
         drawerFramebufferG
     )
 
@@ -55,7 +59,9 @@ class MGSwitcherDrawMode(
             ),
             informator.drawerQuad
         ),
-        informator.shaders.lightPasses[2].shader,
+        informator.shaders.lightPasses[
+            MGEnumDrawMode.DEPTH.ordinal
+        ].shader,
         drawerFramebufferG
     )
 
@@ -67,7 +73,9 @@ class MGSwitcherDrawMode(
             ),
             informator.drawerQuad
         ),
-        informator.shaders.lightPasses[3].shader,
+        informator.shaders.lightPasses[
+            MGEnumDrawMode.NORMAL.ordinal
+        ].shader,
         drawerFramebufferG
     )
 
