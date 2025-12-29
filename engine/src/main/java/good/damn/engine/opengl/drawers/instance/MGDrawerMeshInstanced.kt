@@ -16,11 +16,11 @@ class MGDrawerMeshInstanced(
 
     private var mode = GLES30.GL_TRIANGLES
 
-    fun switchDrawMode(
-        drawMode: MGEnumDrawMode
+    fun setIsWireframe(
+        isWireframe: Boolean
     ) {
         mode = if (
-            drawMode == MGEnumDrawMode.WIREFRAME
+            isWireframe
         ) GLES30.GL_LINES else GLES30.GL_TRIANGLES
     }
 

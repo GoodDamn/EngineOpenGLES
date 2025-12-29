@@ -11,7 +11,7 @@ import good.damn.engine.opengl.enums.MGEnumDrawMode
 import good.damn.engine.opengl.shaders.MGShaderLightPass
 
 class MGSwitcherDrawMode(
-    informator: MGMInformator,
+    private val informator: MGMInformator,
     drawerFramebufferG: MGDrawerFramebufferG
 ) {
     private val drawerModeOpaque = MGDrawModeOpaque(
@@ -87,7 +87,9 @@ class MGSwitcherDrawMode(
     ) {
         MGEnumDrawMode.OPAQUE -> switchDrawMode(
             MGEnumDrawMode.DIFFUSE,
-            drawerModeDiffuse
+            drawerModeDiffuse.apply {
+                canDrawSky = true
+            }
         )
 
         MGEnumDrawMode.DIFFUSE -> switchDrawMode(
@@ -97,7 +99,16 @@ class MGSwitcherDrawMode(
 
         MGEnumDrawMode.DEPTH -> switchDrawMode(
             MGEnumDrawMode.NORMAL,
-            drawerModeNormals
+            drawerModeNormals.apply {
+                canDrawSky = false
+            }
+        )
+
+        MGEnumDrawMode.NORMAL -> switchDrawMode(
+            MGEnumDrawMode.WIREFRAME,
+            drawerModeDiffuse.apply {
+                canDrawSky = false
+            }
         )
 
         else -> switchDrawMode(
@@ -113,5 +124,24 @@ class MGSwitcherDrawMode(
     ) {
         MGEngine.drawMode = drawMode
         currentDrawerMode = currentDrawer
+        val enableWireframe = drawMode == MGEnumDrawMode.WIREFRAME
+
+        if (drawMode == MGEnumDrawMode.OPAQUE
+            || drawMode == MGEnumDrawMode.WIREFRAME
+        ) {
+            informator.meshes.forEach {
+                it.drawer.drawerMesh.setIsWireframe(
+                    enableWireframe
+                )
+            }
+
+            informator.meshesInstanced.forEach {
+                it.value.forEach {
+                    it.setIsWireframe(
+                        enableWireframe
+                    )
+                }
+            }
+        }
     }
 }

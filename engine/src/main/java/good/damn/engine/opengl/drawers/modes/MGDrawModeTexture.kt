@@ -15,19 +15,23 @@ class MGDrawModeTexture(
     private val drawerFramebufferG: MGDrawerFramebufferG
 ): MGIDrawer {
 
+    var canDrawSky = true
+
     override fun draw(
         width: Int,
         height: Int
     ) {
         drawerFramebufferG.bind()
 
-        informator.meshSky.meshMaterial.run {
-            shader.run {
-                use()
-                drawer.drawMaterials(
-                    materials,
-                    this
-                )
+        if (canDrawSky) {
+            informator.meshSky.meshMaterial.run {
+                shader.run {
+                    use()
+                    drawer.drawMaterials(
+                        materials,
+                        this
+                    )
+                }
             }
         }
 

@@ -16,15 +16,12 @@ open class MGDrawerMeshSwitch(
 
     private var modeVertex = GL_TRIANGLES
 
-    fun switchDrawMode(
-        drawMode: MGEnumDrawMode
+    fun setIsWireframe(
+        isWireframe: Boolean
     ) {
-        modeVertex = when (
-            drawMode
-        ) {
-            MGEnumDrawMode.WIREFRAME -> GL_LINES
-            else -> GL_TRIANGLES
-        }
+        modeVertex = if (
+            isWireframe
+        ) GL_LINES else GL_TRIANGLES
     }
 
     open fun drawNormals(
