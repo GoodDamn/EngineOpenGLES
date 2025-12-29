@@ -1,37 +1,37 @@
 package good.damn.engine.opengl.triggers;
 
 import android.opengl.GLES30;
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.LinkedList;
 
 import good.damn.engine.loaders.MGLoaderLevelLibrary;
 import good.damn.engine.loaders.texture.MGLoaderTextureAsync;
-import good.damn.engine.models.MGMGeneratorMaterial;
 import good.damn.engine.models.MGMInformator;
 import good.damn.engine.models.MGMInformatorShader;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute;
+import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
 import good.damn.engine.opengl.entities.MGMaterialTexture;
 import good.damn.engine.opengl.enums.MGEnumTextureType;
 import good.damn.engine.opengl.objects.MGObject3d;
+import good.damn.engine.opengl.pools.MGPoolMaterials;
 import good.damn.engine.opengl.shaders.MGShaderMaterial;
-import good.damn.engine.opengl.shaders.MGShaderOpaqueSingle;
+import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel;
 import good.damn.engine.opengl.shaders.MGShaderTexture;
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute;
-import good.damn.engine.sdk.MGVector3;
-import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch;
+import good.damn.engine.sdk.SDVector3;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals;
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity;
 import good.damn.engine.opengl.entities.MGMaterial;
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal;
-import good.damn.engine.opengl.models.MGMPoolMesh;
+import good.damn.engine.opengl.models.MGMPoolVertexArray;
 import good.damn.engine.opengl.models.MGMPoolMeshMutable;
 import good.damn.engine.opengl.thread.MGHandlerGl;
 import good.damn.engine.opengl.triggers.callbacks.MGManagerTriggerStateCallback;
@@ -40,8 +40,7 @@ import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
 import good.damn.engine.runnables.MGRunnableConfigVertexArray;
 import good.damn.engine.shader.MGShaderCache;
 import good.damn.engine.shader.MGShaderSource;
-import good.damn.engine.shader.generators.MGGeneratorMaterial;
-import good.damn.engine.shader.generators.MGGeneratorShader;
+import good.damn.engine.shader.generators.MGGeneratorMaterialG;
 import good.damn.engine.utils.MGUtilsAlgo;
 
 public final class MGTriggerMesh {
@@ -50,32 +49,25 @@ public final class MGTriggerMesh {
     public final MGMatrixTriggerMesh matrix;
 
     @NonNull
-    public final MGDrawerMeshMaterialSwitch mesh;
+    public final MGDrawerMeshSwitch mesh;
 
     @NonNull
     public final MGDrawerTriggerStateable triggerState;
 
-    @NonNull
-    public final MGShaderOpaqueSingle shaderOpaque;
-
     private MGTriggerMesh(
         @NonNull final MGMatrixTriggerMesh matrix,
-        @NonNull final MGDrawerMeshMaterialSwitch mesh,
-        @NonNull final MGDrawerTriggerStateable triggerState,
-        @NonNull final MGShaderOpaqueSingle shaderOpaque
+        @NonNull final MGDrawerMeshSwitch mesh,
+        @NonNull final MGDrawerTriggerStateable triggerState
     ) {
         this.matrix = matrix;
         this.mesh = mesh;
         this.triggerState = triggerState;
-        this.shaderOpaque = shaderOpaque;
     }
 
     @NonNull
-    public static MGTriggerMesh createFromObject(
+    public static MGMPoolVertexArray createFromObject(
         @NonNull final MGObject3d obj,
-        @NonNull final MGMInformator informator,
-        @NonNull final MGMPoolMeshMutable outPoolMesh,
-        @NonNull final MGITrigger triggerAction
+        @NonNull final MGMInformator informator
     ) {
         @NonNull
         final MGArrayVertexManager arrayVertex = new MGArrayVertexManager(
@@ -85,23 +77,6 @@ public final class MGTriggerMesh {
         @NonNull
         final MGHandlerGl glHandler = informator
             .getGlHandler();
-
-        @NonNull
-        final MGLoaderTextureAsync loaderTexture = informator
-            .getGlLoaderTexture();
-
-        @NonNull
-        final MGMInformatorShader shaders = informator
-            .getShaders();
-
-        @NonNull
-        final MGShaderCache<
-            MGShaderOpaqueSingle
-        > shaderCache = shaders.getOpaqueGenerated();
-
-        @NonNull
-        final MGShaderSource shaderSource = shaders
-            .getSource();
 
         glHandler.post(
             new MGRunnableConfigVertexArray(
@@ -116,209 +91,50 @@ public final class MGTriggerMesh {
             obj.vertices
         );
 
-        @NonNull
-        final MGMaterialTexture.Builder builder = new MGMaterialTexture.Builder();
-
-        @NonNull
-        final MGGeneratorShader generatorShader = new MGGeneratorShader(
-            shaderSource
-        );
-
-        @NonNull
-        final MGGeneratorMaterial generatorMaterial = new MGGeneratorMaterial(
-            shaderSource
-        );
-
-        @NonNull
-        final LinkedList<
-            MGShaderTexture
-        > shaderTextures = new LinkedList<>();
-
-        if (obj.texturesDiffuseFileName == null) {
-            generatorMaterial.mapTextureNo(
-                MGLoaderLevelLibrary.ID_DIFFUSE,
-                MGEnumTextureType.DIFFUSE,
-                1.0f
-            );
-        } else {
-            generatorMaterial.mapTexture(
-                MGLoaderLevelLibrary.ID_DIFFUSE,
-                MGEnumTextureType.DIFFUSE,
-                1f
-            );
-            builder.buildTexture(
-                obj.texturesDiffuseFileName[0],
-                MGEnumTextureType.DIFFUSE
-            );
-
-            shaderTextures.add(
-                new MGShaderTexture(
-                    MGLoaderLevelLibrary.ID_DIFFUSE
-                )
-            );
-        }
-
-        if (obj.texturesMetallicFileName == null) {
-            generatorMaterial.mapTextureNo(
-                MGLoaderLevelLibrary.ID_METALLIC,
-                MGEnumTextureType.METALLIC,
-                0.0f
-            );
-            generatorShader.specularNo();
-        } else {
-            shaderTextures.add(
-                new MGShaderTexture(
-                    MGLoaderLevelLibrary.ID_METALLIC
-                )
-            );
-            builder.buildTexture(
-                obj.texturesMetallicFileName[0],
-                MGEnumTextureType.METALLIC
-            );
-            generatorMaterial.mapTexture(
-                MGLoaderLevelLibrary.ID_METALLIC,
-                MGEnumTextureType.METALLIC,
-                1f
-            );
-            generatorShader.specular();
-        }
-
-        generatorMaterial.mapTextureNo(
-            MGLoaderLevelLibrary.ID_OPACITY,
-            MGEnumTextureType.OPACITY,
-            1.0f
-        ).normalVertex(
-            MGLoaderLevelLibrary.ID_NORMAL
-        );
-
-        if (obj.texturesEmissiveFileName == null) {
-            generatorMaterial.mapTextureNo(
-                MGLoaderLevelLibrary.ID_EMISSIVE,
-                MGEnumTextureType.EMISSIVE,
-                0.0f
-            );
-        } else {
-            shaderTextures.add(
-                new MGShaderTexture(
-                    MGLoaderLevelLibrary.ID_EMISSIVE
-                )
-            );
-            builder.buildTexture(
-                obj.texturesEmissiveFileName[0],
-                MGEnumTextureType.EMISSIVE
-            );
-            generatorMaterial.mapTexture(
-                MGLoaderLevelLibrary.ID_EMISSIVE,
-                MGEnumTextureType.EMISSIVE,
-                1f
-            );
-        }
-
-        @NonNull
-        final MGMGeneratorMaterial srcCodeMaterial = generatorMaterial
-            .generate("0");
-
-        generatorShader.lighting().material(
-            srcCodeMaterial
-        );
-
-        @NonNull
-        final String src = generatorShader.generate(
-            new MGMGeneratorMaterial[]{srcCodeMaterial}
-        );
-
-        @NonNull
-        MGShaderOpaqueSingle cachedShader = shaderCache.get(
-            src
-        );
-
-        if (cachedShader == null) {
-            cachedShader = new MGShaderOpaqueSingle(
-                MGShaderMaterial.singleMaterial(
-                    shaderTextures.toArray(new MGShaderTexture[0])
-                )
-            );
-            shaderCache.cacheAndCompile(
-                src,
-                shaderSource.getVert(),
-                cachedShader,
-                glHandler,
-                new MGBinderAttribute.Builder()
-                    .bindPosition()
-                    .bindTextureCoordinates()
-                    .bindNormal()
-                    .build()
-            );
-        }
-
-        @NonNull
-        final MGMaterialTexture materialTexture = builder
-            .build();
-
-        materialTexture.load(
-            informator.getPoolTextures(),
-            "textures",
-            loaderTexture
-        );
-
-        @NonNull
-        final MGMaterial material = new MGMaterial(
-            builder.build()
-        );
-
         return createFromVertexArray(
-            arrayVertex,
-            material,
-            outPoolMesh,
-            triggerAction,
-            cachedShader
+            arrayVertex
         );
     }
 
     @NonNull
-    public static MGTriggerMesh createFromVertexArray(
-        @NonNull final MGArrayVertexManager vertexArray,
-        @NonNull final MGMaterial material,
-        @NonNull final MGMPoolMeshMutable outPoolMesh,
-        @NonNull final MGITrigger triggerAction,
-        @NonNull final MGShaderOpaqueSingle shaderOpaque
+    public static MGMPoolVertexArray createFromVertexArray(
+        @NonNull final MGArrayVertexManager vertexArray
     ) {
-        outPoolMesh.pointMinMax = MGUtilsAlgo.findMinMaxPoints(
+        @NonNull
+        final MGMPoolMeshMutable poolMesh = new MGMPoolMeshMutable();
+
+        poolMesh.pointMinMax = MGUtilsAlgo.findMinMaxPoints(
             vertexArray
         );
 
-        outPoolMesh.pointMiddle = outPoolMesh.pointMinMax.first.interpolate(
-            outPoolMesh.pointMinMax.second,
+        poolMesh.pointMiddle = poolMesh.pointMinMax.first.interpolate(
+            poolMesh.pointMinMax.second,
             0.5f
         );
 
         MGUtilsAlgo.offsetAnchorPoint(
             vertexArray,
-            outPoolMesh.pointMiddle
+            poolMesh.pointMiddle
         );
 
         vertexArray.unkeepBufferVertices();
-
-        outPoolMesh.material = material;
-        outPoolMesh.vertexArray = vertexArray;
-        outPoolMesh.shaderOpaque = shaderOpaque;
-
-        return createFromMeshPool(
-            outPoolMesh.toImmutable(),
-            triggerAction
+        poolMesh.drawerVertexArray = new MGDrawerVertexArray(
+            vertexArray
         );
+
+        return poolMesh.toImmutable();
     }
 
     @NonNull
     public static MGTriggerMesh createFromMeshPool(
-        @NonNull final MGMPoolMesh poolMesh,
+        @NonNull final MGMPoolVertexArray poolMesh,
         @NonNull final MGITrigger triggerAction
     ) {
         @NonNull final Pair<
-            MGVector3, MGVector3
+            SDVector3, SDVector3
         > pointMinMax = poolMesh.getPointMinMax();
 
-        @NonNull final MGVector3 pointMiddle = poolMesh
+        @NonNull final SDVector3 pointMiddle = poolMesh
             .getPointMiddle();
 
         @NonNull
@@ -345,24 +161,13 @@ public final class MGTriggerMesh {
         matrix.calculateNormals();
 
         @NonNull
-        final MGMaterial material = poolMesh.getMaterial();
-
-        @NonNull
         final MGDrawerMeshSwitchNormals drawerMeshSwitchNormals = new MGDrawerMeshSwitchNormals(
-            new MGDrawerVertexArray(
-                poolMesh.getVertexArray()
-            ),
+            poolMesh.getDrawerVertexArray(),
             new MGDrawerPositionEntity(
                 matrix.matrixMesh.model
             ),
             GLES30.GL_CCW,
             matrix.matrixMesh.normal
-        );
-
-        @NonNull
-        final MGDrawerMeshMaterialSwitch meshTexture = new MGDrawerMeshMaterialSwitch(
-            new MGMaterial[]{material},
-            drawerMeshSwitchNormals
         );
 
         @NonNull
@@ -378,9 +183,8 @@ public final class MGTriggerMesh {
 
         return new MGTriggerMesh(
             matrix,
-            meshTexture,
-            triggerState,
-            poolMesh.getShader()
+            drawerMeshSwitchNormals,
+            triggerState
         );
     }
 }

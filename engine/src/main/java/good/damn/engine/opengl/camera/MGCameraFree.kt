@@ -1,58 +1,78 @@
 package good.damn.engine.opengl.camera
 
 import android.opengl.Matrix.setLookAtM
-import good.damn.engine.sdk.MGVector3
+import good.damn.engine.opengl.buffers.MGBufferUniformCamera
+import good.damn.engine.sdk.SDVector3
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
+import good.damn.engine.opengl.runnables.misc.MGRunglSendDataCameraModel
+import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.engine.utils.MGUtilsBuffer
 import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.sin
 
 class MGCameraFree(
+    bufferUniformCamera: MGBufferUniformCamera,
     modelMatrix: MGMatrixTranslate
 ): MGCamera(
+    bufferUniformCamera,
     modelMatrix
 ) {
 
-    val direction = MGVector3(
+    val direction = SDVector3(
         0.0f, 0.0f, -1.0f
     )
 
-    private val mUp = MGVector3(
+    private val mUp = SDVector3(
         0.0f, 1.0f, 0.0f
     )
 
-    private val mPositionDirection = MGVector3(0.0f)
+    private val mPositionDirection = SDVector3(0.0f)
 
     private var mSpeed = 2.0f
 
     private var mYaw = 0.0f
     private var mPitch = 0.0f
 
-    init {
-        addRotation(0.0f,0.0f)
-        invalidatePosition()
-    }
+    private val mBufferView = MGUtilsBuffer.allocateByte(
+        16 * 4
+    )
 
-    fun invalidatePosition() {
-        synchronized(
-            modelMatrix
-        ) {
-            val x = modelMatrix.x
-            val y = modelMatrix.y
-            val z = modelMatrix.z
+    private val mRunglSendCameraModel = MGRunglSendDataCameraModel(
+        mBufferView,
+        bufferUniformCamera
+    )
 
-            modelMatrix.setPosition(
-                x, y, z
-            )
-            modelMatrix.invalidatePosition()
-            setLookAtM(
-                modelMatrix.model,
-                0,
-                x, y, z,
-                direction.x + x,
-                direction.y + y,
-                direction.z + z,
-                0.0f, 1.0f, 0.0f
+    fun invalidatePosition(
+        handler: MGHandlerGl
+    ) {
+        val x = modelMatrix.x
+        val y = modelMatrix.y
+        val z = modelMatrix.z
+
+        modelMatrix.setPosition(
+            x, y, z
+        )
+        modelMatrix.invalidatePosition()
+        setLookAtM(
+            modelMatrix.model,
+            0,
+            x, y, z,
+            direction.x + x,
+            direction.y + y,
+            direction.z + z,
+            0.0f, 1.0f, 0.0f
+        )
+
+        mBufferView.asFloatBuffer().run {
+            put(modelMatrix.model)
+            position(0)
+        }
+
+        if (mRunglSendCameraModel.isUpdated) {
+            mRunglSendCameraModel.isUpdated = false
+            handler.post(
+                mRunglSendCameraModel
             )
         }
     }
@@ -63,31 +83,27 @@ class MGCameraFree(
         directionX: Float,
         directionY: Float
     ) {
-        synchronized(
-            modelMatrix
-        ) {
-            mSpeed = hypot(
-                x, y
-            ) * 0.03f
+        mSpeed = hypot(
+            x, y
+        ) * 0.03f
 
-            modelMatrix.addPosition(
-                direction.x * mSpeed * -directionY,
-                direction.y * mSpeed * -directionY,
-                direction.z * mSpeed * -directionY
-            )
+        modelMatrix.addPosition(
+            direction.x * mSpeed * -directionY,
+            direction.y * mSpeed * -directionY,
+            direction.z * mSpeed * -directionY
+        )
 
-            mPositionDirection.cross(
-                direction,
-                mUp
-            )
-            mPositionDirection.normalize()
+        mPositionDirection.cross(
+            direction,
+            mUp
+        )
+        mPositionDirection.normalize()
 
-            modelMatrix.addPosition(
-                mPositionDirection.x * mSpeed * directionX,
-                mPositionDirection.y * mSpeed * directionX,
-                mPositionDirection.z * mSpeed * directionX
-            )
-        }
+        modelMatrix.addPosition(
+            mPositionDirection.x * mSpeed * directionX,
+            mPositionDirection.y * mSpeed * directionX,
+            mPositionDirection.z * mSpeed * directionX
+        )
     }
 
     fun addRotation(

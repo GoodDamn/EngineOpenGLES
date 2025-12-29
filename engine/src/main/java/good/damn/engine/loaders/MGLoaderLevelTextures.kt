@@ -14,38 +14,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class MGLoaderLevelTextures(
-    private val handlerGl: MGHandlerGl,
     private val poolTextures: MGPoolTextures,
     private val localPathLibTextures: String
 ) {
 
-    val isLoadCompleted: Boolean
-        get() = mCurrentIndex >= mCountTextures
-
-    private val mLock = Any()
-
-    private var mCurrentIndex = 0
-    private var mCountTextures = 0
-
     fun loadTextures(
         map: MIMMap
     ) {
-        mCountTextures = 0
-        mCurrentIndex = 0
         for (j in map.atlases) {
             for (atlas in j.rects) {
-                if (poolTextures.get(
-                        atlas.name
-                    ) != null
-                ) {
-                    incrementIndex()
-                    continue
-                }
-
                 loadMaps(
                     atlas
                 )
-                mCountTextures += 5
             }
         }
     }
@@ -53,71 +33,30 @@ class MGLoaderLevelTextures(
     private inline fun loadMaps(
         atlas: MIMAtlasRect
     ) {
-        poolTexture(
+        poolTextures.loadOrGetFromCache(
             "${atlas.name}.jpg",
-            MGEnumTextureType.DIFFUSE
+            localPathLibTextures
         )
 
-        poolTexture(
+        poolTextures.loadOrGetFromCache(
             "${atlas.name}_m.jpg",
-            MGEnumTextureType.METALLIC
+            localPathLibTextures
         )
 
-        poolTexture(
+        poolTextures.loadOrGetFromCache(
             "${atlas.name}_e.jpg",
-            MGEnumTextureType.EMISSIVE
+            localPathLibTextures
         )
 
-        poolTexture(
+        poolTextures.loadOrGetFromCache(
             "${atlas.name}_o.jpg",
-            MGEnumTextureType.OPACITY
+            localPathLibTextures
         )
 
-        poolTexture(
+        poolTextures.loadOrGetFromCache(
             "${atlas.name}_n.jpg",
-            MGEnumTextureType.NORMAL
+            localPathLibTextures
         )
-    }
-
-    private inline fun incrementIndex() {
-        mCurrentIndex++
-    }
-
-    private fun poolTexture(
-        textureName: String,
-        textureType: MGEnumTextureType
-    ) {
-        val texturePath = "$localPathLibTextures/$textureName"
-        val bitmap = MGUtilsBitmap.loadBitmap(
-            texturePath
-        )
-
-        if (bitmap == null) {
-            incrementIndex()
-            return
-        }
-
-        val texture = MGTexture(
-            MGTextureActive(
-                textureType
-            )
-        )
-
-        handlerGl.post(
-            MGRunnableTextureSetupBitmap(
-                MGTextureBitmap(
-                    texture
-                ),
-                bitmap
-            )
-        )
-
-        poolTextures.add(
-            textureName,
-            texture
-        )
-
-        incrementIndex()
     }
 
 }

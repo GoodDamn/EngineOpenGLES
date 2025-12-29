@@ -1,7 +1,6 @@
 package good.damn.engine.level
 
-import android.util.Log
-import android.util.Size
+import android.graphics.Color
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.loaders.MGLoaderLevelMatrices
@@ -10,18 +9,29 @@ import good.damn.engine.loaders.mesh.MGLoaderLevelMeshA3D
 import good.damn.engine.loaders.MGLoaderLevelTextures
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInstanceMesh
-import good.damn.engine.models.MGMLandscapeTexture
 import good.damn.engine.models.json.MGMLevelInfoMesh
+import good.damn.engine.models.json.spawn.MGMLevelSpawnInfo
+import good.damn.engine.models.json.spawn.MGMLevelSpawnLight
+import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
+import good.damn.engine.opengl.models.MGMMeshMaterial
 import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
+import good.damn.engine.opengl.triggers.MGTriggerLight
+import good.damn.engine.opengl.triggers.MGTriggerMesh
+import good.damn.engine.opengl.triggers.MGTriggerSimple
+import good.damn.engine.sdk.SDVector3
+import good.damn.engine.sdk.models.SDMLightPoint
+import good.damn.engine.sdk.models.SDMLightPointInterpolation
+import good.damn.engine.shader.generators.MGMMaterialShader
+import good.damn.engine.utils.MGUtilsFile
+import good.damn.engine.utils.MGUtilsJson
 import good.damn.mapimporter.MIImportMap
+import good.damn.mapimporter.models.MIMMap
 import good.damn.mapimporter.models.MIMProp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.DataInputStream
 import java.io.InputStream
@@ -44,22 +54,25 @@ object MGStreamLevel {
             bufferMap
         )
 
-        val scope = CoroutineScope(
-            Dispatchers.IO
-        )
-
         val libName = map.atlases[0].rects[0].libraryName
+        val localPathDir = "levels/$libName"
         val localPathLibTextures = "textures/$libName"
         val localPathLibObj = "objs/$libName"
+
+        processSpawnPoints(
+            map,
+            localPathDir,
+            informator
+        )
+
         val loaderLib = MGLoaderLevelLibrary(
             informator,
             localPathLibTextures,
-            "levels/$libName/library.txt",
-            "levels/$libName/culling.txt"
+            "$localPathDir/library.txt",
+            "$localPathDir/culling.txt"
         )
 
         val loaderTextures = MGLoaderLevelTextures(
-            informator.glHandler,
             informator.poolTextures,
             localPathLibTextures
         )
@@ -68,10 +81,9 @@ object MGStreamLevel {
             map
         )
         loaderLib.loadLibrary()
+        loaderLib.loadNonCullFaceList()
 
         loaderLib.readProps()
-
-        loaderLib.loadNonCullFaceList()
 
         val meshes = loaderLib.meshes!!
 
@@ -84,7 +96,8 @@ object MGStreamLevel {
 
         val loaderMeshes = MGLoaderLevelMeshA3D(
             localPathLibObj,
-            informator.glHandler
+            informator.glHandler,
+            bufferMap
         )
 
         meshes.forEach {
@@ -95,25 +108,11 @@ object MGStreamLevel {
                 1f
             ) ?: return
 
-            prop.materialTexture.forEach {
-                it.load(
-                    informator.poolTextures,
-                    localPathLibTextures,
-                    informator.glLoaderTexture
-                )
-            }
-
             flow.emit(
                 MGMInstanceMesh(
                     prop.shaderOpaque,
                     v.vertexArray,
-                    Array(
-                        prop.materialTexture.size
-                    ) {
-                        MGMaterial(
-                            prop.materialTexture[it]
-                        )
-                    },
+                    prop.materials,
                     prop.enableCullFace,
                     v.modelMatrices
                 )
@@ -131,8 +130,6 @@ object MGStreamLevel {
                 terrain,
                 loaderMeshes,
                 loaderLib,
-                informator,
-                localPathLibTextures,
                 mapProp
             )?.run {
                 flow.emit(
@@ -143,12 +140,158 @@ object MGStreamLevel {
 
     }
 
-    private inline fun loadLandscape(
+    private fun processSpawnPoints(
+        map: MIMMap,
+        localPathDir: String,
+        informator: MGMInformator
+    ) {
+        val json = MGMLevelSpawnInfo.createFromJson(
+            MGUtilsJson.createFromFile(
+                MGUtilsFile.getPublicFile(
+                    "$localPathDir/spawnpoints.txt"
+                )
+            )
+        )
+
+        val poolMesh = informator.poolMeshes.loadOrGetFromCache(
+            json.mesh,
+            informator
+        ) ?: return
+
+        val triggerAction = MGTriggerSimple(
+            informator.drawerLightDirectional
+        )
+
+        val lightInterpolation = SDMLightPointInterpolation(
+            json.lightConstant,
+            json.lightLinear,
+            0f,
+            json.lightRadius
+        )
+
+        val binderAttr = MGBinderAttribute.Builder()
+            .bindPosition()
+            .bindTextureCoordinates()
+            .bindNormal()
+            .build()
+        val pointsInfo = Array(
+            json.info.size
+        ) {
+            val info = json.info[it]
+            val material = informator.poolMaterials.loadOrGetFromCache(
+                info.texture,
+                "textures/${info.texture}",
+                informator
+            )
+
+            val lightJson = MGMLevelSpawnLight.createFromJson(
+                MGUtilsJson.createFromFile(
+                    MGUtilsFile.getPublicFile(
+                        "lights/${info.light}.txt"
+                    )
+                )
+            )
+
+            return@Array Pair(
+                Pair(
+                    material,
+                    SDMLightPoint(
+                        SDVector3(
+                            Color.red(
+                                lightJson.color
+                            ) / 255f,
+                            Color.green(
+                                lightJson.color
+                            ) / 255f,
+                            Color.blue(
+                                lightJson.color
+                            ) / 255f
+                        ),
+                        lightInterpolation,
+                        1.0f
+                    )
+                ),
+                informator.shaders.cacheGeometryPass.loadOrGetFromCache(
+                    material.srcCodeMaterial,
+                    informator.shaders.source.vert,
+                    binderAttr,
+                    arrayOf(
+                        MGShaderMaterial(
+                            material.shaderTextures
+                        )
+                    )
+                )
+            )
+        }
+
+        map.spawnPoints.forEachIndexed { i, it ->
+            val triggerMesh = MGTriggerMesh.createFromMeshPool(
+                poolMesh[0],
+                triggerAction
+            )
+
+            val pointInfo = pointsInfo[
+                i % pointsInfo.size
+            ]
+
+            val triggerLight = MGTriggerLight.createFromLight(
+                pointInfo.first.second
+            )
+
+            triggerMesh.matrix.run {
+                setPosition(
+                    it.position.x,
+                    it.position.z+json.positionYDt,
+                    it.position.y,
+                )
+                addRotation(
+                    it.rotation.x+json.rotX,
+                    it.rotation.z,
+                    it.rotation.y,
+                )
+                invalidateScaleRotation()
+                invalidatePosition()
+
+                calculateInvertTrigger()
+                calculateNormals()
+            }
+
+            triggerLight.matrix.run {
+                setPosition(
+                    it.position.x,
+                    it.position.z+json.positionYDt,
+                    it.position.y,
+                )
+                radius = 20000f
+                invalidatePosition()
+                invalidateRadius()
+                calculateInvertTrigger()
+            }
+
+            informator.meshes.add(
+                MGMMeshMaterial(
+                    pointInfo.second,
+                    MGDrawerMeshMaterialMutable(
+                        arrayOf(
+                            MGMaterial(
+                                pointInfo.first.first.materialTexture
+                            )
+                        ),
+                        triggerMesh.mesh
+                    )
+                )
+            )
+
+            informator.managerTriggerLight.addTrigger(
+                triggerLight.triggerState
+            )
+        }
+    }
+
+    private fun loadLandscape(
         landscape: MGMLevelInfoMesh,
         loaderMesh: MGLoaderLevelMeshA3D,
         loaderProp: MGLoaderLevelLibrary,
-        informator: MGMInformator,
-        localLibPathTextures: String,
         mapProp: MIMProp?,
     ): MGMInstanceMesh? {
         val instanceArray = loaderMesh.loadInstanceArray(
@@ -175,122 +318,13 @@ object MGStreamLevel {
         val prop = loaderProp.readProp(
             landscape
         )
-        prop.materialTexture.forEach {
-            it.load(
-                informator.poolTextures,
-                localLibPathTextures,
-                informator.glLoaderTexture
-            )
-        }
-
 
         return MGMInstanceMesh(
             prop.shaderOpaque,
             instanceArray.vertexArray,
-            Array(
-                prop.materialTexture.size
-            ) {
-                MGMaterial(
-                    prop.materialTexture[it]
-                )
-            },
+            prop.materials,
             true,
             instanceArray.modelMatrices
         )
     }
-
-    fun read(
-        input: InputStream,
-        poolTextures: MGPoolTextures
-    ): Array<MGMInstanceMesh>? {
-        return null
-        /*val bufferedReader = BufferedReader(
-            InputStreamReader(
-                input
-            )
-        )
-
-        val meshesCount = bufferedReader.readLineValueInt()
-            ?: return null
-
-        val output = Array(
-            meshesCount
-        ) {
-            val meshNameCount = bufferedReader
-                .readLine()!!
-                .split("\\s+".toRegex())
-
-            val meshCount = meshNameCount[1]
-                .toInt()
-
-            val meshName = meshNameCount[0]
-
-            val modelMatrices = Array(
-                meshCount
-            ) {
-                MGMatrixTransformationNormal(
-                    MGMatrixScaleRotation()
-                ).apply {
-                    model.run {
-                        val strPosition = bufferedReader
-                            .readLine()!!
-                            .split("\\s+".toRegex())
-
-                        setPosition(
-                            strPosition.getOrNull(0)?.toFloatOrNull() ?: 0f,
-                            strPosition.getOrNull(1)?.toFloatOrNull() ?: 0f,
-                            strPosition.getOrNull(2)?.toFloatOrNull() ?: 0f,
-                        )
-
-                        val scale = strPosition.getOrNull(3)?.toFloatOrNull() ?: 0f
-                        setScale(
-                            scale,
-                            scale,
-                            scale
-                        )
-
-                        setRotation(
-                            strPosition.getOrNull(4)?.toFloatOrNull() ?: 0f,
-                            strPosition.getOrNull(5)?.toFloatOrNull() ?: 0f,
-                            strPosition.getOrNull(6)?.toFloatOrNull() ?: 0f,
-                        )
-
-                        invalidatePosition()
-                        invalidateScaleRotation()
-                    }
-
-                    normal.run {
-                        calculateInvertModel()
-                        calculateNormalMatrix()
-                    }
-                }
-            }
-
-            val obj = MGObject3d.createFromAssets(
-                "objs/$meshName"
-            )?.get(0)!!
-
-            val material = MGMaterial.createWithPath(
-                poolTextures,
-                obj.texturesDiffuseFileName?.get(0),
-                obj.texturesMetallicFileName?.get(0),
-                obj.texturesEmissiveFileName?.get(0),
-                "textures"
-            )
-
-            return@Array loaderMesh.createVertexArrayInstance(
-                MGEnumArrayVertexConfiguration.INT,
-                obj.vertices,
-                obj.indices,
-                modelMatrices,
-                material
-            )
-        }
-        bufferedReader.close()
-
-        return output*/
-    }
-
-    private fun BufferedReader.readLineValueInt() =
-        readLine().toIntOrNull()
 }

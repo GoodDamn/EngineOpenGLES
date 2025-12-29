@@ -1,16 +1,20 @@
 package good.damn.engine.runnables
 
 import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.objects.MGObject3d
-import good.damn.engine.opengl.MGTriggerMeshGroup
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
-import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialSwitch
-import good.damn.engine.opengl.models.MGMPoolMesh
+import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
+import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.engine.opengl.models.MGMMeshMaterial
 import good.damn.engine.opengl.models.MGMPoolMeshMutable
+import good.damn.engine.opengl.models.MGMPoolVertexArray
+import good.damn.engine.opengl.objects.MGObject3d
+import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
+import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.triggers.MGIMatrixTrigger
 import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGTriggerMesh
-import java.util.concurrent.ConcurrentLinkedQueue
+import good.damn.engine.shader.generators.MGMMaterialShader
 
 class MGCallbackModelSpawn(
     private val bridgeRay: MGBridgeRayIntersect,
@@ -18,30 +22,11 @@ class MGCallbackModelSpawn(
     private val informator: MGMInformator
 ): MGICallbackModel {
 
-    override fun onGetObjectsCached(
-        poolMesh: Array<MGMPoolMesh>
-    ) {
-        if (poolMesh.isEmpty()) {
-            return
-        }
-
-        if (poolMesh.size == 1) {
-            processMesh(
-                MGTriggerMesh.createFromMeshPool(
-                    poolMesh[0],
-                    triggerAction
-                )
-            )
-            return
-        }
-
-        processGroupMesh(
-            MGTriggerMeshGroup.createFromPool(
-                poolMesh,
-                triggerAction
-            )
-        )
-    }
+    private val mBinderAttr = MGBinderAttribute.Builder()
+        .bindPosition()
+        .bindTextureCoordinates()
+        .bindNormal()
+        .build()
 
     override fun onGetObjects(
         fileName: String,
@@ -53,22 +38,25 @@ class MGCallbackModelSpawn(
         }
 
         if (objs.size == 1) {
-            val outPoolMesh = MGMPoolMeshMutable()
-            MGTriggerMesh.createFromObject(
-                objs[0],
-                informator,
-                outPoolMesh,
-                triggerAction,
-            ).run {
-                informator.poolMeshes[fileName] = arrayOf(
-                    outPoolMesh.toImmutable()
+            val poolMesh = informator.poolMeshes.loadOrGetFromCache(
+                fileName,
+                informator
+            ) ?: return
+
+            processMesh(
+                MGMMaterialShader.getDefault(
+                    informator.shaders.source
+                ),
+                MGTriggerMesh.createFromMeshPool(
+                    poolMesh[0],
+                    triggerAction
                 )
-                processMesh(this)
-            }
+            )
+
             return
         }
 
-        val outPoolMeshes = Array(
+        /*val outPoolMeshes = Array(
             objs.size
         ) { MGMPoolMeshMutable() }
 
@@ -85,19 +73,33 @@ class MGCallbackModelSpawn(
             processGroupMesh(
                 this
             )
-        }
+        }*/
     }
 
-    private fun processMesh(
+    private inline fun processMesh(
+        material: MGMMaterialShader,
         mesh: MGTriggerMesh
     ) {
-        addMesh(mesh)
+        addMesh(
+            informator.shaders.cacheGeometryPass.loadOrGetFromCache(
+                material.srcCodeMaterial,
+                informator.shaders.source.vert,
+                mBinderAttr,
+                arrayOf(
+                    MGShaderMaterial(
+                        material.shaderTextures
+                    )
+                )
+            ),
+            material,
+            mesh
+        )
         setupMatrix(
             mesh.matrix
         )
     }
 
-    private fun processGroupMesh(
+    /*private fun processGroupMesh(
         meshGroup: MGTriggerMeshGroup
     ) {
         meshGroup.meshes.forEach {
@@ -107,7 +109,7 @@ class MGCallbackModelSpawn(
         setupMatrix(
             meshGroup.matrix
         )
-    }
+    }*/
 
     private inline fun setupMatrix(
         matrix: MGIMatrixTrigger
@@ -128,39 +130,27 @@ class MGCallbackModelSpawn(
     }
 
     private inline fun addMesh(
+        shader: MGShaderGeometryPassModel,
+        material: MGMMaterialShader,
         mesh: MGTriggerMesh
     ) {
-        informator.meshes[
-            mesh.shaderOpaque
-        ]?.run {
-            addMeshToShader(
-                this,
-                mesh
+        val meshMaterial = MGMMeshMaterial(
+            shader,
+            MGDrawerMeshMaterialMutable(
+                arrayOf(
+                    MGMaterial(
+                        material.materialTexture
+                    )
+                ),
+                mesh.mesh
             )
-            return
-        }
-
-        val queue = ConcurrentLinkedQueue<
-            MGDrawerMeshMaterialSwitch
-        >()
-
-        informator.meshes[
-            mesh.shaderOpaque
-        ] = queue
-
-        addMeshToShader(
-            queue,
-            mesh
         )
-    }
+        informator.currentEditMesh = meshMaterial
 
-    private inline fun addMeshToShader(
-        queue: ConcurrentLinkedQueue<MGDrawerMeshMaterialSwitch>,
-        mesh: MGTriggerMesh
-    ) {
-        queue.add(
-            mesh.mesh
+        informator.meshes.add(
+            meshMaterial
         )
+
         informator.managerTrigger.addTrigger(
             mesh.triggerState
         )

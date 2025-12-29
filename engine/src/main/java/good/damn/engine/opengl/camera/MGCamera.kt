@@ -2,11 +2,15 @@ package good.damn.engine.opengl.camera
 
 import android.opengl.GLES30.*
 import android.opengl.Matrix
+import good.damn.engine.opengl.buffers.MGBufferUniformCamera
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
-import good.damn.engine.opengl.shaders.MGIShaderCamera
+import good.damn.engine.opengl.runnables.misc.MGRunglSendDataProjection
 import good.damn.engine.opengl.shaders.MGIShaderCameraPosition
+import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.engine.utils.MGUtilsBuffer
 
 open class MGCamera(
+    protected val bufferUniform: MGBufferUniformCamera,
     var modelMatrix: MGMatrixTranslate
 ) {
 
@@ -14,9 +18,14 @@ open class MGCamera(
         16
     )
 
+    private val mProjectionBuffer = MGUtilsBuffer.allocateByte(
+        16 * 4
+    )
+
     fun setPerspective(
         width: Int,
-        height: Int
+        height: Int,
+        handler: MGHandlerGl
     ) {
         Matrix.perspectiveM(
             mProjection,
@@ -25,6 +34,18 @@ open class MGCamera(
             width.toFloat() / height.toFloat(),
             0.9999999f,
             Float.MAX_VALUE / 2
+        )
+
+        mProjectionBuffer.asFloatBuffer().run {
+            put(mProjection)
+            position(0)
+        }
+
+        handler.post(
+            MGRunglSendDataProjection(
+                mProjectionBuffer,
+                bufferUniform
+            )
         )
     }
 
@@ -39,30 +60,6 @@ open class MGCamera(
                 modelMatrix.x,
                 modelMatrix.y,
                 modelMatrix.z
-            )
-        }
-    }
-
-    fun draw(
-        shader: MGIShaderCamera
-    ) {
-        glUniformMatrix4fv(
-            shader.uniformCameraProjection,
-            1,
-            false,
-            mProjection,
-            0
-        )
-
-        synchronized(
-            modelMatrix
-        ) {
-            glUniformMatrix4fv(
-                shader.uniformCameraView,
-                1,
-                false,
-                modelMatrix.model,
-                0
             )
         }
     }

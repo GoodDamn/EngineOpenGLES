@@ -5,50 +5,30 @@ import good.damn.engine.opengl.shaders.MGShaderLightPass
 import good.damn.engine.opengl.textures.MGTexture
 
 class MGDrawerLightPass(
-    private val texturePosition: MGTexture,
-    private val textureNormal: MGTexture,
-    private val textureColorSpec: MGTexture,
-    private val textureMisc: MGTexture,
+    private val textures: Array<MGTexture>,
     private val quad: MGDrawerVertexArray
 ) {
-
     fun draw(
         shader: MGShaderLightPass
     ) {
-        texturePosition.draw(
-            shader.texturePosition
-        )
-
-        textureNormal.draw(
-            shader.textureNormal
-        )
-
-        textureColorSpec.draw(
-            shader.textureColorSpec
-        )
-
-        textureMisc.draw(
-            shader.textureMisc
-        )
+        var i = 0
+        textures.forEach {
+            it.draw(
+                shader.textures[i]
+            )
+            i++
+        }
 
         quad.draw(
             GLES30.GL_TRIANGLES
         )
 
-        texturePosition.unbind(
-            shader.texturePosition
-        )
-
-        textureNormal.unbind(
-            shader.textureNormal
-        )
-
-        textureColorSpec.unbind(
-            shader.textureColorSpec
-        )
-
-        textureMisc.unbind(
-            shader.textureMisc
-        )
+        i = 0
+        textures.forEach {
+            it.unbind(
+                shader.textures[i]
+            )
+            i++
+        }
     }
 }

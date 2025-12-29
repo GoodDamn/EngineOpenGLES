@@ -2,7 +2,7 @@ package good.damn.engine.opengl.triggers;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.opengl.entities.MGLight;
+import good.damn.engine.sdk.models.SDMLightPoint;
 import good.damn.engine.opengl.matrices.MGMatrixScale;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
 import good.damn.engine.opengl.triggers.callbacks.MGManagerTriggerState;
@@ -27,7 +27,7 @@ public final class MGTriggerLight {
 
     @NonNull
     public static MGTriggerLight createFromLight(
-        @NonNull final MGLight light
+        @NonNull final SDMLightPoint light
     ) {
         @NonNull
         final MGMatrixTriggerLight matrix = new MGMatrixTriggerLight(
