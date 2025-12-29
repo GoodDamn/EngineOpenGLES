@@ -284,7 +284,7 @@ object MGStreamLevel {
                 triggerMesh.triggerState
             )
 
-            informator.managerTriggerLight.addTrigger(
+            informator.managerLight.register(
                 triggerLight.triggerState
             )
         }

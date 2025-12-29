@@ -28,7 +28,6 @@ import good.damn.engine.opengl.executor.MGHandlerGlExecutor
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import good.damn.engine.opengl.managers.MGManagerLight
-import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMLightPass
@@ -179,10 +178,6 @@ class MGRendererLevelEditor(
         ),
         meshSky = MGSky(),
         managerLight,
-        MGManagerTriggerLight(
-            managerLight,
-            mDrawerSphere
-        ),
         MGManagerTriggerMesh(
             mDrawerBox
         ),

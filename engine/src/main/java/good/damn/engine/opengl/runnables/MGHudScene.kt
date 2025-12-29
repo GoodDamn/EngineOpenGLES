@@ -36,7 +36,7 @@ class MGHudScene(
                 "scripts"
             ),
             informator.managerProcessTime,
-            informator.managerTriggerLight
+            informator.managerLight
         )
         scriptLightPlacement.execute()
 

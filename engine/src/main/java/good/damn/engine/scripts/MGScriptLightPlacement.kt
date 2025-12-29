@@ -1,6 +1,7 @@
 package good.damn.engine.scripts
 
 import dalvik.system.DexClassLoader
+import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerLight
 import good.damn.engine.opengl.triggers.MGTriggerLight
 import good.damn.engine.runnables.MGManagerProcessTime
@@ -11,7 +12,7 @@ import java.io.File
 class MGScriptLightPlacement(
     private val dirScripts: File,
     private val managerProcessTime: MGManagerProcessTime,
-    private val managerTriggerLight: MGManagerTriggerLight
+    private val managerTriggerLight: MGManagerLight
 ): MGIScript {
 
     override fun execute() {
@@ -60,7 +61,7 @@ class MGScriptLightPlacement(
                     matrix.invalidateRadius()
                     matrix.calculateInvertTrigger()
 
-                    managerTriggerLight.addTrigger(
+                    managerTriggerLight.register(
                         triggerState
                     )
                 }

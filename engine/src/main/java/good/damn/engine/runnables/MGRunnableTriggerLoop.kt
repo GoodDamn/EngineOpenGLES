@@ -9,11 +9,11 @@ class MGRunnableTriggerLoop(
     override fun onProcessTime(
         dt: Float
     ) {
-        informator.managerTriggerLight.loopTriggers(
+        /*informator.managerTriggerLight.loopTriggers(
             informator.camera.modelMatrix.x,
             informator.camera.modelMatrix.y,
-            informator.camera.modelMatrix.z,
-        )
+            informator.camera.modelMatrix.z
+        )*/
     }
 
 }
