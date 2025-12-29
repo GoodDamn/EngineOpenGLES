@@ -59,6 +59,18 @@ class MGSwitcherDrawMode(
         drawerFramebufferG
     )
 
+    private val drawerModeNormals = MGDrawModeTexture(
+        informator,
+        MGDrawerLightPass(
+            arrayOf(
+                informator.framebufferG.textureAttachmentNormal.texture
+            ),
+            informator.drawerQuad
+        ),
+        informator.shaders.lightPasses[3].shader,
+        drawerFramebufferG
+    )
+
     var currentDrawerMode: MGIDrawer = drawerModeOpaque
         private set
 
@@ -73,6 +85,11 @@ class MGSwitcherDrawMode(
         MGEnumDrawMode.DIFFUSE -> switchDrawMode(
             MGEnumDrawMode.DEPTH,
             drawerModeDepth
+        )
+
+        MGEnumDrawMode.DEPTH -> switchDrawMode(
+            MGEnumDrawMode.NORMAL,
+            drawerModeNormals
         )
 
         else -> switchDrawMode(

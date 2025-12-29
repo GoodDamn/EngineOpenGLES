@@ -114,6 +114,13 @@ class MGRendererLevelEditor(
                     .build(),
                 "shaders/lightPass/vert.glsl",
                 "shaders/lightPass/frag_defer_depth.glsl"
+            ),
+            MGMLightPass(
+                MGShaderLightPass.Builder()
+                    .attachNormal()
+                    .build(),
+                "shaders/lightPass/vert.glsl",
+                "shaders/lightPass/frag_defer_normal.glsl"
             )
         )
     )
