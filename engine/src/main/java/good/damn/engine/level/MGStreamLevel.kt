@@ -1,6 +1,7 @@
 package good.damn.engine.level
 
 import android.graphics.Color
+import android.util.Log
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.loaders.MGLoaderLevelMatrices
@@ -13,6 +14,7 @@ import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.models.json.spawn.MGMLevelSpawnInfo
 import good.damn.engine.models.json.spawn.MGMLevelSpawnLight
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
+import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
@@ -20,9 +22,9 @@ import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.models.MGMMeshDrawer
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.opengl.triggers.MGTriggerLight
 import good.damn.engine.opengl.triggers.MGTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerSimple
+import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
@@ -33,6 +35,7 @@ import good.damn.mapimporter.models.MIMMap
 import good.damn.mapimporter.models.MIMProp
 import java.io.DataInputStream
 import java.io.InputStream
+import kotlin.math.sin
 
 object MGStreamLevel {
 
@@ -233,15 +236,17 @@ object MGStreamLevel {
                 i % pointsInfo.size
             ]
 
-            val triggerLight = MGTriggerLight.createFromLight(
-                pointInfo.first.second
-            )
+            val light = pointInfo.first.second
+
+            val posX = it.position.x
+            val posY = it.position.z+json.positionYDt
+            val posZ = it.position.y
 
             triggerMesh.matrix.run {
                 setPosition(
-                    it.position.x,
-                    it.position.z+json.positionYDt,
-                    it.position.y,
+                    posX,
+                    posY,
+                    posZ
                 )
                 addRotation(
                     it.rotation.x+json.rotX,
@@ -255,16 +260,32 @@ object MGStreamLevel {
                 calculateNormals()
             }
 
-            triggerLight.matrix.run {
-                setPosition(
-                    it.position.x,
-                    it.position.z+json.positionYDt,
-                    it.position.y,
+            MGDrawerTriggerStateableLight.createFromLight(
+                light
+            ).let { triggerLight ->
+                triggerLight.modelMatrix.run {
+                    setPosition(
+                        posX,
+                        posY,
+                        posZ
+                    )
+                    radius = light.interpolation.radius
+                    invalidatePosition()
+                    invalidateRadius()
+                    calculateInvertTrigger()
+
+                    informator.managerLightVolumes.addVolume(
+                        MGDrawerPositionEntity(
+                            matrixTrigger.model
+                        )
+                    )
+                }
+
+                informator.managerLight.register(
+                    MGDrawerLightPoint(
+                        triggerLight
+                    )
                 )
-                radius = 20000f
-                invalidatePosition()
-                invalidateRadius()
-                calculateInvertTrigger()
             }
 
             informator.meshes.add(
@@ -283,12 +304,6 @@ object MGStreamLevel {
 
             informator.managerTrigger.addTrigger(
                 triggerMesh.triggerState
-            )
-
-            informator.managerLight.register(
-                MGDrawerLightPoint(
-                    triggerLight
-                )
             )
         }
     }

@@ -7,7 +7,6 @@ import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
-import good.damn.engine.opengl.triggers.MGTriggerLight
 import good.damn.engine.scripts.MGScriptLightPlacement
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine.utils.MGUtilsFile
@@ -36,7 +35,8 @@ class MGHudScene(
                 "scripts"
             ),
             informator.managerProcessTime,
-            informator.managerLight
+            informator.managerLight,
+            informator.managerLightVolumes
         )
         scriptLightPlacement.execute()
 

@@ -9,6 +9,7 @@ import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
+import good.damn.engine.opengl.managers.MGManagerVolume
 import good.damn.engine.opengl.models.MGMMeshDrawer
 import good.damn.engine.opengl.pools.MGPoolMaterials
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
@@ -42,6 +43,7 @@ data class MGMInformator(
     val meshSky: MGSky,
 
     val managerLight: MGManagerLight,
+    val managerLightVolumes: MGManagerVolume,
     val managerTrigger: MGManagerTriggerMesh,
     val managerProcessTime: MGManagerProcessTime,
 

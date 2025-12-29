@@ -14,7 +14,8 @@ class MGDrawModeOpaque(
 ): MGIDrawer {
 
     private val mTriggerManagers = arrayOf(
-        informator.managerTrigger
+        informator.managerTrigger,
+        informator.managerLightVolumes
     )
 
     override fun draw(

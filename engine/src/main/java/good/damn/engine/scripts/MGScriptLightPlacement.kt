@@ -1,9 +1,10 @@
 package good.damn.engine.scripts
 
 import dalvik.system.DexClassLoader
+import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.managers.MGManagerLight
-import good.damn.engine.opengl.triggers.MGTriggerLight
+import good.damn.engine.opengl.managers.MGManagerVolume
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.runnables.MGManagerProcessTime
 import good.damn.engine.sdk.models.SDMLightPointEntity
@@ -13,7 +14,8 @@ import java.io.File
 class MGScriptLightPlacement(
     private val dirScripts: File,
     private val managerProcessTime: MGManagerProcessTime,
-    private val managerTriggerLight: MGManagerLight
+    private val managerLight: MGManagerLight,
+    private val managerLightVolume: MGManagerVolume
 ): MGIScript {
 
     override fun execute() {
@@ -49,23 +51,31 @@ class MGScriptLightPlacement(
             }
 
             lightPoints?.forEach {
-                MGTriggerLight.createFromLight(
+                MGDrawerTriggerStateableLight.createFromLight(
                     it.light
                 ).run {
-                    matrix.setPosition(
+                    modelMatrix.setPosition(
                         it.position.x,
                         it.position.y,
                         it.position.z
                     )
-                    matrix.invalidatePosition()
-                    matrix.invalidateRadius()
-                    matrix.calculateInvertTrigger()
+                    modelMatrix.radius = it.light.interpolation.radius
+                    modelMatrix.invalidatePosition()
+                    modelMatrix.invalidateRadius()
+                    modelMatrix.calculateInvertTrigger()
 
-                    managerTriggerLight.register(
+                    managerLight.register(
                         MGDrawerLightPoint(
                             this
                         )
                     )
+
+                    managerLightVolume.addVolume(
+                        MGDrawerPositionEntity(
+                            modelMatrix.matrixTrigger.model
+                        )
+                    )
+
                 }
             }
         } catch (

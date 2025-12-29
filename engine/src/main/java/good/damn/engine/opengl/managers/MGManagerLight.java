@@ -1,24 +1,18 @@
 package good.damn.engine.opengl.managers;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint;
-import good.damn.engine.sdk.models.SDMLight;
-import good.damn.engine.sdk.models.SDMLightPoint;
 import good.damn.engine.opengl.shaders.MGShaderLightPoint;
-import good.damn.engine.opengl.triggers.MGMatrixTriggerLight;
-import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight;
-import good.damn.engine.sdk.models.SDMLightPointInterpolation;
 
 public final class MGManagerLight {
 
     private final ConcurrentLinkedQueue<
         MGDrawerLightPoint
-    > mPullLights = new ConcurrentLinkedQueue<>();
+    > mLights = new ConcurrentLinkedQueue<>();
 
 
     public final void draw(
@@ -27,7 +21,7 @@ public final class MGManagerLight {
         @NonNull
         final Iterator<
             MGDrawerLightPoint
-        > iterator = mPullLights.iterator();
+        > iterator = mLights.iterator();
 
         for (
             @NonNull
@@ -50,7 +44,7 @@ public final class MGManagerLight {
     public final void register(
         @NonNull final MGDrawerLightPoint drawer
     ) {
-        mPullLights.add(
+        mLights.add(
             drawer
         );
     }
@@ -58,7 +52,7 @@ public final class MGManagerLight {
     public final void unregister(
         @NonNull final MGDrawerLightPoint drawer
     ) {
-        mPullLights.remove(
+        mLights.remove(
             drawer
         );
     }

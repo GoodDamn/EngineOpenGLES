@@ -2,11 +2,11 @@ package good.damn.engine.opengl.drawers.light
 
 import android.opengl.GLES30
 import good.damn.engine.opengl.shaders.MGShaderLightPoint
-import good.damn.engine.opengl.triggers.MGTriggerLight
+import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.sdk.models.SDMLightPointEntity
 
 class MGDrawerLightPoint(
-    private val entity: MGTriggerLight
+    private val entity: MGDrawerTriggerStateableLight
 ) {
     companion object {
         @JvmStatic
@@ -30,7 +30,7 @@ class MGDrawerLightPoint(
             isActive
         )
 
-        val light = entity.triggerState.light
+        val light = entity.light
         light.interpolation.apply {
             GLES30.glUniform1f(
                 shader.uniformConstant,
@@ -53,7 +53,7 @@ class MGDrawerLightPoint(
             )
         }
 
-        entity.matrix.position.run {
+        entity.modelMatrix.position.run {
             GLES30.glUniform3f(
                 shader.uniformPosition,
                 x, y, z
