@@ -1,6 +1,7 @@
 package good.damn.engine.opengl.drawers.light
 
 import android.opengl.GLES30
+import android.util.Log
 import good.damn.engine.opengl.shaders.MGShaderLightPoint
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.sdk.models.SDMLightPointEntity
@@ -29,6 +30,10 @@ class MGDrawerLightPoint(
             shader.uniformActive,
             isActive
         )
+
+        if (isActive == 0) {
+            return
+        }
 
         val light = entity.light
         light.interpolation.apply {

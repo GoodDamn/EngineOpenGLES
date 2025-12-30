@@ -3,6 +3,7 @@ package good.damn.engine.scripts
 import dalvik.system.DexClassLoader
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
+import good.damn.engine.opengl.drawers.volume.MGVolumeLight
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerVolume
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
@@ -64,15 +65,20 @@ class MGScriptLightPlacement(
                     modelMatrix.invalidateRadius()
                     modelMatrix.calculateInvertTrigger()
 
+                    val lightPoint = MGDrawerLightPoint(
+                        this
+                    )
+
                     managerLight.register(
-                        MGDrawerLightPoint(
-                            this
-                        )
+                        lightPoint
                     )
 
                     managerLightVolume.addVolume(
-                        MGDrawerPositionEntity(
-                            modelMatrix.matrixTrigger.model
+                        MGVolumeLight(
+                            lightPoint,
+                            MGDrawerPositionEntity(
+                                modelMatrix.matrixTrigger.model
+                            )
                         )
                     )
 

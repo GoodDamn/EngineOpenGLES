@@ -14,6 +14,7 @@ import good.damn.engine.loaders.texture.MGLoaderTextureAsync
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInformatorShader
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
+import good.damn.engine.opengl.arrays.MGArrayVertexManager
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.buffers.MGBuffer
 import good.damn.engine.opengl.buffers.MGBufferUniform
@@ -47,7 +48,6 @@ import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassModel
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGManagerProcessTime
-import good.damn.engine.runnables.MGRunnableTriggerLoop
 import good.damn.engine.shader.MGShaderCache
 import good.damn.engine.shader.MGShaderSource
 import good.damn.engine.utils.MGUtilsBuffer
@@ -132,7 +132,7 @@ class MGRendererLevelEditor(
 
     private val managerLight = MGManagerLight()
 
-    private val mVerticesBox = MGArrayVertexConfigurator(
+    private val mVerticesBox = MGArrayVertexManager(
         MGEnumArrayVertexConfiguration.BYTE
     )
 
@@ -160,12 +160,14 @@ class MGRendererLevelEditor(
         mBufferUniform
     )
 
+    private val mCameraFree = MGCameraFree(
+        mBufferUniformCamera,
+        MGMatrixTranslate()
+    )
+
     private val mInformator = MGMInformator(
         mInformatorShader,
-        MGCameraFree(
-            mBufferUniformCamera,
-            MGMatrixTranslate()
-        ),
+        mCameraFree,
         MGDrawerLightDirectional(),
         MGDrawerVertexArray(
             mVerticesQuad
@@ -178,7 +180,8 @@ class MGRendererLevelEditor(
         meshSky = MGSky(),
         managerLight,
         MGManagerVolume(
-            mDrawerSphere
+            mCameraFree,
+            mDrawerBox
         ),
         MGManagerTriggerMesh(
             mDrawerBox
@@ -218,15 +221,6 @@ class MGRendererLevelEditor(
         mInformator.glHandler.registerCycleTask(
             mHudScene.runnableCycle
         )
-
-        mInformator.managerProcessTime.run {
-            registerLoopProcessTime(
-                MGRunnableTriggerLoop(
-                    mInformator
-                )
-            )
-            start()
-        }
     }
 
     private var mWidth = 0
@@ -302,18 +296,37 @@ class MGRendererLevelEditor(
                 pointPosition
             )
 
+            val bufferVertices = MGUtilsBuffer.createFloat(
+                MGUtilsVertIndices.createCubeVertices(
+                    MGTriggerMethodBox.MIN,
+                    MGTriggerMethodBox.MAX
+                )
+            )
+
             mVerticesBox.configure(
-                MGUtilsBuffer.createFloat(
-                    MGUtilsVertIndices.createCubeVertices(
-                        MGTriggerMethodBox.MIN,
-                        MGTriggerMethodBox.MAX
-                    )
-                ),
+                bufferVertices,
                 MGUtilsBuffer.createByte(
                     MGUtilsVertIndices.createCubeIndices()
                 ),
                 pointPosition
             )
+
+            mVerticesBox.keepBufferVertices(
+                bufferVertices
+            )
+
+            mInformator.managerLightVolumes.loadPositions(
+                mVerticesBox
+            )
+
+            mVerticesBox.unkeepBufferVertices()
+        }
+
+        mInformator.managerProcessTime.run {
+            registerLoopProcessTime(
+                mInformator.managerLightVolumes
+            )
+            start()
         }
 
         mInformator.camera.run {

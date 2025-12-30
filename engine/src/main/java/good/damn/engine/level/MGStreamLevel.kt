@@ -16,6 +16,7 @@ import good.damn.engine.models.json.spawn.MGMLevelSpawnLight
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
+import good.damn.engine.opengl.drawers.volume.MGVolumeLight
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
 import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
@@ -263,6 +264,11 @@ object MGStreamLevel {
             MGDrawerTriggerStateableLight.createFromLight(
                 light
             ).let { triggerLight ->
+
+                val drawer = MGDrawerLightPoint(
+                    triggerLight
+                )
+
                 triggerLight.modelMatrix.run {
                     setPosition(
                         posX,
@@ -275,16 +281,17 @@ object MGStreamLevel {
                     calculateInvertTrigger()
 
                     informator.managerLightVolumes.addVolume(
-                        MGDrawerPositionEntity(
-                            matrixTrigger.model
+                        MGVolumeLight(
+                            drawer,
+                            MGDrawerPositionEntity(
+                                matrixTrigger.model
+                            )
                         )
                     )
                 }
 
                 informator.managerLight.register(
-                    MGDrawerLightPoint(
-                        triggerLight
-                    )
+                    drawer
                 )
             }
 
