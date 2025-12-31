@@ -21,7 +21,6 @@ import good.damn.engine.opengl.buffers.MGBufferUniform
 import good.damn.engine.opengl.buffers.MGBufferUniformCamera
 import good.damn.engine.opengl.camera.MGCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
-import good.damn.engine.opengl.drawers.MGDrawerLightPass
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
@@ -39,9 +38,8 @@ import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.runnables.MGHudScene
 import good.damn.engine.opengl.runnables.MGIRunnableBounds
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
-import good.damn.engine.opengl.shaders.MGShaderLightPass
+import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPass
 import good.damn.engine.opengl.shaders.MGShaderMaterial
-import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassInstanced
 import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassModel
@@ -53,7 +51,6 @@ import good.damn.engine.shader.MGShaderSource
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsVertIndices
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGRendererLevelEditor(
@@ -104,7 +101,7 @@ class MGRendererLevelEditor(
                     .attachAll()
                     .build(),
                 "shaders/lightPass/vert.glsl",
-                "shaders/opaque/defer/frag_defer_light.glsl",
+                "shaders/opaque/defer/frag_defer_light_dir.glsl",
             ),
             MGMLightPass(
                 MGShaderLightPass.Builder()
@@ -126,11 +123,16 @@ class MGRendererLevelEditor(
                     .build(),
                 "shaders/lightPass/vert.glsl",
                 "shaders/lightPass/frag_defer_normal.glsl"
+            ),
+            MGMLightPass(
+                MGShaderLightPass.Builder()
+                    .attachAll()
+                    .build(),
+                "shaders/lightPass/vert_pointLight.glsl",
+                "shaders/opaque/defer/frag_defer_light_point.glsl"
             )
         )
     )
-
-    private val managerLight = MGManagerLight()
 
     private val mVerticesBox = MGArrayVertexManager(
         MGEnumArrayVertexConfiguration.BYTE
@@ -152,12 +154,14 @@ class MGRendererLevelEditor(
         MGEnumArrayVertexConfiguration.BYTE
     )
 
-    private val mBufferUniform = MGBuffer(
-        GL_UNIFORM_BUFFER
+    private val mBufferUniformCamera = MGBufferUniformCamera(
+        MGBuffer(
+            GL_UNIFORM_BUFFER
+        )
     )
 
-    private val mBufferUniformCamera = MGBufferUniformCamera(
-        mBufferUniform
+    private val managerLight = MGManagerLight(
+        mDrawerSphere
     )
 
     private val mCameraFree = MGCameraFree(
@@ -197,7 +201,7 @@ class MGRendererLevelEditor(
     private val mHudScene = MGHudScene(
         requesterUserContent,
         mInformator,
-        mInformator.framebufferG.framebuffer
+        mInformator.framebufferG
     )
 
     init {
@@ -239,11 +243,14 @@ class MGRendererLevelEditor(
     ) {
         MGUtilsFile.glWriteExtensions()
 
-        mBufferUniform.generate()
-        MGBufferUniform.setupBindingPoint(
-            mBufferUniform,
-            2 * 64
-        )
+        mBufferUniformCamera.apply {
+            buffer.generate()
+            MGBufferUniform.setupBindingPoint(
+                0,
+                buffer,
+                2 * 64
+            )
+        }
 
         mVerticesQuad.configure(
             MGUtilsBuffer.createFloat(
@@ -323,9 +330,9 @@ class MGRendererLevelEditor(
         }
 
         mInformator.managerProcessTime.run {
-            registerLoopProcessTime(
+            /*registerLoopProcessTime(
                 mInformator.managerLightVolumes
-            )
+            )*/
             start()
         }
 

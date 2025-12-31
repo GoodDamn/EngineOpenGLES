@@ -65,23 +65,11 @@ class MGScriptLightPlacement(
                     modelMatrix.invalidateRadius()
                     modelMatrix.calculateInvertTrigger()
 
-                    val lightPoint = MGDrawerLightPoint(
-                        this
-                    )
-
                     managerLight.register(
-                        lightPoint
-                    )
-
-                    managerLightVolume.addVolume(
-                        MGVolumeLight(
-                            lightPoint,
-                            MGDrawerPositionEntity(
-                                modelMatrix.matrixTrigger.model
-                            )
+                        MGDrawerLightPoint(
+                            this
                         )
                     )
-
                 }
             }
         } catch (

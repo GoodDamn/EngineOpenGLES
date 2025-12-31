@@ -8,7 +8,6 @@ import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.modes.MGDrawModeOpaque
 import good.damn.engine.opengl.drawers.modes.MGDrawModeTexture
 import good.damn.engine.opengl.enums.MGEnumDrawMode
-import good.damn.engine.opengl.shaders.MGShaderLightPass
 
 class MGSwitcherDrawMode(
     private val informator: MGMInformator,

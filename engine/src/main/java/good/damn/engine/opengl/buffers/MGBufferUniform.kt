@@ -7,6 +7,7 @@ object MGBufferUniform {
 
     @JvmStatic
     fun setupBindingPoint(
+        index: Int,
         buffer: MGBuffer,
         size: Int
     ) {
@@ -21,7 +22,7 @@ object MGBufferUniform {
 
         GLES30.glBindBufferRange(
             GLES30.GL_UNIFORM_BUFFER,
-            0,
+            index,
             buffer.id,
             0,
             size

@@ -265,10 +265,6 @@ object MGStreamLevel {
                 light
             ).let { triggerLight ->
 
-                val drawer = MGDrawerLightPoint(
-                    triggerLight
-                )
-
                 triggerLight.modelMatrix.run {
                     setPosition(
                         posX,
@@ -279,19 +275,12 @@ object MGStreamLevel {
                     invalidatePosition()
                     invalidateRadius()
                     calculateInvertTrigger()
-
-                    informator.managerLightVolumes.addVolume(
-                        MGVolumeLight(
-                            drawer,
-                            MGDrawerPositionEntity(
-                                matrixTrigger.model
-                            )
-                        )
-                    )
                 }
 
                 informator.managerLight.register(
-                    drawer
+                    MGDrawerLightPoint(
+                        triggerLight
+                    )
                 )
             }
 

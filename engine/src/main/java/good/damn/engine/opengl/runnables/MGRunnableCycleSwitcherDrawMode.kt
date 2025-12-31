@@ -14,7 +14,6 @@ import android.util.Log
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.entities.MGPostProcess
-import good.damn.engine.opengl.framebuffer.MGFramebufferScene
 import good.damn.engine.opengl.shaders.MGShaderPostProcess
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.textures.MGTexture

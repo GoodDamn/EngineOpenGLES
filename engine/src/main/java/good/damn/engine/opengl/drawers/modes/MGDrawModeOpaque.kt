@@ -4,7 +4,8 @@ import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.opengl.drawers.MGDrawerLightPass
 import good.damn.engine.opengl.drawers.MGIDrawer
-import good.damn.engine.opengl.shaders.MGShaderLightPass
+import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPass
+import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPassPointLight
 
 class MGDrawModeOpaque(
     private val informator: MGMInformator,
@@ -88,10 +89,22 @@ class MGDrawModeOpaque(
             lightPassDrawer.draw(
                 this
             )
-            informator.managerLight.draw(
-                lightPoints
-            )
         }
+
+        /*lightPassShaderPointLight.run {
+            use()
+            camera.drawPosition(
+                this
+            )
+
+            informator.managerLight.draw(
+                lightPoint
+            )
+
+            lightPassDrawer.draw(
+                this
+            )
+        }*/
     }
 
 }

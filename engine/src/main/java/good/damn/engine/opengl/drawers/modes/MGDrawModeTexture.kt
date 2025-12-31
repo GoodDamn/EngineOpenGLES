@@ -4,9 +4,7 @@ import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.opengl.drawers.MGDrawerLightPass
 import good.damn.engine.opengl.drawers.MGIDrawer
-import good.damn.engine.opengl.shaders.MGShaderLightPass
-import good.damn.engine.opengl.shaders.MGShaderProjectionViewModelTexture
-import good.damn.engine.opengl.shaders.MGShaderProjectionViewTexture
+import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPass
 
 class MGDrawModeTexture(
     private val informator: MGMInformator,

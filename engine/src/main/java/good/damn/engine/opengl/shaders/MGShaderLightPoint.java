@@ -21,10 +21,8 @@ implements MGIUniform {
 
     private final String mId;
 
-    public MGShaderLightPoint(
-        final int index
-    ) {
-        mId = "lightPoints[" + index + "].";
+    public MGShaderLightPoint() {
+        mId = "lightPoint.";
     }
 
     @Override

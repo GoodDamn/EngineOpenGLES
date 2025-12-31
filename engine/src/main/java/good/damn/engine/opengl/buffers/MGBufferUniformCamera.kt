@@ -5,7 +5,7 @@ import java.nio.Buffer
 import java.nio.ByteBuffer
 
 class MGBufferUniformCamera(
-    private val buffer: MGBuffer
+    val buffer: MGBuffer
 ) {
     companion object {
         private const val SIZE_MAT44 = 64

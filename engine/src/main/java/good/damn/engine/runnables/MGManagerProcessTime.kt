@@ -2,11 +2,11 @@ package good.damn.engine.runnables
 
 import android.os.Handler
 import android.os.Looper
-import good.damn.engine.models.MGMInformator
 import good.damn.engine.sdk.process.SDIProcessTime
 import java.util.LinkedList
 
 class MGManagerProcessTime {
+
     private val mHandler = Handler(
         Looper.getMainLooper()
     )
@@ -18,11 +18,8 @@ class MGManagerProcessTime {
     private val mRunnable = MGRunnableProcessTimeLoop(
         mLoopRunnables,
         mHandler,
-        16L
+        6L
     )
-
-    val isRunning: Boolean
-        get() = mRunnable.isRunning
 
     fun registerLoopProcessTime(
         processTime: SDIProcessTime
