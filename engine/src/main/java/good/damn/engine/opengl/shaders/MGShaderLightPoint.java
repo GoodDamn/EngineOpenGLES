@@ -13,7 +13,6 @@ implements MGIUniform {
     private int mUniformActive;
     private int mUniformConstant;
     private int mUniformLinear;
-    private int mUniformQuad;
     private int mUniformPosition;
     private int mUniformColor;
 
@@ -44,11 +43,6 @@ implements MGIUniform {
             mId+"linear"
         );
 
-        mUniformQuad = glGetUniformLocation(
-            program,
-            mId+"quad"
-        );
-
         mUniformPosition = glGetUniformLocation(
             program,
             mId+"position"
@@ -73,9 +67,6 @@ implements MGIUniform {
     }
     public final int getUniformLinear() {
         return mUniformLinear;
-    }
-    public final int getUniformQuad() {
-        return mUniformQuad;
     }
     public final int getUniformPosition() {
         return mUniformPosition;

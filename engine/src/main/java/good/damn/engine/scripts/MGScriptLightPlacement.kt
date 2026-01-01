@@ -67,6 +67,9 @@ class MGScriptLightPlacement(
 
                     managerLight.register(
                         MGDrawerLightPoint(
+                            MGDrawerPositionEntity(
+                                modelMatrix.matrixTrigger.model
+                            ),
                             this
                         )
                     )

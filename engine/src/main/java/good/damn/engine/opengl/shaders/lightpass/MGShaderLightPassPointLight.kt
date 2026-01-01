@@ -8,18 +8,23 @@ import good.damn.engine.opengl.shaders.MGIShaderLight
 import good.damn.engine.opengl.shaders.MGShaderLightDirectional
 import good.damn.engine.opengl.shaders.MGShaderLightPoint
 import good.damn.engine.opengl.shaders.MGShaderProjectionView
+import good.damn.engine.opengl.shaders.MGShaderProjectionViewModel
 import good.damn.engine.opengl.shaders.MGShaderTexture
 import java.util.LinkedList
 
 class MGShaderLightPassPointLight private constructor(
     val textures: Array<MGShaderTexture>
-): MGShaderProjectionView(),
+): MGShaderProjectionViewModel(),
 MGIShaderCameraPosition {
 
     override var uniformCameraPosition = 0
         private set
 
     val lightPoint = MGShaderLightPoint()
+    val lightDirectional = MGShaderLightDirectional()
+
+    var uniformScreenSize = 0
+        private set
 
     override fun setupUniforms(
         program: Int
@@ -28,7 +33,16 @@ MGIShaderCameraPosition {
             program
         )
 
+        uniformScreenSize = GLES30.glGetUniformLocation(
+            program,
+            "uScreenSize"
+        )
+
         lightPoint.setupUniforms(
+            program
+        )
+
+        lightDirectional.setupUniforms(
             program
         )
 

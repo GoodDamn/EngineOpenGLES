@@ -32,6 +32,7 @@ import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.managers.MGManagerVolume
 import good.damn.engine.opengl.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMLightPass
+import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolMaterials
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
@@ -43,6 +44,7 @@ import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassInstanced
 import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassModel
+import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPassPointLight
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGManagerProcessTime
@@ -123,27 +125,15 @@ class MGRendererLevelEditor(
                     .build(),
                 "shaders/lightPass/vert.glsl",
                 "shaders/lightPass/frag_defer_normal.glsl"
-            ),
-            MGMLightPass(
-                MGShaderLightPass.Builder()
-                    .attachAll()
-                    .build(),
-                "shaders/lightPass/vert_pointLight.glsl",
-                "shaders/opaque/defer/frag_defer_light_point.glsl"
             )
-        )
+        ),
+        MGShaderLightPassPointLight.Builder()
+            .attachAll()
+            .build()
     )
 
     private val mVerticesBox = MGArrayVertexManager(
         MGEnumArrayVertexConfiguration.BYTE
-    )
-
-    private val mVerticesSphere = MGArrayVertexConfigurator(
-        MGEnumArrayVertexConfiguration.BYTE
-    )
-
-    private val mDrawerSphere = MGDrawerVertexArray(
-        mVerticesSphere
     )
 
     private val mDrawerBox = MGDrawerVertexArray(
@@ -161,7 +151,7 @@ class MGRendererLevelEditor(
     )
 
     private val managerLight = MGManagerLight(
-        mDrawerSphere
+        mDrawerBox
     )
 
     private val mCameraFree = MGCameraFree(
@@ -284,50 +274,57 @@ class MGRendererLevelEditor(
                         this
                     )
                 }
+
+                mInformatorShader.lightPassPointLight.setup(
+                    "shaders/lightPass/vert_pointLight.glsl",
+                    "shaders/opaque/defer/frag_defer_light_point.glsl",
+                    this
+                )
             }
 
         mInformator.meshSky.configure(
             mInformator
         )
 
-        MGUtilsVertIndices.createSphere(
-            23
-        ).run {
-            val pointPosition = MGPointerAttribute.Builder()
-                .pointPosition()
-                .build()
+        val pointPosition = MGPointerAttribute.Builder()
+            .pointPosition()
+            .build()
 
+        /*MGObject3d.createFromAssets(
+            "objs/semi_sphere.obj"
+        )?.get(0)?.let {
             mVerticesSphere.configure(
-                second,
-                first,
+                it.vertices,
+                it.indices,
                 pointPosition
             )
+        }*/
 
-            val bufferVertices = MGUtilsBuffer.createFloat(
-                MGUtilsVertIndices.createCubeVertices(
-                    MGTriggerMethodBox.MIN,
-                    MGTriggerMethodBox.MAX
-                )
+
+        val bufferVertices = MGUtilsBuffer.createFloat(
+            MGUtilsVertIndices.createCubeVertices(
+                MGTriggerMethodBox.MIN,
+                MGTriggerMethodBox.MAX
             )
+        )
 
-            mVerticesBox.configure(
-                bufferVertices,
-                MGUtilsBuffer.createByte(
-                    MGUtilsVertIndices.createCubeIndices()
-                ),
-                pointPosition
-            )
+        mVerticesBox.configure(
+            bufferVertices,
+            MGUtilsBuffer.createByte(
+                MGUtilsVertIndices.createCubeIndices()
+            ),
+            pointPosition
+        )
 
-            mVerticesBox.keepBufferVertices(
-                bufferVertices
-            )
+        mVerticesBox.keepBufferVertices(
+            bufferVertices
+        )
 
-            mInformator.managerLightVolumes.loadPositions(
-                mVerticesBox
-            )
+        mInformator.managerLightVolumes.loadPositions(
+            mVerticesBox
+        )
 
-            mVerticesBox.unkeepBufferVertices()
-        }
+        mVerticesBox.unkeepBufferVertices()
 
         mInformator.managerProcessTime.run {
             /*registerLoopProcessTime(

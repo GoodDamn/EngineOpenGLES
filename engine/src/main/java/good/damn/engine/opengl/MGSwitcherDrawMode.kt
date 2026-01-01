@@ -28,6 +28,14 @@ class MGSwitcherDrawMode(
         informator.shaders.lightPasses[
             MGEnumDrawMode.OPAQUE.ordinal
         ].shader,
+        informator.shaders.lightPassPointLight,
+        arrayOf(
+            informator.framebufferG.textureAttachmentPosition.texture,
+            informator.framebufferG.textureAttachmentNormal.texture,
+            informator.framebufferG.textureAttachmentColorSpec.texture,
+            informator.framebufferG.textureAttachmentMisc.texture,
+            informator.framebufferG.textureAttachmentDepth.texture,
+        ),
         drawerFramebufferG
     )
 

@@ -279,6 +279,9 @@ object MGStreamLevel {
 
                 informator.managerLight.register(
                     MGDrawerLightPoint(
+                        MGDrawerPositionEntity(
+                            triggerLight.modelMatrix.matrixTrigger.model
+                        ),
                         triggerLight
                     )
                 )

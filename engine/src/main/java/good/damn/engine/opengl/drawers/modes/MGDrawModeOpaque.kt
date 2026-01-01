@@ -1,16 +1,25 @@
 package good.damn.engine.opengl.drawers.modes
 
+import android.opengl.GLES30
+import android.opengl.GLES30.GL_CULL_FACE
+import android.opengl.GLES30.glCullFace
+import android.opengl.GLES30.glDisable
+import android.opengl.GLES30.glEnable
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.opengl.drawers.MGDrawerLightPass
 import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPass
 import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPassPointLight
+import good.damn.engine.opengl.textures.MGTexture
 
 class MGDrawModeOpaque(
     private val informator: MGMInformator,
     private val lightPassDrawer: MGDrawerLightPass,
     private val lightPassShader: MGShaderLightPass,
+    private val lightPassShaderPointLight: MGShaderLightPassPointLight,
+    private val lightPassPointLightTextures: Array<MGTexture>,
     private val drawerFramebufferG: MGDrawerFramebufferG
 ): MGIDrawer {
 
@@ -28,7 +37,7 @@ class MGDrawModeOpaque(
 
         // Geometry pass
         drawerFramebufferG.bind()
-        informator.meshSky.meshMaterial.run {
+        /*informator.meshSky.meshMaterial.run {
             shader.run {
                 use()
                 drawer.drawMaterials(
@@ -36,7 +45,7 @@ class MGDrawModeOpaque(
                     this
                 )
             }
-        }
+        }*/
 
         informator.meshes.forEach {
             it.shader.run {
@@ -76,6 +85,19 @@ class MGDrawModeOpaque(
             height
         )
 
+        glEnable(
+            GLES30.GL_BLEND
+        )
+
+        GLES30.glBlendEquation(
+            GLES30.GL_FUNC_ADD
+        )
+
+        GLES30.glBlendFunc(
+            GLES30.GL_ONE,
+            GLES30.GL_ONE
+        )
+
         lightPassShader.run {
             use()
             camera.drawPosition(
@@ -91,20 +113,29 @@ class MGDrawModeOpaque(
             )
         }
 
-        /*lightPassShaderPointLight.run {
+        lightPassShaderPointLight.run {
             use()
             camera.drawPosition(
                 this
             )
 
-            informator.managerLight.draw(
-                lightPoint
+            drawerLightDirectional.draw(
+                lightDirectional
             )
 
-            lightPassDrawer.draw(
-                this
+            GLES30.glUniform2f(
+                uniformScreenSize,
+                width.toFloat(),
+                height.toFloat()
             )
-        }*/
+
+            informator.managerLight.draw(
+                lightPoint,
+                this,
+                textures,
+                lightPassPointLightTextures
+            )
+        }
     }
 
 }

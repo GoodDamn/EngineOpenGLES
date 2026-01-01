@@ -1,11 +1,13 @@
 package good.damn.engine.opengl.drawers.light
 
 import android.opengl.GLES30
+import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.shaders.MGShaderLightPoint
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.sdk.models.SDMLightPointEntity
 
 class MGDrawerLightPoint(
+    val position: MGDrawerPositionEntity,
     private val entity: MGDrawerTriggerStateableLight
 ) {
     fun draw(
@@ -21,11 +23,6 @@ class MGDrawerLightPoint(
             GLES30.glUniform1f(
                 shader.uniformLinear,
                 linear
-            )
-
-            GLES30.glUniform1f(
-                shader.uniformQuad,
-                quad
             )
 
             GLES30.glUniform1f(
