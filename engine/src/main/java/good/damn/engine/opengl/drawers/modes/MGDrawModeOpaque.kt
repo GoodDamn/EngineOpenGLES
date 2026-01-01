@@ -37,7 +37,7 @@ class MGDrawModeOpaque(
 
         // Geometry pass
         drawerFramebufferG.bind()
-        /*informator.meshSky.meshMaterial.run {
+        informator.meshSky.meshMaterial.run {
             shader.run {
                 use()
                 drawer.drawMaterials(
@@ -45,7 +45,7 @@ class MGDrawModeOpaque(
                     this
                 )
             }
-        }*/
+        }
 
         informator.meshes.forEach {
             it.shader.run {
@@ -113,6 +113,9 @@ class MGDrawModeOpaque(
             )
         }
 
+        glEnable(
+            GL_CULL_FACE
+        )
         lightPassShaderPointLight.run {
             use()
             camera.drawPosition(

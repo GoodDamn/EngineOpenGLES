@@ -132,8 +132,16 @@ class MGRendererLevelEditor(
             .build()
     )
 
+    private val mVerticesSphere = MGArrayVertexConfigurator(
+        MGEnumArrayVertexConfiguration.SHORT
+    )
+
     private val mVerticesBox = MGArrayVertexManager(
         MGEnumArrayVertexConfiguration.BYTE
+    )
+
+    private val mDrawerSphere = MGDrawerVertexArray(
+        mVerticesSphere
     )
 
     private val mDrawerBox = MGDrawerVertexArray(
@@ -151,7 +159,7 @@ class MGRendererLevelEditor(
     )
 
     private val managerLight = MGManagerLight(
-        mDrawerBox
+        mDrawerSphere
     )
 
     private val mCameraFree = MGCameraFree(
@@ -290,15 +298,19 @@ class MGRendererLevelEditor(
             .pointPosition()
             .build()
 
-        /*MGObject3d.createFromAssets(
-            "objs/semi_sphere.obj"
+        MGObject3d.createFromAssets(
+            "objs/sphere.fbx"
         )?.get(0)?.let {
             mVerticesSphere.configure(
                 it.vertices,
                 it.indices,
-                pointPosition
+                MGPointerAttribute.Builder()
+                    .pointPosition()
+                    .pointTextureCoordinates()
+                    .pointNormal()
+                    .build()
             )
-        }*/
+        }
 
 
         val bufferVertices = MGUtilsBuffer.createFloat(
