@@ -13,6 +13,16 @@ extends MGMatrixTranslate {
     public float msy = 1f;
     public float msz = 1f;
 
+    public final void addScale(
+        final float dx,
+        final float dy,
+        final float dz
+    ) {
+        msx += dx;
+        msy += dy;
+        msz += dz;
+    }
+
     public final void setScale(
         final float x,
         final float y,

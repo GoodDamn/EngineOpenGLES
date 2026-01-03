@@ -10,8 +10,7 @@ import good.damn.engine.shader.generators.MGMMaterialShader
 import java.io.File
 
 class MGImportImage(
-    private val informator: MGMInformator,
-    private val misc: MGMImportMisc
+    private val informator: MGMInformator
 ): MGImportImplTempFile() {
 
     private val mBinderAttribute = MGBinderAttribute.Builder()

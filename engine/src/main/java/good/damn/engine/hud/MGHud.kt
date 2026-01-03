@@ -7,6 +7,7 @@ import good.damn.engine.imports.MGImportImage
 import good.damn.engine.imports.MGImportImplA3D
 import good.damn.engine.imports.MGImportImplModel
 import good.damn.engine.imports.MGImportImplLevel
+import good.damn.engine.imports.MGImportImplLight
 import good.damn.engine.imports.MGMImportMisc
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
@@ -76,8 +77,11 @@ class MGHud(
                         this
                     ),
                     MGImportImage(
-                        informator,
-                        this
+                        informator
+                    ),
+                    MGImportImplLight(
+                        mBridgeMatrix,
+                        informator.managerLight
                     )
                 ),
                 requesterUserContent

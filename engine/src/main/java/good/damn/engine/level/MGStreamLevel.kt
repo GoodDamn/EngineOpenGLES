@@ -31,6 +31,7 @@ import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsJson
+import good.damn.engine.utils.MGUtilsVector3
 import good.damn.mapimporter.MIImportMap
 import good.damn.mapimporter.models.MIMMap
 import good.damn.mapimporter.models.MIMProp
@@ -190,7 +191,7 @@ object MGStreamLevel {
             val lightJson = MGMLevelSpawnLight.createFromJson(
                 MGUtilsJson.createFromFile(
                     MGUtilsFile.getPublicFile(
-                        "lights/${info.light}.txt"
+                        "lights/${info.light}.light"
                     )
                 )
             )
@@ -199,16 +200,8 @@ object MGStreamLevel {
                 Pair(
                     material,
                     SDMLightPoint(
-                        SDVector3(
-                            Color.red(
-                                lightJson.color
-                            ) / 255f,
-                            Color.green(
-                                lightJson.color
-                            ) / 255f,
-                            Color.blue(
-                                lightJson.color
-                            ) / 255f
+                        MGUtilsVector3.createFromColorInt(
+                            lightJson.color
                         ),
                         lightInterpolation,
                         1.0f
