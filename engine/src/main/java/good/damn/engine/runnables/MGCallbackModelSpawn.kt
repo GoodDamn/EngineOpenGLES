@@ -2,6 +2,7 @@ package good.damn.engine.runnables
 
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
+import good.damn.engine.opengl.bridges.intersect.MGRayIntersectImplModel
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.models.MGMMeshDrawer
@@ -11,6 +12,7 @@ import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.triggers.MGIMatrixTrigger
 import good.damn.engine.opengl.triggers.MGITrigger
+import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerMesh
 import good.damn.engine.shader.generators.MGMMaterialShader
 
@@ -110,9 +112,12 @@ class MGCallbackModelSpawn(
     }*/
 
     private inline fun setupMatrix(
-        matrix: MGIMatrixTrigger
+        matrix: MGMatrixTriggerMesh
     ) {
-        bridgeRay.matrix = matrix
+        bridgeRay.intersectUpdate = MGRayIntersectImplModel(
+            matrix
+        )
+
         matrix.run {
             addPosition(
                 bridgeRay.outPointLead.x,

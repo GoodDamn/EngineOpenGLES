@@ -10,15 +10,7 @@ class MGClickPlaceMesh(
 ): MGIClick {
 
     override fun onClick() {
-        if (MGEngine.drawMode != MGEnumDrawMode.OPAQUE) {
-            return
-        }
-
-        if (bridge.matrix == null) {
-            return
-        }
-
-        bridge.matrix = null
+        bridge.intersectUpdate = null
     }
 
 }

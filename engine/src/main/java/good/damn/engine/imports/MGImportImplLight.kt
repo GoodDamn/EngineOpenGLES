@@ -2,6 +2,7 @@ package good.damn.engine.imports
 
 import good.damn.engine.models.json.light.MGMLight
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
+import good.damn.engine.opengl.bridges.intersect.MGRayIntersectImplLight
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.managers.MGManagerLight
@@ -60,7 +61,10 @@ class MGImportImplLight(
             modelMatrix.invalidateRadius()
             modelMatrix.calculateInvertTrigger()
 
-            bridgeRay.matrix = modelMatrix
+            bridgeRay.intersectUpdate = MGRayIntersectImplLight(
+                modelMatrix,
+                light.interpolation
+            )
         }
 
         managerLight.register(

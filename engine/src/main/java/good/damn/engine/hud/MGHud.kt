@@ -15,6 +15,7 @@ import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
+import good.damn.engine.opengl.callbacks.MGCallbackOnIntersectPosition
 import good.damn.engine.opengl.callbacks.MGCallbackOnScale
 import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.triggers.MGTriggerSimple
@@ -30,7 +31,7 @@ class MGHud(
     requesterUserContent: MGIRequestUserContent,
     informator: MGMInformator,
     switcherDrawMode: MGSwitcherDrawMode
-): MGIListenerOnIntersectPosition {
+) {
 
     private val mBridgeMatrix = MGBridgeRayIntersect()
 
@@ -44,7 +45,9 @@ class MGHud(
         mBridgeMatrix
     ).apply {
         setListenerIntersection(
-            this@MGHud
+            MGCallbackOnIntersectPosition(
+                mBridgeMatrix
+            )
         )
     }
 
@@ -132,17 +135,4 @@ class MGHud(
     ) = mLayerEditor.onTouchEvent(
         event
     )
-
-    override fun onIntersectPosition(
-        p: SDVector3
-    ) {
-        mBridgeMatrix.matrix?.run {
-            setPosition(
-                p.x,
-                p.y,
-                p.z
-            )
-            invalidatePosition()
-        }
-    }
 }

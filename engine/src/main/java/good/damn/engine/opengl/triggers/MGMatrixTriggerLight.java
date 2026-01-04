@@ -9,13 +9,13 @@ import good.damn.engine.opengl.matrices.MGMatrixScale;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
 import good.damn.engine.sdk.models.SDMLightPointInterpolation;
 
-public final class MGMatrixTriggerLight
-implements MGIMatrixTrigger {
+public final class MGMatrixTriggerLight {
 
     @NonNull
     public final MGMatrixTransformationInvert<
         MGMatrixScale
     > matrixTrigger;
+
     @NonNull
     private final SDVector3 mLightPosition;
 
@@ -38,10 +38,20 @@ implements MGIMatrixTrigger {
         return matrixTrigger.model.msx;
     }
 
+    public final void addRadius(
+        float radius
+    ) {
+        matrixTrigger.model.addScale(
+            radius,
+            radius,
+            radius
+        );
+    }
+
     public final void setRadius(
         float radius
     ) {
-        setScale(
+        matrixTrigger.model.setScale(
             radius,
             radius,
             radius
@@ -49,24 +59,16 @@ implements MGIMatrixTrigger {
     }
 
     public final void invalidateRadius() {
-        invalidateScaleRotation();
+        matrixTrigger.model.invalidateScale();
     }
 
     public final void invalidatePosition() {
         matrixTrigger.model.invalidatePosition();
     }
 
-    @Override
-    public void invalidateScaleRotation() {
-        matrixTrigger.model.invalidateScale();
-    }
-
     public final void calculateInvertTrigger() {
         matrixTrigger.invert.calculateInvertModel();
     }
-
-    @Override
-    public void calculateNormals() {}
 
     public final void setPosition(
         final float x,
@@ -81,46 +83,6 @@ implements MGIMatrixTrigger {
         mLightPosition.setY(y);
         mLightPosition.setZ(z);
     }
-
-    @Override
-    public void addPosition(
-        float x,
-        float y,
-        float z
-    ) {
-        matrixTrigger.model.addPosition(
-            x, y, z
-        );
-    }
-
-    @Override
-    public void addScale(
-        float x,
-        float y,
-        float z
-    ) {
-        matrixTrigger.model.addScale(
-            x, y, z
-        );
-    }
-
-    @Override
-    public void setScale(
-        float x,
-        float y,
-        float z
-    ) {
-        matrixTrigger.model.setScale(
-            x, y, z
-        );
-    }
-
-    @Override
-    public void addRotation(
-        float x,
-        float y,
-        float z
-    ) {}
 
     @NonNull
     public final SDVector3 getPosition() {
