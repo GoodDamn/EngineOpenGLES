@@ -19,6 +19,11 @@ class MGCameraFree(
     modelMatrix
 ) {
 
+    companion object {
+        private const val MAX_PITCH = 1.57f
+        private const val MIN_PITCH = -MAX_PITCH
+    }
+
     val direction = SDVector3(
         0.0f, 0.0f, -1.0f
     )
@@ -113,11 +118,11 @@ class MGCameraFree(
         mYaw += yaw
         mPitch += pitch
 
-        if (mPitch > 1.56f)
-            mPitch = 1.56f
+        if (mPitch > MAX_PITCH)
+            mPitch = MAX_PITCH
 
-        if (mPitch < -1.56f)
-            mPitch = -1.56f
+        if (mPitch < MIN_PITCH)
+            mPitch = MIN_PITCH
 
         val cosPitch = cos(mPitch)
 
