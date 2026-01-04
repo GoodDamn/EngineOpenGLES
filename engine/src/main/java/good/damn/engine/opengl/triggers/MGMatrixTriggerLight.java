@@ -1,10 +1,13 @@
 package good.damn.engine.opengl.triggers;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import good.damn.engine.sdk.SDVector3;
 import good.damn.engine.opengl.matrices.MGMatrixScale;
 import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
+import good.damn.engine.sdk.models.SDMLightPointInterpolation;
 
 public final class MGMatrixTriggerLight {
 
@@ -12,10 +15,9 @@ public final class MGMatrixTriggerLight {
     public final MGMatrixTransformationInvert<
         MGMatrixScale
     > matrixTrigger;
+
     @NonNull
     private final SDVector3 mLightPosition;
-
-    private float mRadius = 0f;
 
     public MGMatrixTriggerLight(
         @NonNull final MGMatrixTransformationInvert<
@@ -30,9 +32,30 @@ public final class MGMatrixTriggerLight {
 
         setPosition(0f,0f,0f);
         invalidatePosition();
+    }
 
-        setRadius(600f);
-        invalidateRadius();
+    public final float getRadius() {
+        return matrixTrigger.model.msx;
+    }
+
+    public final void addRadius(
+        float radius
+    ) {
+        matrixTrigger.model.addScale(
+            radius,
+            radius,
+            radius
+        );
+    }
+
+    public final void setRadius(
+        float radius
+    ) {
+        matrixTrigger.model.setScale(
+            radius,
+            radius,
+            radius
+        );
     }
 
     public final void invalidateRadius() {
@@ -61,24 +84,8 @@ public final class MGMatrixTriggerLight {
         mLightPosition.setZ(z);
     }
 
-    public final void setRadius(
-        final float radius
-    ) {
-        matrixTrigger.model.setScale(
-            radius,
-            radius,
-            radius
-        );
-
-        mRadius = radius;
-    }
-
     @NonNull
     public final SDVector3 getPosition() {
         return mLightPosition;
-    }
-
-    public final float getRadius() {
-        return mRadius;
     }
 }

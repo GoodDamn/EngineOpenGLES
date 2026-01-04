@@ -7,6 +7,7 @@ import good.damn.engine.imports.MGImportImage
 import good.damn.engine.imports.MGImportImplA3D
 import good.damn.engine.imports.MGImportImplModel
 import good.damn.engine.imports.MGImportImplLevel
+import good.damn.engine.imports.MGImportImplLight
 import good.damn.engine.imports.MGMImportMisc
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
@@ -14,6 +15,7 @@ import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
+import good.damn.engine.opengl.callbacks.MGCallbackOnIntersectPosition
 import good.damn.engine.opengl.callbacks.MGCallbackOnScale
 import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.triggers.MGTriggerSimple
@@ -29,7 +31,7 @@ class MGHud(
     requesterUserContent: MGIRequestUserContent,
     informator: MGMInformator,
     switcherDrawMode: MGSwitcherDrawMode
-): MGIListenerOnIntersectPosition {
+) {
 
     private val mBridgeMatrix = MGBridgeRayIntersect()
 
@@ -43,7 +45,9 @@ class MGHud(
         mBridgeMatrix
     ).apply {
         setListenerIntersection(
-            this@MGHud
+            MGCallbackOnIntersectPosition(
+                mBridgeMatrix
+            )
         )
     }
 
@@ -76,8 +80,11 @@ class MGHud(
                         this
                     ),
                     MGImportImage(
-                        informator,
-                        this
+                        informator
+                    ),
+                    MGImportImplLight(
+                        mBridgeMatrix,
+                        informator.managerLight
                     )
                 ),
                 requesterUserContent
@@ -128,17 +135,4 @@ class MGHud(
     ) = mLayerEditor.onTouchEvent(
         event
     )
-
-    override fun onIntersectPosition(
-        p: SDVector3
-    ) {
-        mBridgeMatrix.matrix?.run {
-            setPosition(
-                p.x,
-                p.y,
-                p.z
-            )
-            invalidatePosition()
-        }
-    }
 }

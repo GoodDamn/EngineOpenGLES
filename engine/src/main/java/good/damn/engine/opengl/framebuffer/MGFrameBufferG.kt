@@ -59,7 +59,7 @@ class MGFrameBufferG(
         height: Int
     ) {
         framebuffer.generate()
-        framebuffer.bind()
+        framebuffer.bindWriting()
 
         val config = MGTextureAttachment.MGMConfig(
             GLES30.GL_RGBA16F,
@@ -119,7 +119,7 @@ class MGFrameBufferG(
             0
         )
 
-        framebuffer.bind()
+        framebuffer.bindWriting()
         mRenderBuffer.generate()
         mRenderBuffer.bind()
         mRenderBuffer.allocateStorage(
@@ -130,7 +130,7 @@ class MGFrameBufferG(
             Log.d(TAG, "generate: frame buffer error")
         }
 
-        framebuffer.unbind()
+        framebuffer.unbindWriting()
     }
 
     private inline fun generateAttachment(

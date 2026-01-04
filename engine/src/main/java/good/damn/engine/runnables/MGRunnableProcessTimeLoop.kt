@@ -1,6 +1,8 @@
 package good.damn.engine.runnables
 
 import android.os.Handler
+import android.os.SystemClock
+import android.util.Log
 import good.damn.engine.sdk.process.SDIProcessTime
 
 class MGRunnableProcessTimeLoop(
@@ -10,12 +12,12 @@ class MGRunnableProcessTimeLoop(
 ): Runnable {
     var isRunning = false
 
-    private var mCurrentTime = System.currentTimeMillis()
+    private var mCurrentTime = SystemClock.elapsedRealtime()
     private var mPrevTime = mCurrentTime
     private var mDtTime = 0L
 
     final override fun run() {
-        mCurrentTime = System.currentTimeMillis()
+        mCurrentTime = SystemClock.elapsedRealtime()
         mDtTime = mCurrentTime - mPrevTime
         mPrevTime = mCurrentTime
 

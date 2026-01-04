@@ -11,15 +11,8 @@ class MGCallbackOnDeltaInteract(
         dx: Float,
         dy: Float
     ) {
-        bridge.matrix?.run {
-            addRotation(
-                0f,
-                dx * 0.5f,
-                dy * -0.5f
-            )
-            invalidateScaleRotation()
-            calculateInvertTrigger()
-            calculateNormals()
-        }
+        bridge.intersectUpdate?.updateDelta(
+            dx, dy
+        )
     }
 }

@@ -13,7 +13,6 @@ implements MGIUniform {
     private int mUniformActive;
     private int mUniformConstant;
     private int mUniformLinear;
-    private int mUniformQuad;
     private int mUniformPosition;
     private int mUniformColor;
 
@@ -21,10 +20,8 @@ implements MGIUniform {
 
     private final String mId;
 
-    public MGShaderLightPoint(
-        final int index
-    ) {
-        mId = "lightPoints[" + index + "].";
+    public MGShaderLightPoint() {
+        mId = "lightPoint.";
     }
 
     @Override
@@ -44,11 +41,6 @@ implements MGIUniform {
         mUniformLinear = glGetUniformLocation(
             program,
             mId+"linear"
-        );
-
-        mUniformQuad = glGetUniformLocation(
-            program,
-            mId+"quad"
         );
 
         mUniformPosition = glGetUniformLocation(
@@ -75,9 +67,6 @@ implements MGIUniform {
     }
     public final int getUniformLinear() {
         return mUniformLinear;
-    }
-    public final int getUniformQuad() {
-        return mUniformQuad;
     }
     public final int getUniformPosition() {
         return mUniformPosition;

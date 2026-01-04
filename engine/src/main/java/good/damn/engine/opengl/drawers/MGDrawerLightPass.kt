@@ -1,7 +1,7 @@
 package good.damn.engine.opengl.drawers
 
 import android.opengl.GLES30
-import good.damn.engine.opengl.shaders.MGShaderLightPass
+import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPass
 import good.damn.engine.opengl.textures.MGTexture
 
 class MGDrawerLightPass(

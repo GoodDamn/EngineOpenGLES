@@ -1,30 +1,44 @@
-package good.damn.engine.opengl.shaders
+package good.damn.engine.opengl.shaders.lightpass
 
 import android.opengl.GLES30
-import good.damn.engine.models.MGMInformatorShader
+import android.opengl.GLES30.glGetUniformBlockIndex
+import android.opengl.GLES30.glUniformBlockBinding
+import good.damn.engine.opengl.shaders.MGIShaderCameraPosition
+import good.damn.engine.opengl.shaders.MGIShaderLight
+import good.damn.engine.opengl.shaders.MGShaderLightDirectional
+import good.damn.engine.opengl.shaders.MGShaderLightPoint
+import good.damn.engine.opengl.shaders.MGShaderProjectionView
+import good.damn.engine.opengl.shaders.MGShaderProjectionViewModel
+import good.damn.engine.opengl.shaders.MGShaderTexture
 import java.util.LinkedList
 
-class MGShaderLightPass private constructor(
+class MGShaderLightPassPointLight private constructor(
     val textures: Array<MGShaderTexture>
-): MGShaderProjectionView(),
-MGIShaderCameraPosition,
-MGIShaderLight {
+): MGShaderProjectionViewModel(),
+MGIShaderCameraPosition {
 
     override var uniformCameraPosition = 0
         private set
 
-    override val lightDirectional = MGShaderLightDirectional()
+    val lightPoint = MGShaderLightPoint()
+    val lightDirectional = MGShaderLightDirectional()
 
-    override val lightPoints = Array(
-        MGMInformatorShader.SIZE_LIGHT_POINT
-    ) {
-        MGShaderLightPoint(it)
-    }
+    var uniformScreenSize = 0
+        private set
 
     override fun setupUniforms(
         program: Int
     ) {
         super.setupUniforms(
+            program
+        )
+
+        uniformScreenSize = GLES30.glGetUniformLocation(
+            program,
+            "uScreenSize"
+        )
+
+        lightPoint.setupUniforms(
             program
         )
 
@@ -42,12 +56,6 @@ MGIShaderLight {
             program,
             "cameraPosition"
         )
-
-        lightPoints.forEach {
-            it.setupUniforms(
-                program
-            )
-        }
     }
 
 
@@ -82,7 +90,7 @@ MGIShaderLight {
             .attachMisc()
             .attachDepth()
 
-        fun build() = MGShaderLightPass(
+        fun build() = MGShaderLightPassPointLight(
             list.toTypedArray()
         )
 

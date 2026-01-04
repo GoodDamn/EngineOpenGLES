@@ -14,7 +14,7 @@ open class MGCamera(
     var modelMatrix: MGMatrixTranslate
 ) {
 
-    private val mProjection = FloatArray(
+    val projection = FloatArray(
         16
     )
 
@@ -28,7 +28,7 @@ open class MGCamera(
         handler: MGHandlerGl
     ) {
         Matrix.perspectiveM(
-            mProjection,
+            projection,
             0,
             85.0f,
             width.toFloat() / height.toFloat(),
@@ -37,7 +37,7 @@ open class MGCamera(
         )
 
         mProjectionBuffer.asFloatBuffer().run {
-            put(mProjection)
+            put(projection)
             position(0)
         }
 

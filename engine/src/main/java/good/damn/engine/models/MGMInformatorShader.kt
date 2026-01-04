@@ -1,9 +1,10 @@
 package good.damn.engine.models
 
-import good.damn.engine.opengl.shaders.MGShaderLightPass
+import good.damn.engine.opengl.models.MGMLightPass
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassInstanced
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPassPointLight
 import good.damn.engine.shader.MGShaderCache
 import good.damn.engine.shader.MGShaderSource
 
@@ -19,10 +20,8 @@ data class MGMInformatorShader(
         Array<MGShaderMaterial>
     >,
 
-    val lightPassDiffuse: MGShaderLightPass,
-    val lightPassOpaque: MGShaderLightPass,
-) {
-    companion object {
-        const val SIZE_LIGHT_POINT = 64
-    }
-}
+    val wireframe: MGShaderGeometryPassModel,
+
+    val lightPasses: Array<MGMLightPass>,
+    val lightPassPointLight: MGShaderLightPassPointLight
+)

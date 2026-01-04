@@ -51,9 +51,11 @@ MGIListenerMove {
             directionX,
             directionY
         )
+
         camera.invalidatePosition(
             glHandler
         )
+
         updateIntersection()
     }
 

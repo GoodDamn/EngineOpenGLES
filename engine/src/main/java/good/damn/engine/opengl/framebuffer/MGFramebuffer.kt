@@ -26,10 +26,31 @@ class MGFramebuffer {
         )
     }
 
-    fun bind() {
+    fun bindWriting() {
         glBindFramebuffer(
-            GL_FRAMEBUFFER,
+            GL_DRAW_FRAMEBUFFER,
             mId[0]
+        )
+    }
+
+    fun bindReading() {
+        glBindFramebuffer(
+            GL_READ_FRAMEBUFFER,
+            mId[0]
+        )
+    }
+
+    fun unbindWriting() {
+        glBindFramebuffer(
+            GL_DRAW_FRAMEBUFFER,
+            0
+        )
+    }
+
+    fun unbindReading() {
+        glBindFramebuffer(
+            GL_READ_FRAMEBUFFER,
+            0
         )
     }
 
@@ -39,7 +60,6 @@ class MGFramebuffer {
             0
         )
     }
-
 
     fun delete() {
         glDeleteFramebuffers(

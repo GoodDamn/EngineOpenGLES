@@ -5,9 +5,9 @@ import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
+import good.damn.engine.opengl.framebuffer.MGFrameBufferG
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
-import good.damn.engine.opengl.triggers.MGTriggerLight
 import good.damn.engine.scripts.MGScriptLightPlacement
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine.utils.MGUtilsFile
@@ -18,7 +18,7 @@ import kotlin.math.sin
 class MGHudScene(
     requesterUserContent: MGIRequestUserContent,
     informator: MGMInformator,
-    framebufferG: MGFramebuffer
+    framebufferGG: MGFrameBufferG
 ) {
     val hud: MGHud
     val runnableCycle: MGIRunnableBounds
@@ -27,7 +27,7 @@ class MGHudScene(
         val switcherDrawMode = MGSwitcherDrawMode(
             informator,
             MGDrawerFramebufferG(
-                framebufferG
+                framebufferGG
             )
         )
 
@@ -36,7 +36,8 @@ class MGHudScene(
                 "scripts"
             ),
             informator.managerProcessTime,
-            informator.managerTriggerLight
+            informator.managerLight,
+            informator.managerLightVolumes
         )
         scriptLightPlacement.execute()
 

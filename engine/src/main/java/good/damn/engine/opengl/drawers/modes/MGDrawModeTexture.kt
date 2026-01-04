@@ -4,9 +4,7 @@ import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.opengl.drawers.MGDrawerLightPass
 import good.damn.engine.opengl.drawers.MGIDrawer
-import good.damn.engine.opengl.shaders.MGShaderLightPass
-import good.damn.engine.opengl.shaders.MGShaderProjectionViewModelTexture
-import good.damn.engine.opengl.shaders.MGShaderProjectionViewTexture
+import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPass
 
 class MGDrawModeTexture(
     private val informator: MGMInformator,
@@ -15,28 +13,32 @@ class MGDrawModeTexture(
     private val drawerFramebufferG: MGDrawerFramebufferG
 ): MGIDrawer {
 
+    var canDrawSky = true
+
     override fun draw(
         width: Int,
         height: Int
     ) {
         drawerFramebufferG.bind()
 
-        informator.meshSky.meshMaterial.run {
-            shader.run {
-                use()
-                drawer.drawMaterials(
-                    materials,
-                    this
-                )
+        if (canDrawSky) {
+            informator.meshSky.meshMaterial.run {
+                shader.run {
+                    use()
+                    drawer.drawMaterials(
+                        materials,
+                        this
+                    )
+                }
             }
         }
 
         informator.meshesInstanced.forEach {
-            it.key.run {
+            it.shader.run {
                 use()
-                it.value.forEach {
-                    it.draw(materials)
-                }
+                it.drawer.draw(
+                    materials
+                )
             }
         }
 

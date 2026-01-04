@@ -8,12 +8,10 @@ class MGShaderMaterial(
 ): MGIUniform {
 
     companion object {
-        @JvmStatic
-        fun singleMaterial(
-            textures: Array<MGShaderTexture>
-        ) = arrayOf(
+        @JvmField
+        val empty = arrayOf(
             MGShaderMaterial(
-                textures
+                arrayOf()
             )
         )
     }
