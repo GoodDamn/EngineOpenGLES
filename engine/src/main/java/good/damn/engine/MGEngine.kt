@@ -20,7 +20,7 @@ class MGEngine {
         internal lateinit var DIR_CACHE: File
         internal lateinit var DIR_PUBLIC: File
         internal lateinit var DIR_PUBLIC_TEMP: File
-        internal lateinit var DIR_DATA: File
+        internal lateinit var DIR_CODE_CACHE: File
 
         internal lateinit var shaderSource: MGShaderSource
 
@@ -42,11 +42,10 @@ class MGEngine {
                 "MGDirectory"
             )
 
-            DIR_DATA = File(
-                applicationContext
-                .applicationInfo
-                .dataDir
-            )
+            DIR_CODE_CACHE = applicationContext.codeCacheDir
+            DIR_CODE_CACHE.setReadOnly()
+
+            DIR_CACHE = applicationContext.cacheDir
 
             DIR_PUBLIC_TEMP = File(
                 DIR_PUBLIC,

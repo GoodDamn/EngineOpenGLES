@@ -19,12 +19,15 @@ class MGScriptLightPlacement(
     private val managerLightVolume: MGManagerVolume
 ): MGIScript {
 
+    companion object {
+        private const val SCRIPT_FILE = "SDSceneLight.jar"
+    }
+
     override fun execute() {
         try {
-            val loader = DexClassLoader(
-                "$dirScripts/SDSceneLight.jar",
-                dirScripts.path,
-                null,
+            val loader = MGLoaderScriptExternal(
+                dirScripts,
+                SCRIPT_FILE,
                 javaClass.classLoader
             )
 
@@ -75,6 +78,8 @@ class MGScriptLightPlacement(
                     )
                 }
             }
+
+            loader.removeScriptFromCache()
         } catch (
             e: Exception
         ) {

@@ -2,6 +2,7 @@ package good.damn.engine.ui
 
 import android.util.Log
 import android.view.MotionEvent
+import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.opengl.ui.MGSeekBarGl
 import good.damn.engine.touch.MGIListenerDelta
@@ -13,6 +14,7 @@ import good.damn.engine.touch.MGTouchScale
 import kotlin.math.min
 
 class MGUILayerEditor(
+    private val bridgeMatrix: MGBridgeRayIntersect,
     clickLoadUserContent: MGIClick,
     clickSwitchDrawerMode: MGIClick,
     clickPlaceMesh: MGIClick,
@@ -142,7 +144,7 @@ class MGUILayerEditor(
             mBtnPlaceMesh.intercept(x,y)
             mBtnTriggerDrawing.intercept(x,y)
 
-            if (mTouchScale.onTouchEvent(
+            if (bridgeMatrix.intersectUpdate != null && mTouchScale.onTouchEvent(
                 event
             )) {
                 return true
@@ -155,9 +157,11 @@ class MGUILayerEditor(
             return true
         }
 
-        mTouchScale.onTouchEvent(
-            event
-        )
+        if (bridgeMatrix.intersectUpdate != null) {
+            mTouchScale.onTouchEvent(
+                event
+            )
+        }
 
         mTouchMove.onTouchEvent(
             event

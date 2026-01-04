@@ -99,7 +99,8 @@ class MGHud(
         ),
         clickTriggerDrawing = MGClickTriggerDrawingFlag(
             informator
-        )
+        ),
+        bridgeMatrix = mBridgeMatrix
     ).apply {
         setListenerTouchMove(
             mCallbackOnCameraMove
