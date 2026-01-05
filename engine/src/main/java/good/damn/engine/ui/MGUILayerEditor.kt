@@ -6,6 +6,7 @@ import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.ui.MGButtonGL
 import good.damn.engine.opengl.ui.MGSeekBarGl
 import good.damn.engine.touch.MGIListenerDelta
+import good.damn.engine.touch.MGIListenerDistance
 import good.damn.engine.touch.MGIListenerMove
 import good.damn.engine.touch.MGIListenerScale
 import good.damn.engine.touch.MGITouchable
@@ -55,6 +56,10 @@ class MGUILayerEditor(
     fun setListenerTouchScaleInteract(
         v: MGIListenerScale?
     ) { mTouchScale.onScale = v }
+
+    fun setListenerTouch3Fingers(
+        v: MGIListenerDistance?
+    ) { mTouchScale.onDistance = v }
 
     fun layout(
         left: Float,

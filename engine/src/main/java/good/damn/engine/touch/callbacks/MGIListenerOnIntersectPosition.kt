@@ -1,4 +1,4 @@
-package good.damn.engine.opengl.callbacks
+package good.damn.engine.touch.callbacks
 
 import good.damn.engine.sdk.SDVector3
 
