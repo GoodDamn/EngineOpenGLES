@@ -38,10 +38,10 @@ public final class MGMatrixTriggerLight {
         return matrixTrigger.model.msx;
     }
 
-    public final void addRadius(
+    public final void subtractRadius(
         float radius
     ) {
-        matrixTrigger.model.addScale(
+        matrixTrigger.model.subtractScale(
             radius,
             radius,
             radius

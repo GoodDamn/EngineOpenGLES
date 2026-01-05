@@ -25,7 +25,7 @@ class MGRayIntersectImplModel(
         dtScale: Float
     ) {
         modelMatrix.apply {
-            addScale(
+            subtractScale(
                 dtScale,
                 dtScale,
                 dtScale

@@ -9,10 +9,6 @@ class MGTouchScale
     maxTouches = 3
 ) {
 
-    companion object {
-        private const val SCALE_FACTOR = -0.0001f
-    }
-
     var onDistance: MGIListenerDistance? = null
     var onScale: MGIListenerScale? = null
     var onDelta: MGIListenerDelta? = null
@@ -134,7 +130,7 @@ class MGTouchScale
             mScaleDt = mPrevDistance - mCurrentDistance
 
             onScale?.onScale(
-                mScaleDt * SCALE_FACTOR
+                mScaleDt
             )
 
             mPrevDistance = mCurrentDistance
