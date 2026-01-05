@@ -8,6 +8,10 @@ class MGRayIntersectImplModel(
     private val modelMatrix: MGMatrixTriggerMesh
 ): MGIRayIntersectUpdate {
 
+    companion object {
+        private const val SCALE_FACTOR = 0.0001f
+    }
+
     override fun updateIntersectPosition(
         v: SDVector3
     ) {
@@ -25,10 +29,11 @@ class MGRayIntersectImplModel(
         dtScale: Float
     ) {
         modelMatrix.apply {
+            val scale = dtScale * SCALE_FACTOR
             subtractScale(
-                dtScale,
-                dtScale,
-                dtScale
+                scale,
+                scale,
+                scale
             )
             invalidateScaleRotation()
             calculateInvertTrigger()
