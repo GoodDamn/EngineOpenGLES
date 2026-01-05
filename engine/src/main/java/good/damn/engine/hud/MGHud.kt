@@ -110,6 +110,10 @@ class MGHud(
             mCallbackOnCameraMove
         )
 
+        setListenerTouch3Fingers(
+            mCallbackOnCameraMove
+        )
+
         setListenerTouchScaleInteract(
             MGCallbackOnScale(
                 mBridgeMatrix
