@@ -1,23 +1,17 @@
 package good.damn.engine.touch
 
-import android.util.Log
 import android.view.MotionEvent
+import java.util.LinkedList
 import kotlin.math.hypot
 
 class MGTouchScale
 : MGTouchBound(
-    maxTouches = 2
+    maxTouches = 3
 ) {
 
-    companion object {
-        private const val SCALE_FACTOR = -0.0001f
-    }
-
+    var onDistance: MGIListenerDistance? = null
     var onScale: MGIListenerScale? = null
     var onDelta: MGIListenerDelta? = null
-
-    private var mPivotX = 0f
-    private var mPivotY = 0f
 
     private var mPrevX = 0f
     private var mPrevY = 0f
@@ -25,20 +19,14 @@ class MGTouchScale
     private var mPrevDistance = 0f
     private var mCurrentDistance = 0f
 
-    private var mTranslateX = 0f
-    private var mTranslateY = 0f
-
-    private var mTranslate2X = 0f
-    private var mTranslate2Y = 0f
-
     private var mScaleDt = 0f
 
-    private var mFirstTouchId = -1
-    private var mSecondTouchId = -1
+    private var mPrevY3 = 0f
 
     override fun onTouchDown(
         event: MotionEvent,
-        touchIndex: Int
+        touchIndex: Int,
+        touchIds: List<Int>
     ): Boolean {
         if (event.isNotInsideBounds(
             mLeft, mTop,
@@ -48,36 +36,28 @@ class MGTouchScale
             return false
         }
 
-        if (mFirstTouchId == -1) {
-            mPivotX = event.getX(
+        if (touchIds.size == 1) {
+            mPrevX = event.getX(
                 touchIndex
             )
 
-            mPivotY = event.getY(
-                touchIndex
-            )
-
-            mPrevX = mPivotX
-            mPrevY = mPivotY
-            mFirstTouchId = event.getPointerId(
+            mPrevY = event.getY(
                 touchIndex
             )
             return true
         }
 
-        val firstIndex = event.findPointerIndex(
-            mFirstTouchId
-        )
-
-        event.run {
-            mPrevDistance = hypot(
-                getX(touchIndex) - getX(firstIndex),
-                getY(touchIndex) - getY(firstIndex)
+        if (touchIds.size == 2) {
+            calculateTwoTouches(
+                event,
+                touchIds
             )
+            return true
         }
 
-        mSecondTouchId = event.getPointerId(
-            touchIndex
+        mPrevY3 = calculateMiddleY3(
+            event,
+            touchIds
         )
         return true
     }
@@ -94,83 +74,63 @@ class MGTouchScale
 
     override fun onTouchUp(
         event: MotionEvent,
-        touchIndex: Int
+        touchIndex: Int,
+        touchIds: List<Int>
     ) {
-        val localId = event.getPointerId(
-            touchIndex
-        )
-
-        if (mFirstTouchId == localId) {
-            mFirstTouchId = mSecondTouchId
-        }
-
-        if (mSecondTouchId == localId) {
-            mSecondTouchId = -1
-        }
-
-        if (mFirstTouchId == -1) {
+        if (touchIds.size >= 2) {
+            calculateTwoTouches(
+                event,
+                touchIds
+            )
             return
         }
 
-        val firstIndex = event.findPointerIndex(
-            mFirstTouchId
-        )
-
-        mPivotX = event.getX(
-            firstIndex
-        )
-
-        mPivotY = event.getY(
-            firstIndex
-        )
-
-        mPrevX = mPivotX
-        mPrevY = mPivotY
-
-        mTranslateX = mTranslate2X
-        mTranslateY = mTranslate2Y
-
-        mFirstTouchId = -1
+        if (touchIds.isNotEmpty()) {
+            calculateFirstTouchId(
+                event,
+                touchIds
+            )
+        }
     }
 
     private inline fun actionMove(
         event: MotionEvent,
         touchIds: List<Int>
     ) = when {
-        touchIds.size >= 2 -> {
+        touchIds.size >= 3 -> {
+            val now = calculateMiddleY3(
+                event,
+                touchIds
+            )
 
+            val dt = mPrevY3 - now
+            mPrevY3 = now
+
+            onDistance?.onDistance(
+                dt
+            )
+        }
+
+        touchIds.size == 2 -> {
             val indexFirst = event.findPointerIndex(
-                mFirstTouchId
+                touchIds[0]
             )
 
             val indexSecond = event.findPointerIndex(
-                mSecondTouchId
+                touchIds[1]
             )
 
-            val x = event.getX(
-                indexFirst
-            )
-
-            val y = event.getY(
-                indexFirst
-            )
-
-            val xx = event.getX(
-                indexSecond
-            )
-            val yy = event.getY(
-                indexSecond
-            )
-
-            mCurrentDistance = hypot(
-                xx - x,
-                yy - y
-            )
+            mCurrentDistance = event.run {
+                hypot(
+                    getX(indexSecond) - getX(indexFirst),
+                    getY(indexSecond)- getY(indexFirst)
+                )
+            }
 
             mScaleDt = mPrevDistance - mCurrentDistance
 
             onScale?.onScale(
-                mScaleDt * SCALE_FACTOR
+                mScaleDt
             )
 
             mPrevDistance = mCurrentDistance
@@ -180,6 +140,7 @@ class MGTouchScale
             val touchIndex = event.findPointerIndex(
                 touchIds[0]
             )
+
             val x = event.getX(
                 touchIndex
             )
@@ -187,9 +148,6 @@ class MGTouchScale
             val y = event.getY(
                 touchIndex
             )
-
-            mTranslate2X = mTranslateX + x - mPivotX
-            mTranslate2Y = mTranslateY + y - mPivotY
 
             val dx = mPrevX - x
             val dy = y - mPrevY
@@ -200,5 +158,77 @@ class MGTouchScale
             mPrevX = x
             mPrevY = y
         }
+    }
+
+    private fun calculateFirstTouchId(
+        event: MotionEvent,
+        touchIds: List<Int>
+    ) {
+        val firstIndex = event.findPointerIndex(
+            touchIds[0]
+        )
+
+        mPrevX = event.getX(
+            firstIndex
+        )
+
+        mPrevY = event.getY(
+            firstIndex
+        )
+    }
+
+    private fun calculateTwoTouches(
+        event: MotionEvent,
+        touchIds: List<Int>
+    ) {
+        val touchIndexFirst = event.findPointerIndex(
+            touchIds[0]
+        )
+
+        val touchIndexSecond = event.findPointerIndex(
+            touchIds[1]
+        )
+
+        mPrevDistance = event.run {
+            hypot(
+                getX(touchIndexSecond) - getX(touchIndexFirst),
+                getY(touchIndexSecond) - getY(touchIndexFirst)
+            )
+        }
+    }
+
+    private fun calculateMiddleY3(
+        event: MotionEvent,
+        touchIds: List<Int>
+    ): Float {
+        val indexFirst = event.findPointerIndex(
+            touchIds[0]
+        )
+
+        val indexSecond = event.findPointerIndex(
+            touchIds[1]
+        )
+
+        val indexThird = event.findPointerIndex(
+            touchIds[2]
+        )
+
+        val y1 = event.getY(
+            indexFirst
+        )
+
+        val y2 = event.getY(
+            indexSecond
+        )
+
+        val y3 = event.getY(
+            indexThird
+        )
+
+        val dty = (
+            y3 + y2 + y1
+        ) / 3
+
+        return dty
     }
 }

@@ -11,10 +11,6 @@ class MGRayIntersectImplLight(
     private val lightInterpolation: SDMLightPointInterpolation
 ): MGIRayIntersectUpdate {
 
-    companion object {
-        private const val SCALE_FACTOR = 1000f
-    }
-
     override fun updateIntersectPosition(
         v: SDVector3
     ) {
@@ -32,8 +28,8 @@ class MGRayIntersectImplLight(
         dtScale: Float
     ) {
         modelMatrix.apply {
-            addRadius(
-                dtScale * SCALE_FACTOR
+            subtractRadius(
+                dtScale
             )
             invalidateRadius()
             calculateInvertTrigger()

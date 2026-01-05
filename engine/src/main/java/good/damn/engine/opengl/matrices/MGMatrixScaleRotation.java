@@ -34,6 +34,17 @@ extends MGMatrixTranslate {
         msz += z;
     }
 
+
+    public final void subtractScale(
+        float x,
+        float y,
+        float z
+    ) {
+        msx -= x;
+        msy -= y;
+        msz -= z;
+    }
+
     public final void setRotation(
         final float x,
         final float y,

@@ -90,6 +90,23 @@ implements MGIMatrixTrigger {
     }
 
     @Override
+    public void subtractScale(
+        float x,
+        float y,
+        float z
+    ) {
+        matrixTrigger.model.subtractScale(
+            mTriggerScale.getX() * x,
+            mTriggerScale.getY() * y,
+            mTriggerScale.getZ() * z
+        );
+
+        matrixMesh.model.subtractScale(
+            x, y, z
+        );
+    }
+
+    @Override
     public void addScale(
         float x,
         float y,

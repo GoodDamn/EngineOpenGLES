@@ -1,4 +1,4 @@
-package good.damn.engine.opengl.callbacks
+package good.damn.engine.touch.callbacks
 
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.touch.MGIListenerScale

@@ -23,6 +23,16 @@ extends MGMatrixTranslate {
         msz += dz;
     }
 
+    public final void subtractScale(
+        float x,
+        float y,
+        float z
+    ) {
+        msx -= x;
+        msy -= y;
+        msz -= z;
+    }
+
     public final void setScale(
         final float x,
         final float y,

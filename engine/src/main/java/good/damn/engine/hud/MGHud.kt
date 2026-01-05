@@ -13,11 +13,11 @@ import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
-import good.damn.engine.opengl.callbacks.MGCallbackOnCameraMovement
-import good.damn.engine.opengl.callbacks.MGCallbackOnDeltaInteract
-import good.damn.engine.opengl.callbacks.MGCallbackOnIntersectPosition
-import good.damn.engine.opengl.callbacks.MGCallbackOnScale
-import good.damn.engine.opengl.callbacks.MGIListenerOnIntersectPosition
+import good.damn.engine.touch.callbacks.MGCallbackOnCameraMovement
+import good.damn.engine.touch.callbacks.MGCallbackOnDeltaInteract
+import good.damn.engine.touch.callbacks.MGCallbackOnIntersectPosition
+import good.damn.engine.touch.callbacks.MGCallbackOnScale
+import good.damn.engine.touch.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.runnables.MGCallbackModelSpawn
 import good.damn.engine.sdk.SDVector3
@@ -99,13 +99,18 @@ class MGHud(
         ),
         clickTriggerDrawing = MGClickTriggerDrawingFlag(
             informator
-        )
+        ),
+        bridgeMatrix = mBridgeMatrix
     ).apply {
         setListenerTouchMove(
             mCallbackOnCameraMove
         )
 
         setListenerTouchDelta(
+            mCallbackOnCameraMove
+        )
+
+        setListenerTouch3Fingers(
             mCallbackOnCameraMove
         )
 
