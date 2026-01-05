@@ -18,7 +18,8 @@ class MGTouchDelta
 
     override fun onTouchDown(
         event: MotionEvent,
-        touchIndex: Int
+        touchIndex: Int,
+        touchIds: List<Int>
     ): Boolean {
         if (event.isNotInsideBounds(
             mLeft, mTop,

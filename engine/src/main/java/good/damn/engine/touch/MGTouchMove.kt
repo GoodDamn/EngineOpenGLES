@@ -52,7 +52,8 @@ Runnable {
 
     override fun onTouchDown(
         event: MotionEvent,
-        touchIndex: Int
+        touchIndex: Int,
+        touchIds: List<Int>
     ): Boolean {
         if (event.isNotInsideBounds(
             mLeft, mTop,
@@ -98,7 +99,8 @@ Runnable {
 
     override fun onTouchUp(
         event: MotionEvent,
-        touchIndex: Int
+        touchIndex: Int,
+        touchIds: List<Int>
     ) {
         mHandler.removeCallbacks(
             this

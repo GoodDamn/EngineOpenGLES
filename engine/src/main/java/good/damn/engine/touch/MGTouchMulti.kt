@@ -23,20 +23,25 @@ open class MGTouchMulti(
 
                 val index = event.actionIndex
 
-                if (!onTouchDown(
-                    event,
-                    index
-                )) {
-                    return false
-                }
-
                 val ptrId = event.getPointerId(
                     index
                 )
-                Log.d(javaClass.simpleName, "onTouchEvent: ACTION_DOWN: $index -> $ptrId")
+
                 mTouchIds.add(
                     ptrId
                 )
+
+                if (!onTouchDown(
+                    event,
+                    index,
+                    mTouchIds
+                )) {
+                    mTouchIds.removeAt(
+                        mTouchIds.lastIndex
+                    )
+                    return false
+                }
+                Log.d(javaClass.simpleName, "onTouchEvent: ACTION_DOWN: $index -> $ptrId")
             }
 
             MotionEvent.ACTION_MOVE -> {
@@ -67,7 +72,8 @@ open class MGTouchMulti(
                     Log.d(javaClass.simpleName, "onTouchEvent: $ptrId removed")
                     onTouchUp(
                         event,
-                        index
+                        index,
+                        mTouchIds
                     )
                 }
             }
@@ -76,7 +82,8 @@ open class MGTouchMulti(
                 mTouchIds.clear()
                 onTouchUp(
                     event,
-                    0
+                    0,
+                    mTouchIds
                 )
             }
         }
@@ -84,17 +91,10 @@ open class MGTouchMulti(
         return true
     }
 
-    fun containsMotionEvent(
-        event: MotionEvent
-    ) = mTouchIds.contains(
-        event.getPointerId(
-            event.actionIndex
-        )
-    )
-
     protected open fun onTouchDown(
         event: MotionEvent,
-        touchIndex: Int
+        touchIndex: Int,
+        touchIds: List<Int>
     ) = true
 
     protected open fun onTouchMove(
@@ -104,6 +104,7 @@ open class MGTouchMulti(
 
     protected open fun onTouchUp(
         event: MotionEvent,
-        touchIndex: Int
+        touchIndex: Int,
+        touchIds: List<Int>
     ) = Unit
 }
