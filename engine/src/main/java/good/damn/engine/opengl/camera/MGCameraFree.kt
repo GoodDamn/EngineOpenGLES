@@ -20,7 +20,7 @@ class MGCameraFree(
 ) {
 
     companion object {
-        private const val MAX_PITCH = 1.57f
+        private const val MAX_PITCH = 1.55f
         private const val MIN_PITCH = -MAX_PITCH
     }
 

@@ -70,6 +70,9 @@ class MGDrawModeOpaque(
         }
 
         if (informator.canDrawTriggers) {
+            glDisable(
+                GL_CULL_FACE
+            )
             informator.shaders.wireframe.apply {
                 use()
                 mTriggerManagers.forEach {
