@@ -5,7 +5,9 @@ import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
 import good.damn.engine.opengl.bridges.intersect.MGRayIntersectImplLight
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
+import good.damn.engine.opengl.drawers.volume.MGVolumeLight
 import good.damn.engine.opengl.managers.MGManagerLight
+import good.damn.engine.opengl.managers.MGManagerVolume
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.sdk.models.SDMLightPoint
@@ -15,7 +17,8 @@ import good.damn.engine.utils.MGUtilsVector3
 
 class MGImportImplLight(
     private val bridgeRay: MGBridgeRayIntersect,
-    private val managerLight: MGManagerLight
+    private val managerLight: MGManagerLight,
+    private val managerLightVolume: MGManagerVolume
 ): MGIImport {
 
     override fun isValidExtension(
@@ -67,13 +70,21 @@ class MGImportImplLight(
             )
         }
 
+        val drawerLightPoint = MGDrawerLightPoint(
+            triggerLight
+        )
+
         managerLight.register(
-            MGDrawerLightPoint(
+            drawerLightPoint
+        )
+
+        managerLightVolume.addVolume(
+            MGVolumeLight(
+                drawerLightPoint,
                 MGDrawerPositionEntity(
                     triggerLight.modelMatrix
                         .matrixTrigger.model
-                ),
-                triggerLight
+                )
             )
         )
     }

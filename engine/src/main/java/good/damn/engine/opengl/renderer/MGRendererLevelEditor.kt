@@ -48,6 +48,7 @@ import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPassPointLight
 import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGManagerProcessTime
+import good.damn.engine.sdk.SDVector3
 import good.damn.engine.shader.MGShaderCache
 import good.damn.engine.shader.MGShaderSource
 import good.damn.engine.utils.MGUtilsBuffer
@@ -136,7 +137,7 @@ class MGRendererLevelEditor(
         MGEnumArrayVertexConfiguration.SHORT
     )
 
-    private val mVerticesBox = MGArrayVertexManager(
+    private val mVerticesBox05 = MGArrayVertexConfigurator(
         MGEnumArrayVertexConfiguration.BYTE
     )
 
@@ -144,8 +145,8 @@ class MGRendererLevelEditor(
         mVerticesSphere
     )
 
-    private val mDrawerBox = MGDrawerVertexArray(
-        mVerticesBox
+    private val mDrawerBox05 = MGDrawerVertexArray(
+        mVerticesBox05
     )
 
     private val mVerticesQuad = MGArrayVertexConfigurator(
@@ -182,11 +183,10 @@ class MGRendererLevelEditor(
         meshSky = MGSky(),
         managerLight,
         MGManagerVolume(
-            mCameraFree,
-            mDrawerBox
+            mCameraFree
         ),
         MGManagerTriggerMesh(
-            mDrawerBox
+            mDrawerBox05
         ),
         MGManagerProcessTime(),
         mPoolTextures,
@@ -312,36 +312,56 @@ class MGRendererLevelEditor(
             )
         }
 
-
-        val bufferVertices = MGUtilsBuffer.createFloat(
-            MGUtilsVertIndices.createCubeVertices(
-                MGTriggerMethodBox.MIN,
-                MGTriggerMethodBox.MAX
-            )
+        val indicesBox = MGUtilsBuffer.createByte(
+            MGUtilsVertIndices.createCubeIndices()
         )
 
-        mVerticesBox.configure(
-            bufferVertices,
-            MGUtilsBuffer.createByte(
-                MGUtilsVertIndices.createCubeIndices()
+        mVerticesBox05.configure(
+            MGUtilsBuffer.createFloat(
+                MGUtilsVertIndices.createCubeVertices(
+                    MGTriggerMethodBox.MIN,
+                    MGTriggerMethodBox.MAX
+                )
             ),
+            indicesBox,
             pointPosition
         )
 
-        mVerticesBox.keepBufferVertices(
-            bufferVertices
+        val verticesBox10 = MGArrayVertexManager(
+            MGEnumArrayVertexConfiguration.BYTE
+        )
+
+        val verticesBox10Raw = MGUtilsBuffer.createFloat(
+            MGUtilsVertIndices.createCubeVertices(
+                SDVector3(
+                    -1.0f, -1.0f, -1.0f
+                ),
+                SDVector3(
+                    1.0f, 1.0f, 1.0f
+                )
+            )
+        )
+
+        verticesBox10.configure(
+            verticesBox10Raw,
+            indicesBox,
+            pointPosition
+        )
+
+        verticesBox10.keepBufferVertices(
+            verticesBox10Raw
         )
 
         mInformator.managerLightVolumes.loadPositions(
-            mVerticesBox
+            verticesBox10
         )
 
-        mVerticesBox.unkeepBufferVertices()
+        verticesBox10.unkeepBufferVertices()
 
         mInformator.managerProcessTime.run {
-            /*registerLoopProcessTime(
+            registerLoopProcessTime(
                 mInformator.managerLightVolumes
-            )*/
+            )
             start()
         }
 

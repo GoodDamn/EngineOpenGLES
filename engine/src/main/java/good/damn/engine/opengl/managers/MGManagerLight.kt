@@ -27,9 +27,7 @@ class MGManagerLight(
     ) {
         mLights.forEach {
             it.draw(
-                shader
-            )
-            it.position.draw(
+                shader,
                 shaderModel
             )
             var i = 0

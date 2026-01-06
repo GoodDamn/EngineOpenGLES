@@ -270,12 +270,20 @@ object MGStreamLevel {
                     calculateInvertTrigger()
                 }
 
+                val drawerLightPoint = MGDrawerLightPoint(
+                    triggerLight
+                )
+
                 informator.managerLight.register(
-                    MGDrawerLightPoint(
+                    drawerLightPoint
+                )
+
+                informator.managerLightVolumes.addVolume(
+                    MGVolumeLight(
+                        drawerLightPoint,
                         MGDrawerPositionEntity(
                             triggerLight.modelMatrix.matrixTrigger.model
-                        ),
-                        triggerLight
+                        )
                     )
                 )
             }

@@ -2,16 +2,23 @@ package good.damn.engine.opengl.drawers.light
 
 import android.opengl.GLES30
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
+import good.damn.engine.opengl.shaders.MGIShaderModel
 import good.damn.engine.opengl.shaders.MGShaderLightPoint
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.sdk.models.SDMLightPointEntity
 
 class MGDrawerLightPoint(
-    val position: MGDrawerPositionEntity,
     private val entity: MGDrawerTriggerStateableLight
 ) {
+    var isActive = false
+
+    private val drawerPosition = MGDrawerPositionEntity(
+        entity.modelMatrix.matrixTrigger.model
+    )
+
     fun draw(
-        shader: MGShaderLightPoint
+        shader: MGShaderLightPoint,
+        shaderModel: MGIShaderModel
     ) {
         val light = entity.light
         light.interpolation.apply {
@@ -46,6 +53,8 @@ class MGDrawerLightPoint(
             )
         }
 
-
+        drawerPosition.draw(
+            shaderModel
+        )
     }
 }

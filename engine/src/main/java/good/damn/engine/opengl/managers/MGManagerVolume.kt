@@ -2,7 +2,6 @@ package good.damn.engine.opengl.managers
 
 import android.opengl.GLES30
 import android.opengl.Matrix
-import android.util.Log
 import good.damn.engine.opengl.arrays.MGArrayVertexManager
 import good.damn.engine.opengl.camera.MGCamera
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
@@ -13,8 +12,7 @@ import good.damn.engine.sdk.process.SDIProcessTime
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGManagerVolume(
-    private val camera: MGCamera,
-    private val drawerPrimitive: MGDrawerVertexArray
+    private val camera: MGCamera
 ): MGIDrawerShader<MGIShaderModel>,
 SDIProcessTime {
     private val mVolumes = ConcurrentLinkedQueue<
@@ -26,6 +24,7 @@ SDIProcessTime {
 
     private val mVector4Clip = FloatArray(4)
     private lateinit var mPositions: Array<FloatArray>
+    private lateinit var mDrawerPrimitive: MGDrawerVertexArray
 
     fun loadPositions(
         vertices: MGArrayVertexManager
@@ -42,6 +41,10 @@ SDIProcessTime {
                 this[3] = 1.0f
             }
         }
+
+        mDrawerPrimitive = MGDrawerVertexArray(
+            vertices
+        )
     }
 
     override fun onProcessTime(
@@ -77,23 +80,23 @@ SDIProcessTime {
                     0
                 )
 
-                if (!isNotOnAxis(mVector4Clip[0], mVector4Clip[3])) {
+                if (!isNotOnAxis(mVector4Clip, 0)) {
                     isOnFrustrum = true
                     break
                 }
 
-                if (!isNotOnAxis(mVector4Clip[1], mVector4Clip[3])) {
+                if (!isNotOnAxis(mVector4Clip, 1)) {
                     isOnFrustrum = true
                     break
                 }
 
-                if (!isNotOnAxis(mVector4Clip[2], mVector4Clip[3])) {
+                if (!isNotOnAxis(mVector4Clip, 2)) {
                     isOnFrustrum = true
                     break
                 }
             }
 
-            volume.onFrustrumState(
+            volume.isOnFrustrum(
                 isOnFrustrum
             )
         }
@@ -103,8 +106,11 @@ SDIProcessTime {
         shader: MGIShaderModel
     ) {
         mVolumes.forEach {
-            it.drawerModel.draw(shader)
-            drawerPrimitive.draw(
+            it.drawerModel.draw(
+                shader
+            )
+
+            mDrawerPrimitive.draw(
                 GLES30.GL_LINES
             )
         }
@@ -117,7 +123,8 @@ SDIProcessTime {
     )
 
     private inline fun isNotOnAxis(
-        v: Float,
-        w: Float
-    ) = v > w || v < -w
+        vector: FloatArray,
+        axis: Int
+    ) = vector[axis] > vector[3]
+        || vector[axis] < -vector[3]
 }

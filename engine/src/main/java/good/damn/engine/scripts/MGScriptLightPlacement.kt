@@ -68,12 +68,20 @@ class MGScriptLightPlacement(
                     modelMatrix.invalidateRadius()
                     modelMatrix.calculateInvertTrigger()
 
+                    val drawerLightPoint = MGDrawerLightPoint(
+                        this
+                    )
+
                     managerLight.register(
-                        MGDrawerLightPoint(
+                        drawerLightPoint
+                    )
+
+                    managerLightVolume.addVolume(
+                        MGVolumeLight(
+                            drawerLightPoint,
                             MGDrawerPositionEntity(
                                 modelMatrix.matrixTrigger.model
-                            ),
-                            this
+                            )
                         )
                     )
                 }

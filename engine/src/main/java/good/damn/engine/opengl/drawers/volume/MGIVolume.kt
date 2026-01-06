@@ -8,7 +8,7 @@ import good.damn.engine.opengl.shaders.MGIShaderModel
 interface MGIVolume {
     val drawerModel: MGDrawerPositionEntity
 
-    fun onFrustrumState(
-        isOnFrustrum: Boolean
+    fun isOnFrustrum(
+        v: Boolean
     )
 }

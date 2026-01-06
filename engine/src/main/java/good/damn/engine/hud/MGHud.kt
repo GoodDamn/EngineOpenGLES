@@ -84,7 +84,8 @@ class MGHud(
                     ),
                     MGImportImplLight(
                         mBridgeMatrix,
-                        informator.managerLight
+                        informator.managerLight,
+                        informator.managerLightVolumes
                     )
                 ),
                 requesterUserContent
