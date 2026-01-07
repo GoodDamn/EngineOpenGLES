@@ -1,4 +1,4 @@
-package good.damn.engine.hud
+package good.damn.wrapper.hud
 
 import android.os.Handler
 import android.os.Looper
@@ -17,17 +17,15 @@ import good.damn.engine.touch.callbacks.MGCallbackOnCameraMovement
 import good.damn.engine.touch.callbacks.MGCallbackOnDeltaInteract
 import good.damn.engine.touch.callbacks.MGCallbackOnIntersectPosition
 import good.damn.engine.touch.callbacks.MGCallbackOnScale
-import good.damn.engine.touch.callbacks.MGIListenerOnIntersectPosition
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.runnables.MGCallbackModelSpawn
-import good.damn.engine.sdk.SDVector3
 import good.damn.engine.ui.MGUILayerEditor
 import good.damn.engine.ui.clicks.MGClickImport
 import good.damn.engine.ui.clicks.MGClickPlaceMesh
 import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
 import good.damn.engine.ui.clicks.MGClickTriggerDrawingFlag
 
-class MGHud(
+class APHud(
     requesterUserContent: MGIRequestUserContent,
     informator: MGMInformator,
     switcherDrawMode: MGSwitcherDrawMode

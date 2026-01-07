@@ -1,4 +1,4 @@
-package good.damn.engine.opengl.renderer
+package good.damn.wrapper.renderer
 
 import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
@@ -7,7 +7,6 @@ import android.opengl.GLES30.*
 import android.util.Log
 import android.util.SparseArray
 import android.view.MotionEvent
-import good.damn.engine.MGEngine
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.loaders.scripts.MGLoaderScripts
 import good.damn.engine.loaders.texture.MGLoaderTextureAsync
@@ -36,7 +35,7 @@ import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolMaterials
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
-import good.damn.engine.opengl.runnables.MGHudScene
+import good.damn.wrapper.hud.APHudScene
 import good.damn.engine.opengl.runnables.MGIRunnableBounds
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPass
@@ -56,18 +55,12 @@ import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsVertIndices
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class MGRendererLevelEditor(
+class APRendererLevelEditor(
     requesterUserContent: MGIRequestUserContent
 ): GLSurfaceView.Renderer {
 
     companion object {
         private const val TAG = "MGRendererLevelEditor"
-    }
-
-    init {
-        MGEngine.shaderSource = MGShaderSource(
-            "opaque"
-        )
     }
 
     private val mHandlerGlExecutor = MGHandlerGlExecutor()
@@ -84,7 +77,9 @@ class MGRendererLevelEditor(
     )
 
     private val mInformatorShader = MGMInformatorShader(
-        MGEngine.shaderSource,
+        MGShaderSource(
+            "opaque"
+        ),
         cacheGeometryPass = MGShaderCache(
             SparseArray(50),
             mHandlerGl,
@@ -196,7 +191,7 @@ class MGRendererLevelEditor(
         true
     )
 
-    private val mHudScene = MGHudScene(
+    private val mHudScene = APHudScene(
         requesterUserContent,
         mInformator,
         mInformator.framebufferG

@@ -1,26 +1,21 @@
-package good.damn.engine.opengl.runnables
+package good.damn.wrapper.hud
 
-import good.damn.engine.hud.MGHud
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
-import good.damn.engine.sdk.models.SDMLightPoint
-import good.damn.engine.opengl.framebuffer.MGFramebuffer
+import good.damn.engine.opengl.runnables.MGIRunnableBounds
+import good.damn.engine.opengl.runnables.MGRunnableCycleSwitcherDrawMode
 import good.damn.engine.scripts.MGScriptLightPlacement
-import good.damn.engine.sdk.SDVector3
 import good.damn.engine.utils.MGUtilsFile
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
 
-class MGHudScene(
+class APHudScene(
     requesterUserContent: MGIRequestUserContent,
     informator: MGMInformator,
     framebufferGG: MGFrameBufferG
 ) {
-    val hud: MGHud
+    val hud: APHud
     val runnableCycle: MGIRunnableBounds
 
     init {
@@ -41,7 +36,7 @@ class MGHudScene(
         )
         scriptLightPlacement.execute()
 
-        hud = MGHud(
+        hud = APHud(
             requesterUserContent,
             informator,
             switcherDrawMode
