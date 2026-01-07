@@ -246,7 +246,7 @@ class MGRendererLevelEditor(
             MGBufferUniform.setupBindingPoint(
                 0,
                 buffer,
-                2 * 64
+                sizeBytes
             )
         }
 
