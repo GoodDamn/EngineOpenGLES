@@ -13,17 +13,17 @@ import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
-import good.damn.engine.touch.callbacks.MGCallbackOnCameraMovement
-import good.damn.engine.touch.callbacks.MGCallbackOnDeltaInteract
-import good.damn.engine.touch.callbacks.MGCallbackOnIntersectPosition
-import good.damn.engine.touch.callbacks.MGCallbackOnScale
+import good.damn.hud.touch.callbacks.MGCallbackOnCameraMovement
+import good.damn.hud.touch.callbacks.MGCallbackOnDeltaInteract
+import good.damn.hud.touch.callbacks.MGCallbackOnIntersectPosition
+import good.damn.hud.touch.callbacks.MGCallbackOnScale
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.runnables.MGCallbackModelSpawn
-import good.damn.engine.ui.MGUILayerEditor
-import good.damn.engine.ui.clicks.MGClickImport
-import good.damn.engine.ui.clicks.MGClickPlaceMesh
-import good.damn.engine.ui.clicks.MGClickSwitchDrawMode
-import good.damn.engine.ui.clicks.MGClickTriggerDrawingFlag
+import good.damn.wrapper.hud.ui.MGUILayerEditor
+import good.damn.wrapper.hud.ui.clicks.MGClickImport
+import good.damn.wrapper.hud.ui.clicks.MGClickPlaceMesh
+import good.damn.wrapper.hud.ui.clicks.MGClickSwitchDrawMode
+import good.damn.wrapper.hud.ui.clicks.MGClickTriggerDrawingFlag
 
 class APHud(
     requesterUserContent: MGIRequestUserContent,

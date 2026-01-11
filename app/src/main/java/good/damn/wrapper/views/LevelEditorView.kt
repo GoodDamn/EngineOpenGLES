@@ -26,7 +26,7 @@ class LevelEditorView(
         )
 
         setEGLConfigChooser(
-            8, 8, 8, 8,
+            8,8,8,8,
             24,
             8
         )
