@@ -26,6 +26,8 @@ import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.common.MGHandlerGlExecutor
+import good.damn.common.camera.COCameraProjection
+import good.damn.common.camera.COMCamera
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import good.damn.engine.opengl.managers.MGManagerLight
@@ -46,6 +48,7 @@ import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassInstanced
 import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassModel
 import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPassPointLight
 import good.damn.engine.camera.GLCameraFree
+import good.damn.engine.camera.GLCameraProjection
 import good.damn.engine.opengl.drawers.volume.MGDrawerVolumes
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGManagerProcessTime
@@ -177,16 +180,27 @@ class APRendererLevelEditor(
         mDrawerSphere
     )
 
-    private val mCameraFree = GLCameraFree(
-        COCameraFree(
-            MGMatrixTranslate()
-        ),
-        mHandlerGl,
-        mBufferUniformCamera
-    )
+    private val mCameraFree = MGMatrixTranslate().run {
+        COMCamera(
+            GLCameraFree(
+                COCameraFree(
+                    this
+                ),
+                mHandlerGl,
+                mBufferUniformCamera
+            ),
+            GLCameraProjection(
+                COCameraProjection(
+                    this
+                ),
+                mHandlerGl,
+                mBufferUniformCamera
+            )
+        )
+    }
 
     private val managerFrustrum = COManagerFrustrum(
-        mCameraFree,
+        mCameraFree.projection,
         MGArrayVertexManager(
             verticesBox10Raw
         )
@@ -370,7 +384,7 @@ class APRendererLevelEditor(
             start()
         }
 
-        mInformator.camera.run {
+        mInformator.camera.projection.run {
             modelMatrix.setPosition(
                 0f, 0f, 0f
             )
@@ -397,7 +411,7 @@ class APRendererLevelEditor(
     ) {
         Log.d(TAG, "onSurfaceChanged: ${Thread.currentThread().name}")
 
-        mInformator.camera.setPerspective(
+        mInformator.camera.projection.setPerspective(
             width,
             height
         )

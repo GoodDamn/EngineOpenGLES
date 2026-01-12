@@ -3,6 +3,8 @@ package good.damn.engine.models
 import good.damn.common.COHandlerGl
 import good.damn.common.camera.COCameraFree
 import good.damn.common.camera.COICameraFree
+import good.damn.common.camera.COICameraProjection
+import good.damn.common.camera.COMCamera
 import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
@@ -24,7 +26,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGMInformator(
     val shaders: MGMInformatorShader,
-    val camera: COICameraFree,
+    val camera: COMCamera,
     val drawerLightDirectional: MGDrawerLightDirectional,
     val drawerQuad: MGDrawerVertexArray,
     val drawerVolumes: MGDrawerVolumes,

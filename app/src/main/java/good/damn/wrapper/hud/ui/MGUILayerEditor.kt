@@ -1,61 +1,63 @@
 package good.damn.wrapper.hud.ui
 
 import android.view.MotionEvent
+import good.damn.hud.UIButton
+import good.damn.hud.UIIClick
+import good.damn.hud.touch.MGIListenerDelta
+import good.damn.hud.touch.MGIListenerDistance
+import good.damn.hud.touch.MGIListenerMove
+import good.damn.hud.touch.MGIListenerScale
+import good.damn.hud.touch.MGITouchable
+import good.damn.hud.touch.MGTouchFreeMove
+import good.damn.hud.touch.MGTouchScale
 import good.damn.wrapper.hud.bridges.MGBridgeRayIntersect
-import good.damn.hud.MGIListenerDelta
-import good.damn.hud.MGIListenerDistance
-import good.damn.hud.MGIListenerMove
-import good.damn.hud.MGIListenerScale
-import good.damn.hud.MGITouchable
-import good.damn.hud.MGTouchFreeMove
-import good.damn.hud.MGTouchScale
 import kotlin.math.min
 
 class MGUILayerEditor(
     private val bridgeMatrix: MGBridgeRayIntersect,
-    clickLoadUserContent: good.damn.hud.MGIClick,
-    clickSwitchDrawerMode: good.damn.hud.MGIClick,
-    clickPlaceMesh: good.damn.hud.MGIClick,
-    clickTriggerDrawing: good.damn.hud.MGIClick
-): good.damn.hud.MGITouchable {
+    clickLoadUserContent: UIIClick,
+    clickSwitchDrawerMode: UIIClick,
+    clickPlaceMesh: UIIClick,
+    clickTriggerDrawing: UIIClick
+): MGITouchable {
 
-    private val mBtnLoadUserContent = good.damn.hud.MGButtonGL(
+    private val mBtnLoadUserContent = UIButton(
         click = clickLoadUserContent
     )
 
-    private val mBtnSwitchWireframe = good.damn.hud.MGButtonGL(
+    private val mBtnSwitchWireframe = UIButton(
         click = clickSwitchDrawerMode
     )
 
-    private val mBtnPlaceMesh = good.damn.hud.MGButtonGL(
+    private val mBtnPlaceMesh = UIButton(
         click = clickPlaceMesh
     )
 
-    private val mBtnTriggerDrawing = good.damn.hud.MGButtonGL(
+    private val mBtnTriggerDrawing = UIButton(
         click = clickTriggerDrawing
     )
 
-    private val mTouchMove = good.damn.hud.MGTouchFreeMove()
-    private val mTouchScale = good.damn.hud.MGTouchScale()
+    private val mTouchMove = MGTouchFreeMove()
+    private val mTouchScale = MGTouchScale()
 
     fun setListenerTouchMove(
-        v: good.damn.hud.MGIListenerMove?
+        v: MGIListenerMove?
     ) = mTouchMove.setListenerMove(v)
 
     fun setListenerTouchDelta(
-        v: good.damn.hud.MGIListenerDelta?
+        v: MGIListenerDelta?
     ) = mTouchMove.setListenerDelta(v)
 
     fun setListenerTouchDeltaInteract(
-        v: good.damn.hud.MGIListenerDelta?
+        v: MGIListenerDelta?
     ) { mTouchScale.onDelta = v }
 
     fun setListenerTouchScaleInteract(
-        v: good.damn.hud.MGIListenerScale?
+        v: MGIListenerScale?
     ) { mTouchScale.onScale = v }
 
     fun setListenerTouch3Fingers(
-        v: good.damn.hud.MGIListenerDistance?
+        v: MGIListenerDistance?
     ) { mTouchScale.onDistance = v }
 
     fun layout(

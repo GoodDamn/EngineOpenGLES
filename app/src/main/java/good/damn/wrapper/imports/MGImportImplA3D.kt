@@ -46,7 +46,7 @@ class MGImportImplA3D(
             val mesh = asset.meshes[0]
             val configIndices = mesh.subMeshes[0].indices
 
-            misc.modelsCallback.onGetObjects(
+            misc.modelsCallback.processObjects(
                 file.name,
                 arrayOf(
                     MGObject3d(

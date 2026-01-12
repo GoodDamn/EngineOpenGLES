@@ -1,15 +1,15 @@
 package good.damn.wrapper.hud.ui.clicks
 
+import good.damn.common.COIRunnableBounds
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
-import good.damn.common.MGIRunnableBounds
-import good.damn.hud.MGIClick
+import good.damn.hud.UIIClick
 
 class MGClickSwitchDrawMode(
     private val informator: MGMInformator,
     private val switcher: MGSwitcherDrawMode,
-): good.damn.hud.MGIClick,
-    good.damn.common.MGIRunnableBounds {
+): UIIClick,
+COIRunnableBounds {
 
     override fun onClick() {
         informator.glHandler.post(

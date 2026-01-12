@@ -1,11 +1,11 @@
 package good.damn.wrapper.hud.ui.clicks
 
 import good.damn.engine.models.MGMInformator
-import good.damn.hud.MGIClick
+import good.damn.hud.UIIClick
 
 class MGClickTriggerDrawingFlag(
     private val informator: MGMInformator
-): good.damn.hud.MGIClick {
+): UIIClick {
 
     override fun onClick() {
         informator.run {

@@ -19,7 +19,7 @@ class MGEngine {
 
         internal lateinit var DIR_CACHE: File
         internal lateinit var DIR_PUBLIC: File
-        internal lateinit var DIR_PUBLIC_TEMP: File
+        lateinit var DIR_PUBLIC_TEMP: File
         internal lateinit var DIR_CODE_CACHE: File
 
         internal var drawMode = MGEnumDrawMode.OPAQUE

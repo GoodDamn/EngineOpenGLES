@@ -2,13 +2,15 @@ package good.damn.engine.camera
 
 import good.damn.common.COHandlerGl
 import good.damn.engine.opengl.buffers.MGBufferUniformCamera
-import good.damn.common.camera.COCameraFree
 import good.damn.common.camera.COICameraFree
+import good.damn.common.matrices.MGMatrixModel
+import good.damn.common.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.runnables.misc.MGRunglSendDataCameraModel
+import good.damn.engine.sdk.SDVector3
 import good.damn.engine.utils.MGUtilsBuffer
 
 class GLCameraFree(
-    private val cameraFree: COCameraFree,
+    val cameraFree: COICameraFree,
     private val handler: COHandlerGl,
     uniformBufferCamera: MGBufferUniformCamera
 ): COICameraFree {
@@ -21,6 +23,12 @@ class GLCameraFree(
         mBufferView,
         uniformBufferCamera
     )
+
+    override val direction: SDVector3
+        get() = cameraFree.direction
+
+    override val modelMatrix: MGMatrixTranslate
+        get() = cameraFree.modelMatrix
 
     override fun invalidatePosition() {
         cameraFree.invalidatePosition()

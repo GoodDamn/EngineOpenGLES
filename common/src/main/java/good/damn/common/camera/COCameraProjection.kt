@@ -5,10 +5,9 @@ import good.damn.common.matrices.MGMatrixTranslate
 
 class COCameraProjection(
     override val modelMatrix: MGMatrixTranslate
-): COICameraProjection,
-COICameraPosition {
+): COICameraProjection {
 
-    val projection = FloatArray(
+    override val projection = FloatArray(
         16
     )
 

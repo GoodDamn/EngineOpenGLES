@@ -38,7 +38,7 @@ class APHud(
     )
 
     private val mCallbackOnCameraMove = MGCallbackOnCameraMovement(
-        informator.camera,
+        informator.camera.camera,
         mBridgeMatrix
     ).apply {
         setListenerIntersection(

@@ -1,11 +1,11 @@
 package good.damn.wrapper.hud
 
+import good.damn.common.COIRunnableBounds
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
-import good.damn.common.MGIRunnableBounds
 import good.damn.engine.opengl.runnables.MGRunnableCycleSwitcherDrawMode
 import good.damn.engine.scripts.MGScriptLightPlacement
 import good.damn.engine.utils.MGUtilsFile
@@ -16,7 +16,7 @@ class APHudScene(
     framebufferGG: MGFrameBufferG
 ) {
     val hud: APHud
-    val runnableCycle: good.damn.common.MGIRunnableBounds
+    val runnableCycle: COIRunnableBounds
 
     init {
         val switcherDrawMode = MGSwitcherDrawMode(

@@ -8,7 +8,7 @@ import kotlin.math.hypot
 import kotlin.math.sin
 
 class COCameraFree(
-    val modelMatrix: MGMatrixTranslate
+    override val modelMatrix: MGMatrixTranslate
 ): COICameraFree {
 
     companion object {
@@ -16,7 +16,7 @@ class COCameraFree(
         private const val MIN_PITCH = -MAX_PITCH
     }
 
-    val direction = SDVector3(
+    override val direction = SDVector3(
         0.0f, 0.0f, -1.0f
     )
 

@@ -1,6 +1,11 @@
 package good.damn.common.camera
 
-interface COICameraFree {
+import good.damn.common.matrices.MGMatrixModel
+import good.damn.engine.sdk.SDVector3
+
+interface COICameraFree
+: COICameraPosition {
+    val direction: SDVector3
 
     fun invalidatePosition()
 

@@ -4,6 +4,7 @@ import good.damn.common.COHandlerGl
 import good.damn.engine.opengl.buffers.MGBufferUniformCamera
 import good.damn.common.camera.COCameraProjection
 import good.damn.common.camera.COICameraProjection
+import good.damn.common.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.runnables.misc.MGRunglSendDataProjection
 import good.damn.engine.utils.MGUtilsBuffer
 
@@ -16,6 +17,12 @@ class GLCameraProjection(
     private val mProjectionBuffer = MGUtilsBuffer.allocateByte(
         16 * 4
     )
+
+    override val modelMatrix: MGMatrixTranslate
+        get() = camera.modelMatrix
+
+    override val projection: FloatArray
+        get() = camera.projection
 
     override fun setPerspective(
         width: Int,

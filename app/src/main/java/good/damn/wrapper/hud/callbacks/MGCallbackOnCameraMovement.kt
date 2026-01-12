@@ -1,6 +1,5 @@
 package good.damn.wrapper.hud.callbacks
 
-import good.damn.common.camera.COCameraFree
 import good.damn.common.camera.COICameraFree
 import good.damn.engine.sdk.SDVector3
 import good.damn.hud.touch.MGIListenerDelta
@@ -16,7 +15,6 @@ MGIListenerMove,
 MGIListenerDistance {
 
     private var mListenerIntersect: MGIListenerOnIntersectPosition? = null
-    private val mPointCamera = SDVector3(0f)
 
     fun setListenerIntersection(
         v: MGIListenerOnIntersectPosition?
@@ -62,15 +60,11 @@ MGIListenerDistance {
     }
 
     private inline fun updateIntersection() {
-        mPointCamera.x = camera.modelMatrix.x
-        mPointCamera.y = camera.modelMatrix.y
-        mPointCamera.z = camera.modelMatrix.z
-
         val direction = camera.direction
         bridge.outPointLead.apply {
-            x = mPointCamera.x + direction.x * bridge.distance
-            y = mPointCamera.y + direction.y * bridge.distance
-            z = mPointCamera.z + direction.z * bridge.distance
+            x = camera.modelMatrix.x + direction.x * bridge.distance
+            y = camera.modelMatrix.y + direction.y * bridge.distance
+            z = camera.modelMatrix.z + direction.z * bridge.distance
         }
 
         mListenerIntersect?.onIntersectPosition(
