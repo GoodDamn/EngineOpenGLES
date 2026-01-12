@@ -141,6 +141,10 @@ class APRendererLevelEditor(
         MGEnumArrayVertexConfiguration.BYTE
     )
 
+    private val mVerticesBox10 = MGArrayVertexConfigurator(
+        MGEnumArrayVertexConfiguration.BYTE
+    )
+
     private val verticesBox10Raw = MGUtilsBuffer.createFloat(
         MGUtilsVertIndices.createCubeVertices(
             SDVector3(
@@ -161,9 +165,7 @@ class APRendererLevelEditor(
     )
 
     private val mDrawerBox10 = MGDrawerVertexArray(
-        MGArrayVertexConfigurator(
-            MGEnumArrayVertexConfiguration.BYTE
-        )
+        mVerticesBox10
     )
 
     private val mVerticesQuad = MGArrayVertexConfigurator(
@@ -367,11 +369,8 @@ class APRendererLevelEditor(
             pointPosition
         )
 
-        val verticesBox10 = MGArrayVertexConfigurator(
-            MGEnumArrayVertexConfiguration.BYTE
-        )
 
-        verticesBox10.configure(
+        mVerticesBox10.configure(
             verticesBox10Raw,
             indicesBox,
             pointPosition
