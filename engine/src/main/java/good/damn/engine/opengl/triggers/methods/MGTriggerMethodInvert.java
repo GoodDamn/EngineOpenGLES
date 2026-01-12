@@ -4,15 +4,15 @@ import android.opengl.Matrix;
 
 import androidx.annotation.NonNull;
 
-import good.damn.common.matrices.MGMatrixInvert;
+import good.damn.common.matrices.COMatrixInvert;
 
 public abstract class MGTriggerMethodInvert
 implements MGITriggerMethod {
 
-    @NonNull private final MGMatrixInvert matrixInvert;
+    @NonNull private final COMatrixInvert matrixInvert;
 
     public MGTriggerMethodInvert(
-        @NonNull final MGMatrixInvert matrix
+        @NonNull final COMatrixInvert matrix
     ) {
         matrixInvert = matrix;
     }

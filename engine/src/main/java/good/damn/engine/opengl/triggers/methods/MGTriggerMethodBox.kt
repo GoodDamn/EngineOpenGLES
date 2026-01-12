@@ -1,10 +1,10 @@
 package good.damn.engine.opengl.triggers.methods
 
 import good.damn.engine.sdk.SDVector3
-import good.damn.common.matrices.MGMatrixInvert
+import good.damn.common.matrices.COMatrixInvert
 
 class MGTriggerMethodBox(
-    modelMatrix: MGMatrixInvert
+    modelMatrix: COMatrixInvert
 ): MGTriggerMethodInvert(
     modelMatrix
 ) {

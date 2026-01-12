@@ -1,14 +1,14 @@
 package good.damn.engine.opengl.drawers
 
 import android.opengl.GLES30
-import good.damn.common.matrices.MGMatrixNormal
+import good.damn.common.matrices.COMatrixNormal
 import good.damn.engine.opengl.shaders.MGIShaderNormal
 
 class MGDrawerMeshSwitchNormals(
     vertexArray: MGDrawerVertexArray,
     drawEntity: MGDrawerPositionEntity,
     frontFace: Int,
-    private val matrixNormal: MGMatrixNormal
+    private val matrixNormal: COMatrixNormal
 ): MGDrawerMeshSwitch(
     vertexArray,
     drawEntity,

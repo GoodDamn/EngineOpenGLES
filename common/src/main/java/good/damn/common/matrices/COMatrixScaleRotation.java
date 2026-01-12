@@ -1,7 +1,7 @@
 package good.damn.common.matrices;
 
-public final class MGMatrixScaleRotation
-extends MGMatrixTranslate {
+public final class COMatrixScaleRotation
+extends COMatrixTranslate {
 
     public float msx = 1f;
     public float msy = 1f;

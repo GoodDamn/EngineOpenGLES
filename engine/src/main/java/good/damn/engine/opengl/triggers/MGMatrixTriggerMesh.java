@@ -3,33 +3,33 @@ package good.damn.engine.opengl.triggers;
 import androidx.annotation.NonNull;
 
 import good.damn.engine.sdk.SDVector3;
-import good.damn.common.matrices.MGMatrixScaleRotation;
-import good.damn.common.matrices.MGMatrixTransformationInvert;
-import good.damn.common.matrices.MGMatrixTransformationNormal;
+import good.damn.common.matrices.COMatrixScaleRotation;
+import good.damn.common.matrices.COMatrixTransformationInvert;
+import good.damn.common.matrices.COMatrixTransformationNormal;
 
 public final class MGMatrixTriggerMesh
 implements MGIMatrixTrigger {
 
     @NonNull
-    public final MGMatrixTransformationInvert<
-        MGMatrixScaleRotation
-    > matrixTrigger;
+    public final COMatrixTransformationInvert<
+            COMatrixScaleRotation
+        > matrixTrigger;
 
     @NonNull
-    public final MGMatrixTransformationNormal<
-        MGMatrixScaleRotation
-    > matrixMesh;
+    public final COMatrixTransformationNormal<
+            COMatrixScaleRotation
+        > matrixMesh;
 
     @NonNull
     private final SDVector3 mTriggerScale;
 
     public MGMatrixTriggerMesh(
-        @NonNull final MGMatrixTransformationInvert<
-            MGMatrixScaleRotation
-        > matrixTrigger,
-        @NonNull final MGMatrixTransformationNormal<
-            MGMatrixScaleRotation
-        > matrixMesh,
+        @NonNull final COMatrixTransformationInvert<
+                    COMatrixScaleRotation
+                > matrixTrigger,
+        @NonNull final COMatrixTransformationNormal<
+                    COMatrixScaleRotation
+                > matrixMesh,
         @NonNull final SDVector3 min,
         @NonNull final SDVector3 max
     ) {

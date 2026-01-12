@@ -1,11 +1,5 @@
 package good.damn.engine.opengl.generators
 
-import android.util.Log
-import good.damn.common.vertex.MGArrayVertexManager
-import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
-import good.damn.engine.opengl.iterators.vertex.MGIVertexIterator
-import good.damn.engine.utils.MGUtilsBuffer
-
 /*class MGGeneratorLandscape(
     val vertexArray: MGArrayVertexManager
 ) {

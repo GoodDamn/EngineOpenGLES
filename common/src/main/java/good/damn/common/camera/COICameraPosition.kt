@@ -1,7 +1,7 @@
 package good.damn.common.camera
 
-import good.damn.common.matrices.MGMatrixTranslate
+import good.damn.common.matrices.COMatrixTranslate
 
 interface COICameraPosition {
-    val modelMatrix: MGMatrixTranslate
+    val modelMatrix: COMatrixTranslate
 }

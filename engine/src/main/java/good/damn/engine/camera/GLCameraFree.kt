@@ -3,8 +3,7 @@ package good.damn.engine.camera
 import good.damn.common.COHandlerGl
 import good.damn.engine.opengl.buffers.MGBufferUniformCamera
 import good.damn.common.camera.COICameraFree
-import good.damn.common.matrices.MGMatrixModel
-import good.damn.common.matrices.MGMatrixTranslate
+import good.damn.common.matrices.COMatrixTranslate
 import good.damn.engine.opengl.runnables.misc.MGRunglSendDataCameraModel
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine.utils.MGUtilsBuffer
@@ -27,7 +26,7 @@ class GLCameraFree(
     override val direction: SDVector3
         get() = cameraFree.direction
 
-    override val modelMatrix: MGMatrixTranslate
+    override val modelMatrix: COMatrixTranslate
         get() = cameraFree.modelMatrix
 
     override fun invalidatePosition() {

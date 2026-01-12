@@ -4,7 +4,7 @@ import good.damn.common.COHandlerGl
 import good.damn.engine.opengl.buffers.MGBufferUniformCamera
 import good.damn.common.camera.COCameraProjection
 import good.damn.common.camera.COICameraProjection
-import good.damn.common.matrices.MGMatrixTranslate
+import good.damn.common.matrices.COMatrixTranslate
 import good.damn.engine.opengl.runnables.misc.MGRunglSendDataProjection
 import good.damn.engine.utils.MGUtilsBuffer
 
@@ -18,7 +18,7 @@ class GLCameraProjection(
         16 * 4
     )
 
-    override val modelMatrix: MGMatrixTranslate
+    override val modelMatrix: COMatrixTranslate
         get() = camera.modelMatrix
 
     override val projection: FloatArray

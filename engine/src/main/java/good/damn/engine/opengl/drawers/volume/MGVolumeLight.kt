@@ -1,13 +1,12 @@
 package good.damn.engine.opengl.drawers.volume
 
-import good.damn.common.matrices.MGMatrixModel
+import good.damn.common.matrices.COMatrixModel
 import good.damn.common.volume.COIVolume
-import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 
 class MGVolumeLight(
     private val drawerLightPoint: MGDrawerLightPoint,
-    override val modelMatrix: MGMatrixModel
+    override val modelMatrix: COMatrixModel
 ): COIVolume {
 
     override fun isOnFrustrum(

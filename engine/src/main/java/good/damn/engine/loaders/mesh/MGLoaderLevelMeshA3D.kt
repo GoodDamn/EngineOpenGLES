@@ -2,8 +2,8 @@ package good.damn.engine.loaders.mesh
 
 import good.damn.common.COHandlerGl
 import good.damn.engine.models.MGMInstanceArray
-import good.damn.common.matrices.MGMatrixScaleRotation
-import good.damn.common.matrices.MGMatrixTransformationNormal
+import good.damn.common.matrices.COMatrixScaleRotation
+import good.damn.common.matrices.COMatrixTransformationNormal
 import good.damn.engine.utils.MGUtilsA3D
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsInstancedMesh
@@ -19,7 +19,7 @@ class MGLoaderLevelMeshA3D(
     fun loadInstanceArray(
         fileNameA3D: String,
         matrices: List<
-            MGMatrixTransformationNormal<MGMatrixScaleRotation>
+            COMatrixTransformationNormal<COMatrixScaleRotation>
         >,
         uvScale: Float
     ): MGMInstanceArray? {

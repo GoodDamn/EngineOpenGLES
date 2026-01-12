@@ -2,14 +2,14 @@ package good.damn.engine.opengl.triggers.methods;
 
 import androidx.annotation.NonNull;
 
-import good.damn.common.matrices.MGMatrixInvert;
+import good.damn.common.matrices.COMatrixInvert;
 
 public final class MGTriggerMethodSphere
 extends MGTriggerMethodInvert {
     private static final float RADIUS = 1f;
 
     public MGTriggerMethodSphere(
-        @NonNull MGMatrixInvert matrix
+        @NonNull COMatrixInvert matrix
     ) { super(matrix); }
 
     @Override

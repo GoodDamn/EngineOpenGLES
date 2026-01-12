@@ -1,8 +1,5 @@
 package good.damn.engine.opengl.iterators.vertex
 
-import good.damn.common.vertex.MGArrayVertexManager
-import good.damn.engine.opengl.maps.MGMapDisplace
-
 /*class MGVertexIteratorLandscapeDisplace(
     private val mapDisplace: MGMapDisplace,
     private val maxHeight: Int,

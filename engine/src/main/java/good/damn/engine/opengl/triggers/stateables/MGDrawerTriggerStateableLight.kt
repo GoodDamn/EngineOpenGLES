@@ -1,7 +1,7 @@
 package good.damn.engine.opengl.triggers.stateables
 
-import good.damn.common.matrices.MGMatrixScale
-import good.damn.common.matrices.MGMatrixTransformationInvert
+import good.damn.common.matrices.COMatrixScale
+import good.damn.common.matrices.COMatrixTransformationInvert
 import good.damn.engine.opengl.triggers.MGMatrixTriggerLight
 import good.damn.engine.opengl.triggers.callbacks.MGManagerTriggerState
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodSphere
@@ -18,8 +18,8 @@ data class MGDrawerTriggerStateableLight(
             light: SDMLightPoint
         ): MGDrawerTriggerStateableLight {
             val matrix = MGMatrixTriggerLight(
-                MGMatrixTransformationInvert(
-                    MGMatrixScale()
+                COMatrixTransformationInvert(
+                    COMatrixScale()
                 )
             )
 

@@ -1,15 +1,14 @@
 package good.damn.common.volume
 
 import android.opengl.Matrix
-import good.damn.common.camera.COCameraProjection
 import good.damn.common.camera.COICameraProjection
-import good.damn.common.vertex.MGArrayVertexManager
+import good.damn.common.vertex.COMArrayVertexManager
 import good.damn.engine.sdk.process.SDIProcessTime
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class COManagerFrustrum(
     private val camera: COICameraProjection,
-    vertices: MGArrayVertexManager
+    vertices: COMArrayVertexManager
 ): SDIProcessTime {
     val volumes = ConcurrentLinkedQueue<
         COIVolume

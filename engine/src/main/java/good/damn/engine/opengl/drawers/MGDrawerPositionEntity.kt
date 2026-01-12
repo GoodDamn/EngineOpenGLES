@@ -1,18 +1,17 @@
 package good.damn.engine.opengl.drawers
 
 import android.opengl.GLES30.*
-import good.damn.common.matrices.MGMatrixModel
-import good.damn.engine.opengl.shaders.MGIShader
+import good.damn.common.matrices.COMatrixModel
 import good.damn.engine.opengl.shaders.MGIShaderModel
 
 class MGDrawerPositionEntity(
-    var modelMatrix: MGMatrixModel
+    var modelMatrix: COMatrixModel
 ): MGIDrawerShader<MGIShaderModel> {
 
     companion object {
         fun draw(
             shader: MGIShaderModel,
-            modelMatrix: MGMatrixModel
+            modelMatrix: COMatrixModel
         ) {
             glUniformMatrix4fv(
                 shader.uniformModelView,

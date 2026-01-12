@@ -1,8 +1,5 @@
 package good.damn.engine.opengl.iterators.vertex
 
-import good.damn.common.vertex.MGArrayVertexManager
-import good.damn.engine.opengl.maps.MGMapNormal
-
 /*class MGVertexIteratorLandscapeNormal(
     private val mapNormal: MGMapNormal
 ): MGIVertexIterator {

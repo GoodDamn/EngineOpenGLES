@@ -15,7 +15,7 @@ import good.damn.engine.loaders.texture.MGLoaderTextureAsync
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInformatorShader
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
-import good.damn.common.vertex.MGArrayVertexManager
+import good.damn.common.vertex.COMArrayVertexManager
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.buffers.MGBuffer
 import good.damn.engine.opengl.buffers.MGBufferUniform
@@ -25,14 +25,14 @@ import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
-import good.damn.common.MGHandlerGlExecutor
+import good.damn.common.COHandlerGlExecutor
 import good.damn.common.camera.COCameraProjection
 import good.damn.common.camera.COMCamera
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
-import good.damn.common.matrices.MGMatrixTranslate
+import good.damn.common.matrices.COMatrixTranslate
 import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.opengl.models.MGMLightPass
 import good.damn.engine.opengl.objects.MGObject3d
@@ -68,7 +68,7 @@ class APRendererLevelEditor(
         private const val TAG = "MGRendererLevelEditor"
     }
 
-    private val mHandlerGlExecutor = MGHandlerGlExecutor()
+    private val mHandlerGlExecutor = COHandlerGlExecutor()
 
     private val mHandlerGl = COHandlerGl(
         mHandlerGlExecutor.queue,
@@ -182,7 +182,7 @@ class APRendererLevelEditor(
         mDrawerSphere
     )
 
-    private val mCameraFree = MGMatrixTranslate().run {
+    private val mCameraFree = COMatrixTranslate().run {
         COMCamera(
             GLCameraFree(
                 COCameraFree(
@@ -203,7 +203,7 @@ class APRendererLevelEditor(
 
     private val managerFrustrum = COManagerFrustrum(
         mCameraFree.projection,
-        MGArrayVertexManager(
+        COMArrayVertexManager(
             verticesBox10Raw
         )
     )

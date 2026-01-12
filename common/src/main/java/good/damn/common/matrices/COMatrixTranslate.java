@@ -1,7 +1,7 @@
 package good.damn.common.matrices;
 
-public class MGMatrixTranslate
-extends MGMatrixModel {
+public class COMatrixTranslate
+extends COMatrixModel {
 
     private static final int INDEX_X = 12;
     private static final int INDEX_Y = 13;

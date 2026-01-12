@@ -2,7 +2,7 @@ package good.damn.common
 
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class MGHandlerGlExecutor {
+class COHandlerGlExecutor {
 
     val queue = ConcurrentLinkedQueue<COIRunnableBounds>()
     val queueCycle = ConcurrentLinkedQueue<COIRunnableBounds>()

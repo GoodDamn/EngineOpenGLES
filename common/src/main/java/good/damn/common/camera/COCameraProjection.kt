@@ -1,10 +1,10 @@
 package good.damn.common.camera
 
 import android.opengl.Matrix
-import good.damn.common.matrices.MGMatrixTranslate
+import good.damn.common.matrices.COMatrixTranslate
 
 class COCameraProjection(
-    override val modelMatrix: MGMatrixTranslate
+    override val modelMatrix: COMatrixTranslate
 ): COICameraProjection {
 
     override val projection = FloatArray(

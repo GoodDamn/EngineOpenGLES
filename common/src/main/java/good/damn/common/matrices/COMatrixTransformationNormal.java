@@ -2,16 +2,16 @@ package good.damn.common.matrices;
 
 import androidx.annotation.NonNull;
 
-public final class MGMatrixTransformationInvert<
-  T extends MGMatrixTranslate
+public final class COMatrixTransformationNormal<
+  T extends COMatrixTranslate
 > {
     @NonNull public final T model;
-    @NonNull public final MGMatrixInvert invert;
-    public MGMatrixTransformationInvert(
+    @NonNull public final COMatrixNormal normal;
+    public COMatrixTransformationNormal(
         @NonNull T model
     ) {
         this.model = model;
-        invert = new MGMatrixInvert(
+        normal = new COMatrixNormal(
             model.model
         );
     }

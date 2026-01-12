@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 
 import good.damn.common.COHandlerGl;
 import good.damn.engine.models.MGMInformator;
-import good.damn.common.vertex.MGArrayVertexManager;
+import good.damn.common.vertex.COMArrayVertexManager;
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator;
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch;
@@ -16,9 +16,9 @@ import good.damn.engine.opengl.objects.MGObject3d;
 import good.damn.engine.sdk.SDVector3;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals;
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity;
-import good.damn.common.matrices.MGMatrixScaleRotation;
-import good.damn.common.matrices.MGMatrixTransformationInvert;
-import good.damn.common.matrices.MGMatrixTransformationNormal;
+import good.damn.common.matrices.COMatrixScaleRotation;
+import good.damn.common.matrices.COMatrixTransformationInvert;
+import good.damn.common.matrices.COMatrixTransformationNormal;
 import good.damn.engine.opengl.models.MGMPoolVertexArray;
 import good.damn.engine.opengl.models.MGMPoolMeshMutable;
 import good.damn.engine.opengl.triggers.callbacks.MGManagerTriggerStateCallback;
@@ -72,7 +72,7 @@ public final class MGTriggerMesh {
         );
 
         return createFromVertexArray(
-            new MGArrayVertexManager(
+            new COMArrayVertexManager(
                 obj.vertices
             ),
             arrayVertex
@@ -81,7 +81,7 @@ public final class MGTriggerMesh {
 
     @NonNull
     public static MGMPoolVertexArray createFromVertexArray(
-        @NonNull final MGArrayVertexManager manager,
+        @NonNull final COMArrayVertexManager manager,
         @NonNull final MGArrayVertexConfigurator vertexArray
     ) {
         @NonNull
@@ -123,11 +123,11 @@ public final class MGTriggerMesh {
 
         @NonNull
         final MGMatrixTriggerMesh matrix = new MGMatrixTriggerMesh(
-            new MGMatrixTransformationInvert<>(
-                new MGMatrixScaleRotation()
+            new COMatrixTransformationInvert<>(
+                new COMatrixScaleRotation()
             ),
-            new MGMatrixTransformationNormal<>(
-                new MGMatrixScaleRotation()
+            new COMatrixTransformationNormal<>(
+                new COMatrixScaleRotation()
             ),
             pointMinMax.first,
             pointMinMax.second

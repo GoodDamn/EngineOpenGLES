@@ -2,24 +2,24 @@ package good.damn.engine.opengl.triggers;
 
 import androidx.annotation.NonNull;
 
-import good.damn.common.matrices.MGMatrixScale;
-import good.damn.common.matrices.MGMatrixTransformationInvert;
+import good.damn.common.matrices.COMatrixScale;
+import good.damn.common.matrices.COMatrixTransformationInvert;
 import good.damn.engine.sdk.SDVector3;
 
 public final class MGMatrixTriggerLight {
 
     @NonNull
-    public final MGMatrixTransformationInvert<
-        MGMatrixScale
-    > matrixTrigger;
+    public final COMatrixTransformationInvert<
+            COMatrixScale
+        > matrixTrigger;
 
     @NonNull
     private final SDVector3 mLightPosition;
 
     public MGMatrixTriggerLight(
-        @NonNull final MGMatrixTransformationInvert<
-            MGMatrixScale
-        > matrixTrigger
+        @NonNull final COMatrixTransformationInvert<
+                    COMatrixScale
+                > matrixTrigger
     ) {
         this.matrixTrigger = matrixTrigger;
 

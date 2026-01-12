@@ -12,12 +12,11 @@ import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.models.json.spawn.MGMLevelSpawnInfo
 import good.damn.engine.models.json.spawn.MGMLevelSpawnLight
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
-import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.drawers.volume.MGVolumeLight
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.common.matrices.MGMatrixScaleRotation
-import good.damn.common.matrices.MGMatrixTransformationNormal
+import good.damn.common.matrices.COMatrixScaleRotation
+import good.damn.common.matrices.COMatrixTransformationNormal
 import good.damn.engine.opengl.models.MGMMeshDrawer
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
@@ -311,8 +310,8 @@ object MGStreamLevel {
         val instanceArray = loaderMesh.loadInstanceArray(
             "${landscape.a3dMesh}.a3d",
             arrayListOf(
-                MGMatrixTransformationNormal(
-                    MGMatrixScaleRotation()
+                COMatrixTransformationNormal(
+                    COMatrixScaleRotation()
                 ).apply {
                     mapProp ?: return@apply
                     fillModelMatrix(

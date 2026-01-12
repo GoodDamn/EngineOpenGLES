@@ -4,12 +4,12 @@ import android.opengl.Matrix;
 
 import androidx.annotation.NonNull;
 
-public final class MGMatrixNormal
-extends MGMatrixInvert {
+public final class COMatrixNormal
+extends COMatrixInvert {
 
     public final float[] normalMatrix = new float[16];
 
-    public MGMatrixNormal(
+    public COMatrixNormal(
         @NonNull final float[] model
     ) {
         super(model);

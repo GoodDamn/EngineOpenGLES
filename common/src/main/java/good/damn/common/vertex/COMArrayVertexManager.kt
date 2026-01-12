@@ -2,7 +2,7 @@ package good.damn.common.vertex
 
 import java.nio.FloatBuffer
 
-data class MGArrayVertexManager(
+data class COMArrayVertexManager(
     val vertices: FloatBuffer
 ) {
     companion object {
