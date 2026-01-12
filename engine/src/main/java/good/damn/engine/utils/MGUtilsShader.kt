@@ -2,7 +2,6 @@ package good.damn.engine.utils
 
 import android.opengl.GLES20
 import android.opengl.GLES30
-import android.opengl.GLU
 import android.util.Log
 
 object MGUtilsShader {

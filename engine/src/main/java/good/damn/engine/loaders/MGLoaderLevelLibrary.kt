@@ -5,15 +5,10 @@ import good.damn.engine.models.MGProp
 import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.shaders.MGShaderMaterial
-import good.damn.engine.opengl.shaders.MGShaderGeometryPassInstanced
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.shader.generators.MGMMaterialShader
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsJson
 import org.json.JSONArray
-import org.json.JSONObject
-import java.io.File
-import java.nio.charset.Charset
 import java.util.LinkedList
 
 class MGLoaderLevelLibrary(

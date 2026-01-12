@@ -5,10 +5,7 @@ import android.opengl.GLSurfaceView
 import android.util.Log
 import android.view.MotionEvent
 import good.damn.engine.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.renderer.MGRendererLevelEditor
-import javax.microedition.khronos.egl.EGL10
-import javax.microedition.khronos.egl.EGLConfig
-import javax.microedition.khronos.egl.EGLDisplay
+import good.damn.wrapper.renderer.APRendererLevelEditor
 
 class LevelEditorView(
     context: Context,
@@ -21,7 +18,7 @@ class LevelEditorView(
         private const val TAG = "LevelEditorView"
     }
 
-    private val mRenderer: MGRendererLevelEditor
+    private val mRenderer: APRendererLevelEditor
 
     init {
         setEGLContextClientVersion(
@@ -29,12 +26,12 @@ class LevelEditorView(
         )
 
         setEGLConfigChooser(
-            8, 8, 8, 8,
+            8,8,8,8,
             24,
             8
         )
 
-        mRenderer = MGRendererLevelEditor(
+        mRenderer = APRendererLevelEditor(
             requesterUserContent
         )
 

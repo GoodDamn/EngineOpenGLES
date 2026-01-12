@@ -1,15 +1,12 @@
 package good.damn.engine.opengl.managers
 
 import android.opengl.GLES30
-import android.util.Log
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.shaders.MGIShaderModel
 import good.damn.engine.opengl.shaders.MGShaderLightPoint
 import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.textures.MGTexture
-import good.damn.engine.opengl.thread.MGHandlerGl
-import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MGManagerLight(
@@ -27,9 +24,7 @@ class MGManagerLight(
     ) {
         mLights.forEach {
             it.draw(
-                shader
-            )
-            it.position.draw(
+                shader,
                 shaderModel
             )
             var i = 0

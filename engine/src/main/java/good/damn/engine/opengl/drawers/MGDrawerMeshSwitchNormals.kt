@@ -1,9 +1,8 @@
 package good.damn.engine.opengl.drawers
 
-import good.damn.engine.opengl.matrices.MGMatrixNormal
+import android.opengl.GLES30
+import good.damn.common.matrices.MGMatrixNormal
 import good.damn.engine.opengl.shaders.MGIShaderNormal
-import java.nio.Buffer
-import java.nio.IntBuffer
 
 class MGDrawerMeshSwitchNormals(
     vertexArray: MGDrawerVertexArray,
@@ -18,8 +17,12 @@ class MGDrawerMeshSwitchNormals(
     override fun drawNormals(
         shader: MGIShaderNormal
     ) {
-        matrixNormal.draw(
-            shader
+        GLES30.glUniformMatrix4fv(
+            shader.uniformNormalMatrix,
+            1,
+            false,
+            matrixNormal.normalMatrix,
+            0
         )
     }
 }

@@ -17,7 +17,7 @@ import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
-open class MGArrayVertexConfigurator(
+class MGArrayVertexConfigurator(
     val config: MGEnumArrayVertexConfiguration
 ) {
 
@@ -46,9 +46,7 @@ open class MGArrayVertexConfigurator(
             0
         )
 
-        glBindVertexArray(
-            mVertexArray[0]
-        )
+        bindVertexArray()
 
         generateVertexBuffer(
             vertices
@@ -59,7 +57,23 @@ open class MGArrayVertexConfigurator(
         )
 
         pointerAttribute.bindPointers()
+        unbind()
+    }
 
+    fun bindVertexArray() {
+        glBindVertexArray(
+            mVertexArray[0]
+        )
+    }
+
+    fun bindVertexBuffer() {
+        glBindBuffer(
+            GL_ARRAY_BUFFER,
+            mVertexArrayBuffer[0]
+        )
+    }
+
+    fun unbind() {
         glBindVertexArray(
             0
         )
@@ -75,7 +89,7 @@ open class MGArrayVertexConfigurator(
         )
     }
 
-    protected fun sendVertexBufferData(
+    fun sendVertexBufferData(
         vertices: FloatBuffer
     ) {
         glBufferData(
@@ -95,10 +109,7 @@ open class MGArrayVertexConfigurator(
             0
         )
 
-        glBindBuffer(
-            GL_ARRAY_BUFFER,
-            mVertexArrayBuffer[0]
-        )
+        bindVertexBuffer()
 
         sendVertexBufferData(
             vertices

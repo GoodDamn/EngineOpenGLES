@@ -1,9 +1,8 @@
 package good.damn.engine.runnables
 
+import good.damn.common.COIRunnableBounds
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
-import good.damn.engine.opengl.arrays.MGArrayVertexManager
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
-import good.damn.engine.opengl.runnables.MGIRunnableBounds
 import java.nio.Buffer
 import java.nio.FloatBuffer
 
@@ -12,7 +11,7 @@ class MGRunnableConfigVertexArray(
     private val vertexBuffer: FloatBuffer,
     private val indicesBuffer: Buffer,
     private val pointerAttribute: MGPointerAttribute
-): MGIRunnableBounds {
+): COIRunnableBounds {
 
     override fun run(
         width: Int,

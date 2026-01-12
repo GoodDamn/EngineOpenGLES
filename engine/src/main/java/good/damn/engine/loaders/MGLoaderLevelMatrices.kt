@@ -1,12 +1,10 @@
 package good.damn.engine.loaders
 
 import good.damn.engine.models.MGProp
-import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
-import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
+import good.damn.common.matrices.MGMatrixScaleRotation
+import good.damn.common.matrices.MGMatrixTransformationNormal
 import good.damn.mapimporter.models.MIMMap
 import good.damn.mapimporter.models.MIMProp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 class MGLoaderLevelMatrices {
 

@@ -1,7 +1,5 @@
 package good.damn.engine.level
 
-import android.graphics.Color
-import android.util.Log
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.loaders.MGLoaderLevelMatrices
@@ -18,15 +16,14 @@ import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.drawers.volume.MGVolumeLight
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
-import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
+import good.damn.common.matrices.MGMatrixScaleRotation
+import good.damn.common.matrices.MGMatrixTransformationNormal
 import good.damn.engine.opengl.models.MGMMeshDrawer
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.triggers.MGTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
-import good.damn.engine.sdk.SDVector3
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine.utils.MGUtilsFile
@@ -37,7 +34,6 @@ import good.damn.mapimporter.models.MIMMap
 import good.damn.mapimporter.models.MIMProp
 import java.io.DataInputStream
 import java.io.InputStream
-import kotlin.math.sin
 
 object MGStreamLevel {
 
@@ -270,12 +266,18 @@ object MGStreamLevel {
                     calculateInvertTrigger()
                 }
 
+                val drawerLightPoint = MGDrawerLightPoint(
+                    triggerLight
+                )
+
                 informator.managerLight.register(
-                    MGDrawerLightPoint(
-                        MGDrawerPositionEntity(
-                            triggerLight.modelMatrix.matrixTrigger.model
-                        ),
-                        triggerLight
+                    drawerLightPoint
+                )
+
+                informator.managerLightVolumes.volumes.add(
+                    MGVolumeLight(
+                        drawerLightPoint,
+                        triggerLight.modelMatrix.matrixTrigger.model
                     )
                 )
             }

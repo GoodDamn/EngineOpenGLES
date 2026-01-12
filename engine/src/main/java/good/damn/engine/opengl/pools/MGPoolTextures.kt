@@ -1,7 +1,5 @@
 package good.damn.engine.opengl.pools
 
-import android.opengl.GLES30.GL_CLAMP_TO_EDGE
-import android.opengl.GLES30.GL_REPEAT
 import good.damn.engine.loaders.texture.MGILoaderTexture
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.textures.MGTextureActive

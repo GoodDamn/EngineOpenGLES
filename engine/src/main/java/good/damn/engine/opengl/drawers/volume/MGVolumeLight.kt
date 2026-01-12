@@ -1,18 +1,19 @@
 package good.damn.engine.opengl.drawers.volume
 
+import good.damn.common.matrices.MGMatrixModel
+import good.damn.common.volume.COIVolume
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
-import good.damn.engine.opengl.drawers.MGIDrawerShader
-import good.damn.engine.opengl.matrices.MGMatrixModel
-import good.damn.engine.opengl.shaders.MGIShaderModel
-import good.damn.engine.sdk.models.SDMLightPoint
+import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 
 class MGVolumeLight(
-    override val drawerModel: MGDrawerPositionEntity
-): MGIVolume {
+    private val drawerLightPoint: MGDrawerLightPoint,
+    override val modelMatrix: MGMatrixModel
+): COIVolume {
 
-    override fun onFrustrumState(
-        isOnFrustrum: Boolean
+    override fun isOnFrustrum(
+        v: Boolean
     ) {
-
+        drawerLightPoint.isActive = v
     }
+
 }

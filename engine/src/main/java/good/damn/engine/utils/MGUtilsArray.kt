@@ -1,8 +1,6 @@
 package good.damn.engine.utils
 
-import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import java.nio.FloatBuffer
-import kotlin.math.tan
 
 object MGUtilsArray {
 

@@ -1,6 +1,5 @@
 package good.damn.engine.opengl.objects;
 
-import android.opengl.GLES30;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -9,10 +8,6 @@ import androidx.annotation.Nullable;
 import java.io.File;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 import good.damn.engine.MGEngine;
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration;

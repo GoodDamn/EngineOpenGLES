@@ -3,7 +3,7 @@ package good.damn.engine.opengl.managers;
 import androidx.annotation.NonNull;
 
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
-import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
+import good.damn.common.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
 
 public final class MGManagerTriggerMesh

@@ -1,11 +1,9 @@
 package good.damn.engine.shader.generators
 
-import android.util.Log
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.models.MGMShaderSourceFragDefer
 import good.damn.engine.opengl.shaders.MGShaderTexture
-import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.textures.MGTextureActive
 import good.damn.engine.shader.MGShaderSource
 import good.damn.engine.utils.MGUtilsFile

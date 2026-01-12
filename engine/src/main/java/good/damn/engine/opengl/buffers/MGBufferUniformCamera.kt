@@ -11,6 +11,8 @@ class MGBufferUniformCamera(
         private const val SIZE_MAT44 = 64
     }
 
+    val sizeBytes = 2 * SIZE_MAT44
+
     fun setMatrixProjection(
         data: ByteBuffer
     ) {

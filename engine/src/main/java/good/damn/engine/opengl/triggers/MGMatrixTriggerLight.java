@@ -1,13 +1,10 @@
 package good.damn.engine.opengl.triggers;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
+import good.damn.common.matrices.MGMatrixScale;
+import good.damn.common.matrices.MGMatrixTransformationInvert;
 import good.damn.engine.sdk.SDVector3;
-import good.damn.engine.opengl.matrices.MGMatrixScale;
-import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
-import good.damn.engine.sdk.models.SDMLightPointInterpolation;
 
 public final class MGMatrixTriggerLight {
 

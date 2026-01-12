@@ -1,30 +1,35 @@
 package good.damn.engine.models
 
-import good.damn.engine.opengl.camera.MGCameraFree
+import good.damn.common.COHandlerGl
+import good.damn.common.camera.COCameraFree
+import good.damn.common.camera.COICameraFree
+import good.damn.common.camera.COICameraProjection
+import good.damn.common.camera.COMCamera
+import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
+import good.damn.engine.opengl.drawers.volume.MGDrawerVolumes
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
-import good.damn.engine.opengl.managers.MGManagerVolume
 import good.damn.engine.opengl.models.MGMMeshDrawer
 import good.damn.engine.opengl.pools.MGPoolMaterials
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassInstanced
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
-import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.runnables.MGManagerProcessTime
 import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGMInformator(
     val shaders: MGMInformatorShader,
-    val camera: MGCameraFree,
+    val camera: COMCamera,
     val drawerLightDirectional: MGDrawerLightDirectional,
     val drawerQuad: MGDrawerVertexArray,
+    val drawerVolumes: MGDrawerVolumes,
     val meshes: ConcurrentLinkedQueue<
         MGMMeshDrawer<
             MGShaderGeometryPassModel,
@@ -43,7 +48,7 @@ data class MGMInformator(
     val meshSky: MGSky,
 
     val managerLight: MGManagerLight,
-    val managerLightVolumes: MGManagerVolume,
+    val managerLightVolumes: COManagerFrustrum,
     val managerTrigger: MGManagerTriggerMesh,
     val managerProcessTime: MGManagerProcessTime,
 
@@ -51,7 +56,7 @@ data class MGMInformator(
     val poolMeshes: MGPoolMeshesStatic,
     val poolMaterials: MGPoolMaterials,
 
-    val glHandler: MGHandlerGl,
+    val glHandler: COHandlerGl,
 
     var canDrawTriggers: Boolean,
 ) {

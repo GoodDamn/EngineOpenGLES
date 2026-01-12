@@ -1,10 +1,8 @@
 package good.damn.engine.utils
 
-import android.util.Log
 import good.damn.engine.MGEngine
 import java.io.File
 import java.io.FileInputStream
-import java.nio.file.NoSuchFileException
 
 object MGUtilsAsset {
     private const val TAG = "MGUtilsAsset"

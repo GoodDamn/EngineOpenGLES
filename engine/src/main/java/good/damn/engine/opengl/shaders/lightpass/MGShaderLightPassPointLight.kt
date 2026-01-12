@@ -84,7 +84,7 @@ MGIShaderCameraPosition {
             "gDepth"
         )
 
-        inline fun attachAll() = attachPosition()
+        fun attachAll() = attachPosition()
             .attachNormal()
             .attachColorSpec()
             .attachMisc()

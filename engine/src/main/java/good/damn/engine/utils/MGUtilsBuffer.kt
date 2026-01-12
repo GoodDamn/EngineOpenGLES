@@ -3,8 +3,6 @@ package good.damn.engine.utils
 import android.util.Pair
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
-import good.damn.ia3d.models.A3DMConfigIndices
-import good.damn.ia3d.stream.A3DInputStream
 import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer

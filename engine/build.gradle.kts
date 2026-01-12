@@ -51,15 +51,19 @@ dependencies {
     implementation(libs.androidx.appcompat)
 
     implementation(
-        project(":sdk")
-    )
-
-    implementation(
         project(":imap")
     )
 
     implementation(
         project(":ia3d")
+    )
+
+    implementation(
+        project(":common")
+    )
+
+    implementation(
+        project(":sdk")
     )
     //testImplementation(libs.junit)
     //androidTestImplementation(libs.androidx.junit)

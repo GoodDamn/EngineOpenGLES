@@ -25,7 +25,7 @@ class MGDrawModeOpaque(
 
     private val mTriggerManagers = arrayOf(
         informator.managerTrigger,
-        informator.managerLightVolumes
+        informator.drawerVolumes
     )
 
     override fun draw(
@@ -70,6 +70,9 @@ class MGDrawModeOpaque(
         }
 
         if (informator.canDrawTriggers) {
+            glDisable(
+                GL_CULL_FACE
+            )
             informator.shaders.wireframe.apply {
                 use()
                 mTriggerManagers.forEach {
@@ -100,9 +103,9 @@ class MGDrawModeOpaque(
 
         lightPassShader.run {
             use()
-            camera.drawPosition(
+            /*camera.drawPosition(
                 this
-            )
+            )*/
 
             drawerLightDirectional.draw(
                 lightDirectional
@@ -118,9 +121,9 @@ class MGDrawModeOpaque(
         )
         lightPassShaderPointLight.run {
             use()
-            camera.drawPosition(
+            /*camera.drawPosition(
                 this
-            )
+            )*/
 
             drawerLightDirectional.draw(
                 lightDirectional
