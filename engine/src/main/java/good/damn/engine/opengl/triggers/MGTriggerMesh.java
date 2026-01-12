@@ -7,7 +7,8 @@ import androidx.annotation.NonNull;
 
 import good.damn.common.COHandlerGl;
 import good.damn.engine.models.MGMInformator;
-import good.damn.engine.opengl.arrays.MGArrayVertexManager;
+import good.damn.common.vertex.MGArrayVertexManager;
+import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator;
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
@@ -53,7 +54,7 @@ public final class MGTriggerMesh {
         @NonNull final MGMInformator informator
     ) {
         @NonNull
-        final MGArrayVertexManager arrayVertex = new MGArrayVertexManager(
+        final MGArrayVertexConfigurator arrayVertex = new MGArrayVertexConfigurator(
             obj.config
         );
 
@@ -70,24 +71,24 @@ public final class MGTriggerMesh {
             )
         );
 
-        arrayVertex.keepBufferVertices(
-            obj.vertices
-        );
-
         return createFromVertexArray(
+            new MGArrayVertexManager(
+                obj.vertices
+            ),
             arrayVertex
         );
     }
 
     @NonNull
     public static MGMPoolVertexArray createFromVertexArray(
-        @NonNull final MGArrayVertexManager vertexArray
+        @NonNull final MGArrayVertexManager manager,
+        @NonNull final MGArrayVertexConfigurator vertexArray
     ) {
         @NonNull
         final MGMPoolMeshMutable poolMesh = new MGMPoolMeshMutable();
 
         poolMesh.pointMinMax = MGUtilsAlgo.findMinMaxPoints(
-            vertexArray
+            manager
         );
 
         poolMesh.pointMiddle = poolMesh.pointMinMax.first.interpolate(
@@ -96,11 +97,11 @@ public final class MGTriggerMesh {
         );
 
         MGUtilsAlgo.offsetAnchorPoint(
+            manager,
             vertexArray,
             poolMesh.pointMiddle
         );
 
-        vertexArray.unkeepBufferVertices();
         poolMesh.drawerVertexArray = new MGDrawerVertexArray(
             vertexArray
         );

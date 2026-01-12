@@ -3,12 +3,8 @@ package good.damn.wrapper.hud
 import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
-import good.damn.engine.imports.MGImportImage
-import good.damn.engine.imports.MGImportImplA3D
-import good.damn.engine.imports.MGImportImplModel
-import good.damn.engine.imports.MGImportImplLevel
-import good.damn.engine.imports.MGImportImplLight
-import good.damn.engine.imports.MGMImportMisc
+import good.damn.wrapper.imports.MGImportImage
+import good.damn.wrapper.imports.MGImportImplLight
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
@@ -18,12 +14,16 @@ import good.damn.wrapper.hud.callbacks.MGCallbackOnDeltaInteract
 import good.damn.wrapper.hud.callbacks.MGCallbackOnIntersectPosition
 import good.damn.wrapper.hud.callbacks.MGCallbackOnScale
 import good.damn.engine.opengl.triggers.MGTriggerSimple
-import good.damn.engine.runnables.MGCallbackModelSpawn
+import good.damn.wrapper.imports.MGCallbackModelSpawn
 import good.damn.wrapper.hud.ui.MGUILayerEditor
 import good.damn.wrapper.hud.ui.clicks.MGClickImport
 import good.damn.wrapper.hud.ui.clicks.MGClickPlaceMesh
 import good.damn.wrapper.hud.ui.clicks.MGClickSwitchDrawMode
 import good.damn.wrapper.hud.ui.clicks.MGClickTriggerDrawingFlag
+import good.damn.wrapper.imports.MGImportImplA3D
+import good.damn.wrapper.imports.MGImportImplLevel
+import good.damn.wrapper.imports.MGImportImplModel
+import good.damn.wrapper.imports.MGMImportMisc
 
 class APHud(
     requesterUserContent: MGIRequestUserContent,

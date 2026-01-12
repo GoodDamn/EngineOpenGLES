@@ -15,7 +15,7 @@ import good.damn.engine.loaders.texture.MGLoaderTextureAsync
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInformatorShader
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
-import good.damn.engine.opengl.arrays.MGArrayVertexManager
+import good.damn.common.vertex.MGArrayVertexManager
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.buffers.MGBuffer
 import good.damn.engine.opengl.buffers.MGBufferUniform
@@ -30,8 +30,8 @@ import good.damn.engine.opengl.framebuffer.MGFrameBufferG
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
-import good.damn.engine.opengl.managers.MGManagerVolume
 import good.damn.common.matrices.MGMatrixTranslate
+import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.opengl.models.MGMLightPass
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolMaterials
@@ -46,6 +46,7 @@ import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassInstanced
 import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassModel
 import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPassPointLight
 import good.damn.engine.camera.GLCameraFree
+import good.damn.engine.opengl.drawers.volume.MGDrawerVolumes
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGManagerProcessTime
 import good.damn.engine.sdk.SDVector3
@@ -137,12 +138,29 @@ class APRendererLevelEditor(
         MGEnumArrayVertexConfiguration.BYTE
     )
 
+    private val verticesBox10Raw = MGUtilsBuffer.createFloat(
+        MGUtilsVertIndices.createCubeVertices(
+            SDVector3(
+                -1.0f, -1.0f, -1.0f
+            ),
+            SDVector3(
+                1.0f, 1.0f, 1.0f
+            )
+        )
+    )
+
     private val mDrawerSphere = MGDrawerVertexArray(
         mVerticesSphere
     )
 
     private val mDrawerBox05 = MGDrawerVertexArray(
         mVerticesBox05
+    )
+
+    private val mDrawerBox10 = MGDrawerVertexArray(
+        MGArrayVertexConfigurator(
+            MGEnumArrayVertexConfiguration.BYTE
+        )
     )
 
     private val mVerticesQuad = MGArrayVertexConfigurator(
@@ -167,12 +185,23 @@ class APRendererLevelEditor(
         mBufferUniformCamera
     )
 
+    private val managerFrustrum = COManagerFrustrum(
+        mCameraFree,
+        MGArrayVertexManager(
+            verticesBox10Raw
+        )
+    )
+
     private val mInformator = MGMInformator(
         mInformatorShader,
         mCameraFree,
         MGDrawerLightDirectional(),
         MGDrawerVertexArray(
             mVerticesQuad
+        ),
+        MGDrawerVolumes(
+            mDrawerBox10,
+            managerFrustrum
         ),
         ConcurrentLinkedQueue(),
         ConcurrentLinkedQueue(),
@@ -181,9 +210,7 @@ class APRendererLevelEditor(
         ),
         meshSky = MGSky(),
         managerLight,
-        MGManagerVolume(
-            mCameraFree
-        ),
+        managerFrustrum,
         MGManagerTriggerMesh(
             mDrawerBox05
         ),
@@ -326,19 +353,8 @@ class APRendererLevelEditor(
             pointPosition
         )
 
-        val verticesBox10 = MGArrayVertexManager(
+        val verticesBox10 = MGArrayVertexConfigurator(
             MGEnumArrayVertexConfiguration.BYTE
-        )
-
-        val verticesBox10Raw = MGUtilsBuffer.createFloat(
-            MGUtilsVertIndices.createCubeVertices(
-                SDVector3(
-                    -1.0f, -1.0f, -1.0f
-                ),
-                SDVector3(
-                    1.0f, 1.0f, 1.0f
-                )
-            )
         )
 
         verticesBox10.configure(
@@ -346,16 +362,6 @@ class APRendererLevelEditor(
             indicesBox,
             pointPosition
         )
-
-        verticesBox10.keepBufferVertices(
-            verticesBox10Raw
-        )
-
-        mInformator.managerLightVolumes.loadPositions(
-            verticesBox10
-        )
-
-        verticesBox10.unkeepBufferVertices()
 
         mInformator.managerProcessTime.run {
             registerLoopProcessTime(

@@ -25,7 +25,7 @@ class MGDrawModeOpaque(
 
     private val mTriggerManagers = arrayOf(
         informator.managerTrigger,
-        informator.managerLightVolumes
+        informator.drawerVolumes
     )
 
     override fun draw(
@@ -103,9 +103,9 @@ class MGDrawModeOpaque(
 
         lightPassShader.run {
             use()
-            camera.drawPosition(
+            /*camera.drawPosition(
                 this
-            )
+            )*/
 
             drawerLightDirectional.draw(
                 lightDirectional
@@ -121,9 +121,9 @@ class MGDrawModeOpaque(
         )
         lightPassShaderPointLight.run {
             use()
-            camera.drawPosition(
+            /*camera.drawPosition(
                 this
-            )
+            )*/
 
             drawerLightDirectional.draw(
                 lightDirectional

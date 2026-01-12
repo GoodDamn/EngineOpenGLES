@@ -1,11 +1,11 @@
 package good.damn.engine.scripts
 
 import dalvik.system.DexClassLoader
+import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.drawers.volume.MGVolumeLight
 import good.damn.engine.opengl.managers.MGManagerLight
-import good.damn.engine.opengl.managers.MGManagerVolume
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.runnables.MGManagerProcessTime
 import good.damn.engine.sdk.models.SDMLightPointEntity
@@ -16,7 +16,7 @@ class MGScriptLightPlacement(
     private val dirScripts: File,
     private val managerProcessTime: MGManagerProcessTime,
     private val managerLight: MGManagerLight,
-    private val managerLightVolume: MGManagerVolume
+    private val managerLightVolume: COManagerFrustrum
 ): MGIScript {
 
     companion object {
@@ -76,12 +76,10 @@ class MGScriptLightPlacement(
                         drawerLightPoint
                     )
 
-                    managerLightVolume.addVolume(
+                    managerLightVolume.volumes.add(
                         MGVolumeLight(
                             drawerLightPoint,
-                            MGDrawerPositionEntity(
-                                modelMatrix.matrixTrigger.model
-                            )
+                            modelMatrix.matrixTrigger.model
                         )
                     )
                 }

@@ -1,7 +1,6 @@
-package good.damn.engine.imports
+package good.damn.wrapper.imports
 
 import good.damn.engine.opengl.models.MGMUserContent
-import java.io.InputStream
 
 interface MGIImport {
     fun isValidExtension(

@@ -5,10 +5,7 @@ import android.util.Pair;
 import androidx.annotation.NonNull;
 
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
-import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel;
 import good.damn.engine.sdk.SDVector3;
-import good.damn.engine.opengl.arrays.MGArrayVertexManager;
-import good.damn.engine.opengl.entities.MGMaterial;
 
 public final class MGMPoolMeshMutable {
     @NonNull public MGDrawerVertexArray drawerVertexArray;

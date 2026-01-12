@@ -2,7 +2,6 @@ package good.damn.engine.opengl.runnables.misc
 
 import good.damn.common.COIRunnableBounds
 import good.damn.engine.opengl.buffers.MGBufferUniformCamera
-import good.damn.common.MGIRunnableBounds
 import java.nio.ByteBuffer
 
 class MGRunglSendDataProjection(

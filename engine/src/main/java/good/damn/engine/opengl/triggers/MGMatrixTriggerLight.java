@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import good.damn.common.matrices.MGMatrixScale;
 import good.damn.common.matrices.MGMatrixTransformationInvert;
+import good.damn.engine.sdk.SDVector3;
 
 public final class MGMatrixTriggerLight {
 

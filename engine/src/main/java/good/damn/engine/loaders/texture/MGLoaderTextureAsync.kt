@@ -1,13 +1,13 @@
 package good.damn.engine.loaders.texture
 
 import android.graphics.Bitmap
+import good.damn.common.COHandlerGl
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.textures.MGTextureBitmap
-import good.damn.common.MGHandlerGl
 import good.damn.engine.runnables.MGRunnableTextureSetupBitmap
 
 class MGLoaderTextureAsync(
-    private val glHandler: good.damn.common.MGHandlerGl
+    private val glHandler: COHandlerGl
 ): MGILoaderTexture {
 
     override fun loadTexture(

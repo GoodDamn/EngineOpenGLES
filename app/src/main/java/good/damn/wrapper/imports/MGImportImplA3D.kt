@@ -1,4 +1,4 @@
-package good.damn.engine.imports
+package good.damn.wrapper.imports
 
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.utils.MGUtilsA3D

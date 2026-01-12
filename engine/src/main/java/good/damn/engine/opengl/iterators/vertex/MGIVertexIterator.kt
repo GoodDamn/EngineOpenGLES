@@ -1,6 +1,6 @@
 package good.damn.engine.opengl.iterators.vertex
 
-import good.damn.engine.opengl.arrays.MGArrayVertexManager
+import good.damn.common.vertex.MGArrayVertexManager
 
 
 interface MGIVertexIterator {

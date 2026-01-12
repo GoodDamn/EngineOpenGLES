@@ -1,4 +1,4 @@
-package good.damn.engine.imports
+package good.damn.wrapper.imports
 
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.extensions.copyTo

@@ -1,4 +1,4 @@
-package good.damn.engine.runnables
+package good.damn.wrapper.imports
 
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
@@ -12,9 +12,10 @@ import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerMesh
 import good.damn.engine.shader.generators.MGMMaterialShader
+import good.damn.wrapper.hud.bridges.MGBridgeRayIntersect
 
 class MGCallbackModelSpawn(
-    private val bridgeRay: good.damn.wrapper.hud.bridges.MGBridgeRayIntersect,
+    private val bridgeRay: MGBridgeRayIntersect,
     private val triggerAction: MGITrigger,
     private val informator: MGMInformator
 ) {

@@ -1,8 +1,7 @@
-package good.damn.engine.imports
+package good.damn.wrapper.imports
 
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute

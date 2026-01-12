@@ -18,19 +18,6 @@ extends MGMatrixInvert {
         );
     }
 
-    /*@Override
-    public final void draw(
-        @NonNull final MGIShaderNormal shader
-    ) {
-        GLES30.glUniformMatrix4fv(
-            shader.getUniformNormalMatrix(),
-            1,
-            false,
-            normalMatrix,
-            0
-        );
-    }*/
-
     public final void calculateNormalMatrix() {
         Matrix.transposeM(
             normalMatrix,

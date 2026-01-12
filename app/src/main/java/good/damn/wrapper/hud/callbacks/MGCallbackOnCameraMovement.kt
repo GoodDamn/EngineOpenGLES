@@ -9,7 +9,7 @@ import good.damn.hud.touch.MGIListenerMove
 import good.damn.wrapper.hud.bridges.MGBridgeRayIntersect
 
 class MGCallbackOnCameraMovement(
-    private val camera: COCameraFree,
+    private val camera: COICameraFree,
     private val bridge: MGBridgeRayIntersect
 ): MGIListenerDelta,
 MGIListenerMove,

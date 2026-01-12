@@ -4,17 +4,21 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
+import java.nio.FloatBuffer;
+
+import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator;
 import good.damn.engine.sdk.SDVector3;
-import good.damn.engine.opengl.arrays.MGArrayVertexManager;
+import good.damn.common.vertex.MGArrayVertexManager;
 
 public final class MGUtilsAlgo {
 
     public static void offsetAnchorPoint(
-        @NonNull MGArrayVertexManager vertexArray,
-        @NonNull SDVector3 dt
+        @NonNull final MGArrayVertexManager vertexArray,
+        @NonNull final MGArrayVertexConfigurator configurator,
+        @NonNull final SDVector3 dt
     ) {
         int index = 0;
-        vertexArray.bindVertexBuffer();
+        configurator.bindVertexBuffer();
         int c = vertexArray.getSizeVertexArray();
 
         int ix, iy, iz;
@@ -27,27 +31,29 @@ public final class MGUtilsAlgo {
             float y = vertexArray.get(iy);
             float z = vertexArray.get(iz);
 
-            vertexArray.writeVertexBufferData(
+            vertexArray.set(
                 ix, x - dt.getX()
             );
 
-            vertexArray.writeVertexBufferData(
+            vertexArray.set(
                 iy, y - dt.getY()
             );
 
-            vertexArray.writeVertexBufferData(
+            vertexArray.set(
                 iz, z - dt.getZ()
             );
 
             index += MGArrayVertexManager.MAX_VALUES_PER_VERTICES;
         }
 
-        vertexArray.sendVertexBufferData();
-        vertexArray.unbindVertexBuffer();
+        configurator.sendVertexBufferData(
+            vertexArray.getVertices()
+        );
+        configurator.unbind();
     }
 
     public static Pair<SDVector3, SDVector3> findMinMaxPoints(
-        @NonNull MGArrayVertexManager vertices
+        @NonNull final MGArrayVertexManager vertices
     ) {
         float maxX = Float.MIN_VALUE;
         float maxY = Float.MIN_VALUE;

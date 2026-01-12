@@ -1,11 +1,10 @@
-package good.damn.engine.imports
+package good.damn.wrapper.imports
 
 import android.os.Handler
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
-import good.damn.engine.runnables.MGICallbackModel
 
 data class MGMImportMisc(
     val handler: Handler,
-    val modelsCallback: MGICallbackModel,
+    val modelsCallback: MGCallbackModelSpawn,
     val buffer: ByteArray
 )

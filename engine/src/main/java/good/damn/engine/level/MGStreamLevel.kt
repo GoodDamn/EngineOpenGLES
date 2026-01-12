@@ -274,12 +274,10 @@ object MGStreamLevel {
                     drawerLightPoint
                 )
 
-                informator.managerLightVolumes.addVolume(
+                informator.managerLightVolumes.volumes.add(
                     MGVolumeLight(
                         drawerLightPoint,
-                        MGDrawerPositionEntity(
-                            triggerLight.modelMatrix.matrixTrigger.model
-                        )
+                        triggerLight.modelMatrix.matrixTrigger.model
                     )
                 )
             }
