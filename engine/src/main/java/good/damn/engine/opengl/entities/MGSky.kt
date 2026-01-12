@@ -9,7 +9,7 @@ import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
-import good.damn.engine.opengl.matrices.MGMatrixScale
+import good.damn.common.matrices.MGMatrixScale
 import good.damn.engine.opengl.models.MGMMeshDrawer
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel

@@ -1,9 +1,7 @@
 package good.damn.engine.opengl.drawers
 
-import good.damn.engine.opengl.matrices.MGMatrixNormal
+import good.damn.common.matrices.MGMatrixNormal
 import good.damn.engine.opengl.shaders.MGIShaderNormal
-import java.nio.Buffer
-import java.nio.IntBuffer
 
 class MGDrawerMeshSwitchNormals(
     vertexArray: MGDrawerVertexArray,

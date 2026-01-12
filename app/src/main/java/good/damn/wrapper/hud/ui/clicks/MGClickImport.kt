@@ -4,12 +4,12 @@ import good.damn.engine.imports.MGIImport
 import good.damn.engine.interfaces.MGIListenerOnGetUserContent
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.models.MGMUserContent
-import good.damn.hud.MGIClick
+import good.damn.hud.UIIClick
 
 class MGClickImport(
     private val imports: Array<MGIImport>,
     private val requester: MGIRequestUserContent
-): good.damn.hud.MGIClick,
+): UIIClick,
 MGIListenerOnGetUserContent {
 
     override fun onClick() {

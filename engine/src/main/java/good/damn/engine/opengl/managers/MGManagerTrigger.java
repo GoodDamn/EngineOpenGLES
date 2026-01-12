@@ -7,11 +7,8 @@ import androidx.annotation.NonNull;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
-import good.damn.engine.opengl.drawers.MGIDrawer;
 import good.damn.engine.opengl.drawers.MGIDrawerShader;
-import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
 import good.damn.engine.opengl.shaders.MGIShaderModel;
-import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
 
 public abstract class MGManagerTrigger<
     STATEABLE extends MGIDrawerShader<MGIShaderModel>

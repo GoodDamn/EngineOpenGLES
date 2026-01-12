@@ -1,10 +1,10 @@
 package good.damn.engine.shader
 
 import android.util.SparseArray
+import good.damn.common.COHandlerGl
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.shaders.creators.MGIShaderCreator
-import good.damn.engine.opengl.thread.MGHandlerGl
 import good.damn.engine.runnables.MGRunnableCompileShaders
 
 class MGShaderCache<
@@ -12,7 +12,7 @@ class MGShaderCache<
     PARAM
 >(
     private val map: SparseArray<T>,
-    private val glHandler: MGHandlerGl,
+    private val glHandler: COHandlerGl,
     private val shaderCreator: MGIShaderCreator<T,PARAM>
 ) {
     fun loadOrGetFromCache(

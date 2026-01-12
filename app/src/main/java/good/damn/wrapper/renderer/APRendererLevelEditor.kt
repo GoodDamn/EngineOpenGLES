@@ -7,6 +7,8 @@ import android.opengl.GLES30.*
 import android.util.Log
 import android.util.SparseArray
 import android.view.MotionEvent
+import good.damn.common.COHandlerGl
+import good.damn.common.COIRunnableBounds
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.loaders.scripts.MGLoaderScripts
 import good.damn.engine.loaders.texture.MGLoaderTextureAsync
@@ -18,25 +20,24 @@ import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.buffers.MGBuffer
 import good.damn.engine.opengl.buffers.MGBufferUniform
 import good.damn.engine.opengl.buffers.MGBufferUniformCamera
-import good.damn.engine.opengl.camera.MGCameraFree
+import good.damn.common.camera.COCameraFree
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
-import good.damn.engine.opengl.executor.MGHandlerGlExecutor
+import good.damn.common.MGHandlerGlExecutor
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import good.damn.engine.opengl.managers.MGManagerLight
 import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.managers.MGManagerVolume
-import good.damn.engine.opengl.matrices.MGMatrixTranslate
+import good.damn.common.matrices.MGMatrixTranslate
 import good.damn.engine.opengl.models.MGMLightPass
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolMaterials
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.wrapper.hud.APHudScene
-import good.damn.engine.opengl.runnables.MGIRunnableBounds
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPass
 import good.damn.engine.opengl.shaders.MGShaderMaterial
@@ -44,7 +45,7 @@ import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassInstanced
 import good.damn.engine.opengl.shaders.creators.MGShaderCreatorGeomPassModel
 import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPassPointLight
-import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.engine.camera.GLCameraFree
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
 import good.damn.engine.runnables.MGManagerProcessTime
 import good.damn.engine.sdk.SDVector3
@@ -65,7 +66,7 @@ class APRendererLevelEditor(
 
     private val mHandlerGlExecutor = MGHandlerGlExecutor()
 
-    private val mHandlerGl = MGHandlerGl(
+    private val mHandlerGl = COHandlerGl(
         mHandlerGlExecutor.queue,
         mHandlerGlExecutor.queueCycle,
     )
@@ -158,9 +159,12 @@ class APRendererLevelEditor(
         mDrawerSphere
     )
 
-    private val mCameraFree = MGCameraFree(
-        mBufferUniformCamera,
-        MGMatrixTranslate()
+    private val mCameraFree = GLCameraFree(
+        COCameraFree(
+            MGMatrixTranslate()
+        ),
+        mHandlerGl,
+        mBufferUniformCamera
     )
 
     private val mInformator = MGMInformator(
@@ -199,7 +203,7 @@ class APRendererLevelEditor(
 
     init {
         mInformator.glHandler.post(
-            object: MGIRunnableBounds {
+            object: COIRunnableBounds {
                 override fun run(
                     width: Int,
                     height: Int
@@ -389,8 +393,7 @@ class APRendererLevelEditor(
 
         mInformator.camera.setPerspective(
             width,
-            height,
-            mInformator.glHandler
+            height
         )
 
         mWidth = width

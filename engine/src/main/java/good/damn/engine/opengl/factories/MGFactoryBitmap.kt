@@ -2,7 +2,6 @@ package good.damn.engine.opengl.factories
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import good.damn.engine.MGEngine
 import good.damn.engine.utils.MGUtilsFile
 import java.io.FileInputStream
 

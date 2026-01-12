@@ -3,7 +3,7 @@ package good.damn.engine.imports
 import android.os.Handler
 import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
-import good.damn.engine.runnables.MGICallbackModel
+import good.damn.engine.runnables.MGCallbackModelSpawn
 import java.io.File
 
 class MGImportImplModel(
@@ -32,7 +32,7 @@ class MGImportImplModel(
     }
 
     private class MGRunnableLoadModel(
-        private val modelsCallback: MGICallbackModel,
+        private val modelsCallback: MGCallbackModelSpawn,
         private val file: File
     ): Runnable {
         override fun run() {
@@ -40,7 +40,7 @@ class MGImportImplModel(
                 file.path
             )
 
-            modelsCallback.onGetObjects(
+            modelsCallback.processObjects(
                 file.name,
                 arrModels
             )

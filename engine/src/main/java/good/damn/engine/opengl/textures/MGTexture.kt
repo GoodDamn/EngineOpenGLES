@@ -1,17 +1,8 @@
 package good.damn.engine.opengl.textures
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.opengl.GLES20
 import android.opengl.GLES30.*
-import android.opengl.GLES32
-import android.opengl.GLUtils
-import android.util.Log
 import good.damn.engine.opengl.drawers.MGIDrawerTexture
-import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.shaders.MGIShaderTextureUniform
-import good.damn.engine.utils.MGUtilsFile
-import java.io.FileInputStream
 
 class MGTexture(
     var textureActive: MGTextureActive

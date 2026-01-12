@@ -8,14 +8,10 @@ import android.opengl.GLES30.GL_SHADING_LANGUAGE_VERSION
 import android.opengl.GLES30.GL_VENDOR
 import android.opengl.GLES30.GL_VERSION
 import android.opengl.GLES30.glGetString
-import android.os.Environment
 import android.util.Log
 import good.damn.engine.MGEngine
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
 import java.io.InputStream
 
 object MGUtilsFile {

@@ -12,11 +12,11 @@ import good.damn.engine.imports.MGMImportMisc
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
-import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
-import good.damn.hud.touch.callbacks.MGCallbackOnCameraMovement
-import good.damn.hud.touch.callbacks.MGCallbackOnDeltaInteract
-import good.damn.hud.touch.callbacks.MGCallbackOnIntersectPosition
-import good.damn.hud.touch.callbacks.MGCallbackOnScale
+import good.damn.wrapper.hud.bridges.MGBridgeRayIntersect
+import good.damn.wrapper.hud.callbacks.MGCallbackOnCameraMovement
+import good.damn.wrapper.hud.callbacks.MGCallbackOnDeltaInteract
+import good.damn.wrapper.hud.callbacks.MGCallbackOnIntersectPosition
+import good.damn.wrapper.hud.callbacks.MGCallbackOnScale
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.engine.runnables.MGCallbackModelSpawn
 import good.damn.wrapper.hud.ui.MGUILayerEditor
@@ -39,7 +39,6 @@ class APHud(
 
     private val mCallbackOnCameraMove = MGCallbackOnCameraMovement(
         informator.camera,
-        informator.glHandler,
         mBridgeMatrix
     ).apply {
         setListenerIntersection(

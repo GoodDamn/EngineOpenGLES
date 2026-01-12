@@ -1,7 +1,7 @@
 package good.damn.wrapper.hud.ui
 
 import android.view.MotionEvent
-import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
+import good.damn.wrapper.hud.bridges.MGBridgeRayIntersect
 import good.damn.hud.MGIListenerDelta
 import good.damn.hud.MGIListenerDistance
 import good.damn.hud.MGIListenerMove

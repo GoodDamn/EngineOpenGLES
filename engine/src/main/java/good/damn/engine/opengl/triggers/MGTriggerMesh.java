@@ -4,43 +4,26 @@ import android.opengl.GLES30;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import java.util.LinkedList;
-
-import good.damn.engine.loaders.MGLoaderLevelLibrary;
-import good.damn.engine.loaders.texture.MGLoaderTextureAsync;
+import good.damn.common.COHandlerGl;
 import good.damn.engine.models.MGMInformator;
-import good.damn.engine.models.MGMInformatorShader;
 import good.damn.engine.opengl.arrays.MGArrayVertexManager;
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
-import good.damn.engine.opengl.entities.MGMaterialTexture;
-import good.damn.engine.opengl.enums.MGEnumTextureType;
 import good.damn.engine.opengl.objects.MGObject3d;
-import good.damn.engine.opengl.pools.MGPoolMaterials;
-import good.damn.engine.opengl.shaders.MGShaderMaterial;
-import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel;
-import good.damn.engine.opengl.shaders.MGShaderTexture;
-import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute;
 import good.damn.engine.sdk.SDVector3;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals;
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity;
-import good.damn.engine.opengl.entities.MGMaterial;
-import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
-import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
-import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal;
+import good.damn.common.matrices.MGMatrixScaleRotation;
+import good.damn.common.matrices.MGMatrixTransformationInvert;
+import good.damn.common.matrices.MGMatrixTransformationNormal;
 import good.damn.engine.opengl.models.MGMPoolVertexArray;
 import good.damn.engine.opengl.models.MGMPoolMeshMutable;
-import good.damn.engine.opengl.thread.MGHandlerGl;
 import good.damn.engine.opengl.triggers.callbacks.MGManagerTriggerStateCallback;
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
 import good.damn.engine.runnables.MGRunnableConfigVertexArray;
-import good.damn.engine.shader.MGShaderCache;
-import good.damn.engine.shader.MGShaderSource;
-import good.damn.engine.shader.generators.MGGeneratorMaterialG;
 import good.damn.engine.utils.MGUtilsAlgo;
 
 public final class MGTriggerMesh {
@@ -75,7 +58,7 @@ public final class MGTriggerMesh {
         );
 
         @NonNull
-        final MGHandlerGl glHandler = informator
+        final COHandlerGl glHandler = informator
             .getGlHandler();
 
         glHandler.post(

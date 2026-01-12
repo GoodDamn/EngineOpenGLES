@@ -1,8 +1,6 @@
 package good.damn.engine.runnables
 
 import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.bridges.MGBridgeRayIntersect
-import good.damn.engine.opengl.bridges.intersect.MGRayIntersectImplModel
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.models.MGMMeshDrawer
@@ -10,17 +8,16 @@ import good.damn.engine.opengl.objects.MGObject3d
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.opengl.triggers.MGIMatrixTrigger
 import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerMesh
 import good.damn.engine.shader.generators.MGMMaterialShader
 
 class MGCallbackModelSpawn(
-    private val bridgeRay: MGBridgeRayIntersect,
+    private val bridgeRay: good.damn.wrapper.hud.bridges.MGBridgeRayIntersect,
     private val triggerAction: MGITrigger,
     private val informator: MGMInformator
-): MGICallbackModel {
+) {
 
     private val mBinderAttr = MGBinderAttribute.Builder()
         .bindPosition()
@@ -28,7 +25,7 @@ class MGCallbackModelSpawn(
         .bindNormal()
         .build()
 
-    override fun onGetObjects(
+    fun processObjects(
         fileName: String,
         objs: Array<MGObject3d>?
     ) {
@@ -114,7 +111,7 @@ class MGCallbackModelSpawn(
     private inline fun setupMatrix(
         matrix: MGMatrixTriggerMesh
     ) {
-        bridgeRay.intersectUpdate = MGRayIntersectImplModel(
+        bridgeRay.intersectUpdate = good.damn.wrapper.hud.bridges.MGRayIntersectImplModel(
             matrix
         )
 

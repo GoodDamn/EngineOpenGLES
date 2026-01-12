@@ -1,10 +1,9 @@
 package good.damn.engine.loaders.mesh
 
-import android.util.Log
 import good.damn.engine.models.MGMInstanceArray
-import good.damn.engine.opengl.matrices.MGMatrixScaleRotation
-import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal
-import good.damn.engine.opengl.thread.MGHandlerGl
+import good.damn.common.matrices.MGMatrixScaleRotation
+import good.damn.common.matrices.MGMatrixTransformationNormal
+import good.damn.common.MGHandlerGl
 import good.damn.engine.utils.MGUtilsA3D
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsInstancedMesh
@@ -14,7 +13,7 @@ import java.io.FileInputStream
 
 class MGLoaderLevelMeshA3D(
     private val localPathLibObj: String,
-    private val handlerGl: MGHandlerGl,
+    private val handlerGl: good.damn.common.MGHandlerGl,
     private val buffer: ByteArray
 ) {
     fun loadInstanceArray(

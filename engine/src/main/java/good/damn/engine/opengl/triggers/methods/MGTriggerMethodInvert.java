@@ -4,7 +4,7 @@ import android.opengl.Matrix;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.opengl.matrices.MGMatrixInvert;
+import good.damn.common.matrices.MGMatrixInvert;
 
 public abstract class MGTriggerMethodInvert
 implements MGITriggerMethod {

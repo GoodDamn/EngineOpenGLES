@@ -3,9 +3,9 @@ package good.damn.engine.opengl.triggers;
 import androidx.annotation.NonNull;
 
 import good.damn.engine.sdk.SDVector3;
-import good.damn.engine.opengl.matrices.MGMatrixScaleRotation;
-import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert;
-import good.damn.engine.opengl.matrices.MGMatrixTransformationNormal;
+import good.damn.common.matrices.MGMatrixScaleRotation;
+import good.damn.common.matrices.MGMatrixTransformationInvert;
+import good.damn.common.matrices.MGMatrixTransformationNormal;
 
 public final class MGMatrixTriggerMesh
 implements MGIMatrixTrigger {

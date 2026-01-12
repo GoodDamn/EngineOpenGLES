@@ -4,9 +4,7 @@ import android.opengl.GLES30.*
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
-import good.damn.engine.opengl.drawers.MGIDrawer
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
-import good.damn.engine.opengl.framebuffer.MGFramebuffer
 import good.damn.engine.opengl.shaders.MGShaderPostProcess
 import good.damn.engine.opengl.textures.MGTextureAttachment
 import good.damn.engine.utils.MGUtilsBuffer

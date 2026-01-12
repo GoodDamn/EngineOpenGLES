@@ -1,10 +1,7 @@
 package good.damn.engine.opengl.triggers.stateables
 
-import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
-import good.damn.engine.opengl.drawers.MGIDrawerShader
-import good.damn.engine.opengl.matrices.MGMatrixScale
-import good.damn.engine.opengl.matrices.MGMatrixTransformationInvert
-import good.damn.engine.opengl.shaders.MGIShaderModel
+import good.damn.common.matrices.MGMatrixScale
+import good.damn.common.matrices.MGMatrixTransformationInvert
 import good.damn.engine.opengl.triggers.MGMatrixTriggerLight
 import good.damn.engine.opengl.triggers.callbacks.MGManagerTriggerState
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodSphere
