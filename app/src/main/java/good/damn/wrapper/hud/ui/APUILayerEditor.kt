@@ -10,11 +10,11 @@ import good.damn.hud.touch.MGIListenerScale
 import good.damn.hud.touch.MGITouchable
 import good.damn.hud.touch.MGTouchFreeMove
 import good.damn.hud.touch.MGTouchScale
-import good.damn.wrapper.hud.bridges.MGBridgeRayIntersect
+import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import kotlin.math.min
 
-class MGUILayerEditor(
-    private val bridgeMatrix: MGBridgeRayIntersect,
+class APUILayerEditor(
+    private val bridgeMatrix: APBridgeRayIntersect,
     clickLoadUserContent: UIIClick,
     clickSwitchDrawerMode: UIIClick,
     clickPlaceMesh: UIIClick,

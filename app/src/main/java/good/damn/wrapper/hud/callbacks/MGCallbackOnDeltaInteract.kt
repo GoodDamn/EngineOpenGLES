@@ -1,10 +1,10 @@
 package good.damn.wrapper.hud.callbacks
 
-import good.damn.wrapper.hud.bridges.MGBridgeRayIntersect
+import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.hud.touch.MGIListenerDelta
 
 class MGCallbackOnDeltaInteract(
-    private val bridge: MGBridgeRayIntersect
+    private val bridge: APBridgeRayIntersect
 ): MGIListenerDelta {
 
     override fun onDelta(

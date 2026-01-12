@@ -2,7 +2,7 @@ package good.damn.wrapper.hud.bridges
 
 import good.damn.engine.sdk.SDVector3
 
-interface MGIRayIntersectUpdate {
+interface APIRayIntersectUpdate {
     fun updateDelta(
         dx: Float,
         dy: Float

@@ -8,18 +8,18 @@ import good.damn.wrapper.imports.MGImportImplLight
 import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
-import good.damn.wrapper.hud.bridges.MGBridgeRayIntersect
+import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.callbacks.MGCallbackOnCameraMovement
 import good.damn.wrapper.hud.callbacks.MGCallbackOnDeltaInteract
 import good.damn.wrapper.hud.callbacks.MGCallbackOnIntersectPosition
 import good.damn.wrapper.hud.callbacks.MGCallbackOnScale
 import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.wrapper.imports.MGCallbackModelSpawn
-import good.damn.wrapper.hud.ui.MGUILayerEditor
-import good.damn.wrapper.hud.ui.clicks.MGClickImport
-import good.damn.wrapper.hud.ui.clicks.MGClickPlaceMesh
-import good.damn.wrapper.hud.ui.clicks.MGClickSwitchDrawMode
-import good.damn.wrapper.hud.ui.clicks.MGClickTriggerDrawingFlag
+import good.damn.wrapper.hud.ui.APUILayerEditor
+import good.damn.wrapper.hud.ui.clicks.APClickImport
+import good.damn.wrapper.hud.ui.clicks.APClickPlaceMesh
+import good.damn.wrapper.hud.ui.clicks.APClickSwitchDrawMode
+import good.damn.wrapper.hud.ui.clicks.APClickTriggerDrawingFlag
 import good.damn.wrapper.imports.MGImportImplA3D
 import good.damn.wrapper.imports.MGImportImplLevel
 import good.damn.wrapper.imports.MGImportImplModel
@@ -31,7 +31,7 @@ class APHud(
     switcherDrawMode: MGSwitcherDrawMode
 ) {
 
-    private val mBridgeMatrix = MGBridgeRayIntersect()
+    private val mBridgeMatrix = APBridgeRayIntersect()
 
     private val mCallbackOnDeltaInteract = MGCallbackOnDeltaInteract(
         mBridgeMatrix
@@ -56,7 +56,7 @@ class APHud(
         informator
     )
 
-    private val mLayerEditor = MGUILayerEditor(
+    private val mLayerEditor = APUILayerEditor(
         clickLoadUserContent = MGMImportMisc(
             Handler(
                 Looper.getMainLooper()
@@ -64,7 +64,7 @@ class APHud(
             mCallbackModelSpawn,
             ByteArray(1024)
         ).run {
-            MGClickImport(
+            APClickImport(
                 arrayOf(
                     MGImportImplModel(
                         this
@@ -88,14 +88,14 @@ class APHud(
                 requesterUserContent
             )
         },
-        clickPlaceMesh = MGClickPlaceMesh(
+        clickPlaceMesh = APClickPlaceMesh(
             mBridgeMatrix
         ),
-        clickSwitchDrawerMode = MGClickSwitchDrawMode(
+        clickSwitchDrawerMode = APClickSwitchDrawMode(
             informator,
             switcherDrawMode
         ),
-        clickTriggerDrawing = MGClickTriggerDrawingFlag(
+        clickTriggerDrawing = APClickTriggerDrawingFlag(
             informator
         ),
         bridgeMatrix = mBridgeMatrix

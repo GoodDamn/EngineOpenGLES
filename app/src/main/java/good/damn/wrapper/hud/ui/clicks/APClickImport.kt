@@ -6,7 +6,7 @@ import good.damn.engine.interfaces.MGIRequestUserContent
 import good.damn.engine.opengl.models.MGMUserContent
 import good.damn.hud.UIIClick
 
-class MGClickImport(
+class APClickImport(
     private val imports: Array<MGIImport>,
     private val requester: MGIRequestUserContent
 ): UIIClick,

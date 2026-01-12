@@ -12,10 +12,10 @@ import good.damn.engine.opengl.triggers.MGITrigger
 import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
 import good.damn.engine.opengl.triggers.MGTriggerMesh
 import good.damn.engine.shader.generators.MGMMaterialShader
-import good.damn.wrapper.hud.bridges.MGBridgeRayIntersect
+import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 
 class MGCallbackModelSpawn(
-    private val bridgeRay: MGBridgeRayIntersect,
+    private val bridgeRay: APBridgeRayIntersect,
     private val triggerAction: MGITrigger,
     private val informator: MGMInformator
 ) {
@@ -112,7 +112,7 @@ class MGCallbackModelSpawn(
     private inline fun setupMatrix(
         matrix: MGMatrixTriggerMesh
     ) {
-        bridgeRay.intersectUpdate = good.damn.wrapper.hud.bridges.MGRayIntersectImplModel(
+        bridgeRay.intersectUpdate = good.damn.wrapper.hud.bridges.APRayIntersectImplModel(
             matrix
         )
 

@@ -5,10 +5,10 @@ import good.damn.engine.opengl.triggers.MGMatrixTriggerLight
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 
-class MGRayIntersectImplLight(
+class APRayIntersectImplLight(
     private val modelMatrix: MGMatrixTriggerLight,
     private val lightInterpolation: SDMLightPointInterpolation
-): MGIRayIntersectUpdate {
+): APIRayIntersectUpdate {
 
     override fun updateIntersectPosition(
         v: SDVector3

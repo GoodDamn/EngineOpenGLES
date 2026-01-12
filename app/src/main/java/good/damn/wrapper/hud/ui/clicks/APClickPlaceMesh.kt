@@ -1,10 +1,10 @@
 package good.damn.wrapper.hud.ui.clicks
 
-import good.damn.wrapper.hud.bridges.MGBridgeRayIntersect
+import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.hud.UIIClick
 
-class MGClickPlaceMesh(
-    private val bridge: MGBridgeRayIntersect
+class APClickPlaceMesh(
+    private val bridge: APBridgeRayIntersect
 ): UIIClick {
 
     override fun onClick() {

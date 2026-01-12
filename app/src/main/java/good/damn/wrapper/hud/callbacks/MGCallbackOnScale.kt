@@ -1,10 +1,10 @@
 package good.damn.wrapper.hud.callbacks
 
-import good.damn.wrapper.hud.bridges.MGBridgeRayIntersect
+import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.hud.touch.MGIListenerScale
 
 class MGCallbackOnScale(
-   private val bridgeMatrix: MGBridgeRayIntersect
+   private val bridgeMatrix: APBridgeRayIntersect
 ): MGIListenerScale {
 
     override fun onScale(

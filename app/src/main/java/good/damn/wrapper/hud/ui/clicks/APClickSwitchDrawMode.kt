@@ -5,7 +5,7 @@ import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.hud.UIIClick
 
-class MGClickSwitchDrawMode(
+class APClickSwitchDrawMode(
     private val informator: MGMInformator,
     private val switcher: MGSwitcherDrawMode,
 ): UIIClick,

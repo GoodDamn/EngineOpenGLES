@@ -3,9 +3,9 @@ package good.damn.wrapper.hud.bridges
 import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
 import good.damn.engine.sdk.SDVector3
 
-class MGRayIntersectImplModel(
+class APRayIntersectImplModel(
     private val modelMatrix: MGMatrixTriggerMesh
-): MGIRayIntersectUpdate {
+): APIRayIntersectUpdate {
 
     companion object {
         private const val SCALE_FACTOR = 0.0001f
