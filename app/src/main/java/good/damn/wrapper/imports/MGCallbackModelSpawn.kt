@@ -8,15 +8,15 @@ import good.damn.engine.MGObject3d
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.opengl.triggers.MGITrigger
-import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
-import good.damn.engine.opengl.triggers.MGTriggerMesh
+import good.damn.logic.MGITrigger
+import good.damn.logic.MGMatrixTriggerMesh
+import good.damn.logic.MGTriggerMesh
 import good.damn.engine.shader.generators.MGMMaterialShader
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 
 class MGCallbackModelSpawn(
     private val bridgeRay: APBridgeRayIntersect,
-    private val triggerAction: MGITrigger,
+    private val triggerAction: good.damn.logic.MGITrigger,
     private val informator: MGMInformator
 ) {
 
@@ -45,7 +45,7 @@ class MGCallbackModelSpawn(
                 MGMMaterialShader.getDefault(
                     informator.shaders.source
                 ),
-                MGTriggerMesh.createFromMeshPool(
+                good.damn.logic.MGTriggerMesh.createFromMeshPool(
                     poolMesh[0],
                     triggerAction
                 )
@@ -76,7 +76,7 @@ class MGCallbackModelSpawn(
 
     private inline fun processMesh(
         material: MGMMaterialShader,
-        mesh: MGTriggerMesh
+        mesh: good.damn.logic.MGTriggerMesh
     ) {
         addMesh(
             informator.shaders.cacheGeometryPass.loadOrGetFromCache(
@@ -110,7 +110,7 @@ class MGCallbackModelSpawn(
     }*/
 
     private inline fun setupMatrix(
-        matrix: MGMatrixTriggerMesh
+        matrix: good.damn.logic.MGMatrixTriggerMesh
     ) {
         bridgeRay.intersectUpdate = good.damn.wrapper.hud.bridges.APRayIntersectImplModel(
             matrix
@@ -133,7 +133,7 @@ class MGCallbackModelSpawn(
     private inline fun addMesh(
         shader: MGShaderGeometryPassModel,
         material: MGMMaterialShader,
-        mesh: MGTriggerMesh
+        mesh: good.damn.logic.MGTriggerMesh
     ) {
         val meshMaterial = MGMMeshDrawer(
             shader,

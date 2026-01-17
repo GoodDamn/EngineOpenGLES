@@ -3,7 +3,7 @@ package good.damn.wrapper.hud.ui.clicks
 import good.damn.wrapper.imports.MGIImport
 import good.damn.wrapper.interfaces.MGIListenerOnGetUserContent
 import good.damn.wrapper.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.models.MGMUserContent
+import good.damn.wrapper.models.MGMUserContent
 import good.damn.hud.UIIClick
 
 class APClickImport(

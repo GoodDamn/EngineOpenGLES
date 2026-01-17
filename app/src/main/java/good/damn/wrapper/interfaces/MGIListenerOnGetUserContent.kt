@@ -1,6 +1,6 @@
 package good.damn.wrapper.interfaces
 
-import good.damn.engine.opengl.models.MGMUserContent
+import good.damn.wrapper.models.MGMUserContent
 
 interface MGIListenerOnGetUserContent {
     fun onGetUserContent(

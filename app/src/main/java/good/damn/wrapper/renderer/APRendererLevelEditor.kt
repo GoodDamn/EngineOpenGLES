@@ -29,15 +29,15 @@ import good.damn.common.camera.COCameraProjection
 import good.damn.common.camera.COMCamera
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
 import good.damn.engine.opengl.framebuffer.MGFramebuffer
-import good.damn.engine.opengl.managers.MGManagerLight
-import good.damn.engine.opengl.managers.MGManagerTriggerMesh
+import good.damn.engine.opengl.managers.MGDrawerLights
+import good.damn.logic.triggers.managers.MGManagerTriggerMesh
 import good.damn.common.matrices.COMatrixTranslate
 import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.opengl.models.MGMLightPass
 import good.damn.engine.MGObject3d
-import good.damn.engine.opengl.pools.MGPoolMaterials
-import good.damn.engine.opengl.pools.MGPoolMeshesStatic
-import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.logic.pools.MGPoolMaterials
+import good.damn.logic.pools.MGPoolMeshesStatic
+import good.damn.logic.pools.MGPoolTextures
 import good.damn.wrapper.hud.APHudScene
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPass
@@ -49,8 +49,8 @@ import good.damn.engine.opengl.shaders.lightpass.MGShaderLightPassPointLight
 import good.damn.engine.camera.GLCameraFree
 import good.damn.engine.camera.GLCameraProjection
 import good.damn.engine.opengl.drawers.volume.MGDrawerVolumes
-import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox
-import good.damn.engine.runnables.MGManagerProcessTime
+import good.damn.logic.triggers.methods.MGTriggerMethodBox
+import good.damn.logic.process.MGManagerProcessTime
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine.shader.MGShaderCache
 import good.damn.engine.shader.MGShaderSource
@@ -79,7 +79,7 @@ class APRendererLevelEditor(
         mHandlerGlExecutor.queueCycle,
     )
 
-    private val mPoolTextures = MGPoolTextures(
+    private val mPoolTextures = good.damn.logic.pools.MGPoolTextures(
         MGLoaderTextureAsync(
             mHandlerGl
         )
@@ -183,7 +183,7 @@ class APRendererLevelEditor(
         )
     )
 
-    private val managerLight = MGManagerLight(
+    private val managerLight = MGDrawerLights(
         mDrawerSphere
     )
 
@@ -232,13 +232,13 @@ class APRendererLevelEditor(
         meshSky = MGSky(),
         managerLight,
         managerFrustrum,
-        MGManagerTriggerMesh(
+        good.damn.logic.triggers.managers.MGManagerTriggerMesh(
             mDrawerBox05
         ),
-        MGManagerProcessTime(),
+        good.damn.logic.process.MGManagerProcessTime(),
         mPoolTextures,
-        MGPoolMeshesStatic(),
-        MGPoolMaterials(),
+        good.damn.logic.pools.MGPoolMeshesStatic(),
+        good.damn.logic.pools.MGPoolMaterials(),
         mHandlerGl,
         true
     )
@@ -369,8 +369,8 @@ class APRendererLevelEditor(
         mVerticesBox05.configure(
             MGUtilsBuffer.createFloat(
                 MGUtilsVertIndices.createCubeVertices(
-                    MGTriggerMethodBox.MIN,
-                    MGTriggerMethodBox.MAX
+                    good.damn.logic.triggers.methods.MGTriggerMethodBox.MIN,
+                    good.damn.logic.triggers.methods.MGTriggerMethodBox.MAX
                 )
             ),
             indicesBox,

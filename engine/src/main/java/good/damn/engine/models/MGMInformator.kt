@@ -1,9 +1,6 @@
 package good.damn.engine.models
 
 import good.damn.common.COHandlerGl
-import good.damn.common.camera.COCameraFree
-import good.damn.common.camera.COICameraFree
-import good.damn.common.camera.COICameraProjection
 import good.damn.common.camera.COMCamera
 import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
@@ -13,15 +10,15 @@ import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
 import good.damn.engine.opengl.drawers.volume.MGDrawerVolumes
 import good.damn.engine.opengl.entities.MGSky
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
-import good.damn.engine.opengl.managers.MGManagerLight
-import good.damn.engine.opengl.managers.MGManagerTriggerMesh
+import good.damn.engine.opengl.managers.MGDrawerLights
+import good.damn.logic.triggers.managers.MGManagerTriggerMesh
 import good.damn.engine.opengl.models.MGMMeshDrawer
-import good.damn.engine.opengl.pools.MGPoolMaterials
-import good.damn.engine.opengl.pools.MGPoolMeshesStatic
-import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.logic.pools.MGPoolMaterials
+import good.damn.logic.pools.MGPoolMeshesStatic
+import good.damn.logic.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassInstanced
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
-import good.damn.engine.runnables.MGManagerProcessTime
+import good.damn.logic.process.MGManagerProcessTime
 import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGMInformator(
@@ -47,14 +44,14 @@ data class MGMInformator(
 
     val meshSky: MGSky,
 
-    val managerLight: MGManagerLight,
+    val managerLight: MGDrawerLights,
     val managerLightVolumes: COManagerFrustrum,
-    val managerTrigger: MGManagerTriggerMesh,
-    val managerProcessTime: MGManagerProcessTime,
+    val managerTrigger: good.damn.logic.triggers.managers.MGManagerTriggerMesh,
+    val managerProcessTime: good.damn.logic.process.MGManagerProcessTime,
 
-    val poolTextures: MGPoolTextures,
-    val poolMeshes: MGPoolMeshesStatic,
-    val poolMaterials: MGPoolMaterials,
+    val poolTextures: good.damn.logic.pools.MGPoolTextures,
+    val poolMeshes: good.damn.logic.pools.MGPoolMeshesStatic,
+    val poolMaterials: good.damn.logic.pools.MGPoolMaterials,
 
     val glHandler: COHandlerGl,
 

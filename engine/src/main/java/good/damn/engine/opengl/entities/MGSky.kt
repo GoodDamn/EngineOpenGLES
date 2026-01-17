@@ -5,7 +5,7 @@ import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
-import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch
+import good.damn.engine.opengl.drawers.MGDrawerMesh
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
@@ -81,7 +81,7 @@ class MGSky {
                         materialShader.materialTexture
                     )
                 ),
-                MGDrawerMeshSwitch(
+                MGDrawerMesh(
                     MGDrawerVertexArray(
                         verticesSky
                     ),

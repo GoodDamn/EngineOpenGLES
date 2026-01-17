@@ -1,26 +1,23 @@
 package good.damn.engine.opengl.drawers.light
 
 import android.opengl.GLES30
+import good.damn.common.matrices.COMatrixModel
+import good.damn.common.matrices.COMatrixTranslate
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.shaders.MGIShaderModel
 import good.damn.engine.opengl.shaders.MGShaderLightPoint
-import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
-import good.damn.engine.sdk.models.SDMLightPointEntity
+import good.damn.engine.sdk.SDVector3
+import good.damn.engine.sdk.models.SDMLightPoint
 
 class MGDrawerLightPoint(
-    private val entity: MGDrawerTriggerStateableLight
+    private val modelMatrix: COMatrixTranslate,
+    private val light: SDMLightPoint
 ) {
     var isActive = false
 
-    private val drawerPosition = MGDrawerPositionEntity(
-        entity.modelMatrix.matrixTrigger.model
-    )
-
     fun draw(
-        shader: MGShaderLightPoint,
-        shaderModel: MGIShaderModel
+        shader: MGShaderLightPoint
     ) {
-        val light = entity.light
         light.interpolation.apply {
             GLES30.glUniform1f(
                 shader.uniformConstant,
@@ -38,7 +35,7 @@ class MGDrawerLightPoint(
             )
         }
 
-        entity.modelMatrix.position.run {
+        modelMatrix.apply {
             GLES30.glUniform3f(
                 shader.uniformPosition,
                 x, y, z
@@ -52,9 +49,5 @@ class MGDrawerLightPoint(
                 light.alpha
             )
         }
-
-        drawerPosition.draw(
-            shaderModel
-        )
     }
 }

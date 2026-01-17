@@ -3,7 +3,6 @@ package good.damn.engine.opengl.entities
 import good.damn.engine.opengl.drawers.MGIDrawerTexture
 import good.damn.engine.opengl.drawers.material.MGDrawerMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
-import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.opengl.shaders.MGShaderTexture
 import good.damn.engine.opengl.textures.MGTexture
 import good.damn.engine.opengl.textures.MGTextureActive
@@ -39,7 +38,7 @@ class MGMaterialTexture private constructor(
     }
 
     fun load(
-        poolTextures: MGPoolTextures,
+        poolTextures: good.damn.logic.pools.MGPoolTextures,
         localPath: String
     ) {
         list.forEach {

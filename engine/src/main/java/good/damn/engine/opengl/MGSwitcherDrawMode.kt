@@ -1,6 +1,5 @@
 package good.damn.engine.opengl
 
-import good.damn.engine.MGEngine
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.opengl.drawers.MGDrawerLightPass

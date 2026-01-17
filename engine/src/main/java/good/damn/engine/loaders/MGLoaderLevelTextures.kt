@@ -1,11 +1,11 @@
 package good.damn.engine.loaders
 
-import good.damn.engine.opengl.pools.MGPoolTextures
+import good.damn.logic.pools.MGPoolTextures
 import good.damn.mapimporter.models.MIMAtlasRect
 import good.damn.mapimporter.models.MIMMap
 
 class MGLoaderLevelTextures(
-    private val poolTextures: MGPoolTextures,
+    private val poolTextures: good.damn.logic.pools.MGPoolTextures,
     private val localPathLibTextures: String
 ) {
 

@@ -4,7 +4,6 @@ import android.opengl.GLES20
 import android.opengl.GLES30
 import android.util.Log
 import good.damn.common.utils.COUtilsInputStream
-import good.damn.engine.MGEngine
 import good.damn.engine.MGMountDirectory
 import java.io.File
 import java.io.FileInputStream

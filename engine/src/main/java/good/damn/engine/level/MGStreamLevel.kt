@@ -21,12 +21,8 @@ import good.damn.common.utils.COUtilsFile
 import good.damn.engine.opengl.models.MGMMeshDrawer
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.opengl.triggers.MGTriggerMesh
-import good.damn.engine.opengl.triggers.MGTriggerSimple
-import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
-import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsJson
 import good.damn.engine.utils.MGUtilsVector3
 import good.damn.mapimporter.MIImportMap
@@ -157,10 +153,6 @@ object MGStreamLevel {
             informator
         ) ?: return
 
-        val triggerAction = MGTriggerSimple(
-            informator.drawerLightDirectional
-        )
-
         val lightInterpolation = SDMLightPointInterpolation(
             json.lightConstant,
             json.lightLinear,
@@ -250,7 +242,7 @@ object MGStreamLevel {
                 calculateNormals()
             }
 
-            MGDrawerTriggerStateableLight.createFromLight(
+            good.damn.logic.triggers.stateables.MGDrawerTriggerStateableLight.createFromLight(
                 light
             ).let { triggerLight ->
 

@@ -1,12 +1,12 @@
 package good.damn.wrapper.hud.bridges
 
 import android.util.Log
-import good.damn.engine.opengl.triggers.MGMatrixTriggerLight
+import good.damn.logic.MGMatrixTriggerLight
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 
 class APRayIntersectImplLight(
-    private val modelMatrix: MGMatrixTriggerLight,
+    private val modelMatrix: good.damn.logic.MGMatrixTriggerLight,
     private val lightInterpolation: SDMLightPointInterpolation
 ): APIRayIntersectUpdate {
 

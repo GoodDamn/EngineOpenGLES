@@ -3,17 +3,17 @@ package good.damn.script
 import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.drawers.volume.MGVolumeLight
-import good.damn.engine.opengl.managers.MGManagerLight
-import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
-import good.damn.engine.runnables.MGManagerProcessTime
+import good.damn.engine.opengl.managers.MGDrawerLights
+import good.damn.logic.triggers.stateables.MGDrawerTriggerStateableLight
+import good.damn.logic.process.MGManagerProcessTime
 import good.damn.engine.sdk.models.SDMLightPointEntity
 import good.damn.engine.sdk.process.SDIProcessTime
 import java.io.File
 
 class SCScriptLightPlacement(
     private val dirScripts: File,
-    private val managerProcessTime: MGManagerProcessTime,
-    private val managerLight: MGManagerLight,
+    private val managerProcessTime: good.damn.logic.process.MGManagerProcessTime,
+    private val managerLight: MGDrawerLights,
     private val managerLightVolume: COManagerFrustrum
 ): SCIScript {
 
@@ -53,7 +53,7 @@ class SCScriptLightPlacement(
             }
 
             lightPoints?.forEach {
-                MGDrawerTriggerStateableLight.createFromLight(
+                good.damn.logic.triggers.stateables.MGDrawerTriggerStateableLight.createFromLight(
                     it.light
                 ).run {
                     modelMatrix.setPosition(

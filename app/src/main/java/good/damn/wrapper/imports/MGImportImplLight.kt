@@ -4,9 +4,9 @@ import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.models.json.light.MGMLight
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.drawers.volume.MGVolumeLight
-import good.damn.engine.opengl.managers.MGManagerLight
-import good.damn.engine.opengl.models.MGMUserContent
-import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
+import good.damn.engine.opengl.managers.MGDrawerLights
+import good.damn.wrapper.models.MGMUserContent
+import good.damn.logic.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine.utils.MGUtilsJson
@@ -14,7 +14,7 @@ import good.damn.engine.utils.MGUtilsVector3
 
 class MGImportImplLight(
     private val bridgeRay: good.damn.wrapper.hud.bridges.APBridgeRayIntersect,
-    private val managerLight: MGManagerLight,
+    private val managerLight: MGDrawerLights,
     private val managerLightVolume: COManagerFrustrum
 ): MGIImport {
 
@@ -41,7 +41,7 @@ class MGImportImplLight(
             json
         )
 
-        val triggerLight = MGDrawerTriggerStateableLight.createFromLight(
+        val triggerLight = good.damn.logic.triggers.stateables.MGDrawerTriggerStateableLight.createFromLight(
             SDMLightPoint(
                 MGUtilsVector3.createFromColorInt(
                     jsonModel.color
