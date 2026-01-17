@@ -5,9 +5,8 @@ import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGProp
 import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.shaders.MGShaderMaterial
-import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.utils.MGUtilsFile
+import good.damn.apigl.shaders.MGShaderMaterial
+import good.damn.apigl.shaders.base.MGBinderAttribute
 import good.damn.engine.utils.MGUtilsJson
 import org.json.JSONArray
 import java.util.LinkedList
@@ -41,7 +40,7 @@ class MGLoaderLevelLibrary(
     var terrain: MGMLevelInfoMesh? = null
         private set
 
-    private val mBinderAttribute = MGBinderAttribute.Builder()
+    private val mBinderAttribute = good.damn.apigl.shaders.base.MGBinderAttribute.Builder()
         .bindPosition()
         .bindTextureCoordinates()
         .bindNormal()
@@ -117,11 +116,11 @@ class MGLoaderLevelLibrary(
             informator
         )
 
-        val shaderMaterials = LinkedList<MGShaderMaterial>()
+        val shaderMaterials = LinkedList<good.damn.apigl.shaders.MGShaderMaterial>()
         val buildersMaterial = LinkedList<MGMaterial>()
 
         shaderMaterials.add(
-            MGShaderMaterial(
+            good.damn.apigl.shaders.MGShaderMaterial(
                 materialShader.shaderTextures
             )
         )

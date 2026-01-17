@@ -2,9 +2,9 @@ package good.damn.wrapper.imports
 
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
-import good.damn.engine.opengl.shaders.MGShaderMaterial
-import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
+import good.damn.apigl.shaders.MGShaderGeometryPassModel
+import good.damn.apigl.shaders.MGShaderMaterial
+import good.damn.apigl.shaders.base.MGBinderAttribute
 import good.damn.engine.shader.generators.MGMMaterialShader
 import java.io.File
 
@@ -12,7 +12,7 @@ class MGImportImage(
     private val informator: MGMInformator
 ): MGImportImplTempFile() {
 
-    private val mBinderAttribute = MGBinderAttribute.Builder()
+    private val mBinderAttribute = good.damn.apigl.shaders.base.MGBinderAttribute.Builder()
         .bindPosition()
         .bindTextureCoordinates()
         .bindNormal()
@@ -55,7 +55,7 @@ class MGImportImage(
             informator.shaders.source.vert,
             mBinderAttribute,
             arrayOf(
-                MGShaderMaterial(
+                good.damn.apigl.shaders.MGShaderMaterial(
                     materialShader.shaderTextures
                 )
             )
@@ -77,7 +77,7 @@ class MGImportImage(
     }
 
     private inline fun attachMaterial(
-        shader: MGShaderGeometryPassModel,
+        shader: good.damn.apigl.shaders.MGShaderGeometryPassModel,
         materialShader: MGMMaterialShader
     ) {
         // attach material to model

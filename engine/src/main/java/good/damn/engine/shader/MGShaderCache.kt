@@ -2,23 +2,23 @@ package good.damn.engine.shader
 
 import android.util.SparseArray
 import good.damn.common.COHandlerGl
-import good.damn.engine.opengl.shaders.base.MGShaderBase
-import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.opengl.shaders.creators.MGIShaderCreator
-import good.damn.engine.opengl.runnables.misc.MGRunglCompileShaders
+import good.damn.apigl.shaders.base.MGShaderBase
+import good.damn.apigl.shaders.base.MGBinderAttribute
+import good.damn.apigl.shaders.creators.MGIShaderCreator
+import good.damn.apigl.runnables.MGRunglCompileShaders
 
 class MGShaderCache<
-    T: MGShaderBase,
+    T: good.damn.apigl.shaders.base.MGShaderBase,
     PARAM
 >(
     private val map: SparseArray<T>,
     private val glHandler: COHandlerGl,
-    private val shaderCreator: MGIShaderCreator<T,PARAM>
+    private val shaderCreator: good.damn.apigl.shaders.creators.MGIShaderCreator<T, PARAM>
 ) {
     fun loadOrGetFromCache(
         srcCode: String,
         srcCodeVertex: String,
-        binder: MGBinderAttribute,
+        binder: good.damn.apigl.shaders.base.MGBinderAttribute,
         param: PARAM
     ): T {
         get(srcCode)?.run {
@@ -31,7 +31,7 @@ class MGShaderCache<
 
         map[srcCode.hashCode()] = shader
         glHandler.post(
-            MGRunglCompileShaders(
+            good.damn.apigl.runnables.MGRunglCompileShaders(
                 srcCode,
                 shader,
                 srcCodeVertex,

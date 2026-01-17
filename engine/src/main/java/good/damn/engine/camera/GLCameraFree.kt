@@ -1,24 +1,24 @@
 package good.damn.engine.camera
 
 import good.damn.common.COHandlerGl
-import good.damn.engine.opengl.buffers.MGBufferUniformCamera
+import good.damn.apigl.buffers.MGBufferUniformCamera
 import good.damn.common.camera.COICameraFree
 import good.damn.common.matrices.COMatrixTranslate
-import good.damn.engine.opengl.runnables.misc.MGRunglSendDataCameraModel
+import good.damn.apigl.runnables.MGRunglSendDataCameraModel
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine.utils.MGUtilsBuffer
 
 class GLCameraFree(
     val cameraFree: COICameraFree,
     private val handler: COHandlerGl,
-    uniformBufferCamera: MGBufferUniformCamera
+    uniformBufferCamera: good.damn.apigl.buffers.MGBufferUniformCamera
 ): COICameraFree {
 
     private val mBufferView = MGUtilsBuffer.allocateByte(
         16 * 4
     )
 
-    private val mRunglSendCameraModel = MGRunglSendDataCameraModel(
+    private val mRunglSendCameraModel = good.damn.apigl.runnables.MGRunglSendDataCameraModel(
         mBufferView,
         uniformBufferCamera
     )

@@ -1,13 +1,13 @@
 package good.damn.wrapper.imports
 
 import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
+import good.damn.apigl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.models.MGMMeshDrawer
 import good.damn.engine.MGObject3d
-import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
-import good.damn.engine.opengl.shaders.MGShaderMaterial
-import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
+import good.damn.apigl.shaders.MGShaderGeometryPassModel
+import good.damn.apigl.shaders.MGShaderMaterial
+import good.damn.apigl.shaders.base.MGBinderAttribute
 import good.damn.logic.MGITrigger
 import good.damn.logic.MGMatrixTriggerMesh
 import good.damn.logic.MGTriggerMesh
@@ -20,7 +20,7 @@ class MGCallbackModelSpawn(
     private val informator: MGMInformator
 ) {
 
-    private val mBinderAttr = MGBinderAttribute.Builder()
+    private val mBinderAttr = good.damn.apigl.shaders.base.MGBinderAttribute.Builder()
         .bindPosition()
         .bindTextureCoordinates()
         .bindNormal()
@@ -84,7 +84,7 @@ class MGCallbackModelSpawn(
                 informator.shaders.source.vert,
                 mBinderAttr,
                 arrayOf(
-                    MGShaderMaterial(
+                    good.damn.apigl.shaders.MGShaderMaterial(
                         material.shaderTextures
                     )
                 )
@@ -131,13 +131,13 @@ class MGCallbackModelSpawn(
     }
 
     private inline fun addMesh(
-        shader: MGShaderGeometryPassModel,
+        shader: good.damn.apigl.shaders.MGShaderGeometryPassModel,
         material: MGMMaterialShader,
         mesh: good.damn.logic.MGTriggerMesh
     ) {
         val meshMaterial = MGMMeshDrawer(
             shader,
-            MGDrawerMeshMaterialMutable(
+            good.damn.apigl.drawers.MGDrawerMeshMaterialMutable(
                 arrayOf(
                     MGMaterial(
                         material.materialTexture

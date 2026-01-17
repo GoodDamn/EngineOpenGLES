@@ -3,10 +3,10 @@ package good.damn.wrapper.pools
 import android.util.SparseArray
 import good.damn.engine.MGObject3d
 import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
-import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
-import good.damn.engine.opengl.drawers.MGDrawerVertexArray
-import good.damn.engine.opengl.runnables.misc.MGRunglConfigVertexArray
+import good.damn.apigl.arrays.MGArrayVertexConfigurator
+import good.damn.apigl.arrays.pointers.MGPointerAttribute
+import good.damn.apigl.drawers.MGDrawerVertexArray
+import good.damn.apigl.runnables.MGRunglConfigVertexArray
 import good.damn.logic.triggers.LGTriggerMesh
 import good.damn.wrapper.models.MGMPoolMesh
 
@@ -46,22 +46,22 @@ class MGPoolMeshesStatic {
             triggerPoint
         )
 
-        val configurator = MGArrayVertexConfigurator(
+        val configurator = good.damn.apigl.arrays.MGArrayVertexConfigurator(
             obj.config
         )
 
         informator.glHandler.post(
-            MGRunglConfigVertexArray(
+            good.damn.apigl.runnables.MGRunglConfigVertexArray(
                 configurator,
                 obj.vertices,
                 obj.indices,
-                MGPointerAttribute.defaultNoTangent
+                good.damn.apigl.arrays.pointers.MGPointerAttribute.defaultNoTangent
             )
         )
 
         val poolMesh = arrayOf(
             MGMPoolMesh(
-                MGDrawerVertexArray(
+                good.damn.apigl.drawers.MGDrawerVertexArray(
                     configurator
                 ),
                 triggerPoint

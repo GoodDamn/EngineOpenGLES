@@ -1,7 +1,6 @@
 package good.damn.engine.utils
 
 import android.util.Pair
-import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

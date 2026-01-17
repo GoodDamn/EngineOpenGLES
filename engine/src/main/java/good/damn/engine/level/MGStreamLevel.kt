@@ -11,16 +11,16 @@ import good.damn.engine.models.MGMInstanceMesh
 import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.models.json.spawn.MGMLevelSpawnInfo
 import good.damn.engine.models.json.spawn.MGMLevelSpawnLight
-import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
-import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
-import good.damn.engine.opengl.drawers.volume.MGVolumeLight
+import good.damn.apigl.drawers.MGDrawerMeshMaterialMutable
+import good.damn.apigl.drawers.MGDrawerLightPoint
+import good.damn.apigl.drawers.MGVolumeLight
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.common.matrices.COMatrixScaleRotation
 import good.damn.common.matrices.COMatrixTransformationNormal
 import good.damn.common.utils.COUtilsFile
 import good.damn.engine.opengl.models.MGMMeshDrawer
-import good.damn.engine.opengl.shaders.MGShaderMaterial
-import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
+import good.damn.apigl.shaders.MGShaderMaterial
+import good.damn.apigl.shaders.base.MGBinderAttribute
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine.utils.MGUtilsJson
@@ -160,7 +160,7 @@ object MGStreamLevel {
             json.lightRadius
         )
 
-        val binderAttr = MGBinderAttribute.Builder()
+        val binderAttr = good.damn.apigl.shaders.base.MGBinderAttribute.Builder()
             .bindPosition()
             .bindTextureCoordinates()
             .bindNormal()
@@ -200,7 +200,7 @@ object MGStreamLevel {
                     informator.shaders.source.vert,
                     binderAttr,
                     arrayOf(
-                        MGShaderMaterial(
+                        good.damn.apigl.shaders.MGShaderMaterial(
                             material.shaderTextures
                         )
                     )
@@ -258,7 +258,7 @@ object MGStreamLevel {
                     calculateInvertTrigger()
                 }
 
-                val drawerLightPoint = MGDrawerLightPoint(
+                val drawerLightPoint = good.damn.apigl.drawers.MGDrawerLightPoint(
                     triggerLight
                 )
 
@@ -267,7 +267,7 @@ object MGStreamLevel {
                 )
 
                 informator.managerLightVolumes.volumes.add(
-                    MGVolumeLight(
+                    good.damn.apigl.drawers.MGVolumeLight(
                         drawerLightPoint,
                         triggerLight.modelMatrix.matrixTrigger.model
                     )
@@ -277,7 +277,7 @@ object MGStreamLevel {
             informator.meshes.add(
                 MGMMeshDrawer(
                     pointInfo.second,
-                    MGDrawerMeshMaterialMutable(
+                    good.damn.apigl.drawers.MGDrawerMeshMaterialMutable(
                         arrayOf(
                             MGMaterial(
                                 pointInfo.first.first.materialTexture

@@ -1,12 +1,12 @@
 package good.damn.script
 
-import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
+import good.damn.apigl.drawers.MGDrawerLightDirectional
 import good.damn.engine.sdk.models.SDMLight
 import java.io.File
 
 class SCScriptDirLight(
     private val dirScripts: File,
-    private val directionalLight: MGDrawerLightDirectional
+    private val directionalLight: good.damn.apigl.drawers.MGDrawerLightDirectional
 ): SCIScript {
     companion object {
         private const val SCRIPT_FILE = "MGLightDir.jar"

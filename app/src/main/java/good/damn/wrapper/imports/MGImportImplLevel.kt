@@ -3,7 +3,7 @@ package good.damn.wrapper.imports
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.level.MGStreamLevel
 import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
+import good.damn.apigl.drawers.MGDrawerMeshInstanced
 import good.damn.engine.opengl.models.MGMMeshDrawer
 import java.io.File
 import java.io.FileInputStream
@@ -43,7 +43,7 @@ class MGImportImplLevel(
                         informator.meshesInstanced.add(
                             MGMMeshDrawer(
                                 it.shader,
-                                MGDrawerMeshInstanced(
+                                good.damn.apigl.drawers.MGDrawerMeshInstanced(
                                     it.enableCullFace,
                                     it.vertexArray,
                                     it.material

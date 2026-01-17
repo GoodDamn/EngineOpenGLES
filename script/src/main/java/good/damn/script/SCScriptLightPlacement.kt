@@ -1,9 +1,9 @@
 package good.damn.script
 
 import good.damn.common.volume.COManagerFrustrum
-import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
-import good.damn.engine.opengl.drawers.volume.MGVolumeLight
-import good.damn.engine.opengl.managers.MGDrawerLights
+import good.damn.apigl.drawers.MGDrawerLightPoint
+import good.damn.apigl.drawers.MGVolumeLight
+import good.damn.apigl.drawers.MGDrawerLights
 import good.damn.logic.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.logic.process.MGManagerProcessTime
 import good.damn.engine.sdk.models.SDMLightPointEntity
@@ -13,7 +13,7 @@ import java.io.File
 class SCScriptLightPlacement(
     private val dirScripts: File,
     private val managerProcessTime: good.damn.logic.process.MGManagerProcessTime,
-    private val managerLight: MGDrawerLights,
+    private val managerLight: good.damn.apigl.drawers.MGDrawerLights,
     private val managerLightVolume: COManagerFrustrum
 ): SCIScript {
 
@@ -66,7 +66,7 @@ class SCScriptLightPlacement(
                     modelMatrix.invalidateRadius()
                     modelMatrix.calculateInvertTrigger()
 
-                    val drawerLightPoint = MGDrawerLightPoint(
+                    val drawerLightPoint = good.damn.apigl.drawers.MGDrawerLightPoint(
                         this
                     )
 
@@ -75,7 +75,7 @@ class SCScriptLightPlacement(
                     )
 
                     managerLightVolume.volumes.add(
-                        MGVolumeLight(
+                        good.damn.apigl.drawers.MGVolumeLight(
                             drawerLightPoint,
                             modelMatrix.matrixTrigger.model
                         )

@@ -1,8 +1,8 @@
 package good.damn.wrapper.pools
 
 import good.damn.engine.loaders.texture.MGILoaderTexture
-import good.damn.engine.opengl.textures.MGTexture
-import good.damn.engine.opengl.textures.MGTextureActive
+import good.damn.apigl.textures.MGTexture
+import good.damn.apigl.textures.MGTextureActive
 import good.damn.engine.utils.MGUtilsBitmap
 
 
@@ -11,7 +11,7 @@ class MGPoolTextures(
 ) {
     private val map = HashMap<
         String,
-        MGTexture
+        good.damn.apigl.textures.MGTexture
     >(127)
 
     fun remove(
@@ -25,7 +25,7 @@ class MGPoolTextures(
     fun loadOrGetFromCache(
         name: String,
         localPathDir: String
-    ): MGTexture? {
+    ): good.damn.apigl.textures.MGTexture? {
         get(name)?.run {
             return this
         }
@@ -34,8 +34,8 @@ class MGPoolTextures(
             "$localPathDir/$name"
         ) ?: return null
 
-        val texture = MGTexture(
-            MGTextureActive(0)
+        val texture = good.damn.apigl.textures.MGTexture(
+            good.damn.apigl.textures.MGTextureActive(0)
         )
 
         loaderTexture.loadTexture(
@@ -58,7 +58,7 @@ class MGPoolTextures(
 
     private operator fun set(
         name: String,
-        texture: MGTexture
+        texture: good.damn.apigl.textures.MGTexture
     ) {
         map[name] = texture
     }

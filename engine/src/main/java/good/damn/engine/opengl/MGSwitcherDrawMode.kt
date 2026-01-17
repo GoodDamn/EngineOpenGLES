@@ -1,20 +1,20 @@
 package good.damn.engine.opengl
 
 import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
-import good.damn.engine.opengl.drawers.MGDrawerLightPass
-import good.damn.engine.opengl.drawers.MGIDrawer
+import good.damn.apigl.drawers.MGDrawerFramebufferG
+import good.damn.apigl.drawers.MGDrawerLightPass
+import good.damn.apigl.drawers.MGIDrawer
 import good.damn.engine.opengl.drawers.modes.MGDrawModeOpaque
 import good.damn.engine.opengl.drawers.modes.MGDrawModeTexture
 import good.damn.engine.opengl.enums.MGEnumDrawMode
 
 class MGSwitcherDrawMode(
     private val informator: MGMInformator,
-    drawerFramebufferG: MGDrawerFramebufferG
+    drawerFramebufferG: good.damn.apigl.drawers.MGDrawerFramebufferG
 ) {
     private val drawerModeOpaque = MGDrawModeOpaque(
         informator,
-        MGDrawerLightPass(
+        good.damn.apigl.drawers.MGDrawerLightPass(
             arrayOf(
                 informator.framebufferG.textureAttachmentPosition.texture,
                 informator.framebufferG.textureAttachmentNormal.texture,
@@ -41,7 +41,7 @@ class MGSwitcherDrawMode(
 
     private val drawerModeDiffuse = MGDrawModeTexture(
         informator,
-        MGDrawerLightPass(
+        good.damn.apigl.drawers.MGDrawerLightPass(
             arrayOf(
                 informator.framebufferG.textureAttachmentColorSpec.texture
             ),
@@ -55,7 +55,7 @@ class MGSwitcherDrawMode(
 
     private val drawerModeDepth = MGDrawModeTexture(
         informator,
-        MGDrawerLightPass(
+        good.damn.apigl.drawers.MGDrawerLightPass(
             arrayOf(
                 informator.framebufferG.textureAttachmentDepth.texture
             ),
@@ -69,7 +69,7 @@ class MGSwitcherDrawMode(
 
     private val drawerModeNormals = MGDrawModeTexture(
         informator,
-        MGDrawerLightPass(
+        good.damn.apigl.drawers.MGDrawerLightPass(
             arrayOf(
                 informator.framebufferG.textureAttachmentNormal.texture
             ),
@@ -83,7 +83,7 @@ class MGSwitcherDrawMode(
 
     private var mCurrentDrawMode = MGEnumDrawMode.OPAQUE
 
-    var currentDrawerMode: MGIDrawer = drawerModeOpaque
+    var currentDrawerMode: good.damn.apigl.drawers.MGIDrawer = drawerModeOpaque
         private set
 
     fun switchDrawMode() = when (
@@ -124,7 +124,7 @@ class MGSwitcherDrawMode(
 
     private fun switchDrawMode(
         drawMode: MGEnumDrawMode,
-        currentDrawer: MGIDrawer
+        currentDrawer: good.damn.apigl.drawers.MGIDrawer
     ) {
         mCurrentDrawMode = drawMode
         currentDrawerMode = currentDrawer

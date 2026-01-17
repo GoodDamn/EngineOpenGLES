@@ -5,10 +5,9 @@ import good.damn.common.utils.COUtilsFile
 import good.damn.wrapper.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
-import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
+import good.damn.apigl.drawers.MGDrawerFramebufferG
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
-import good.damn.engine.opengl.runnables.MGRunnableCycleSwitcherDrawMode
-import good.damn.engine.utils.MGUtilsFile
+import good.damn.apigl.runnables.MGRunnableCycleSwitcherDrawMode
 import good.damn.script.SCScriptLightPlacement
 
 class APHudScene(
@@ -22,7 +21,7 @@ class APHudScene(
     init {
         val switcherDrawMode = MGSwitcherDrawMode(
             informator,
-            MGDrawerFramebufferG(
+            good.damn.apigl.drawers.MGDrawerFramebufferG(
                 framebufferGG
             )
         )
@@ -43,7 +42,7 @@ class APHudScene(
             switcherDrawMode
         )
 
-        runnableCycle = MGRunnableCycleSwitcherDrawMode(
+        runnableCycle = good.damn.apigl.runnables.MGRunnableCycleSwitcherDrawMode(
             switcherDrawMode
         )
     }

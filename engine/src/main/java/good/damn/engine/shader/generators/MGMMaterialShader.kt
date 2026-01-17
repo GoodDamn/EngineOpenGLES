@@ -4,15 +4,14 @@ import good.damn.common.utils.COUtilsFile
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.models.MGMShaderSourceFragDefer
-import good.damn.engine.opengl.shaders.MGShaderTexture
-import good.damn.engine.opengl.textures.MGTextureActive
+import good.damn.apigl.shaders.MGShaderTexture
+import good.damn.apigl.textures.MGTextureActive
 import good.damn.engine.shader.MGShaderSource
-import good.damn.engine.utils.MGUtilsFile
 import java.util.LinkedList
 
 class MGMMaterialShader private constructor(
     val srcCodeMaterial: String,
-    val shaderTextures: Array<MGShaderTexture>,
+    val shaderTextures: Array<good.damn.apigl.shaders.MGShaderTexture>,
     val materialTexture: MGMaterialTexture
 ) {
 
@@ -49,7 +48,7 @@ class MGMMaterialShader private constructor(
             shaderSource
         )
 
-        private val mShaderTextures = LinkedList<MGShaderTexture>()
+        private val mShaderTextures = LinkedList<good.damn.apigl.shaders.MGShaderTexture>()
         private val mBuilder = MGMaterialTexture.Builder()
 
         private var mCurrentIndex = 0
@@ -156,13 +155,13 @@ class MGMMaterialShader private constructor(
             mBuilder.buildTexture(
                 fileName,
                 textureType,
-                MGTextureActive(
+                good.damn.apigl.textures.MGTextureActive(
                     mCurrentIndex++
                 )
             )
 
             mShaderTextures.add(
-                MGShaderTexture(
+                good.damn.apigl.shaders.MGShaderTexture(
                     fragDeferTexture.id
                 )
             )

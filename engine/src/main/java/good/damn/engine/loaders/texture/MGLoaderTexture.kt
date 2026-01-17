@@ -2,8 +2,8 @@ package good.damn.engine.loaders.texture
 
 import android.graphics.Bitmap
 import android.opengl.GLES30
-import good.damn.engine.opengl.textures.MGTexture
-import good.damn.engine.opengl.textures.MGTextureBitmap
+import good.damn.apigl.textures.MGTexture
+import good.damn.apigl.textures.MGTextureBitmap
 
 class MGLoaderTexture
 : MGILoaderTexture {
@@ -15,9 +15,9 @@ class MGLoaderTexture
 
     override fun loadTexture(
         bitmap: Bitmap,
-        texture: MGTexture
+        texture: good.damn.apigl.textures.MGTexture
     ) {
-        MGTextureBitmap(
+        good.damn.apigl.textures.MGTextureBitmap(
             texture
         ).run {
             texture.generate()

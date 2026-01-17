@@ -2,12 +2,12 @@ package good.damn.engine.utils
 
 import good.damn.common.COHandlerGl
 import good.damn.engine.models.MGMInstanceArray
-import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
-import good.damn.engine.opengl.arrays.MGArrayVertexInstanced
+import good.damn.apigl.arrays.MGArrayVertexConfigurator
+import good.damn.apigl.arrays.MGArrayVertexInstanced
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.common.matrices.COMatrixScaleRotation
 import good.damn.common.matrices.COMatrixTransformationNormal
-import good.damn.engine.opengl.runnables.misc.MGRunglGenVertexArrayInstanced
+import good.damn.apigl.runnables.MGRunglGenVertexArrayInstanced
 import java.nio.Buffer
 import java.nio.FloatBuffer
 
@@ -25,11 +25,11 @@ object MGUtilsInstancedMesh {
             >,
         handlerGl: COHandlerGl
     ): MGMInstanceArray {
-        val configurator = MGArrayVertexConfigurator(
+        val configurator = good.damn.apigl.arrays.MGArrayVertexConfigurator(
             config
         )
 
-        val vertexArray = MGArrayVertexInstanced(
+        val vertexArray = good.damn.apigl.arrays.MGArrayVertexInstanced(
             configurator
         )
 
@@ -38,7 +38,7 @@ object MGUtilsInstancedMesh {
         )
 
         handlerGl.post(
-            MGRunglGenVertexArrayInstanced(
+            good.damn.apigl.runnables.MGRunglGenVertexArrayInstanced(
                 vertexArray,
                 configurator,
                 bufferVertices,

@@ -1,8 +1,8 @@
 package good.damn.engine.models
 
-import good.damn.engine.opengl.textures.MGTextureBitmap
+import good.damn.apigl.textures.MGTextureBitmap
 
 data class MGMLandscapeTexture(
-    val diffuse: MGTextureBitmap,
-    val control: MGTextureBitmap
+    val diffuse: good.damn.apigl.textures.MGTextureBitmap,
+    val control: good.damn.apigl.textures.MGTextureBitmap
 )
