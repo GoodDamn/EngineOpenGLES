@@ -7,7 +7,7 @@ import good.damn.engine.opengl.arrays.MGArrayVertexInstanced
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.common.matrices.COMatrixScaleRotation
 import good.damn.common.matrices.COMatrixTransformationNormal
-import good.damn.engine.runnables.MGRunnableGenVertexArrayInstanced
+import good.damn.engine.opengl.runnables.misc.MGRunglGenVertexArrayInstanced
 import java.nio.Buffer
 import java.nio.FloatBuffer
 
@@ -38,7 +38,7 @@ object MGUtilsInstancedMesh {
         )
 
         handlerGl.post(
-            MGRunnableGenVertexArrayInstanced(
+            MGRunglGenVertexArrayInstanced(
                 vertexArray,
                 configurator,
                 bufferVertices,

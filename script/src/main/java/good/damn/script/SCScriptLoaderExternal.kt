@@ -1,17 +1,17 @@
-package good.damn.engine.scripts
+package good.damn.script
 
 import dalvik.system.DexClassLoader
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.extensions.writeToFile
 import java.io.File
 
-class MGLoaderScriptExternal(
+class SCScriptLoaderExternal(
     externalDirScripts: File,
     private val scriptFileName: String,
     classLoader: ClassLoader?
 ): DexClassLoader(
     File(
-        MGEngine.DIR_CACHE,
+        SCMountDirectory.DIRECTORY,
         scriptFileName
     ).apply {
         delete()
@@ -23,12 +23,12 @@ class MGLoaderScriptExternal(
         )
         setReadOnly()
     }.path,
-    MGEngine.DIR_CODE_CACHE.path,
+    SCMountDirectory.DIRECTORY_CODE.path,
     null,
     classLoader
 ) {
     fun removeScriptFromCache() = File(
-        MGEngine.DIR_CACHE,
+        SCMountDirectory.DIRECTORY,
         scriptFileName
     ).delete()
 }

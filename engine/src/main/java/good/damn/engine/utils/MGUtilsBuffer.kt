@@ -5,11 +5,13 @@ import good.damn.engine.MGEngine
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import java.nio.Buffer
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import java.nio.ShortBuffer
 
 object MGUtilsBuffer {
+    private val BYTE_ORDER = ByteOrder.nativeOrder()
 
     @JvmStatic
     fun allocateByte(
@@ -17,7 +19,7 @@ object MGUtilsBuffer {
     ) = ByteBuffer.allocateDirect(
         size
     ).order(
-        MGEngine.BYTE_ORDER
+        BYTE_ORDER
     )
 
     @JvmStatic
@@ -26,7 +28,7 @@ object MGUtilsBuffer {
     ) = ByteBuffer.allocateDirect(
         size * 4
     ).order(
-        MGEngine.BYTE_ORDER
+        BYTE_ORDER
     ).asFloatBuffer()
 
     @JvmStatic
@@ -35,7 +37,7 @@ object MGUtilsBuffer {
     ) = ByteBuffer.allocateDirect(
         size * 4
     ).order(
-        MGEngine.BYTE_ORDER
+        BYTE_ORDER
     ).asIntBuffer()
 
     @JvmStatic
@@ -44,7 +46,7 @@ object MGUtilsBuffer {
     ) = ByteBuffer.allocateDirect(
         size * 2
     ).order(
-        MGEngine.BYTE_ORDER
+        BYTE_ORDER
     ).asShortBuffer()
 
     @JvmStatic
@@ -55,7 +57,7 @@ object MGUtilsBuffer {
             .allocateDirect(
                 i.size * 4
             ).order(
-                MGEngine.BYTE_ORDER
+                BYTE_ORDER
             ).put(i)
         b.position(0)
         return b
@@ -69,7 +71,7 @@ object MGUtilsBuffer {
             .allocateDirect(
                 i.size * 4
             ).order(
-                MGEngine.BYTE_ORDER
+                BYTE_ORDER
             ).asFloatBuffer()
             .put(i)
         b.position(0)
@@ -84,7 +86,7 @@ object MGUtilsBuffer {
             .allocateDirect(
                 i.size * 2
             ).order(
-                MGEngine.BYTE_ORDER
+                BYTE_ORDER
             ).asShortBuffer()
             .put(i)
         b.position(0)
@@ -99,7 +101,7 @@ object MGUtilsBuffer {
             .allocateDirect(
                 i.size * 4
             ).order(
-                MGEngine.BYTE_ORDER
+                BYTE_ORDER
             ).asIntBuffer()
             .put(i)
         b.position(0)

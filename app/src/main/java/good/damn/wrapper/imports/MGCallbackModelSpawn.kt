@@ -4,7 +4,7 @@ import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.engine.opengl.models.MGMMeshDrawer
-import good.damn.engine.opengl.objects.MGObject3d
+import good.damn.engine.MGObject3d
 import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute

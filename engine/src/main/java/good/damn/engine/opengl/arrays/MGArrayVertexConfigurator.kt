@@ -27,7 +27,7 @@ class MGArrayVertexConfigurator(
     val indicesCount: Int
         get() = mIndicesSize
 
-    protected val mVertexArrayBuffer = intArrayOf(1)
+    private val mVertexArrayBuffer = intArrayOf(1)
 
     private val mVertexArray = intArrayOf(1)
     private val mIndicesArrayBuffer = intArrayOf(1)

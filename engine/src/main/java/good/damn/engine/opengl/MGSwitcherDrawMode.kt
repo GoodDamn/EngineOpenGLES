@@ -39,10 +39,6 @@ class MGSwitcherDrawMode(
         drawerFramebufferG
     )
 
-    /*private val drawerModeWireframe = MGDrawModeSingleShader(
-        informator.shaders.wireframe,
-        informator
-    )*/
 
     private val drawerModeDiffuse = MGDrawModeTexture(
         informator,
@@ -86,11 +82,13 @@ class MGSwitcherDrawMode(
         drawerFramebufferG
     )
 
+    private var mCurrentDrawMode = MGEnumDrawMode.OPAQUE
+
     var currentDrawerMode: MGIDrawer = drawerModeOpaque
         private set
 
     fun switchDrawMode() = when (
-        MGEngine.drawMode
+        mCurrentDrawMode
     ) {
         MGEnumDrawMode.OPAQUE -> switchDrawMode(
             MGEnumDrawMode.DIFFUSE,
@@ -129,7 +127,7 @@ class MGSwitcherDrawMode(
         drawMode: MGEnumDrawMode,
         currentDrawer: MGIDrawer
     ) {
-        MGEngine.drawMode = drawMode
+        mCurrentDrawMode = drawMode
         currentDrawerMode = currentDrawer
         val enableWireframe = drawMode == MGEnumDrawMode.WIREFRAME
 

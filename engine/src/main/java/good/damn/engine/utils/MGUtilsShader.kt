@@ -3,20 +3,74 @@ package good.damn.engine.utils
 import android.opengl.GLES20
 import android.opengl.GLES30
 import android.util.Log
+import good.damn.common.utils.COUtilsInputStream
+import good.damn.engine.MGEngine
+import good.damn.engine.MGMountDirectory
+import java.io.File
+import java.io.FileInputStream
+import java.nio.charset.Charset
 
 object MGUtilsShader {
+    private val CHARSET_UTF8 = Charset.forName(
+        "UTF-8"
+    )
+
+    @JvmStatic
+    fun loadString(
+        file: File,
+        buffer: ByteArray
+    ): String {
+        val inp = FileInputStream(
+            file
+        )
+
+        val b = COUtilsInputStream.readBytes(
+            inp,
+            buffer
+        )
+
+        inp.close()
+
+        return String(
+            b,
+            CHARSET_UTF8
+        )
+    }
+
+    @JvmStatic
+    fun loadString(
+        path: String,
+        buffer: ByteArray
+    ): String {
+        val pubFile = File(
+            MGMountDirectory.DIRECTORY,
+            path
+        )
+
+        if (!pubFile.exists()) {
+            throw Exception(pubFile.path)
+        }
+
+        return loadString(
+            pubFile,
+            buffer
+        )
+    }
 
     @JvmStatic
     fun createProgramFromAssets(
         vertexPath: String,
-        fragmentPath: String
+        fragmentPath: String,
+        buffer: ByteArray
     ): Int {
         return createProgram(
-            MGUtilsAsset.loadString(
-                vertexPath
+            loadString(
+                vertexPath,
+                buffer
             ),
-            MGUtilsAsset.loadString(
-                fragmentPath
+            loadString(
+                fragmentPath,
+                buffer
             )
         )
     }

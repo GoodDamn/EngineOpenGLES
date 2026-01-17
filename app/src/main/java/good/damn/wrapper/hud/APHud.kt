@@ -5,7 +5,7 @@ import android.os.Looper
 import android.view.MotionEvent
 import good.damn.wrapper.imports.MGImportImage
 import good.damn.wrapper.imports.MGImportImplLight
-import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.wrapper.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect

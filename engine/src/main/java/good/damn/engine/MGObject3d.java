@@ -1,4 +1,4 @@
-package good.damn.engine.opengl.objects;
+package good.damn.engine;
 
 import android.util.Pair;
 
@@ -8,11 +8,11 @@ import androidx.annotation.Nullable;
 import java.io.File;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.nio.charset.StandardCharsets;
 
-import good.damn.engine.MGEngine;
+import good.damn.common.utils.COUtilsFile;
 import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration;
 import good.damn.engine.utils.MGUtilsBuffer;
-import good.damn.engine.utils.MGUtilsFile;
 
 public final class MGObject3d {
 
@@ -88,7 +88,7 @@ public final class MGObject3d {
     public static MGObject3d[] createFromAssets(
         @NonNull final String localPath
     ) throws Exception {
-        @NonNull final File filePub = MGUtilsFile.getPublicFile(
+        @NonNull final File filePub = COUtilsFile.getPublicFile(
             localPath
         );
 
@@ -107,7 +107,7 @@ public final class MGObject3d {
     ) {
         return createFromPath(
             path.getBytes(
-                MGEngine.Companion.getCharsetUTF8()
+                StandardCharsets.UTF_8
             )
         );
     }

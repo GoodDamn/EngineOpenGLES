@@ -1,8 +1,6 @@
-package good.damn.engine.scripts
+package good.damn.script
 
-import dalvik.system.DexClassLoader
 import good.damn.common.volume.COManagerFrustrum
-import good.damn.engine.opengl.drawers.MGDrawerPositionEntity
 import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
 import good.damn.engine.opengl.drawers.volume.MGVolumeLight
 import good.damn.engine.opengl.managers.MGManagerLight
@@ -12,12 +10,12 @@ import good.damn.engine.sdk.models.SDMLightPointEntity
 import good.damn.engine.sdk.process.SDIProcessTime
 import java.io.File
 
-class MGScriptLightPlacement(
+class SCScriptLightPlacement(
     private val dirScripts: File,
     private val managerProcessTime: MGManagerProcessTime,
     private val managerLight: MGManagerLight,
     private val managerLightVolume: COManagerFrustrum
-): MGIScript {
+): SCIScript {
 
     companion object {
         private const val SCRIPT_FILE = "SDSceneLight.jar"
@@ -25,7 +23,7 @@ class MGScriptLightPlacement(
 
     override fun execute() {
         try {
-            val loader = MGLoaderScriptExternal(
+            val loader = SCScriptLoaderExternal(
                 dirScripts,
                 SCRIPT_FILE,
                 javaClass.classLoader

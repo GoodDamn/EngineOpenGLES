@@ -1,11 +1,11 @@
-package good.damn.engine.runnables
+package good.damn.engine.opengl.runnables.misc
 
 import android.graphics.Bitmap
 import android.opengl.GLES30
 import good.damn.common.COIRunnableBounds
 import good.damn.engine.opengl.textures.MGTextureBitmap
 
-class MGRunnableTextureSetupBitmap(
+class MGRunglTextureSetupBitmap(
     private val texture: MGTextureBitmap,
     private val bitmap: Bitmap
 ): COIRunnableBounds {

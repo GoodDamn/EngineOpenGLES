@@ -12,7 +12,7 @@ import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator;
 import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitch;
 import good.damn.engine.opengl.drawers.MGDrawerVertexArray;
-import good.damn.engine.opengl.objects.MGObject3d;
+import good.damn.engine.MGObject3d;
 import good.damn.engine.sdk.SDVector3;
 import good.damn.engine.opengl.drawers.MGDrawerMeshSwitchNormals;
 import good.damn.engine.opengl.drawers.MGDrawerPositionEntity;
@@ -24,7 +24,7 @@ import good.damn.engine.opengl.models.MGMPoolMeshMutable;
 import good.damn.engine.opengl.triggers.callbacks.MGManagerTriggerStateCallback;
 import good.damn.engine.opengl.triggers.methods.MGTriggerMethodBox;
 import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateable;
-import good.damn.engine.runnables.MGRunnableConfigVertexArray;
+import good.damn.engine.opengl.runnables.misc.MGRunglConfigVertexArray;
 import good.damn.engine.utils.MGUtilsAlgo;
 
 public final class MGTriggerMesh {
@@ -63,7 +63,7 @@ public final class MGTriggerMesh {
             .getGlHandler();
 
         glHandler.post(
-            new MGRunnableConfigVertexArray(
+            new MGRunglConfigVertexArray(
                 arrayVertex,
                 obj.vertices,
                 obj.indices,

@@ -39,13 +39,15 @@ abstract class MGShaderBase
     }
 
     fun compile(
+        buffer: ByteArray,
         pathVertex: String,
         pathFragment: String,
         binderAttribute: MGBinderAttribute
     ): Int {
         mProgram = MGUtilsShader.createProgramFromAssets(
             pathVertex,
-            pathFragment
+            pathFragment,
+            buffer
         )
 
         binderAttribute.bindAttributes(
@@ -93,11 +95,13 @@ abstract class MGShaderBase
     }
 
     fun setup(
+        buffer: ByteArray,
         pathVertex: String,
         pathFragment: String,
         binderAttribute: MGBinderAttribute
     ) {
         compile(
+            buffer,
             pathVertex,
             pathFragment,
             binderAttribute

@@ -14,57 +14,24 @@ import java.nio.charset.Charset
 
 class MGEngine {
     companion object {
-        private const val TAG = "MGEngine"
-        private val CHARSET = Charset.forName("UTF-8")
-
-        internal lateinit var DIR_CACHE: File
-        internal lateinit var DIR_PUBLIC: File
-        lateinit var DIR_PUBLIC_TEMP: File
-        internal lateinit var DIR_CODE_CACHE: File
-
-        internal var drawMode = MGEnumDrawMode.OPAQUE
-
-        internal val BYTE_ORDER = ByteOrder.nativeOrder()
-        internal val BUFFER_MB = ByteArray(1024*1024)
-        internal val CHARSET_ASCII = Charset.forName("US-ASCII")
-
-        fun getCharsetUTF8() = CHARSET
-
-        fun init(
-            applicationContext: Context
-        ) {
-            DIR_PUBLIC = File(
-                Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOCUMENTS
-                ),
-                "MGDirectory"
-            )
-
-            DIR_CODE_CACHE = applicationContext.codeCacheDir
-            DIR_CODE_CACHE.setReadOnly()
-
-            DIR_CACHE = applicationContext.cacheDir
-
-            DIR_PUBLIC_TEMP = File(
-                DIR_PUBLIC,
-                "temp"
-            )
-
-            createPublicDir(
-                DIR_PUBLIC
-            )
-
-            createPublicDir(
-                DIR_PUBLIC_TEMP
-            )
-        }
-
-        private inline fun createPublicDir(
-            it: File
-        ) {
-            if (!it.exists() && it.mkdirs()) {
-                Log.d(TAG, "onSurfaceCreated: ${it.name} is created")
-            }
-        }
-    }
+        /*DIR_PUBLIC = File(
+            Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOCUMENTS
+            ),
+            "MGDirectory"
+        )
+     DIR_CODE_CACHE = applicationContext.codeCacheDir
+        DIR_CODE_CACHE.setReadOnly()
+     DIR_CACHE = applicationContext.cacheDir
+     DIR_PUBLIC_TEMP = File(
+            DIR_PUBLIC,
+            "temp"
+        )
+     createPublicDir(
+            DIR_PUBLIC
+        )
+     createPublicDir(
+            DIR_PUBLIC_TEMP
+        )*/
+         }
 }

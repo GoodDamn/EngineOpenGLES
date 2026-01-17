@@ -1,6 +1,6 @@
 package good.damn.wrapper.imports
 
-import good.damn.engine.opengl.objects.MGObject3d
+import good.damn.engine.MGObject3d
 import java.io.File
 
 class MGImportImplModel(

@@ -1,14 +1,15 @@
 package good.damn.wrapper.hud
 
 import good.damn.common.COIRunnableBounds
-import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.common.utils.COUtilsFile
+import good.damn.wrapper.interfaces.MGIRequestUserContent
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.engine.opengl.drawers.MGDrawerFramebufferG
 import good.damn.engine.opengl.framebuffer.MGFrameBufferG
 import good.damn.engine.opengl.runnables.MGRunnableCycleSwitcherDrawMode
-import good.damn.engine.scripts.MGScriptLightPlacement
 import good.damn.engine.utils.MGUtilsFile
+import good.damn.script.SCScriptLightPlacement
 
 class APHudScene(
     requesterUserContent: MGIRequestUserContent,
@@ -26,8 +27,8 @@ class APHudScene(
             )
         )
 
-        val scriptLightPlacement = MGScriptLightPlacement(
-            MGUtilsFile.getPublicFile(
+        val scriptLightPlacement = SCScriptLightPlacement(
+            COUtilsFile.getPublicFile(
                 "scripts"
             ),
             informator.managerProcessTime,

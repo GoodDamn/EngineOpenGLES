@@ -1,10 +1,10 @@
-package good.damn.engine.runnables
+package good.damn.engine.opengl.runnables.misc
 
 import good.damn.common.COIRunnableBounds
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 
-class MGRunnableCompileShaders(
+class MGRunglCompileShaders(
     private val srcFragment: String,
     private val shader: MGShaderBase,
     private val srcVertex: String,

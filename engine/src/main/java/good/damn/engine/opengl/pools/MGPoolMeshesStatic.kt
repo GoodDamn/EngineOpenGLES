@@ -3,7 +3,7 @@ package good.damn.engine.opengl.pools
 import android.util.SparseArray
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.models.MGMPoolVertexArray
-import good.damn.engine.opengl.objects.MGObject3d
+import good.damn.engine.MGObject3d
 import good.damn.engine.opengl.triggers.MGTriggerMesh
 
 class MGPoolMeshesStatic {

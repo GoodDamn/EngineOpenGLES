@@ -3,6 +3,7 @@ package good.damn.wrapper.imports
 import good.damn.engine.MGEngine
 import good.damn.engine.opengl.extensions.copyTo
 import good.damn.engine.opengl.models.MGMUserContent
+import good.damn.wrapper.APApp
 import java.io.File
 
 abstract class MGImportImplTempFile
@@ -26,7 +27,7 @@ abstract class MGImportImplTempFile
         userContent: MGMUserContent
     ): File? {
         val temp = File(
-            MGEngine.DIR_PUBLIC_TEMP,
+            APApp.DIR_PUBLIC_TEMP,
             userContent.fileName
         )
 

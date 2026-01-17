@@ -1,17 +1,16 @@
-package good.damn.engine.loaders.scripts
+package good.damn.script
 
+import good.damn.common.utils.COUtilsFile
 import good.damn.engine.opengl.drawers.MGDrawerLightDirectional
-import good.damn.engine.scripts.MGScriptDirLight
-import good.damn.engine.utils.MGUtilsFile
 
-object MGLoaderScripts {
+object SCLoaderScripts {
 
     @JvmStatic
     fun executeDirLight(
         directionalLight: MGDrawerLightDirectional
     ) {
-        val scriptDirLight = MGScriptDirLight(
-            MGUtilsFile.getPublicFile(
+        val scriptDirLight = SCScriptDirLight(
+            COUtilsFile.getPublicFile(
                 "scripts"
             ),
             directionalLight

@@ -17,6 +17,7 @@ import good.damn.engine.opengl.drawers.volume.MGVolumeLight
 import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.common.matrices.COMatrixScaleRotation
 import good.damn.common.matrices.COMatrixTransformationNormal
+import good.damn.common.utils.COUtilsFile
 import good.damn.engine.opengl.models.MGMMeshDrawer
 import good.damn.engine.opengl.shaders.MGShaderMaterial
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
@@ -145,7 +146,7 @@ object MGStreamLevel {
     ) {
         val json = MGMLevelSpawnInfo.createFromJson(
             MGUtilsJson.createFromFile(
-                MGUtilsFile.getPublicFile(
+                COUtilsFile.getPublicFile(
                     "$localPathDir/spawnpoints.txt"
                 )
             )
@@ -185,7 +186,7 @@ object MGStreamLevel {
 
             val lightJson = MGMLevelSpawnLight.createFromJson(
                 MGUtilsJson.createFromFile(
-                    MGUtilsFile.getPublicFile(
+                    COUtilsFile.getPublicFile(
                         "lights/${info.light}.light"
                     )
                 )

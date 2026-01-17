@@ -4,6 +4,7 @@ import good.damn.common.COHandlerGl
 import good.damn.engine.models.MGMInstanceArray
 import good.damn.common.matrices.COMatrixScaleRotation
 import good.damn.common.matrices.COMatrixTransformationNormal
+import good.damn.common.utils.COUtilsFile
 import good.damn.engine.utils.MGUtilsA3D
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsInstancedMesh
@@ -23,7 +24,7 @@ class MGLoaderLevelMeshA3D(
         >,
         uvScale: Float
     ): MGMInstanceArray? {
-        val file = MGUtilsFile.getPublicFile(
+        val file = COUtilsFile.getPublicFile(
             "$localPathLibObj/$fileNameA3D"
         )
 

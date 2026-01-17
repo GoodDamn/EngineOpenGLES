@@ -1,5 +1,6 @@
 package good.damn.engine.loaders
 
+import good.damn.common.utils.COUtilsFile
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGProp
 import good.damn.engine.models.json.MGMLevelInfoMesh
@@ -18,11 +19,11 @@ class MGLoaderLevelLibrary(
     localPathCullFaceList: String
 ) {
 
-    private val mFile = MGUtilsFile.getPublicFile(
+    private val mFile = COUtilsFile.getPublicFile(
         localPath
     )
 
-    private val mFileCullFace = MGUtilsFile.getPublicFile(
+    private val mFileCullFace = COUtilsFile.getPublicFile(
         localPathCullFaceList
     )
 

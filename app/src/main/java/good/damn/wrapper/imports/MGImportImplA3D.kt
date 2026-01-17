@@ -1,6 +1,6 @@
 package good.damn.wrapper.imports
 
-import good.damn.engine.opengl.objects.MGObject3d
+import good.damn.engine.MGObject3d
 import good.damn.engine.utils.MGUtilsA3D
 import good.damn.ia3d.A3DImport
 import good.damn.ia3d.stream.A3DInputStream

@@ -3,6 +3,7 @@ package good.damn.engine.utils
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.annotation.ColorInt
+import good.damn.common.utils.COUtilsFile
 import java.io.FileInputStream
 
 object MGUtilsBitmap {
@@ -30,7 +31,7 @@ object MGUtilsBitmap {
     fun loadBitmap(
         localPath: String
     ): Bitmap? {
-        val filePub = MGUtilsFile.getPublicFile(
+        val filePub = COUtilsFile.getPublicFile(
             localPath
         )
 

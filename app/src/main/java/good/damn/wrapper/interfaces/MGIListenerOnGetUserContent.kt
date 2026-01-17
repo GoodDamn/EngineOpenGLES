@@ -1,4 +1,4 @@
-package good.damn.engine.interfaces
+package good.damn.wrapper.interfaces
 
 import good.damn.engine.opengl.models.MGMUserContent
 

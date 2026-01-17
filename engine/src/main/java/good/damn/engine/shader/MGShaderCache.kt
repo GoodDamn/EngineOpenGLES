@@ -5,7 +5,7 @@ import good.damn.common.COHandlerGl
 import good.damn.engine.opengl.shaders.base.MGShaderBase
 import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
 import good.damn.engine.opengl.shaders.creators.MGIShaderCreator
-import good.damn.engine.runnables.MGRunnableCompileShaders
+import good.damn.engine.opengl.runnables.misc.MGRunglCompileShaders
 
 class MGShaderCache<
     T: MGShaderBase,
@@ -31,7 +31,7 @@ class MGShaderCache<
 
         map[srcCode.hashCode()] = shader
         glHandler.post(
-            MGRunnableCompileShaders(
+            MGRunglCompileShaders(
                 srcCode,
                 shader,
                 srcCodeVertex,

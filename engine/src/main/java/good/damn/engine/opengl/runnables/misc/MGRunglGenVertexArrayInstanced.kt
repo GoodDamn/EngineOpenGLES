@@ -1,4 +1,4 @@
-package good.damn.engine.runnables
+package good.damn.engine.opengl.runnables.misc
 
 import good.damn.common.COIRunnableBounds
 import good.damn.engine.opengl.arrays.MGArrayVertexConfigurator
@@ -7,7 +7,7 @@ import good.damn.engine.opengl.arrays.pointers.MGPointerAttribute
 import java.nio.Buffer
 import java.nio.FloatBuffer
 
-class MGRunnableGenVertexArrayInstanced(
+class MGRunglGenVertexArrayInstanced(
     private val vertexArray: MGArrayVertexInstanced,
     private val configurator: MGArrayVertexConfigurator,
     private val bufferVertices: FloatBuffer,

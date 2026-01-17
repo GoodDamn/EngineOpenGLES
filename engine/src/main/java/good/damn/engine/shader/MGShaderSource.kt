@@ -1,11 +1,12 @@
 package good.damn.engine.shader
 
+import good.damn.common.utils.COUtilsFile
 import good.damn.engine.opengl.models.MGMShaderSourceFragDefer
-import good.damn.engine.utils.MGUtilsAsset
-import good.damn.engine.utils.MGUtilsFile
+import good.damn.engine.utils.MGUtilsShader
 
 class MGShaderSource(
     localPath: String,
+    buffer: ByteArray
 ) {
     companion object {
         private const val FOLDER = "shaders"
@@ -28,19 +29,23 @@ class MGShaderSource(
         val localFullPath = "$FOLDER/$localPath"
         val deferPath = "$localFullPath/defer"
         fragDefer1 = loadSourceCode(
-            "$deferPath/frag1.glsl"
+            "$deferPath/frag1.glsl",
+            buffer
         )
 
         fragDeferMain = loadSourceCode(
-            "$deferPath/frag_defer.glsl"
+            "$deferPath/frag_defer.glsl",
+            buffer
         )
 
         fragDeferSpecular = MGMShaderSourceFragDefer(
             loadSourceCode(
-                "$deferPath/frag_defer_spec.glsl"
+                "$deferPath/frag_defer_spec.glsl",
+                buffer
             ),
             loadSourceCode(
-                "$deferPath/frag_defer_spec_no.glsl"
+                "$deferPath/frag_defer_spec_no.glsl",
+                buffer
             ),
             "textMetallic",
             "_m.jpg"
@@ -48,10 +53,12 @@ class MGShaderSource(
 
         fragDeferDiffuse = MGMShaderSourceFragDefer(
             loadSourceCode(
-                "$deferPath/frag_defer_diffuse.glsl"
+                "$deferPath/frag_defer_diffuse.glsl",
+                buffer
             ),
             loadSourceCode(
-                "$deferPath/frag_defer_diffuse_no.glsl"
+                "$deferPath/frag_defer_diffuse_no.glsl",
+                buffer
             ),
             "textDiffuse",
             ".jpg"
@@ -59,10 +66,12 @@ class MGShaderSource(
 
         fragDeferOpacity = MGMShaderSourceFragDefer(
             loadSourceCode(
-                "$deferPath/frag_defer_opacity.glsl"
+                "$deferPath/frag_defer_opacity.glsl",
+                buffer
             ),
             loadSourceCode(
-                "$deferPath/frag_defer_opacity_no.glsl"
+                "$deferPath/frag_defer_opacity_no.glsl",
+                buffer
             ),
             "textOpacity",
             "_o.jpg"
@@ -70,10 +79,12 @@ class MGShaderSource(
 
         fragDeferEmissive = MGMShaderSourceFragDefer(
             loadSourceCode(
-                "$deferPath/frag_defer_emissive.glsl"
+                "$deferPath/frag_defer_emissive.glsl",
+                buffer
             ),
             loadSourceCode(
-                "$deferPath/frag_defer_emissive_no.glsl"
+                "$deferPath/frag_defer_emissive_no.glsl",
+                buffer
             ),
             "textEmissive",
             "_e.jpg"
@@ -81,10 +92,12 @@ class MGShaderSource(
 
         fragDeferNormal = MGMShaderSourceFragDefer(
             loadSourceCode(
-                "$deferPath/frag_normal.glsl"
+                "$deferPath/frag_normal.glsl",
+                buffer
             ),
             loadSourceCode(
-                "$deferPath/frag_normal_no.glsl"
+                "$deferPath/frag_normal_no.glsl",
+                buffer
             ),
             "textNormal",
             "_n.jpg"
@@ -92,29 +105,35 @@ class MGShaderSource(
 
         fragDeferDepth = MGMShaderSourceFragDefer(
             loadSourceCode(
-                "$deferPath/frag_defer_depth_func.glsl"
+                "$deferPath/frag_defer_depth_func.glsl",
+                buffer
             ),
             loadSourceCode(
-                "$deferPath/frag_defer_depth_const.glsl"
+                "$deferPath/frag_defer_depth_const.glsl",
+                buffer
             ),
             "",
             ""
         )
 
         verti = loadSourceCode(
-            "$localFullPath/vert_i.glsl"
+            "$localFullPath/vert_i.glsl",
+            buffer
         )
 
         vert = loadSourceCode(
-            "$localFullPath/vert.glsl"
+            "$localFullPath/vert.glsl",
+            buffer
         )
     }
 
     private inline fun loadSourceCode(
-        localFullPath: String
-    ) = MGUtilsAsset.loadString(
-        MGUtilsFile.getPublicFile(
+        localFullPath: String,
+        buffer: ByteArray
+    ) = MGUtilsShader.loadString(
+        COUtilsFile.getPublicFile(
             localFullPath
-        )
+        ),
+        buffer
     )
 }

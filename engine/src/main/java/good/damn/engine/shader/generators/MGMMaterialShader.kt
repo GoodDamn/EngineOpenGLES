@@ -1,5 +1,6 @@
 package good.damn.engine.shader.generators
 
+import good.damn.common.utils.COUtilsFile
 import good.damn.engine.opengl.entities.MGMaterialTexture
 import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.models.MGMShaderSourceFragDefer
@@ -169,7 +170,7 @@ class MGMMaterialShader private constructor(
 
         private inline fun textureExists(
             fileName: String
-        ) = MGUtilsFile.getPublicFile(
+        ) = COUtilsFile.getPublicFile(
             "$localPathDir/$fileName"
         ).exists()
     }

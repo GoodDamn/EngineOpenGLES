@@ -9,8 +9,7 @@ import android.util.SparseArray
 import android.view.MotionEvent
 import good.damn.common.COHandlerGl
 import good.damn.common.COIRunnableBounds
-import good.damn.engine.interfaces.MGIRequestUserContent
-import good.damn.engine.loaders.scripts.MGLoaderScripts
+import good.damn.wrapper.interfaces.MGIRequestUserContent
 import good.damn.engine.loaders.texture.MGLoaderTextureAsync
 import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInformatorShader
@@ -35,7 +34,7 @@ import good.damn.engine.opengl.managers.MGManagerTriggerMesh
 import good.damn.common.matrices.COMatrixTranslate
 import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.opengl.models.MGMLightPass
-import good.damn.engine.opengl.objects.MGObject3d
+import good.damn.engine.MGObject3d
 import good.damn.engine.opengl.pools.MGPoolMaterials
 import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.opengl.pools.MGPoolTextures
@@ -58,6 +57,7 @@ import good.damn.engine.shader.MGShaderSource
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsVertIndices
+import good.damn.script.SCLoaderScripts
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class APRendererLevelEditor(
@@ -69,6 +69,10 @@ class APRendererLevelEditor(
     }
 
     private val mHandlerGlExecutor = COHandlerGlExecutor()
+
+    private val mBuffer = ByteArray(
+        1024 * 50
+    )
 
     private val mHandlerGl = COHandlerGl(
         mHandlerGlExecutor.queue,
@@ -83,7 +87,8 @@ class APRendererLevelEditor(
 
     private val mInformatorShader = MGMInformatorShader(
         MGShaderSource(
-            "opaque"
+            "opaque",
+            mBuffer
         ),
         cacheGeometryPass = MGShaderCache(
             SparseArray(50),
@@ -306,6 +311,7 @@ class APRendererLevelEditor(
         )
 
         mInformatorShader.wireframe.setup(
+            mBuffer,
             "shaders/opaque/vert.glsl",
             "shaders/wireframe/frag_defer.glsl",
             MGBinderAttribute.Builder()
@@ -319,6 +325,7 @@ class APRendererLevelEditor(
             .build().run {
                 mInformatorShader.lightPasses.forEach {
                     it.shader.setup(
+                        mBuffer,
                         it.vertPath,
                         it.fragPath,
                         this
@@ -326,6 +333,7 @@ class APRendererLevelEditor(
                 }
 
                 mInformatorShader.lightPassPointLight.setup(
+                    mBuffer,
                     "shaders/lightPass/vert_pointLight.glsl",
                     "shaders/opaque/defer/frag_defer_light_point.glsl",
                     this
@@ -390,7 +398,7 @@ class APRendererLevelEditor(
             modelMatrix.invalidatePosition()
         }
 
-        MGLoaderScripts.executeDirLight(
+        SCLoaderScripts.executeDirLight(
             mInformator.drawerLightDirectional
         )
 

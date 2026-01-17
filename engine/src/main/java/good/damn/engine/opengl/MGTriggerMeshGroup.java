@@ -2,11 +2,6 @@ package good.damn.engine.opengl;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.models.MGMInformator;
-import good.damn.engine.opengl.models.MGMPoolVertexArray;
-import good.damn.engine.opengl.models.MGMPoolMeshMutable;
-import good.damn.engine.opengl.objects.MGObject3d;
-import good.damn.engine.opengl.triggers.MGITrigger;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerGroup;
 import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh;
 import good.damn.engine.opengl.triggers.MGTriggerMesh;
