@@ -10,9 +10,8 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.charset.StandardCharsets;
 
+import good.damn.apigl.enums.GLEnumArrayVertexConfiguration;
 import good.damn.common.utils.COUtilsFile;
-import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration;
-import good.damn.engine.utils.MGUtilsBuffer;
 
 public final class MGObject3d {
 
@@ -23,7 +22,7 @@ public final class MGObject3d {
     public final Buffer indices;
 
     @NonNull
-    public final MGEnumArrayVertexConfiguration config;
+    public final GLEnumArrayVertexConfiguration config;
 
     @Nullable
     public final String[] texturesDiffuseFileName;
@@ -37,7 +36,7 @@ public final class MGObject3d {
     public MGObject3d(
         @NonNull final FloatBuffer vertices,
         @NonNull final Buffer indices,
-        @NonNull final MGEnumArrayVertexConfiguration config,
+        @NonNull final GLEnumArrayVertexConfiguration config,
         @Nullable final String[] texturesDiffuseFileName,
         @Nullable final String[] texturesMetallicFileName,
         @Nullable final String[] texturesEmissiveFileName
@@ -63,9 +62,9 @@ public final class MGObject3d {
         );
 
         @Nullable final Pair<
-            MGEnumArrayVertexConfiguration,
+            GLEnumArrayVertexConfiguration,
             Buffer
-        > pair = MGUtilsBuffer.INSTANCE.createBufferIndicesDynamic(
+        > pair = MGUtilsBuffer.createBufferIndicesDynamic(
             indices,
             vertices.length / 8
         );

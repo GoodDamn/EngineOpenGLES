@@ -51,14 +51,6 @@ dependencies {
     implementation(libs.androidx.appcompat)
 
     implementation(
-        project(":imap")
-    )
-
-    implementation(
-        project(":ia3d")
-    )
-
-    implementation(
         project(":common")
     )
 
@@ -68,10 +60,6 @@ dependencies {
 
     implementation(
         project(":apiGL")
-    )
-
-    implementation(
-        project(":logic")
     )
 
     //testImplementation(libs.junit)

@@ -3,7 +3,7 @@ package good.damn.apigl.drawers
 import good.damn.apigl.shaders.GLShaderMaterial
 
 class GLMaterial(
-    private val materialTexture: GLMaterialTexture
+    private val materialTexture: GLDrawerMaterialTexture
 ): GLIDrawerTexture<GLShaderMaterial> {
 
     var shine = 1f

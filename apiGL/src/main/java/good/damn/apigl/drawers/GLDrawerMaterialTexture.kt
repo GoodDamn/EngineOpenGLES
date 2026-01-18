@@ -1,30 +1,38 @@
 package good.damn.apigl.drawers
 
+import good.damn.apigl.enums.GLEnumTextureType
 import good.damn.apigl.shaders.GLShaderTexture
+import good.damn.apigl.textures.GLMTexturePart
 import good.damn.apigl.textures.GLTexture
 import good.damn.apigl.textures.GLTextureActive
+import java.util.LinkedList
 
 class GLDrawerMaterialTexture(
-    var texture: GLTexture,
-    val activeTexture: GLTextureActive
-): GLIDrawerTexture<GLShaderTexture> {
-
+    private val list: List<GLMTexturePart>
+): GLIDrawerTexture<
+    Array<GLShaderTexture>
+> {
     override fun draw(
-        shader: GLShaderTexture
+        shader: Array<GLShaderTexture>
     ) {
-        texture.textureActive = activeTexture
-        texture.draw(
-            shader
-        )
+        var i = 0
+        list.forEach {
+            it.drawer.draw(
+                shader[i]
+            )
+            i++
+        }
     }
 
     override fun unbind(
-        shader: GLShaderTexture
+        shader: Array<GLShaderTexture>
     ) {
-        texture.textureActive = activeTexture
-        texture.unbind(
-            shader
-        )
+        var i = 0
+        list.forEach {
+            it.drawer.unbind(
+                shader[i]
+            )
+            i++
+        }
     }
-
 }

@@ -1,8 +1,6 @@
 package good.damn.script
 
 import dalvik.system.DexClassLoader
-import good.damn.engine.MGEngine
-import good.damn.engine.opengl.extensions.writeToFile
 import java.io.File
 
 class SCScriptLoaderExternal(

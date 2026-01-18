@@ -1,18 +1,23 @@
 package good.damn.wrapper.imports
 
-import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.apigl.shaders.MGShaderGeometryPassModel
-import good.damn.apigl.shaders.MGShaderMaterial
-import good.damn.apigl.shaders.base.MGBinderAttribute
-import good.damn.engine.shader.generators.MGMMaterialShader
+import good.damn.apigl.drawers.GLDrawerMaterialTexture
+import good.damn.apigl.drawers.GLMaterial
+import good.damn.apigl.shaders.GLShaderGeometryPassModel
+import good.damn.apigl.shaders.GLShaderMaterial
+import good.damn.apigl.shaders.base.GLBinderAttribute
+import good.damn.engine2.models.MGMInformatorShader
+import good.damn.engine2.models.MGMParameters
+import good.damn.engine2.opengl.pools.MGMPools
+import good.damn.engine2.shader.generators.MGMMaterialShader
 import java.io.File
 
 class MGImportImage(
-    private val informator: MGMInformator
+    private val pools: MGMPools,
+    private val shaders: MGMInformatorShader,
+    private val parameters: MGMParameters
 ): MGImportImplTempFile() {
 
-    private val mBinderAttribute = good.damn.apigl.shaders.base.MGBinderAttribute.Builder()
+    private val mBinderAttribute = GLBinderAttribute.Builder()
         .bindPosition()
         .bindTextureCoordinates()
         .bindNormal()
@@ -36,10 +41,9 @@ class MGImportImage(
             0, mIndexSubString
         )
 
-        val material = informator.poolMaterials.loadOrGetFromCache(
+        val material = pools.materials.loadOrGetFromCache(
             fileNameDiffuse,
-            "textures/$fileNameDiffuse",
-            informator
+            "textures/$fileNameDiffuse"
         )
 
         processShader(
@@ -50,12 +54,12 @@ class MGImportImage(
     private inline fun processShader(
         materialShader: MGMMaterialShader
     ) {
-        val shader = informator.shaders.cacheGeometryPass.loadOrGetFromCache(
+        val shader = shaders.cacheGeometryPass.loadOrGetFromCache(
             materialShader.srcCodeMaterial,
-            informator.shaders.source.vert,
+            shaders.source.vert,
             mBinderAttribute,
             arrayOf(
-                good.damn.apigl.shaders.MGShaderMaterial(
+                GLShaderMaterial(
                     materialShader.shaderTextures
                 )
             )
@@ -77,14 +81,16 @@ class MGImportImage(
     }
 
     private inline fun attachMaterial(
-        shader: good.damn.apigl.shaders.MGShaderGeometryPassModel,
+        shader: GLShaderGeometryPassModel,
         materialShader: MGMMaterialShader
     ) {
         // attach material to model
-        informator.currentEditMesh?.apply {
+        parameters.currentEditMesh?.apply {
             drawer.material = arrayOf(
-                MGMaterial(
-                    materialShader.materialTexture
+                GLMaterial(
+                    GLDrawerMaterialTexture(
+                        materialShader.textures
+                    )
                 )
             )
             this.shader = shader

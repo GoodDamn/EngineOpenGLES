@@ -1,0 +1,161 @@
+package good.damn.engine
+
+import android.util.Pair
+import good.damn.apigl.enums.GLEnumArrayVertexConfiguration
+import java.nio.Buffer
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.FloatBuffer
+import java.nio.IntBuffer
+import java.nio.ShortBuffer
+
+object MGUtilsBuffer {
+    private val BYTE_ORDER = ByteOrder.nativeOrder()
+
+    @JvmStatic
+    fun allocateByte(
+        size: Int
+    ) = ByteBuffer.allocateDirect(
+        size
+    ).order(
+        BYTE_ORDER
+    )
+
+    @JvmStatic
+    fun allocateFloat(
+        size: Int
+    ) = ByteBuffer.allocateDirect(
+        size * 4
+    ).order(
+        BYTE_ORDER
+    ).asFloatBuffer()
+
+    @JvmStatic
+    fun allocateInt(
+        size: Int
+    ) = ByteBuffer.allocateDirect(
+        size * 4
+    ).order(
+        BYTE_ORDER
+    ).asIntBuffer()
+
+    @JvmStatic
+    fun allocateShort(
+        size: Int
+    ) = ByteBuffer.allocateDirect(
+        size * 2
+    ).order(
+        BYTE_ORDER
+    ).asShortBuffer()
+
+    @JvmStatic
+    fun createByte(
+        i: ByteArray
+    ): ByteBuffer {
+        val b = ByteBuffer
+            .allocateDirect(
+                i.size * 4
+            ).order(
+                BYTE_ORDER
+            ).put(i)
+        b.position(0)
+        return b
+    }
+
+    @JvmStatic
+    fun createFloat(
+        i: FloatArray
+    ): FloatBuffer {
+        val b = ByteBuffer
+            .allocateDirect(
+                i.size * 4
+            ).order(
+                BYTE_ORDER
+            ).asFloatBuffer()
+            .put(i)
+        b.position(0)
+        return b
+    }
+
+    @JvmStatic
+    fun createShort(
+        i: ShortArray
+    ): ShortBuffer {
+        val b = ByteBuffer
+            .allocateDirect(
+                i.size * 2
+            ).order(
+                BYTE_ORDER
+            ).asShortBuffer()
+            .put(i)
+        b.position(0)
+        return b
+    }
+
+    @JvmStatic
+    fun createInt(
+        i: IntArray
+    ): IntBuffer {
+        val b = ByteBuffer
+            .allocateDirect(
+                i.size * 4
+            ).order(
+                BYTE_ORDER
+            ).asIntBuffer()
+            .put(i)
+        b.position(0)
+        return b
+    }
+
+    @JvmStatic
+    inline fun createBufferIndicesDynamic(
+        indices: IntArray,
+        vertexCount: Int
+    ): Pair<GLEnumArrayVertexConfiguration, Buffer> {
+        if (vertexCount > Short.MAX_VALUE.toInt() and 0xffff) {
+            return Pair(
+                GLEnumArrayVertexConfiguration.INT,
+                allocateInt(
+                    indices.size
+                ).apply {
+                    fillBuffer(
+                        indices.size
+                    ) { put(it, indices[it]) }
+                }
+            )
+        }
+
+        if (vertexCount > Byte.MAX_VALUE.toInt() and 0xff) {
+            return Pair(
+                GLEnumArrayVertexConfiguration.SHORT,
+                allocateShort(
+                    indices.size
+                ).apply {
+                    fillBuffer(
+                        indices.size
+                    ) { put(it, indices[it].toShort()) }
+                }
+            )
+        }
+
+        return Pair(
+            GLEnumArrayVertexConfiguration.BYTE,
+            allocateByte(
+                indices.size
+            ).apply {
+                fillBuffer(
+                    indices.size
+                ) { put(it, indices[it].toByte()) }
+            }
+        )
+    }
+
+    inline fun fillBuffer(
+        indexCount: Int,
+        call: (Int) -> Unit
+    ) {
+        for (i in 0 until indexCount) {
+            call(i)
+        }
+    }
+}

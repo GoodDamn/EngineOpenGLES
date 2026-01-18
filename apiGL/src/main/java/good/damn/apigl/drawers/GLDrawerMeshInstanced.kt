@@ -1,23 +1,14 @@
 package good.damn.apigl.drawers
 
 import android.opengl.GLES30
-import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.apigl.GLRenderVars
+import good.damn.apigl.shaders.GLShaderMaterial
 
 class GLDrawerMeshInstanced(
     private val enableCullFace: Boolean,
     private val vertexArray: good.damn.apigl.arrays.GLArrayVertexInstanced,
     private val materials: Array<GLMaterial>
 ) {
-
-    private var mode = GLES30.GL_TRIANGLES
-
-    fun setIsWireframe(
-        isWireframe: Boolean
-    ) {
-        mode = if (
-            isWireframe
-        ) GLES30.GL_LINES else GLES30.GL_TRIANGLES
-    }
 
     fun drawVertices() {
         if (enableCullFace) {
@@ -34,13 +25,13 @@ class GLDrawerMeshInstanced(
         }
 
         vertexArray.drawInstanced(
-            mode
+            GLRenderVars.drawModeMesh.v
         )
     }
 
     fun draw(
         shaderMaterial: Array<
-            MGShaderMaterial
+            GLShaderMaterial
         >
     ) {
         for (i in materials.indices) {

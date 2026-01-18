@@ -3,11 +3,18 @@ package good.damn.wrapper.hud
 import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
+import good.damn.common.COHandlerGl
 import good.damn.common.camera.COICameraFree
+import good.damn.engine2.models.MGMInformatorShader
+import good.damn.engine2.models.MGMManagers
+import good.damn.engine2.models.MGMParameters
+import good.damn.engine2.opengl.MGMGeometry
 import good.damn.wrapper.imports.MGImportImage
 import good.damn.wrapper.imports.MGImportImplLight
 import good.damn.wrapper.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.MGSwitcherDrawMode
+import good.damn.engine2.opengl.MGSwitcherDrawMode
+import good.damn.engine2.opengl.pools.MGMPools
+import good.damn.engine2.triggers.MGTriggerSimple
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.callbacks.MGCallbackOnCameraMovement
 import good.damn.wrapper.hud.callbacks.MGCallbackOnDeltaInteract
@@ -27,7 +34,13 @@ import good.damn.wrapper.imports.MGMImportMisc
 class APHud(
     camera: COICameraFree,
     requesterUserContent: MGIRequestUserContent,
-    switcherDrawMode: MGSwitcherDrawMode
+    switcherDrawMode: MGSwitcherDrawMode,
+    parameters: MGMParameters,
+    pools: MGMPools,
+    shaders: MGMInformatorShader,
+    managers: MGMManagers,
+    geometry: MGMGeometry,
+    glHandler: COHandlerGl
 ) {
 
     private val mBridgeMatrix = APBridgeRayIntersect()
@@ -49,10 +62,12 @@ class APHud(
 
     private val mCallbackModelSpawn = MGCallbackModelSpawn(
         mBridgeMatrix,
-        MGTriggerSimple(
-            informator.drawerLightDirectional
-        ),
-        informator
+        MGTriggerSimple(),
+        pools.meshes,
+        shaders,
+        geometry,
+        parameters,
+        managers.managerTrigger
     )
 
     private val mLayerEditor = APUILayerEditor(
@@ -69,19 +84,19 @@ class APHud(
                         this
                     ),
                     MGImportImplLevel(
-                        this,
-                        informator
+                        this
                     ),
                     MGImportImplA3D(
                         this
                     ),
                     MGImportImage(
-                        informator
+                        pools,
+                        shaders,
+                        parameters
                     ),
                     MGImportImplLight(
                         mBridgeMatrix,
-                        informator.managerLight,
-                        informator.managerLightVolumes
+                        managers
                     )
                 ),
                 requesterUserContent
@@ -91,11 +106,11 @@ class APHud(
             mBridgeMatrix
         ),
         clickSwitchDrawerMode = APClickSwitchDrawMode(
-            informator,
+            glHandler,
             switcherDrawMode
         ),
         clickTriggerDrawing = APClickTriggerDrawingFlag(
-            informator
+            parameters
         ),
         bridgeMatrix = mBridgeMatrix
     ).apply {

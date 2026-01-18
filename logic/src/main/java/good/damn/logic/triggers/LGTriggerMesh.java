@@ -9,6 +9,7 @@ import good.damn.common.matrices.COMatrixScaleRotation;
 import good.damn.common.matrices.COMatrixTransformationInvert;
 import good.damn.common.matrices.COMatrixTransformationNormal;
 import good.damn.common.vertex.COMArrayVertexManager;
+import good.damn.engine.MGObject3d;
 import good.damn.engine.sdk.SDVector3;
 import good.damn.logic.models.LGTriggerPoint;
 import good.damn.logic.triggers.callbacks.LGManagerTriggerStateCallback;

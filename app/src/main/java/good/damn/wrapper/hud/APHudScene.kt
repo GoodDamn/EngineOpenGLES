@@ -1,55 +1,54 @@
 package good.damn.wrapper.hud
 
-import good.damn.apigl.drawers.GLDrawerFramebufferG
-import good.damn.apigl.drawers.GLDrawerLightDirectional
-import good.damn.apigl.framebuffer.GLFrameBufferG
+import good.damn.common.COHandlerGl
 import good.damn.common.COIRunnableBounds
+import good.damn.common.camera.COICameraFree
 import good.damn.common.utils.COUtilsFile
-import good.damn.engine.models.MGMInformatorShader
-import good.damn.engine.opengl.MGMGeometry
-import good.damn.engine.opengl.MGMVolume
+import good.damn.engine2.models.MGMInformatorShader
+import good.damn.engine2.models.MGMManagers
+import good.damn.engine2.models.MGMParameters
+import good.damn.engine2.opengl.MGMGeometry
 import good.damn.wrapper.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.MGSwitcherDrawMode
-import good.damn.engine.opengl.MGRunnableCycleSwitcherDrawMode
+import good.damn.engine2.opengl.MGSwitcherDrawMode
+import good.damn.engine2.opengl.MGRunnableCycleSwitcherDrawMode
+import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.script.SCScriptLightPlacement
 
 class APHudScene(
+    switcherDrawMode: MGSwitcherDrawMode,
     requesterUserContent: MGIRequestUserContent,
-    framebufferG: GLFrameBufferG,
+    camera: COICameraFree,
+    managers: MGMManagers,
+    parameters: MGMParameters,
+    pools: MGMPools,
     shaders: MGMInformatorShader,
     geometry: MGMGeometry,
-    volume: MGMVolume,
-    drawerLightDirect: GLDrawerLightDirectional
+    glHandler: COHandlerGl
 ) {
     val hud: APHud
     val runnableCycle: COIRunnableBounds
 
     init {
-        val switcherDrawMode = MGSwitcherDrawMode(
-            framebufferG,
-            shaders,
-            geometry,
-            volume,
-            drawerLightDirect,
-            GLDrawerFramebufferG(
-                framebufferG
-            )
-        )
-
         val scriptLightPlacement = SCScriptLightPlacement(
             COUtilsFile.getPublicFile(
                 "scripts"
             ),
-            informator.managerProcessTime,
-            informator.managerLight,
-            informator.managerLightVolumes
+            managers.managerProcessTime,
+            managers.managerLight,
+            managers.managerFrustrum
         )
         scriptLightPlacement.execute()
 
         hud = APHud(
+            camera,
             requesterUserContent,
-            informator,
-            switcherDrawMode
+            switcherDrawMode,
+            parameters,
+            pools,
+            shaders,
+            managers,
+            geometry,
+            glHandler
         )
 
         runnableCycle = MGRunnableCycleSwitcherDrawMode(

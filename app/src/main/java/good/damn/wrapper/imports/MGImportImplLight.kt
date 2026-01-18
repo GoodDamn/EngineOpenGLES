@@ -1,21 +1,20 @@
 package good.damn.wrapper.imports
 
-import good.damn.common.volume.COManagerFrustrum
-import good.damn.engine.models.json.light.MGMLight
-import good.damn.apigl.drawers.MGDrawerLightPoint
-import good.damn.apigl.drawers.MGVolumeLight
-import good.damn.apigl.drawers.MGDrawerLights
+import good.damn.apigl.drawers.GLDrawerLightPoint
+import good.damn.apigl.drawers.GLVolumeLight
+import good.damn.engine2.models.MGMManagers
+import good.damn.engine2.models.json.light.MGMLight
 import good.damn.wrapper.models.MGMUserContent
-import good.damn.logic.triggers.stateables.MGDrawerTriggerStateableLight
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
-import good.damn.engine.utils.MGUtilsJson
-import good.damn.engine.utils.MGUtilsVector3
+import good.damn.engine2.utils.MGUtilsJson
+import good.damn.engine2.utils.MGUtilsVector3
+import good.damn.logic.triggers.stateables.LGTriggerStateableLight
+import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 
 class MGImportImplLight(
-    private val bridgeRay: good.damn.wrapper.hud.bridges.APBridgeRayIntersect,
-    private val managerLight: good.damn.apigl.drawers.MGDrawerLights,
-    private val managerLightVolume: COManagerFrustrum
+    private val bridgeRay: APBridgeRayIntersect,
+    private val managers: MGMManagers
 ): MGIImport {
 
     override fun isValidExtension(
@@ -41,7 +40,7 @@ class MGImportImplLight(
             json
         )
 
-        val triggerLight = good.damn.logic.triggers.stateables.MGDrawerTriggerStateableLight.createFromLight(
+        val triggerLight = LGTriggerStateableLight.createFromLight(
             SDMLightPoint(
                 MGUtilsVector3.createFromColorInt(
                     jsonModel.color
@@ -67,16 +66,17 @@ class MGImportImplLight(
             )
         }
 
-        val drawerLightPoint = good.damn.apigl.drawers.MGDrawerLightPoint(
-            triggerLight
+        val drawerLightPoint = GLDrawerLightPoint(
+            triggerLight.modelMatrix.matrixTrigger.model,
+            triggerLight.light
         )
 
-        managerLight.register(
+        managers.managerLight.register(
             drawerLightPoint
         )
 
-        managerLightVolume.volumes.add(
-            good.damn.apigl.drawers.MGVolumeLight(
+        managers.managerFrustrum.volumes.add(
+            GLVolumeLight(
                 drawerLightPoint,
                 triggerLight.modelMatrix.matrixTrigger.model
             )

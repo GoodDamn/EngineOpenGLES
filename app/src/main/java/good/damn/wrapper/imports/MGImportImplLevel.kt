@@ -1,10 +1,10 @@
 package good.damn.wrapper.imports
 
 import good.damn.apigl.drawers.GLDrawerMeshInstanced
-import good.damn.engine.flow.MGFlowLevel
-import good.damn.engine.level.MGStreamLevel
-import good.damn.engine.opengl.MGMGeometry
-import good.damn.engine.opengl.models.MGMMeshDrawer
+import good.damn.engine2.flow.MGFlowLevel
+import good.damn.engine2.level.MGStreamLevel
+import good.damn.engine2.opengl.MGMGeometry
+import good.damn.engine2.opengl.models.MGMMeshDrawer
 import java.io.File
 import java.io.FileInputStream
 
@@ -53,8 +53,8 @@ class MGImportImplLevel(
                     FileInputStream(
                         file
                     ),
-                    informator,
-                    misc.buffer
+                    misc.buffer,
+
                 )
 
                 file.delete()

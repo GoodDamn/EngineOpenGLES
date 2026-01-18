@@ -2,9 +2,10 @@ package good.damn.apigl.drawers
 
 import android.opengl.GLES30.glBindVertexArray
 import android.opengl.GLES30.glDrawElements
+import good.damn.apigl.arrays.GLArrayVertexConfigurator
 
 class GLDrawerVertexArray(
-    private val configurator: good.damn.apigl.arrays.GLArrayVertexConfigurator
+    private val configurator: GLArrayVertexConfigurator
 ): GLIDrawerMesh {
 
     override fun draw(

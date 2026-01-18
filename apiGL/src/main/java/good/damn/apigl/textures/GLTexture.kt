@@ -50,7 +50,7 @@ class GLTexture(
     }
 
     final override fun unbind(
-        shader: good.damn.apigl.shaders.GLIShaderTextureUniform
+        shader: GLIShaderTextureUniform
     ) {
         unbind()
         glUniform1i(
@@ -60,7 +60,7 @@ class GLTexture(
     }
 
     final override fun draw(
-        shader: good.damn.apigl.shaders.GLIShaderTextureUniform
+        shader: GLIShaderTextureUniform
     ) {
         bind()
         glUniform1i(

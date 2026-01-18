@@ -1,0 +1,13 @@
+package good.damn.engine2.models
+
+import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
+import good.damn.apigl.shaders.GLShaderGeometryPassModel
+import good.damn.engine2.opengl.models.MGMMeshDrawer
+
+data class MGMParameters(
+    var canDrawTriggers: Boolean,
+    var currentEditMesh: MGMMeshDrawer<
+        GLShaderGeometryPassModel,
+        GLDrawerMeshMaterialMutable
+        >?
+)

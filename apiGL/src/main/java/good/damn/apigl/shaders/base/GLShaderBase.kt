@@ -4,6 +4,8 @@ import android.opengl.GLES20
 import android.opengl.GLES30.*
 import android.util.Log
 import good.damn.apigl.shaders.GLIShader
+import good.damn.apigl.utils.GLUtilsShader
+import java.io.File
 
 abstract class GLShaderBase
 : GLIShader {
@@ -24,7 +26,7 @@ abstract class GLShaderBase
         srcFragment: String,
         binderAttribute: GLBinderAttribute
     ): Int {
-        mProgram = MGUtilsShader.createProgram(
+        mProgram = GLUtilsShader.createProgram(
             srcVertex,
             srcFragment
         )
@@ -38,13 +40,13 @@ abstract class GLShaderBase
 
     fun compile(
         buffer: ByteArray,
-        pathVertex: String,
-        pathFragment: String,
+        fileVertex: File,
+        fileFragment: File,
         binderAttribute: GLBinderAttribute
     ): Int {
-        mProgram = MGUtilsShader.createProgramFromAssets(
-            pathVertex,
-            pathFragment,
+        mProgram = GLUtilsShader.createProgramFromAssets(
+            fileVertex,
+            fileFragment,
             buffer
         )
 
@@ -94,14 +96,14 @@ abstract class GLShaderBase
 
     fun setup(
         buffer: ByteArray,
-        pathVertex: String,
-        pathFragment: String,
+        fileVertex: File,
+        fileFragment: File,
         binderAttribute: GLBinderAttribute
     ) {
         compile(
             buffer,
-            pathVertex,
-            pathFragment,
+            fileVertex,
+            fileFragment,
             binderAttribute
         )
         link()

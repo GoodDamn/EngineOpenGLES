@@ -2,7 +2,7 @@ package good.damn.wrapper.hud.ui.clicks
 
 import good.damn.common.COHandlerGl
 import good.damn.common.COIRunnableBounds
-import good.damn.engine.opengl.MGSwitcherDrawMode
+import good.damn.engine2.opengl.MGSwitcherDrawMode
 import good.damn.hud.UIIClick
 
 class APClickSwitchDrawMode(

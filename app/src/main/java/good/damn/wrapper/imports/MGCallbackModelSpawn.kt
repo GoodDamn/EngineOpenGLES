@@ -1,21 +1,26 @@
 package good.damn.wrapper.imports
 
+import good.damn.apigl.drawers.GLDrawerMaterialTexture
 import good.damn.apigl.drawers.GLDrawerMesh
 import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
+import good.damn.apigl.drawers.GLDrawerPositionEntity
 import good.damn.apigl.drawers.GLDrawerVertexArray
 import good.damn.apigl.drawers.GLMaterial
 import good.damn.apigl.shaders.GLShaderGeometryPassModel
 import good.damn.apigl.shaders.GLShaderMaterial
-import good.damn.engine.opengl.models.MGMMeshDrawer
+import good.damn.engine2.opengl.models.MGMMeshDrawer
 import good.damn.engine.MGObject3d
 import good.damn.apigl.shaders.base.GLBinderAttribute
-import good.damn.engine.models.MGMInformatorShader
-import good.damn.engine.opengl.MGMGeometry
-import good.damn.engine.opengl.pools.MGPoolMeshesStatic
-import good.damn.engine.shader.generators.MGMMaterialShader
+import good.damn.engine2.models.MGMInformatorShader
+import good.damn.engine2.models.MGMParameters
+import good.damn.engine2.opengl.MGMGeometry
+import good.damn.engine2.opengl.pools.MGPoolMeshesStatic
+import good.damn.engine2.shader.generators.MGMMaterialShader
 import good.damn.logic.triggers.LGITrigger
 import good.damn.logic.triggers.LGMatrixTriggerMesh
 import good.damn.logic.triggers.LGTriggerMesh
+import good.damn.logic.triggers.entities.LGVolumeTrigger
+import good.damn.logic.triggers.managers.LGManagerTriggerMesh
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 
 class MGCallbackModelSpawn(
@@ -23,7 +28,9 @@ class MGCallbackModelSpawn(
     private val triggerAction: LGITrigger,
     private val poolMeshes: MGPoolMeshesStatic,
     private val shaders: MGMInformatorShader,
-    private val geometry: MGMGeometry
+    private val geometry: MGMGeometry,
+    private val parameters: MGMParameters,
+    private val managerTrigger: LGManagerTriggerMesh
 ) {
 
     private val mBinderAttr = GLBinderAttribute.Builder()
@@ -57,7 +64,8 @@ class MGCallbackModelSpawn(
                 LGTriggerMesh.createFromMatrix(
                     triggerMatrix,
                     triggerAction
-                )
+                ),
+                poolMesh[0].drawerVertexArray
             )
 
             return
@@ -85,7 +93,8 @@ class MGCallbackModelSpawn(
 
     private inline fun processMesh(
         material: MGMMaterialShader,
-        mesh: LGTriggerMesh
+        mesh: LGTriggerMesh,
+        drawerVertexArray: GLDrawerVertexArray
     ) {
         addMesh(
             shaders.cacheGeometryPass.loadOrGetFromCache(
@@ -99,8 +108,10 @@ class MGCallbackModelSpawn(
                 )
             ),
             material,
-            mesh
+            mesh,
+            drawerVertexArray
         )
+
         setupMatrix(
             mesh.matrix
         )
@@ -142,29 +153,38 @@ class MGCallbackModelSpawn(
     private inline fun addMesh(
         shader: GLShaderGeometryPassModel,
         material: MGMMaterialShader,
-        mesh: LGTriggerMesh
+        mesh: LGTriggerMesh,
+        drawerVertexArray: GLDrawerVertexArray
     ) {
         val meshMaterial = MGMMeshDrawer(
             shader,
             GLDrawerMeshMaterialMutable(
                 arrayOf(
                     GLMaterial(
-                        material.materialTexture
+                        GLDrawerMaterialTexture(
+                            material.textures
+                        )
                     )
                 ),
                 GLDrawerMesh(
-
+                    drawerVertexArray,
+                    GLDrawerPositionEntity(
+                        mesh.matrix.matrixMesh.model
+                    )
                 )
             )
         )
-        informator.currentEditMesh = meshMaterial
+        parameters.currentEditMesh = meshMaterial
 
         geometry.meshes.add(
             meshMaterial
         )
 
-        informator.managerTrigger.addTrigger(
-            mesh.triggerState
+        managerTrigger.addTrigger(
+            LGVolumeTrigger(
+                mesh.matrix.matrixTrigger.model,
+                mesh.triggerState.stateManager
+            )
         )
     }
 }

@@ -1,6 +1,6 @@
 package good.damn.wrapper.imports
 
-import good.damn.engine.opengl.extensions.copyTo
+import good.damn.engine2.opengl.extensions.copyTo
 import good.damn.wrapper.models.MGMUserContent
 import good.damn.wrapper.APApp
 import java.io.File

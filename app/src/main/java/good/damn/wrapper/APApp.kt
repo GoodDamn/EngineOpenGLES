@@ -1,16 +1,12 @@
 package good.damn.wrapper
 
 import android.app.Application
-import android.content.Context
 import android.os.Environment
 import android.util.Log
-import android.widget.Toast
 import good.damn.common.COMountDirectory
-import good.damn.engine.MGEngine
-import good.damn.engine.MGMountDirectory
+import good.damn.engine2.MGMountDirectory
 import good.damn.script.SCMountDirectory
 import java.io.File
-import kotlin.system.exitProcess
 
 class APApp
 : Application() {
@@ -20,12 +16,13 @@ class APApp
         var HEIGHT = 1
 
         lateinit var DIR_PUBLIC_TEMP: File
+        lateinit var DIR_PUBLIC: File
     }
 
     override fun onCreate() {
         super.onCreate()
         val context = this
-        val dirPublic = File(
+        DIR_PUBLIC = File(
             Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS
             ),
@@ -33,11 +30,11 @@ class APApp
         )
 
         DIR_PUBLIC_TEMP = File(
-            dirPublic,
+            DIR_PUBLIC,
             "temp"
         )
 
-        dirPublic.createDir()
+        DIR_PUBLIC.createDir()
         DIR_PUBLIC_TEMP.createDir()
 
         SCMountDirectory.mountDirectory(
@@ -45,11 +42,11 @@ class APApp
         )
 
         MGMountDirectory.mountDirectory(
-            dirPublic
+            DIR_PUBLIC
         )
 
         COMountDirectory.mountDirectory(
-            dirPublic
+            DIR_PUBLIC
         )
 
         val metrics = resources

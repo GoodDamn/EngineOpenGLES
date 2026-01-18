@@ -37,6 +37,7 @@ dependencies {
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation project(':engine')
+    implementation project(':engine2')
     implementation project(':sdk')
     implementation project(":hud")
     implementation project(":common")

@@ -44,6 +44,10 @@ dependencies {
         project(":sdk")
     )
 
+    implementation(
+        project(":engine")
+    )
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
