@@ -1,10 +1,10 @@
 package good.damn.wrapper.hud.bridges
 
-import good.damn.logic.MGMatrixTriggerMesh
 import good.damn.engine.sdk.SDVector3
+import good.damn.logic.triggers.LGMatrixTriggerMesh
 
 class APRayIntersectImplModel(
-    private val modelMatrix: good.damn.logic.MGMatrixTriggerMesh
+    private val modelMatrix: LGMatrixTriggerMesh
 ): APIRayIntersectUpdate {
 
     companion object {

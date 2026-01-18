@@ -30,9 +30,11 @@ import good.damn.engine2.opengl.models.MGMMeshDrawer
 import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
+import good.damn.engine2.triggers.MGTriggerSimple
 import good.damn.engine2.utils.MGUtilsJson
 import good.damn.engine2.utils.MGUtilsVector3
 import good.damn.logic.triggers.LGTriggerMesh
+import good.damn.logic.triggers.entities.LGVolumeTrigger
 import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import good.damn.mapimporter.MIImportMap
 import good.damn.mapimporter.models.MIMMap
@@ -293,7 +295,7 @@ object MGStreamLevel {
 
             val triggerMesh = LGTriggerMesh.createFromMatrix(
                 triggerMatrix,
-                triggerAction
+                MGTriggerSimple()
             )
 
             geometry.meshes.add(
@@ -318,7 +320,10 @@ object MGStreamLevel {
             )
 
             managers.managerTrigger.addTrigger(
-                triggerMesh.triggerState
+                LGVolumeTrigger(
+                    triggerMesh.matrix.matrixTrigger.model,
+                    triggerMesh.triggerState.stateManager
+                )
             )
         }
     }

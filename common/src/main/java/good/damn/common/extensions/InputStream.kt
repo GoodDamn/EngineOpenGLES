@@ -1,4 +1,4 @@
-package good.damn.engine2.opengl.extensions
+package good.damn.common.extensions
 
 import android.util.Log
 import java.io.File

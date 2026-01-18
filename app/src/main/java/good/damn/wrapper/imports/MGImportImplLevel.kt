@@ -1,15 +1,24 @@
 package good.damn.wrapper.imports
 
 import good.damn.apigl.drawers.GLDrawerMeshInstanced
+import good.damn.common.COHandlerGl
 import good.damn.engine2.flow.MGFlowLevel
 import good.damn.engine2.level.MGStreamLevel
+import good.damn.engine2.models.MGMInformatorShader
+import good.damn.engine2.models.MGMManagers
 import good.damn.engine2.opengl.MGMGeometry
 import good.damn.engine2.opengl.models.MGMMeshDrawer
+import good.damn.engine2.opengl.pools.MGMPools
 import java.io.File
 import java.io.FileInputStream
 
 class MGImportImplLevel(
     private val misc: MGMImportMisc,
+    private val geometry: MGMGeometry,
+    private val pools: MGMPools,
+    private val shaders: MGMInformatorShader,
+    private val glHandler: COHandlerGl,
+    private val managers: MGMManagers,
 ): MGImportImplTempFile() {
 
     override fun isValidExtension(
@@ -24,7 +33,11 @@ class MGImportImplLevel(
         misc.handler.post(
             MGRunnableMap(
                 file,
-                informator,
+                geometry,
+                pools,
+                shaders,
+                glHandler,
+                managers,
                 misc
             )
         )
@@ -33,6 +46,10 @@ class MGImportImplLevel(
     private class MGRunnableMap(
         private val file: File,
         private val geometry: MGMGeometry,
+        private val pools: MGMPools,
+        private val shaders: MGMInformatorShader,
+        private val glHandler: COHandlerGl,
+        private val managers: MGMManagers,
         private val misc: MGMImportMisc
     ): Runnable {
         override fun run() {
@@ -54,7 +71,11 @@ class MGImportImplLevel(
                         file
                     ),
                     misc.buffer,
-
+                    pools,
+                    shaders,
+                    glHandler,
+                    geometry,
+                    managers
                 )
 
                 file.delete()

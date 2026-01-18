@@ -84,7 +84,12 @@ class APHud(
                         this
                     ),
                     MGImportImplLevel(
-                        this
+                        this,
+                        geometry,
+                        pools,
+                        shaders,
+                        glHandler,
+                        managers
                     ),
                     MGImportImplA3D(
                         this

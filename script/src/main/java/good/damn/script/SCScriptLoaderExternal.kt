@@ -1,6 +1,7 @@
 package good.damn.script
 
 import dalvik.system.DexClassLoader
+import good.damn.common.extensions.writeToFile
 import java.io.File
 
 class SCScriptLoaderExternal(

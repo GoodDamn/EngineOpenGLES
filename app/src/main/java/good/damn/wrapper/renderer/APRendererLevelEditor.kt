@@ -62,6 +62,7 @@ import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.engine2.utils.MGUtilsFile
 import good.damn.engine2.utils.MGUtilsVertIndices
 import good.damn.logic.process.LGManagerProcessTime
+import good.damn.logic.triggers.managers.LGManagerTriggerMesh
 import good.damn.logic.triggers.methods.LGTriggerMethodBox
 import good.damn.script.SCLoaderScripts
 import good.damn.wrapper.files.APFile
@@ -264,7 +265,8 @@ class APRendererLevelEditor(
                 mDrawerBox05
             )
         ),
-        managerFrustrum
+        managerFrustrum,
+        LGManagerTriggerMesh()
     )
 
     private val mHudScene = APHudScene(
