@@ -1,15 +1,15 @@
 package good.damn.engine.models
 
-import good.damn.apigl.arrays.MGArrayVertexInstanced
-import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.apigl.arrays.GLArrayVertexInstanced
+import good.damn.apigl.drawers.GLMaterial
+import good.damn.apigl.shaders.GLShaderGeometryPassInstanced
 import good.damn.common.matrices.COMatrixScaleRotation
 import good.damn.common.matrices.COMatrixTransformationNormal
-import good.damn.apigl.shaders.MGShaderGeometryPassInstanced
 
 data class MGMInstanceMesh(
-    val shader: good.damn.apigl.shaders.MGShaderGeometryPassInstanced,
-    val vertexArray: good.damn.apigl.arrays.MGArrayVertexInstanced,
-    val material: Array<MGMaterial>,
+    val shader: GLShaderGeometryPassInstanced,
+    val vertexArray: GLArrayVertexInstanced,
+    val material: Array<GLMaterial>,
     val enableCullFace: Boolean,
     val matrices: List<
         COMatrixTransformationNormal<

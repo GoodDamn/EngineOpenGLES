@@ -5,7 +5,7 @@ import android.os.Looper
 import good.damn.engine.sdk.process.SDIProcessTime
 import java.util.LinkedList
 
-class MGManagerProcessTime {
+class LGManagerProcessTime {
 
     private val mHandler = Handler(
         Looper.getMainLooper()
@@ -15,7 +15,7 @@ class MGManagerProcessTime {
         SDIProcessTime
     >()
 
-    private val mRunnable = MGRunnableProcessTimeLoop(
+    private val mRunnable = LGRunnableProcessTimeLoop(
         mLoopRunnables,
         mHandler,
         6L

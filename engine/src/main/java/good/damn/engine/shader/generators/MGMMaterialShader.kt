@@ -1,20 +1,19 @@
 package good.damn.engine.shader.generators
 
+import good.damn.apigl.drawers.GLMaterialTexture
+import good.damn.apigl.enums.GLEnumTextureType
+import good.damn.apigl.shaders.GLShaderTexture
+import good.damn.apigl.textures.GLTextureActive
 import good.damn.common.utils.COUtilsFile
-import good.damn.engine.opengl.entities.MGMaterialTexture
-import good.damn.engine.opengl.enums.MGEnumTextureType
 import good.damn.engine.opengl.models.MGMShaderSourceFragDefer
-import good.damn.apigl.shaders.MGShaderTexture
-import good.damn.apigl.textures.MGTextureActive
 import good.damn.engine.shader.MGShaderSource
 import java.util.LinkedList
 
 class MGMMaterialShader private constructor(
     val srcCodeMaterial: String,
-    val shaderTextures: Array<good.damn.apigl.shaders.MGShaderTexture>,
-    val materialTexture: MGMaterialTexture
+    val shaderTextures: Array<GLShaderTexture>,
+    val materialTexture: GLMaterialTexture
 ) {
-
     companion object {
         private var default: MGMMaterialShader? = null
 
@@ -48,15 +47,15 @@ class MGMMaterialShader private constructor(
             shaderSource
         )
 
-        private val mShaderTextures = LinkedList<good.damn.apigl.shaders.MGShaderTexture>()
-        private val mBuilder = MGMaterialTexture.Builder()
+        private val mShaderTextures = LinkedList<GLShaderTexture>()
+        private val mBuilder = GLMaterialTexture.Builder()
 
         private var mCurrentIndex = 0
 
         fun diffuse() = apply {
             componeEntity(
                 shaderSource.fragDeferDiffuse,
-                MGEnumTextureType.DIFFUSE
+                GLEnumTextureType.DIFFUSE
             )
         }
 
@@ -75,7 +74,7 @@ class MGMMaterialShader private constructor(
         fun specular() = apply {
             componeEntity(
                 shaderSource.fragDeferSpecular,
-                MGEnumTextureType.METALLIC
+                GLEnumTextureType.METALLIC
             )
         }
 
@@ -84,7 +83,7 @@ class MGMMaterialShader private constructor(
         ) = apply {
             componeEntity(
                 shaderSource.fragDeferEmissive,
-                MGEnumTextureType.EMISSIVE,
+                GLEnumTextureType.EMISSIVE,
                 defaultValue
             )
         }
@@ -92,14 +91,14 @@ class MGMMaterialShader private constructor(
         fun opacity() = apply {
             componeEntity(
                 shaderSource.fragDeferOpacity,
-                MGEnumTextureType.OPACITY
+                GLEnumTextureType.OPACITY
             )
         }
 
         fun normal() = apply {
             componeEntity(
                 shaderSource.fragDeferNormal,
-                MGEnumTextureType.NORMAL
+                GLEnumTextureType.NORMAL
             )
         }
 
@@ -111,7 +110,7 @@ class MGMMaterialShader private constructor(
 
         private fun componeEntity(
             fragDeferTexture: MGMShaderSourceFragDefer,
-            textureType: MGEnumTextureType
+            textureType: GLEnumTextureType
         ) {
             componeEntity(
                 fragDeferTexture,
@@ -122,7 +121,7 @@ class MGMMaterialShader private constructor(
 
         private fun componeEntity(
             fragDeferTexture: MGMShaderSourceFragDefer,
-            textureType: MGEnumTextureType,
+            textureType: GLEnumTextureType,
             defaultValue: Float
         ) {
             val fileName = "${textureRootName}${fragDeferTexture.extension}"
@@ -146,7 +145,7 @@ class MGMMaterialShader private constructor(
         private inline fun componeTexture(
             fragDeferTexture: MGMShaderSourceFragDefer,
             fileName: String,
-            textureType: MGEnumTextureType,
+            textureType: GLEnumTextureType,
         ) {
             mGeneratorMaterial.componeEntity(
                 fragDeferTexture.fragDefer
@@ -155,13 +154,13 @@ class MGMMaterialShader private constructor(
             mBuilder.buildTexture(
                 fileName,
                 textureType,
-                good.damn.apigl.textures.MGTextureActive(
+                GLTextureActive(
                     mCurrentIndex++
                 )
             )
 
             mShaderTextures.add(
-                good.damn.apigl.shaders.MGShaderTexture(
+                GLShaderTexture(
                     fragDeferTexture.id
                 )
             )

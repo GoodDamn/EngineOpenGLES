@@ -1,16 +1,15 @@
 package good.damn.wrapper.imports
 
+import good.damn.apigl.drawers.GLDrawerMeshInstanced
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.level.MGStreamLevel
-import good.damn.engine.models.MGMInformator
-import good.damn.apigl.drawers.MGDrawerMeshInstanced
+import good.damn.engine.opengl.MGMGeometry
 import good.damn.engine.opengl.models.MGMMeshDrawer
 import java.io.File
 import java.io.FileInputStream
 
 class MGImportImplLevel(
     private val misc: MGMImportMisc,
-    private val informator: MGMInformator
 ): MGImportImplTempFile() {
 
     override fun isValidExtension(
@@ -33,17 +32,17 @@ class MGImportImplLevel(
 
     private class MGRunnableMap(
         private val file: File,
-        private val informator: MGMInformator,
+        private val geometry: MGMGeometry,
         private val misc: MGMImportMisc
     ): Runnable {
         override fun run() {
             Thread {
                 MGStreamLevel.readBin(
                     MGFlowLevel {
-                        informator.meshesInstanced.add(
+                        geometry.meshesInstanced.add(
                             MGMMeshDrawer(
                                 it.shader,
-                                good.damn.apigl.drawers.MGDrawerMeshInstanced(
+                                GLDrawerMeshInstanced(
                                     it.enableCullFace,
                                     it.vertexArray,
                                     it.material

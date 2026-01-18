@@ -7,55 +7,58 @@ import android.opengl.GLES30.*
 import android.util.Log
 import android.util.SparseArray
 import android.view.MotionEvent
+import good.damn.apigl.arrays.GLArrayVertexConfigurator
+import good.damn.apigl.arrays.pointers.GLPointerAttribute
+import good.damn.apigl.buffers.GLBuffer
+import good.damn.apigl.buffers.GLBufferUniform
+import good.damn.apigl.buffers.GLBufferUniformCamera
+import good.damn.apigl.drawers.GLDrawerLightDirectional
+import good.damn.apigl.drawers.GLDrawerLightPass
+import good.damn.apigl.drawers.GLDrawerLights
+import good.damn.apigl.drawers.GLDrawerVertexArray
+import good.damn.apigl.drawers.GLDrawerVolumes
+import good.damn.apigl.enums.GLEnumArrayVertexConfiguration
+import good.damn.apigl.framebuffer.GLFrameBufferG
+import good.damn.apigl.framebuffer.GLFramebuffer
+import good.damn.apigl.shaders.GLShaderGeometryPassModel
+import good.damn.apigl.shaders.GLShaderMaterial
+import good.damn.apigl.shaders.base.GLBinderAttribute
+import good.damn.apigl.shaders.creators.GLShaderCreatorGeomPassInstanced
+import good.damn.apigl.shaders.creators.GLShaderCreatorGeomPassModel
+import good.damn.apigl.shaders.lightpass.GLShaderLightPass
+import good.damn.apigl.shaders.lightpass.GLShaderLightPassPointLight
 import good.damn.common.COHandlerGl
 import good.damn.common.COIRunnableBounds
 import good.damn.wrapper.interfaces.MGIRequestUserContent
 import good.damn.engine.loaders.texture.MGLoaderTextureAsync
-import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInformatorShader
-import good.damn.apigl.arrays.MGArrayVertexConfigurator
 import good.damn.common.vertex.COMArrayVertexManager
-import good.damn.apigl.arrays.pointers.MGPointerAttribute
-import good.damn.apigl.buffers.MGBuffer
-import good.damn.apigl.buffers.MGBufferUniform
-import good.damn.apigl.buffers.MGBufferUniformCamera
 import good.damn.common.camera.COCameraFree
-import good.damn.apigl.drawers.MGDrawerLightDirectional
-import good.damn.apigl.drawers.MGDrawerVertexArray
-import good.damn.engine.opengl.entities.MGSky
-import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
 import good.damn.common.COHandlerGlExecutor
 import good.damn.common.camera.COCameraProjection
 import good.damn.common.camera.COMCamera
-import good.damn.engine.opengl.framebuffer.MGFrameBufferG
-import good.damn.engine.opengl.framebuffer.MGFramebuffer
-import good.damn.apigl.drawers.MGDrawerLights
-import good.damn.logic.triggers.managers.MGManagerTriggerMesh
 import good.damn.common.matrices.COMatrixTranslate
 import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.opengl.models.MGMLightPass
 import good.damn.engine.MGObject3d
-import good.damn.logic.pools.MGPoolMaterials
-import good.damn.logic.pools.MGPoolMeshesStatic
-import good.damn.logic.pools.MGPoolTextures
 import good.damn.wrapper.hud.APHudScene
-import good.damn.apigl.shaders.MGShaderGeometryPassModel
-import good.damn.apigl.shaders.lightpass.MGShaderLightPass
-import good.damn.apigl.shaders.MGShaderMaterial
-import good.damn.apigl.shaders.base.MGBinderAttribute
-import good.damn.apigl.shaders.creators.MGShaderCreatorGeomPassInstanced
-import good.damn.apigl.shaders.creators.MGShaderCreatorGeomPassModel
-import good.damn.apigl.shaders.lightpass.MGShaderLightPassPointLight
 import good.damn.engine.camera.GLCameraFree
 import good.damn.engine.camera.GLCameraProjection
-import good.damn.apigl.drawers.MGDrawerVolumes
-import good.damn.logic.triggers.methods.MGTriggerMethodBox
+import good.damn.engine.opengl.MGMGeometry
+import good.damn.engine.opengl.MGMVolume
+import good.damn.engine.opengl.MGSky
+import good.damn.engine.opengl.pools.MGPoolMaterials
+import good.damn.engine.opengl.pools.MGPoolMeshesStatic
+import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine.shader.MGShaderCache
 import good.damn.engine.shader.MGShaderSource
 import good.damn.engine.utils.MGUtilsBuffer
 import good.damn.engine.utils.MGUtilsFile
 import good.damn.engine.utils.MGUtilsVertIndices
+import good.damn.logic.process.LGManagerProcessTime
+import good.damn.logic.triggers.managers.LGManagerTriggerMesh
+import good.damn.logic.triggers.methods.LGTriggerMethodBox
 import good.damn.script.SCLoaderScripts
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -78,7 +81,7 @@ class APRendererLevelEditor(
         mHandlerGlExecutor.queueCycle,
     )
 
-    private val mPoolTextures = good.damn.logic.pools.MGPoolTextures(
+    private val mPoolTextures = MGPoolTextures(
         MGLoaderTextureAsync(
             mHandlerGl
         )
@@ -92,61 +95,65 @@ class APRendererLevelEditor(
         cacheGeometryPass = MGShaderCache(
             SparseArray(50),
             mHandlerGl,
-            good.damn.apigl.shaders.creators.MGShaderCreatorGeomPassModel()
+            GLShaderCreatorGeomPassModel()
         ),
         cacheGeometryPassInstanced = MGShaderCache(
             SparseArray(50),
             mHandlerGl,
-            good.damn.apigl.shaders.creators.MGShaderCreatorGeomPassInstanced()
+            GLShaderCreatorGeomPassInstanced()
         ),
-        wireframe = good.damn.apigl.shaders.MGShaderGeometryPassModel(
-            good.damn.apigl.shaders.MGShaderMaterial.empty
+        wireframe = GLShaderGeometryPassModel(
+            GLShaderMaterial.empty
         ),
         lightPasses = arrayOf(
             MGMLightPass(
-                good.damn.apigl.shaders.lightpass.MGShaderLightPass.Builder()
+                GLShaderLightPass.Builder()
                     .attachAll()
                     .build(),
                 "shaders/lightPass/vert.glsl",
                 "shaders/opaque/defer/frag_defer_light_dir.glsl",
             ),
             MGMLightPass(
-                good.damn.apigl.shaders.lightpass.MGShaderLightPass.Builder()
+                GLShaderLightPass.Builder()
                     .attachColorSpec()
                     .build(),
                 "shaders/lightPass/vert.glsl",
                 "shaders/lightPass/frag_defer.glsl"
             ),
             MGMLightPass(
-                good.damn.apigl.shaders.lightpass.MGShaderLightPass.Builder()
+                GLShaderLightPass.Builder()
                     .attachDepth()
                     .build(),
                 "shaders/lightPass/vert.glsl",
                 "shaders/lightPass/frag_defer_depth.glsl"
             ),
             MGMLightPass(
-                good.damn.apigl.shaders.lightpass.MGShaderLightPass.Builder()
+                GLShaderLightPass.Builder()
                     .attachNormal()
                     .build(),
                 "shaders/lightPass/vert.glsl",
                 "shaders/lightPass/frag_defer_normal.glsl"
             )
         ),
-        good.damn.apigl.shaders.lightpass.MGShaderLightPassPointLight.Builder()
+        GLShaderLightPassPointLight.Builder()
             .attachAll()
             .build()
     )
 
-    private val mVerticesSphere = good.damn.apigl.arrays.MGArrayVertexConfigurator(
-        MGEnumArrayVertexConfiguration.SHORT
+    private val mVerticesSphere = GLArrayVertexConfigurator(
+        GLEnumArrayVertexConfiguration.SHORT
     )
 
-    private val mVerticesBox05 = good.damn.apigl.arrays.MGArrayVertexConfigurator(
-        MGEnumArrayVertexConfiguration.BYTE
+    private val mVerticesBox05 = GLArrayVertexConfigurator(
+        GLEnumArrayVertexConfiguration.BYTE
     )
 
-    private val mVerticesBox10 = good.damn.apigl.arrays.MGArrayVertexConfigurator(
-        MGEnumArrayVertexConfiguration.BYTE
+    private val mVerticesBox10 = GLArrayVertexConfigurator(
+        GLEnumArrayVertexConfiguration.BYTE
+    )
+
+    private val mVerticesQuad = GLArrayVertexConfigurator(
+        GLEnumArrayVertexConfiguration.BYTE
     )
 
     private val verticesBox10Raw = MGUtilsBuffer.createFloat(
@@ -160,30 +167,18 @@ class APRendererLevelEditor(
         )
     )
 
-    private val mDrawerSphere = good.damn.apigl.drawers.MGDrawerVertexArray(
-        mVerticesSphere
-    )
-
-    private val mDrawerBox05 = good.damn.apigl.drawers.MGDrawerVertexArray(
+    private val mDrawerBox05 = GLDrawerVertexArray(
         mVerticesBox05
     )
 
-    private val mDrawerBox10 = good.damn.apigl.drawers.MGDrawerVertexArray(
+    private val mDrawerBox10 = GLDrawerVertexArray(
         mVerticesBox10
     )
 
-    private val mVerticesQuad = good.damn.apigl.arrays.MGArrayVertexConfigurator(
-        MGEnumArrayVertexConfiguration.BYTE
-    )
-
-    private val mBufferUniformCamera = good.damn.apigl.buffers.MGBufferUniformCamera(
-        good.damn.apigl.buffers.MGBuffer(
+    private val mBufferUniformCamera = GLBufferUniformCamera(
+        GLBuffer(
             GL_UNIFORM_BUFFER
         )
-    )
-
-    private val managerLight = good.damn.apigl.drawers.MGDrawerLights(
-        mDrawerSphere
     )
 
     private val mCameraFree = COMatrixTranslate().run {
@@ -212,50 +207,60 @@ class APRendererLevelEditor(
         )
     )
 
-    private val mInformator = MGMInformator(
-        mInformatorShader,
-        mCameraFree,
-        good.damn.apigl.drawers.MGDrawerLightDirectional(),
-        good.damn.apigl.drawers.MGDrawerVertexArray(
+    private val mFramebufferG = GLFrameBufferG(
+        GLFramebuffer()
+    )
+
+    private val mDrawerVolumes = GLDrawerVolumes(
+        mDrawerBox10,
+        managerFrustrum
+    )
+
+    private val mDrawerLightDirectional = GLDrawerLightDirectional()
+
+    private val mGeometry = MGMGeometry(
+        ConcurrentLinkedQueue(),
+        ConcurrentLinkedQueue(),
+        MGSky(),
+        GLDrawerVertexArray(
             mVerticesQuad
         ),
-        good.damn.apigl.drawers.MGDrawerVolumes(
-            mDrawerBox10,
-            managerFrustrum
-        ),
-        ConcurrentLinkedQueue(),
-        ConcurrentLinkedQueue(),
-        MGFrameBufferG(
-            MGFramebuffer()
-        ),
-        meshSky = MGSky(),
-        managerLight,
-        managerFrustrum,
-        good.damn.logic.triggers.managers.MGManagerTriggerMesh(
-            mDrawerBox05
-        ),
-        good.damn.logic.process.MGManagerProcessTime(),
-        mPoolTextures,
-        good.damn.logic.pools.MGPoolMeshesStatic(),
-        good.damn.logic.pools.MGPoolMaterials(),
-        mHandlerGl,
-        true
+        GLDrawerVertexArray(
+            mVerticesSphere
+        )
     )
+
+    private val mVolume = MGMVolume(
+        mDrawerVolumes
+    )
+
+    private val managerTrigger = LGManagerTriggerMesh()
+
+    private val managerProcessTime = LGManagerProcessTime()
+
+    private val mPoolMeshes = MGPoolMeshesStatic(
+        mHandlerGl
+    )
+
+    private val mPoolMaterials = MGPoolMaterials()
 
     private val mHudScene = APHudScene(
         requesterUserContent,
-        mInformator,
-        mInformator.framebufferG
+        mFramebufferG,
+        mInformatorShader,
+        mGeometry,
+        mVolume,
+        mDrawerLightDirectional
     )
 
     init {
-        mInformator.glHandler.post(
+        mHandlerGl.post(
             object: COIRunnableBounds {
                 override fun run(
                     width: Int,
                     height: Int
                 ) {
-                    mInformator.framebufferG.generate(
+                    mFramebufferG.generate(
                         width, height
                     )
                     mHudScene.hud.layout(
@@ -266,7 +271,7 @@ class APRendererLevelEditor(
             }
         )
 
-        mInformator.glHandler.registerCycleTask(
+        mHandlerGl.registerCycleTask(
             mHudScene.runnableCycle
         )
     }
@@ -275,7 +280,7 @@ class APRendererLevelEditor(
     private var mHeight = 0
 
     fun stop() {
-        mInformator.managerProcessTime.run {
+        managerProcessTime.apply {
             stop()
             unregisterAll()
         }
@@ -289,7 +294,7 @@ class APRendererLevelEditor(
 
         mBufferUniformCamera.apply {
             buffer.generate()
-            good.damn.apigl.buffers.MGBufferUniform.setupBindingPoint(
+            GLBufferUniform.setupBindingPoint(
                 0,
                 buffer,
                 sizeBytes
@@ -303,7 +308,7 @@ class APRendererLevelEditor(
             MGUtilsBuffer.createByte(
                 MGUtilsVertIndices.createQuadIndices()
             ),
-            good.damn.apigl.arrays.pointers.MGPointerAttribute.Builder()
+            GLPointerAttribute.Builder()
                 .pointPosition2()
                 .pointTextureCoordinates()
                 .build()
@@ -313,15 +318,15 @@ class APRendererLevelEditor(
             mBuffer,
             "shaders/opaque/vert.glsl",
             "shaders/wireframe/frag_defer.glsl",
-            good.damn.apigl.shaders.base.MGBinderAttribute.Builder()
+            GLBinderAttribute.Builder()
                 .bindPosition()
                 .build()
         )
 
-        good.damn.apigl.shaders.base.MGBinderAttribute.Builder()
+        GLBinderAttribute.Builder()
             .bindPosition()
             .bindTextureCoordinates()
-            .build().run {
+            .build().apply {
                 mInformatorShader.lightPasses.forEach {
                     it.shader.setup(
                         mBuffer,
@@ -339,11 +344,12 @@ class APRendererLevelEditor(
                 )
             }
 
-        mInformator.meshSky.configure(
-            mInformator
+        mGeometry.meshSky.configure(
+            mInformatorShader,
+            mPoolTextures
         )
 
-        val pointPosition = good.damn.apigl.arrays.pointers.MGPointerAttribute.Builder()
+        val pointPosition = GLPointerAttribute.Builder()
             .pointPosition()
             .build()
 
@@ -353,7 +359,7 @@ class APRendererLevelEditor(
             mVerticesSphere.configure(
                 it.vertices,
                 it.indices,
-                good.damn.apigl.arrays.pointers.MGPointerAttribute.Builder()
+                GLPointerAttribute.Builder()
                     .pointPosition()
                     .pointTextureCoordinates()
                     .pointNormal()
@@ -368,8 +374,8 @@ class APRendererLevelEditor(
         mVerticesBox05.configure(
             MGUtilsBuffer.createFloat(
                 MGUtilsVertIndices.createCubeVertices(
-                    good.damn.logic.triggers.methods.MGTriggerMethodBox.MIN,
-                    good.damn.logic.triggers.methods.MGTriggerMethodBox.MAX
+                    LGTriggerMethodBox.MIN,
+                    LGTriggerMethodBox.MAX
                 )
             ),
             indicesBox,
@@ -383,14 +389,14 @@ class APRendererLevelEditor(
             pointPosition
         )
 
-        mInformator.managerProcessTime.run {
+        managerProcessTime.apply {
             registerLoopProcessTime(
-                mInformator.managerLightVolumes
+                managerFrustrum
             )
             start()
         }
 
-        mInformator.camera.projection.run {
+        mCameraFree.projection.run {
             modelMatrix.setPosition(
                 0f, 0f, 0f
             )
@@ -398,7 +404,7 @@ class APRendererLevelEditor(
         }
 
         SCLoaderScripts.executeDirLight(
-            mInformator.drawerLightDirectional
+            mDrawerLightDirectional
         )
 
         glDepthFunc(
@@ -417,7 +423,7 @@ class APRendererLevelEditor(
     ) {
         Log.d(TAG, "onSurfaceChanged: ${Thread.currentThread().name}")
 
-        mInformator.camera.projection.setPerspective(
+        mCameraFree.projection.setPerspective(
             width,
             height
         )
@@ -429,7 +435,6 @@ class APRendererLevelEditor(
     override fun onDrawFrame(
         gl: GL10?
     ) {
-
         mHandlerGlExecutor.runTasksBounds(
             mWidth, mHeight
         )

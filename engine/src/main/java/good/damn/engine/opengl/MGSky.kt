@@ -1,37 +1,45 @@
-package good.damn.apigl.drawers
+package good.damn.engine.opengl
 
 import android.opengl.GLES30
-import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.enums.MGEnumArrayVertexConfiguration
+import good.damn.apigl.arrays.GLArrayVertexConfigurator
+import good.damn.apigl.arrays.pointers.GLPointerAttribute
+import good.damn.apigl.drawers.GLDrawerMesh
+import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
+import good.damn.apigl.drawers.GLDrawerPositionEntity
+import good.damn.apigl.drawers.GLDrawerVertexArray
+import good.damn.apigl.drawers.GLMaterial
+import good.damn.apigl.enums.GLEnumArrayVertexConfiguration
+import good.damn.apigl.shaders.GLShaderGeometryPassModel
+import good.damn.apigl.shaders.GLShaderMaterial
+import good.damn.apigl.shaders.base.GLBinderAttribute
 import good.damn.common.matrices.COMatrixScale
 import good.damn.engine.opengl.models.MGMMeshDrawer
 import good.damn.engine.MGObject3d
-import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
-import good.damn.engine.opengl.shaders.MGShaderMaterial
-import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
+import good.damn.engine.models.MGMInformatorShader
+import good.damn.engine.opengl.pools.MGPoolTextures
 import good.damn.engine.shader.generators.MGMMaterialShader
 
-class GLSky {
-    lateinit var meshMaterial: MGMMeshDrawer<
-        MGShaderGeometryPassModel,
-        good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
+class MGSky {
+    private lateinit var meshMaterial: MGMMeshDrawer<
+        GLShaderGeometryPassModel,
+        GLDrawerMeshMaterialMutable
     >
-        private set
 
     fun configure(
-        informator: MGMInformator
+        shaders: MGMInformatorShader,
+        poolTextures: MGPoolTextures
     ) {
-        val verticesSky = good.damn.apigl.arrays.GLArrayVertexConfigurator(
-            MGEnumArrayVertexConfiguration.SHORT
+        val verticesSky = GLArrayVertexConfigurator(
+            GLEnumArrayVertexConfiguration.SHORT
         )
 
         MGObject3d.createFromAssets(
             "objs/semi_sphere.obj"
-        )?.get(0)?.run {
+        )?.get(0)?.apply {
             verticesSky.configure(
                 vertices,
                 indices,
-                good.damn.apigl.arrays.pointers.GLPointerAttribute.defaultNoTangent
+                GLPointerAttribute.defaultNoTangent
             )
         }
 
@@ -39,7 +47,7 @@ class GLSky {
         val materialShader = MGMMaterialShader.Builder(
             "sky",
             localDirPath,
-            informator.shaders.source
+            shaders.source
         ).diffuse()
             .opacity()
             .emissive(1.0f)
@@ -49,19 +57,19 @@ class GLSky {
             .build()
 
         materialShader.materialTexture.load(
-            informator.poolTextures,
+            poolTextures,
             localDirPath
         )
 
-        val shader = informator.shaders.cacheGeometryPass.loadOrGetFromCache(
+        val shader = shaders.cacheGeometryPass.loadOrGetFromCache(
             materialShader.srcCodeMaterial,
-            informator.shaders.source.vert,
-            MGBinderAttribute.Builder()
+            shaders.source.vert,
+            GLBinderAttribute.Builder()
                 .bindPosition()
                 .bindTextureCoordinates()
                 .build(),
             arrayOf(
-                MGShaderMaterial(
+                GLShaderMaterial(
                     materialShader.shaderTextures
                 )
             )
@@ -69,17 +77,17 @@ class GLSky {
 
         meshMaterial = MGMMeshDrawer(
             shader,
-            good.damn.apigl.drawers.GLDrawerMeshMaterialMutable(
+            GLDrawerMeshMaterialMutable(
                 arrayOf(
                     GLMaterial(
                         materialShader.materialTexture
                     )
                 ),
-                good.damn.apigl.drawers.GLDrawerMesh(
-                    good.damn.apigl.drawers.GLDrawerVertexArray(
+                GLDrawerMesh(
+                    GLDrawerVertexArray(
                         verticesSky
                     ),
-                    good.damn.apigl.drawers.GLDrawerPositionEntity(
+                    GLDrawerPositionEntity(
                         COMatrixScale().apply {
                             setScale(
                                 2000000f,
@@ -93,5 +101,15 @@ class GLSky {
                 )
             )
         )
+    }
+
+    fun draw() {
+        meshMaterial.shader.apply {
+            use()
+            meshMaterial.drawer.drawMaterials(
+                materials,
+                this
+            )
+        }
     }
 }

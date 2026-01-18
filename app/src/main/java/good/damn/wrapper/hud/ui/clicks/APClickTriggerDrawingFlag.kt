@@ -1,6 +1,5 @@
 package good.damn.wrapper.hud.ui.clicks
 
-import good.damn.engine.models.MGMInformator
 import good.damn.hud.UIIClick
 
 class APClickTriggerDrawingFlag(

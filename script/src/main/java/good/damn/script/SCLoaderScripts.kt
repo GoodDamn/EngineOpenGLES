@@ -1,13 +1,13 @@
 package good.damn.script
 
+import good.damn.apigl.drawers.GLDrawerLightDirectional
 import good.damn.common.utils.COUtilsFile
-import good.damn.apigl.drawers.MGDrawerLightDirectional
 
 object SCLoaderScripts {
 
     @JvmStatic
     fun executeDirLight(
-        directionalLight: good.damn.apigl.drawers.MGDrawerLightDirectional
+        directionalLight: GLDrawerLightDirectional
     ) {
         val scriptDirLight = SCScriptDirLight(
             COUtilsFile.getPublicFile(

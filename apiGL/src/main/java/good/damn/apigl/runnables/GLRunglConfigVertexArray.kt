@@ -4,7 +4,7 @@ import good.damn.common.COIRunnableBounds
 import java.nio.Buffer
 import java.nio.FloatBuffer
 
-class MGRunglConfigVertexArray(
+class GLRunglConfigVertexArray(
     private val arrayVertex: good.damn.apigl.arrays.GLArrayVertexConfigurator,
     private val vertexBuffer: FloatBuffer,
     private val indicesBuffer: Buffer,

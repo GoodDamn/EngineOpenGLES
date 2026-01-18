@@ -65,6 +65,15 @@ dependencies {
     implementation(
         project(":sdk")
     )
+
+    implementation(
+        project(":apiGL")
+    )
+
+    implementation(
+        project(":logic")
+    )
+
     //testImplementation(libs.junit)
     //androidTestImplementation(libs.androidx.junit)
     //androidTestImplementation(libs.androidx.espresso.core)

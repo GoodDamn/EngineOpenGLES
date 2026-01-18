@@ -1,4 +1,4 @@
-package good.damn.wrapper.pools
+package good.damn.engine.opengl.pools
 
 import android.util.SparseArray
 import good.damn.engine.models.MGMInformator

@@ -1,19 +1,23 @@
 package good.damn.apigl.shaders.lightpass
 
 import android.opengl.GLES30
+import good.damn.apigl.shaders.GLIShaderCameraPosition
+import good.damn.apigl.shaders.GLShaderLightDirectional
 import good.damn.apigl.shaders.GLShaderLightPoint
+import good.damn.apigl.shaders.GLShaderProjectionViewModel
+import good.damn.apigl.shaders.GLShaderTexture
 import java.util.LinkedList
 
 class GLShaderLightPassPointLight private constructor(
-    val textures: Array<good.damn.apigl.shaders.GLShaderTexture>
-): good.damn.apigl.shaders.GLShaderProjectionViewModel(),
-    good.damn.apigl.shaders.GLIShaderCameraPosition {
+    val textures: Array<GLShaderTexture>
+): GLShaderProjectionViewModel(),
+GLIShaderCameraPosition {
 
     override var uniformCameraPosition = 0
         private set
 
     val lightPoint = GLShaderLightPoint()
-    val lightDirectional = good.damn.apigl.shaders.GLShaderLightDirectional()
+    val lightDirectional = GLShaderLightDirectional()
 
     var uniformScreenSize = 0
         private set
@@ -53,7 +57,7 @@ class GLShaderLightPassPointLight private constructor(
 
     class Builder {
         private val list = LinkedList<
-            good.damn.apigl.shaders.GLShaderTexture
+            GLShaderTexture
         >()
 
         fun attachPosition() = attachTexture(
@@ -90,7 +94,7 @@ class GLShaderLightPassPointLight private constructor(
             name: String
         ) = apply {
             list.add(
-                good.damn.apigl.shaders.GLShaderTexture(
+                GLShaderTexture(
                     name
                 )
             )

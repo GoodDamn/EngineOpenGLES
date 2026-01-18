@@ -1,28 +1,38 @@
 package good.damn.wrapper.hud
 
+import good.damn.apigl.drawers.GLDrawerFramebufferG
+import good.damn.apigl.drawers.GLDrawerLightDirectional
+import good.damn.apigl.framebuffer.GLFrameBufferG
 import good.damn.common.COIRunnableBounds
 import good.damn.common.utils.COUtilsFile
+import good.damn.engine.models.MGMInformatorShader
+import good.damn.engine.opengl.MGMGeometry
+import good.damn.engine.opengl.MGMVolume
 import good.damn.wrapper.interfaces.MGIRequestUserContent
-import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
-import good.damn.apigl.drawers.MGDrawerFramebufferG
-import good.damn.engine.opengl.framebuffer.MGFrameBufferG
-import good.damn.apigl.runnables.MGRunnableCycleSwitcherDrawMode
+import good.damn.engine.opengl.MGRunnableCycleSwitcherDrawMode
 import good.damn.script.SCScriptLightPlacement
 
 class APHudScene(
     requesterUserContent: MGIRequestUserContent,
-    informator: MGMInformator,
-    framebufferGG: MGFrameBufferG
+    framebufferG: GLFrameBufferG,
+    shaders: MGMInformatorShader,
+    geometry: MGMGeometry,
+    volume: MGMVolume,
+    drawerLightDirect: GLDrawerLightDirectional
 ) {
     val hud: APHud
     val runnableCycle: COIRunnableBounds
 
     init {
         val switcherDrawMode = MGSwitcherDrawMode(
-            informator,
-            good.damn.apigl.drawers.MGDrawerFramebufferG(
-                framebufferGG
+            framebufferG,
+            shaders,
+            geometry,
+            volume,
+            drawerLightDirect,
+            GLDrawerFramebufferG(
+                framebufferG
             )
         )
 
@@ -42,7 +52,7 @@ class APHudScene(
             switcherDrawMode
         )
 
-        runnableCycle = good.damn.apigl.runnables.MGRunnableCycleSwitcherDrawMode(
+        runnableCycle = MGRunnableCycleSwitcherDrawMode(
             switcherDrawMode
         )
     }

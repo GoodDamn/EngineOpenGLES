@@ -1,16 +1,17 @@
-package good.damn.wrapper.pools
+package good.damn.engine.opengl.pools
 
 import android.util.SparseArray
+import good.damn.apigl.arrays.GLArrayVertexConfigurator
+import good.damn.apigl.arrays.pointers.GLPointerAttribute
+import good.damn.apigl.drawers.GLDrawerVertexArray
+import good.damn.apigl.runnables.GLRunglConfigVertexArray
+import good.damn.common.COHandlerGl
 import good.damn.engine.MGObject3d
-import good.damn.engine.models.MGMInformator
-import good.damn.apigl.arrays.MGArrayVertexConfigurator
-import good.damn.apigl.arrays.pointers.MGPointerAttribute
-import good.damn.apigl.drawers.MGDrawerVertexArray
-import good.damn.apigl.runnables.MGRunglConfigVertexArray
 import good.damn.logic.triggers.LGTriggerMesh
-import good.damn.wrapper.models.MGMPoolMesh
 
-class MGPoolMeshesStatic {
+class MGPoolMeshesStatic(
+    private val glHandler: COHandlerGl
+) {
 
     private val map = SparseArray<
         Array<MGMPoolMesh>
@@ -26,7 +27,6 @@ class MGPoolMeshesStatic {
 
     fun loadOrGetFromCache(
         fileNameModel: String,
-        informator: MGMInformator
     ): Array<MGMPoolMesh>? {
         get(fileNameModel)?.run {
             return this
@@ -42,26 +42,22 @@ class MGPoolMeshesStatic {
             obj
         )
 
-        val triggerMatrix = LGTriggerMesh.createTriggerPointMatrix(
-            triggerPoint
-        )
-
-        val configurator = good.damn.apigl.arrays.MGArrayVertexConfigurator(
+        val configurator = GLArrayVertexConfigurator(
             obj.config
         )
 
-        informator.glHandler.post(
-            good.damn.apigl.runnables.MGRunglConfigVertexArray(
+        glHandler.post(
+            GLRunglConfigVertexArray(
                 configurator,
                 obj.vertices,
                 obj.indices,
-                good.damn.apigl.arrays.pointers.MGPointerAttribute.defaultNoTangent
+                GLPointerAttribute.defaultNoTangent
             )
         )
 
         val poolMesh = arrayOf(
             MGMPoolMesh(
-                good.damn.apigl.drawers.MGDrawerVertexArray(
+                GLDrawerVertexArray(
                     configurator
                 ),
                 triggerPoint

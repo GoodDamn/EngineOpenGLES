@@ -1,26 +1,32 @@
 package good.damn.wrapper.imports
 
-import good.damn.engine.models.MGMInformator
-import good.damn.apigl.drawers.MGDrawerMeshMaterialMutable
-import good.damn.engine.opengl.entities.MGMaterial
+import good.damn.apigl.drawers.GLDrawerMesh
+import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
+import good.damn.apigl.drawers.GLDrawerVertexArray
+import good.damn.apigl.drawers.GLMaterial
+import good.damn.apigl.shaders.GLShaderGeometryPassModel
+import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.engine.opengl.models.MGMMeshDrawer
 import good.damn.engine.MGObject3d
-import good.damn.apigl.shaders.MGShaderGeometryPassModel
-import good.damn.apigl.shaders.MGShaderMaterial
-import good.damn.apigl.shaders.base.MGBinderAttribute
-import good.damn.logic.MGITrigger
-import good.damn.logic.MGMatrixTriggerMesh
-import good.damn.logic.MGTriggerMesh
+import good.damn.apigl.shaders.base.GLBinderAttribute
+import good.damn.engine.models.MGMInformatorShader
+import good.damn.engine.opengl.MGMGeometry
+import good.damn.engine.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine.shader.generators.MGMMaterialShader
+import good.damn.logic.triggers.LGITrigger
+import good.damn.logic.triggers.LGMatrixTriggerMesh
+import good.damn.logic.triggers.LGTriggerMesh
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 
 class MGCallbackModelSpawn(
     private val bridgeRay: APBridgeRayIntersect,
-    private val triggerAction: good.damn.logic.MGITrigger,
-    private val informator: MGMInformator
+    private val triggerAction: LGITrigger,
+    private val poolMeshes: MGPoolMeshesStatic,
+    private val shaders: MGMInformatorShader,
+    private val geometry: MGMGeometry
 ) {
 
-    private val mBinderAttr = good.damn.apigl.shaders.base.MGBinderAttribute.Builder()
+    private val mBinderAttr = GLBinderAttribute.Builder()
         .bindPosition()
         .bindTextureCoordinates()
         .bindNormal()
@@ -36,17 +42,20 @@ class MGCallbackModelSpawn(
         }
 
         if (objs.size == 1) {
-            val poolMesh = informator.poolMeshes.loadOrGetFromCache(
-                fileName,
-                informator
+            val poolMesh = poolMeshes.loadOrGetFromCache(
+                fileName
             ) ?: return
+
+            val triggerMatrix = LGTriggerMesh.createTriggerPointMatrix(
+                poolMesh[0].triggerPoint
+            )
 
             processMesh(
                 MGMMaterialShader.getDefault(
-                    informator.shaders.source
+                    shaders.source
                 ),
-                good.damn.logic.MGTriggerMesh.createFromMeshPool(
-                    poolMesh[0],
+                LGTriggerMesh.createFromMatrix(
+                    triggerMatrix,
                     triggerAction
                 )
             )
@@ -76,15 +85,15 @@ class MGCallbackModelSpawn(
 
     private inline fun processMesh(
         material: MGMMaterialShader,
-        mesh: good.damn.logic.MGTriggerMesh
+        mesh: LGTriggerMesh
     ) {
         addMesh(
-            informator.shaders.cacheGeometryPass.loadOrGetFromCache(
+            shaders.cacheGeometryPass.loadOrGetFromCache(
                 material.srcCodeMaterial,
-                informator.shaders.source.vert,
+                shaders.source.vert,
                 mBinderAttr,
                 arrayOf(
-                    good.damn.apigl.shaders.MGShaderMaterial(
+                    GLShaderMaterial(
                         material.shaderTextures
                     )
                 )
@@ -110,7 +119,7 @@ class MGCallbackModelSpawn(
     }*/
 
     private inline fun setupMatrix(
-        matrix: good.damn.logic.MGMatrixTriggerMesh
+        matrix: LGMatrixTriggerMesh
     ) {
         bridgeRay.intersectUpdate = good.damn.wrapper.hud.bridges.APRayIntersectImplModel(
             matrix
@@ -131,24 +140,26 @@ class MGCallbackModelSpawn(
     }
 
     private inline fun addMesh(
-        shader: good.damn.apigl.shaders.MGShaderGeometryPassModel,
+        shader: GLShaderGeometryPassModel,
         material: MGMMaterialShader,
-        mesh: good.damn.logic.MGTriggerMesh
+        mesh: LGTriggerMesh
     ) {
         val meshMaterial = MGMMeshDrawer(
             shader,
-            good.damn.apigl.drawers.MGDrawerMeshMaterialMutable(
+            GLDrawerMeshMaterialMutable(
                 arrayOf(
-                    MGMaterial(
+                    GLMaterial(
                         material.materialTexture
                     )
                 ),
-                mesh.mesh
+                GLDrawerMesh(
+
+                )
             )
         )
         informator.currentEditMesh = meshMaterial
 
-        informator.meshes.add(
+        geometry.meshes.add(
             meshMaterial
         )
 

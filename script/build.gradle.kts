@@ -44,6 +44,10 @@ dependencies {
     )
 
     implementation(
-        project(":engine")
+        project(":apiGL")
+    )
+
+    implementation(
+        project(":logic")
     )
 }

@@ -4,7 +4,7 @@ import android.os.Handler
 import android.os.SystemClock
 import good.damn.engine.sdk.process.SDIProcessTime
 
-class MGRunnableProcessTimeLoop(
+class LGRunnableProcessTimeLoop(
     private val callbacksProcessTime: List<SDIProcessTime>,
     private val handler: Handler,
     private val delayMillis: Long

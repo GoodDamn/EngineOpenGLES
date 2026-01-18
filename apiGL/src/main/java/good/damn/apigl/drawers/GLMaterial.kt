@@ -1,15 +1,15 @@
 package good.damn.apigl.drawers
 
-import good.damn.engine.opengl.shaders.MGShaderMaterial
+import good.damn.apigl.shaders.GLShaderMaterial
 
 class GLMaterial(
     private val materialTexture: GLMaterialTexture
-): good.damn.apigl.drawers.GLIDrawerTexture<MGShaderMaterial> {
+): GLIDrawerTexture<GLShaderMaterial> {
 
     var shine = 1f
 
     override fun draw(
-        shader: MGShaderMaterial
+        shader: GLShaderMaterial
     ) {
         /*GLES30.glUniform1f(
             shader.uniformShininess,
@@ -22,7 +22,7 @@ class GLMaterial(
     }
 
     override fun unbind(
-        shader: MGShaderMaterial
+        shader: GLShaderMaterial
     ) {
         materialTexture.unbind(
             shader.textures

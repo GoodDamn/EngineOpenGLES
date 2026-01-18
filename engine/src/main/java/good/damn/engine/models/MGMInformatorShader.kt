@@ -1,27 +1,27 @@
 package good.damn.engine.models
 
+import good.damn.apigl.shaders.GLShaderGeometryPassInstanced
+import good.damn.apigl.shaders.GLShaderGeometryPassModel
+import good.damn.apigl.shaders.GLShaderMaterial
+import good.damn.apigl.shaders.lightpass.GLShaderLightPassPointLight
 import good.damn.engine.opengl.models.MGMLightPass
-import good.damn.apigl.shaders.MGShaderGeometryPassInstanced
-import good.damn.apigl.shaders.MGShaderGeometryPassModel
-import good.damn.apigl.shaders.MGShaderMaterial
-import good.damn.apigl.shaders.lightpass.MGShaderLightPassPointLight
 import good.damn.engine.shader.MGShaderCache
 import good.damn.engine.shader.MGShaderSource
 
 data class MGMInformatorShader(
     val source: MGShaderSource,
     val cacheGeometryPass: MGShaderCache<
-        good.damn.apigl.shaders.MGShaderGeometryPassModel,
-        Array<good.damn.apigl.shaders.MGShaderMaterial>
+        GLShaderGeometryPassModel,
+        Array<GLShaderMaterial>
     >,
 
     val cacheGeometryPassInstanced: MGShaderCache<
-        good.damn.apigl.shaders.MGShaderGeometryPassInstanced,
-        Array<good.damn.apigl.shaders.MGShaderMaterial>
+        GLShaderGeometryPassInstanced,
+        Array<GLShaderMaterial>
     >,
 
-    val wireframe: good.damn.apigl.shaders.MGShaderGeometryPassModel,
+    val wireframe: GLShaderGeometryPassModel,
 
     val lightPasses: Array<MGMLightPass>,
-    val lightPassPointLight: good.damn.apigl.shaders.lightpass.MGShaderLightPassPointLight
+    val lightPassPointLight: GLShaderLightPassPointLight
 )

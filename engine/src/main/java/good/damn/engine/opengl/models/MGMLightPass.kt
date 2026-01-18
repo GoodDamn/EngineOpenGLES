@@ -1,9 +1,9 @@
 package good.damn.engine.opengl.models
 
-import good.damn.apigl.shaders.lightpass.MGShaderLightPass
+import good.damn.apigl.shaders.lightpass.GLShaderLightPass
 
 data class MGMLightPass(
-    val shader: good.damn.apigl.shaders.lightpass.MGShaderLightPass,
+    val shader: GLShaderLightPass,
     val vertPath: String,
     val fragPath: String
 )

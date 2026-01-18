@@ -1,149 +1,148 @@
 package good.damn.engine.opengl
 
-import good.damn.engine.models.MGMInformator
-import good.damn.apigl.drawers.MGDrawerFramebufferG
-import good.damn.apigl.drawers.MGDrawerLightPass
-import good.damn.apigl.drawers.MGIDrawer
-import good.damn.engine.opengl.drawers.modes.MGDrawModeOpaque
-import good.damn.engine.opengl.drawers.modes.MGDrawModeTexture
-import good.damn.engine.opengl.enums.MGEnumDrawMode
+import good.damn.apigl.GLRenderVars
+import good.damn.apigl.drawers.GLDrawerFramebufferG
+import good.damn.apigl.drawers.GLDrawerLightDirectional
+import good.damn.apigl.drawers.GLDrawerLightPass
+import good.damn.apigl.drawers.GLDrawerLights
+import good.damn.apigl.drawers.GLDrawerVertexArray
+import good.damn.apigl.drawers.GLIDrawer
+import good.damn.apigl.enums.GLEnumDrawMode
+import good.damn.apigl.enums.GLEnumDrawModeMesh
+import good.damn.apigl.framebuffer.GLFrameBufferG
+import good.damn.apigl.shaders.lightpass.GLShaderLightPassPointLight
+import good.damn.apigl.textures.GLTexture
+import good.damn.apigl.textures.GLTextureAttachment
+import good.damn.engine.models.MGMInformatorShader
 
 class MGSwitcherDrawMode(
-    private val informator: MGMInformator,
-    drawerFramebufferG: good.damn.apigl.drawers.MGDrawerFramebufferG
+    framebufferG: GLFrameBufferG,
+    private val shaders: MGMInformatorShader,
+    private val geometry: MGMGeometry,
+    private val volume: MGMVolume,
+    private val drawerLightDirect: GLDrawerLightDirectional,
+    drawerFramebufferG: GLDrawerFramebufferG
 ) {
-    private val drawerModeOpaque = MGDrawModeOpaque(
-        informator,
-        good.damn.apigl.drawers.MGDrawerLightPass(
-            arrayOf(
-                informator.framebufferG.textureAttachmentPosition.texture,
-                informator.framebufferG.textureAttachmentNormal.texture,
-                informator.framebufferG.textureAttachmentColorSpec.texture,
-                informator.framebufferG.textureAttachmentMisc.texture,
-                informator.framebufferG.textureAttachmentDepth.texture,
+    private val drawerModeOpaque = arrayOf(
+        framebufferG.textureAttachmentPosition.texture,
+        framebufferG.textureAttachmentNormal.texture,
+        framebufferG.textureAttachmentColorSpec.texture,
+        framebufferG.textureAttachmentMisc.texture,
+        framebufferG.textureAttachmentDepth.texture,
+    ).run {
+        MGDrawModeOpaque(
+            shaders,
+            GLDrawerLightPass(
+                this,
+                geometry.drawerQuad
             ),
-            informator.drawerQuad
-        ),
-        informator.shaders.lightPasses[
-            MGEnumDrawMode.OPAQUE.ordinal
-        ].shader,
-        informator.shaders.lightPassPointLight,
-        arrayOf(
-            informator.framebufferG.textureAttachmentPosition.texture,
-            informator.framebufferG.textureAttachmentNormal.texture,
-            informator.framebufferG.textureAttachmentColorSpec.texture,
-            informator.framebufferG.textureAttachmentMisc.texture,
-            informator.framebufferG.textureAttachmentDepth.texture,
-        ),
+            GLDrawerLights(
+                GLDrawerLightPass(
+                    this,
+                    geometry.drawerSphere
+                )
+            ),
+            shaders.lightPasses[
+                GLEnumDrawMode.OPAQUE.ordinal
+            ].shader,
+            geometry,
+            drawerFramebufferG,
+            drawerLightDirect,
+            volume
+        )
+    }
+
+    private val drawerModeDiffuse = createTextureDrawMode(
+        framebufferG.textureAttachmentColorSpec.texture,
+        GLEnumDrawMode.DIFFUSE,
         drawerFramebufferG
     )
 
-
-    private val drawerModeDiffuse = MGDrawModeTexture(
-        informator,
-        good.damn.apigl.drawers.MGDrawerLightPass(
-            arrayOf(
-                informator.framebufferG.textureAttachmentColorSpec.texture
-            ),
-            informator.drawerQuad
-        ),
-        informator.shaders.lightPasses[
-            MGEnumDrawMode.DIFFUSE.ordinal
-        ].shader,
+    private val drawerModeDepth = createTextureDrawMode(
+        framebufferG.textureAttachmentDepth.texture,
+        GLEnumDrawMode.DEPTH,
         drawerFramebufferG
     )
 
-    private val drawerModeDepth = MGDrawModeTexture(
-        informator,
-        good.damn.apigl.drawers.MGDrawerLightPass(
-            arrayOf(
-                informator.framebufferG.textureAttachmentDepth.texture
-            ),
-            informator.drawerQuad
-        ),
-        informator.shaders.lightPasses[
-            MGEnumDrawMode.DEPTH.ordinal
-        ].shader,
+    private val drawerModeNormals = createTextureDrawMode(
+        framebufferG.textureAttachmentNormal.texture,
+        GLEnumDrawMode.NORMAL,
         drawerFramebufferG
     )
 
-    private val drawerModeNormals = MGDrawModeTexture(
-        informator,
-        good.damn.apigl.drawers.MGDrawerLightPass(
-            arrayOf(
-                informator.framebufferG.textureAttachmentNormal.texture
-            ),
-            informator.drawerQuad
-        ),
-        informator.shaders.lightPasses[
-            MGEnumDrawMode.NORMAL.ordinal
-        ].shader,
-        drawerFramebufferG
-    )
+    private var mCurrentDrawMode = GLEnumDrawMode.OPAQUE
 
-    private var mCurrentDrawMode = MGEnumDrawMode.OPAQUE
-
-    var currentDrawerMode: good.damn.apigl.drawers.MGIDrawer = drawerModeOpaque
+    var currentDrawerMode: GLIDrawer = drawerModeOpaque
         private set
 
     fun switchDrawMode() = when (
         mCurrentDrawMode
     ) {
-        MGEnumDrawMode.OPAQUE -> switchDrawMode(
-            MGEnumDrawMode.DIFFUSE,
+        GLEnumDrawMode.OPAQUE -> switchDrawMode(
+            GLEnumDrawMode.DIFFUSE,
             drawerModeDiffuse.apply {
                 canDrawSky = true
             }
         )
 
-        MGEnumDrawMode.DIFFUSE -> switchDrawMode(
-            MGEnumDrawMode.DEPTH,
+        GLEnumDrawMode.DIFFUSE -> switchDrawMode(
+            GLEnumDrawMode.DEPTH,
             drawerModeDepth
         )
 
-        MGEnumDrawMode.DEPTH -> switchDrawMode(
-            MGEnumDrawMode.NORMAL,
+        GLEnumDrawMode.DEPTH -> switchDrawMode(
+            GLEnumDrawMode.NORMAL,
             drawerModeNormals.apply {
                 canDrawSky = false
             }
         )
 
-        MGEnumDrawMode.NORMAL -> switchDrawMode(
-            MGEnumDrawMode.WIREFRAME,
+        GLEnumDrawMode.NORMAL -> switchDrawMode(
+            GLEnumDrawMode.WIREFRAME,
             drawerModeDiffuse.apply {
                 canDrawSky = false
             }
         )
 
         else -> switchDrawMode(
-            MGEnumDrawMode.OPAQUE,
+            GLEnumDrawMode.OPAQUE,
             drawerModeOpaque
         )
     }
 
 
     private fun switchDrawMode(
-        drawMode: MGEnumDrawMode,
-        currentDrawer: good.damn.apigl.drawers.MGIDrawer
+        drawMode: GLEnumDrawMode,
+        currentDrawer: GLIDrawer
     ) {
         mCurrentDrawMode = drawMode
         currentDrawerMode = currentDrawer
-        val enableWireframe = drawMode == MGEnumDrawMode.WIREFRAME
-
-        if (drawMode == MGEnumDrawMode.OPAQUE
-            || drawMode == MGEnumDrawMode.WIREFRAME
+        val enableWireframe = drawMode == GLEnumDrawMode.WIREFRAME
+        if (drawMode == GLEnumDrawMode.OPAQUE
+            || drawMode == GLEnumDrawMode.WIREFRAME
         ) {
-            informator.meshes.forEach {
-                it.drawer.drawerMesh.setIsWireframe(
-                    enableWireframe
-                )
-            }
-
-            informator.meshesInstanced.forEach {
-                it.drawer.setIsWireframe(
-                    enableWireframe
-                )
-            }
+            GLRenderVars.drawModeMesh = if (
+                enableWireframe
+            ) GLEnumDrawModeMesh.LINES
+            else GLEnumDrawModeMesh.TRIANGLES
         }
     }
+
+    private inline fun createTextureDrawMode(
+        texture: GLTexture,
+        drawMode: GLEnumDrawMode,
+        drawerFramebufferG: GLDrawerFramebufferG
+    ) = MGDrawModeTexture(
+        GLDrawerLightPass(
+            arrayOf(
+                texture
+            ),
+            geometry.drawerQuad
+        ),
+        shaders.lightPasses[
+            drawMode.ordinal
+        ].shader,
+        drawerFramebufferG,
+        geometry
+    )
 }

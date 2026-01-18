@@ -3,17 +3,16 @@ package good.damn.wrapper.hud
 import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
+import good.damn.common.camera.COICameraFree
 import good.damn.wrapper.imports.MGImportImage
 import good.damn.wrapper.imports.MGImportImplLight
 import good.damn.wrapper.interfaces.MGIRequestUserContent
-import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.callbacks.MGCallbackOnCameraMovement
 import good.damn.wrapper.hud.callbacks.MGCallbackOnDeltaInteract
 import good.damn.wrapper.hud.callbacks.MGCallbackOnIntersectPosition
 import good.damn.wrapper.hud.callbacks.MGCallbackOnScale
-import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.wrapper.imports.MGCallbackModelSpawn
 import good.damn.wrapper.hud.ui.APUILayerEditor
 import good.damn.wrapper.hud.ui.clicks.APClickImport
@@ -26,8 +25,8 @@ import good.damn.wrapper.imports.MGImportImplModel
 import good.damn.wrapper.imports.MGMImportMisc
 
 class APHud(
+    camera: COICameraFree,
     requesterUserContent: MGIRequestUserContent,
-    informator: MGMInformator,
     switcherDrawMode: MGSwitcherDrawMode
 ) {
 
@@ -38,7 +37,7 @@ class APHud(
     )
 
     private val mCallbackOnCameraMove = MGCallbackOnCameraMovement(
-        informator.camera.camera,
+        camera,
         mBridgeMatrix
     ).apply {
         setListenerIntersection(

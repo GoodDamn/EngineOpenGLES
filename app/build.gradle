@@ -43,6 +43,7 @@ dependencies {
     implementation project(':ia3d')
     implementation project(":script")
     implementation project(":logic")
+    implementation project(":apiGL")
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit

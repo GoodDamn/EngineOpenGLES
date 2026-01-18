@@ -1,18 +1,18 @@
 package good.damn.wrapper.hud.ui.clicks
 
+import good.damn.common.COHandlerGl
 import good.damn.common.COIRunnableBounds
-import good.damn.engine.models.MGMInformator
 import good.damn.engine.opengl.MGSwitcherDrawMode
 import good.damn.hud.UIIClick
 
 class APClickSwitchDrawMode(
-    private val informator: MGMInformator,
+    private val glHandler: COHandlerGl,
     private val switcher: MGSwitcherDrawMode,
 ): UIIClick,
 COIRunnableBounds {
 
     override fun onClick() {
-        informator.glHandler.post(
+        glHandler.post(
             this
         )
     }

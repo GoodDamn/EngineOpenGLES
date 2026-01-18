@@ -1,18 +1,18 @@
 package good.damn.apigl.drawers
 
-import good.damn.engine.opengl.enums.MGEnumTextureType
-import good.damn.engine.opengl.shaders.MGShaderTexture
-import good.damn.engine.opengl.textures.MGTexture
-import good.damn.engine.opengl.textures.MGTextureActive
+import good.damn.apigl.enums.GLEnumTextureType
+import good.damn.apigl.shaders.GLShaderTexture
+import good.damn.apigl.textures.GLTexture
+import good.damn.apigl.textures.GLTextureActive
 import java.util.LinkedList
 
 class GLMaterialTexture private constructor(
     private val list: List<MGMTexturePart>
-): good.damn.apigl.drawers.GLIDrawerTexture<
-    Array<MGShaderTexture>
-    > {
+): GLIDrawerTexture<
+    Array<GLShaderTexture>
+> {
     override fun draw(
-        shader: Array<MGShaderTexture>
+        shader: Array<GLShaderTexture>
     ) {
         var i = 0
         list.forEach {
@@ -24,7 +24,7 @@ class GLMaterialTexture private constructor(
     }
 
     override fun unbind(
-        shader: Array<MGShaderTexture>
+        shader: Array<GLShaderTexture>
     ) {
         var i = 0
         list.forEach {
@@ -36,7 +36,7 @@ class GLMaterialTexture private constructor(
     }
 
     fun load(
-        poolTextures: good.damn.logic.pools.MGPoolTextures,
+        poolTextures: MGPoolTextures,
         localPath: String
     ) {
         list.forEach {
@@ -51,8 +51,8 @@ class GLMaterialTexture private constructor(
 
     class Builder {
         companion object {
-            private val DEFAULT = MGTexture(
-                MGTextureActive.default
+            private val DEFAULT = GLTexture(
+                GLTextureActive.default
             )
         }
 
@@ -62,13 +62,13 @@ class GLMaterialTexture private constructor(
 
         fun buildTexture(
             textureName: String,
-            type: MGEnumTextureType,
-            activeTexture: MGTextureActive
+            type: GLEnumTextureType,
+            activeTexture: GLTextureActive
         ) = apply {
             map.add(
                 MGMTexturePart(
                     type,
-                    good.damn.apigl.drawers.GLDrawerMaterialTexture(
+                    GLDrawerMaterialTexture(
                         DEFAULT,
                         activeTexture
                     ),
@@ -83,8 +83,8 @@ class GLMaterialTexture private constructor(
     }
 
     private data class MGMTexturePart(
-        val textureType: MGEnumTextureType,
-        val drawer: good.damn.apigl.drawers.GLDrawerMaterialTexture,
+        val textureType: GLEnumTextureType,
+        val drawer: GLDrawerMaterialTexture,
         val textureName: String
     )
 }

@@ -4,11 +4,12 @@ import android.opengl.GLES30
 import good.damn.apigl.shaders.GLIShaderModel
 import good.damn.apigl.shaders.GLShaderLightPoint
 import good.damn.apigl.shaders.GLShaderTexture
+import good.damn.apigl.shaders.lightpass.GLShaderLightPass
 import good.damn.apigl.textures.GLTexture
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class GLDrawerLights(
-    private val drawerVolume: GLDrawerVertexArray
+    private val drawerLightPass: GLDrawerLightPass
 ) {
     private val mLights = ConcurrentLinkedQueue<
         GLDrawerLightPoint
@@ -16,39 +17,20 @@ class GLDrawerLights(
 
     fun draw(
         shader: GLShaderLightPoint,
-        shaderModel: GLIShaderModel,
-        shaderTextures: Array<GLShaderTexture>,
-        textures: Array<GLTexture>
+        textures: Array<GLShaderTexture>
     ) {
         mLights.forEach {
             it.draw(
-                shader,
-                shaderModel
+                shader
             )
-            var i = 0
-            textures.forEach {
-                it.draw(
-                    shaderTextures[i]
-                )
-                i++
-            }
-
-            drawerVolume.draw(
-                GLES30.GL_TRIANGLES
+            drawerLightPass.draw(
+                textures
             )
-
-            i = 0
-            textures.forEach {
-                it.unbind(
-                    shaderTextures[i]
-                )
-                i++
-            }
         }
     }
 
     fun register(
-        drawer: good.damn.apigl.drawers.GLDrawerLightPoint
+        drawer: GLDrawerLightPoint
     ) {
         mLights.add(
             drawer

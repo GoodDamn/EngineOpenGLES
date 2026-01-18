@@ -4,14 +4,14 @@ import android.opengl.GLES30.glGetUniformBlockIndex
 import android.opengl.GLES30.glGetUniformLocation
 import android.opengl.GLES30.glUniformBlockBinding
 import androidx.annotation.CallSuper
-import good.damn.engine.opengl.shaders.base.MGShaderBase
+import good.damn.apigl.shaders.base.GLShaderBase
 
 open class GLShaderGeometryPassInstanced(
     override val materials: Array<GLShaderMaterial>
-): MGShaderBase(),
-    GLIShaderNormal,
-    GLIShaderCameraPosition,
-    GLIShaderMaterial {
+): GLShaderBase(),
+GLIShaderNormal,
+GLIShaderCameraPosition,
+GLIShaderMaterial {
 
     final override var uniformCameraPosition = 0
         private set

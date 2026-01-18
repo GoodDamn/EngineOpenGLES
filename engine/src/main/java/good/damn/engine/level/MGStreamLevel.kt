@@ -1,26 +1,20 @@
 package good.damn.engine.level
 
+import good.damn.apigl.shaders.base.GLBinderAttribute
 import good.damn.engine.flow.MGFlowLevel
 import good.damn.engine.loaders.MGLoaderLevelLibrary
 import good.damn.engine.loaders.MGLoaderLevelMatrices
 import good.damn.engine.loaders.MGLoaderLevelMatrices.Companion.fillModelMatrix
 import good.damn.engine.loaders.mesh.MGLoaderLevelMeshA3D
 import good.damn.engine.loaders.MGLoaderLevelTextures
-import good.damn.engine.models.MGMInformator
 import good.damn.engine.models.MGMInstanceMesh
 import good.damn.engine.models.json.MGMLevelInfoMesh
 import good.damn.engine.models.json.spawn.MGMLevelSpawnInfo
 import good.damn.engine.models.json.spawn.MGMLevelSpawnLight
-import good.damn.apigl.drawers.MGDrawerMeshMaterialMutable
-import good.damn.apigl.drawers.MGDrawerLightPoint
-import good.damn.apigl.drawers.MGVolumeLight
-import good.damn.engine.opengl.entities.MGMaterial
 import good.damn.common.matrices.COMatrixScaleRotation
 import good.damn.common.matrices.COMatrixTransformationNormal
 import good.damn.common.utils.COUtilsFile
 import good.damn.engine.opengl.models.MGMMeshDrawer
-import good.damn.apigl.shaders.MGShaderMaterial
-import good.damn.apigl.shaders.base.MGBinderAttribute
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine.utils.MGUtilsJson
@@ -37,7 +31,6 @@ object MGStreamLevel {
     fun readBin(
         flow: MGFlowLevel<MGMInstanceMesh>,
         input: InputStream,
-        informator: MGMInformator,
         bufferMap: ByteArray
     ) {
         val stream = DataInputStream(
@@ -138,7 +131,6 @@ object MGStreamLevel {
     private fun processSpawnPoints(
         map: MIMMap,
         localPathDir: String,
-        informator: MGMInformator
     ) {
         val json = MGMLevelSpawnInfo.createFromJson(
             MGUtilsJson.createFromFile(
@@ -160,7 +152,7 @@ object MGStreamLevel {
             json.lightRadius
         )
 
-        val binderAttr = good.damn.apigl.shaders.base.MGBinderAttribute.Builder()
+        val binderAttr = GLBinderAttribute.Builder()
             .bindPosition()
             .bindTextureCoordinates()
             .bindNormal()

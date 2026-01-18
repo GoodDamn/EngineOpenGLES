@@ -1,19 +1,20 @@
 package good.damn.script
 
+import good.damn.apigl.drawers.GLDrawerLightPoint
+import good.damn.apigl.drawers.GLDrawerLights
+import good.damn.apigl.drawers.GLVolumeLight
 import good.damn.common.volume.COManagerFrustrum
-import good.damn.apigl.drawers.MGDrawerLightPoint
-import good.damn.apigl.drawers.MGVolumeLight
-import good.damn.apigl.drawers.MGDrawerLights
-import good.damn.logic.triggers.stateables.MGDrawerTriggerStateableLight
-import good.damn.logic.process.MGManagerProcessTime
 import good.damn.engine.sdk.models.SDMLightPointEntity
 import good.damn.engine.sdk.process.SDIProcessTime
+import good.damn.logic.process.LGManagerProcessTime
+import good.damn.logic.triggers.entities.LGVolumeTrigger
+import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import java.io.File
 
 class SCScriptLightPlacement(
     private val dirScripts: File,
-    private val managerProcessTime: good.damn.logic.process.MGManagerProcessTime,
-    private val managerLight: good.damn.apigl.drawers.MGDrawerLights,
+    private val managerProcessTime: LGManagerProcessTime,
+    private val managerLight: GLDrawerLights,
     private val managerLightVolume: COManagerFrustrum
 ): SCIScript {
 
@@ -53,9 +54,9 @@ class SCScriptLightPlacement(
             }
 
             lightPoints?.forEach {
-                good.damn.logic.triggers.stateables.MGDrawerTriggerStateableLight.createFromLight(
+                LGTriggerStateableLight.createFromLight(
                     it.light
-                ).run {
+                ).apply {
                     modelMatrix.setPosition(
                         it.position.x,
                         it.position.y,
@@ -66,8 +67,9 @@ class SCScriptLightPlacement(
                     modelMatrix.invalidateRadius()
                     modelMatrix.calculateInvertTrigger()
 
-                    val drawerLightPoint = good.damn.apigl.drawers.MGDrawerLightPoint(
-                        this
+                    val drawerLightPoint = GLDrawerLightPoint(
+                        modelMatrix.matrixTrigger.model,
+                        it.light
                     )
 
                     managerLight.register(
@@ -75,7 +77,7 @@ class SCScriptLightPlacement(
                     )
 
                     managerLightVolume.volumes.add(
-                        good.damn.apigl.drawers.MGVolumeLight(
+                        GLVolumeLight(
                             drawerLightPoint,
                             modelMatrix.matrixTrigger.model
                         )

@@ -50,6 +50,19 @@ class GLDrawerFramebufferG(
         )
         glDisable(GL_CULL_FACE)
 
+        glEnable(
+            GL_BLEND
+        )
+
+        GLES30.glBlendEquation(
+            GLES30.GL_FUNC_ADD
+        )
+
+        GLES30.glBlendFunc(
+            GLES30.GL_ONE,
+            GLES30.GL_ONE
+        )
+
         /*framebufferG.framebuffer.bindReading()
 
         val halfWidth = width / 2
