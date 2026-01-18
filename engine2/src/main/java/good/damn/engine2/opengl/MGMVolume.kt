@@ -5,18 +5,19 @@ import android.opengl.GLES30.glDisable
 import good.damn.apigl.drawers.GLDrawerVolumes
 import good.damn.apigl.drawers.GLIDrawerShader
 import good.damn.apigl.shaders.GLIShaderModel
+import good.damn.engine2.models.MGMParameters
 
 data class MGMVolume(
-    private val drawerVolumes: GLDrawerVolumes
+    private val drawerVolumes: GLDrawerVolumes,
+    private val parameters: MGMParameters
 ): GLIDrawerShader<
     GLIShaderModel
 > {
-    var canDrawTriggers = false
 
     override fun draw(
         shader: GLIShaderModel
     ) {
-        if (!canDrawTriggers) {
+        if (!parameters.canDrawTriggers) {
             return
         }
 

@@ -232,8 +232,14 @@ class APRendererLevelEditor(
         mDrawerSphere
     )
 
+    private val mParameters = MGMParameters(
+        true,
+        null
+    )
+
     private val mVolume = MGMVolume(
-        mDrawerVolumes
+        mDrawerVolumes,
+        mParameters
     )
 
     private val mPools = MGPoolTextures(
@@ -286,10 +292,7 @@ class APRendererLevelEditor(
         requesterUserContent,
         mCameraFree.camera,
         managers,
-        MGMParameters(
-            true,
-            null
-        ),
+        mParameters,
         mPools,
         mInformatorShader,
         mGeometry,
