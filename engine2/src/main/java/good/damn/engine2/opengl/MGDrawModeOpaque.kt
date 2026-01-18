@@ -80,6 +80,7 @@ class MGDrawModeOpaque(
 
             lightPassDrawerLights.draw(
                 lightPoint,
+                this,
                 textures
             )
         }

@@ -13,10 +13,10 @@
             <option value="$PROJECT_DIR$/apiGL" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/common" />
-            <option value="$PROJECT_DIR$/engine" />
             <option value="$PROJECT_DIR$/engine2" />
             <option value="$PROJECT_DIR$/hud" />
             <option value="$PROJECT_DIR$/ia3d" />
+            <option value="$PROJECT_DIR$/iassimp" />
             <option value="$PROJECT_DIR$/imap" />
             <option value="$PROJECT_DIR$/logic" />
             <option value="$PROJECT_DIR$/script" />

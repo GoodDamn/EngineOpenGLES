@@ -43,10 +43,7 @@ dependencies {
     implementation(
         project(":sdk")
     )
-
-    implementation(
-        project(":engine")
-    )
+    implementation(project(":iassimp"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

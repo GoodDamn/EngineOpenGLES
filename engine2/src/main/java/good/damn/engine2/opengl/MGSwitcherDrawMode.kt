@@ -18,7 +18,8 @@ class MGSwitcherDrawMode(
     private val geometry: MGMGeometry,
     private val volume: MGMVolume,
     private val drawerLightDirect: GLDrawerLightDirectional,
-    drawerFramebufferG: GLDrawerFramebufferG
+    drawerFramebufferG: GLDrawerFramebufferG,
+    private val drawerLights: GLDrawerLights
 ) {
     private val drawerModeOpaque = arrayOf(
         framebufferG.textureAttachmentPosition.texture,
@@ -33,12 +34,7 @@ class MGSwitcherDrawMode(
                 this,
                 geometry.drawerQuad
             ),
-            GLDrawerLights(
-                GLDrawerLightPass(
-                    this,
-                    geometry.drawerSphere
-                )
-            ),
+            drawerLights,
             shaders.lightPasses[
                 GLEnumDrawMode.OPAQUE.ordinal
             ].shader,

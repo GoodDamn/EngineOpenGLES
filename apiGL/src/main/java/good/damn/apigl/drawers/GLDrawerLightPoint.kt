@@ -1,6 +1,7 @@
 package good.damn.apigl.drawers
 
 import android.opengl.GLES30
+import good.damn.apigl.shaders.GLIShaderModel
 import good.damn.apigl.shaders.GLShaderLightPoint
 import good.damn.common.matrices.COMatrixTranslate
 import good.damn.engine.sdk.models.SDMLightPoint
@@ -12,7 +13,8 @@ class GLDrawerLightPoint(
     var isActive = false
 
     fun draw(
-        shader: GLShaderLightPoint
+        shader: GLShaderLightPoint,
+        shaderModel: GLIShaderModel
     ) {
         light.interpolation.apply {
             GLES30.glUniform1f(
@@ -45,5 +47,10 @@ class GLDrawerLightPoint(
                 light.alpha
             )
         }
+
+        GLDrawerPositionEntity.draw(
+            shaderModel,
+            modelMatrix
+        )
     }
 }

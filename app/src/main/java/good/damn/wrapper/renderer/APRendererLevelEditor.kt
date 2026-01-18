@@ -218,6 +218,10 @@ class APRendererLevelEditor(
 
     private val mDrawerLightDirectional = GLDrawerLightDirectional()
 
+    private val mDrawerSphere = GLDrawerVertexArray(
+        mVerticesSphere
+    )
+
     private val mGeometry = MGMGeometry(
         ConcurrentLinkedQueue(),
         ConcurrentLinkedQueue(),
@@ -225,9 +229,7 @@ class APRendererLevelEditor(
         GLDrawerVertexArray(
             mVerticesQuad
         ),
-        GLDrawerVertexArray(
-            mVerticesSphere
-        )
+        mDrawerSphere
     )
 
     private val mVolume = MGMVolume(
@@ -262,7 +264,7 @@ class APRendererLevelEditor(
                     mFramebufferG.textureAttachmentMisc.texture,
                     mFramebufferG.textureAttachmentDepth.texture,
                 ),
-                mDrawerBox05
+                mDrawerSphere
             )
         ),
         managerFrustrum,
@@ -278,7 +280,8 @@ class APRendererLevelEditor(
             mDrawerLightDirectional,
             GLDrawerFramebufferG(
                 mFramebufferG
-            )
+            ),
+            managers.managerLight
         ),
         requesterUserContent,
         mCameraFree.camera,

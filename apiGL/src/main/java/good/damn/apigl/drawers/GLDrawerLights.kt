@@ -17,11 +17,13 @@ class GLDrawerLights(
 
     fun draw(
         shader: GLShaderLightPoint,
+        shaderModel: GLIShaderModel,
         textures: Array<GLShaderTexture>
     ) {
         mLights.forEach {
             it.draw(
-                shader
+                shader,
+                shaderModel
             )
             drawerLightPass.draw(
                 textures
