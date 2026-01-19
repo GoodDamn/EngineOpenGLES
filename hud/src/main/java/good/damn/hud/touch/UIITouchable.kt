@@ -2,7 +2,7 @@ package good.damn.hud.touch
 
 import android.view.MotionEvent
 
-interface MGITouchable {
+interface UIITouchable {
 
     fun onTouchEvent(
         event: MotionEvent

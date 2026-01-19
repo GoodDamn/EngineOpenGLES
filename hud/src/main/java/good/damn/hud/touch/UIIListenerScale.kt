@@ -1,6 +1,6 @@
 package good.damn.hud.touch
 
-interface MGIListenerScale {
+interface UIIListenerScale {
 
     fun onScale(
         dtScale: Float

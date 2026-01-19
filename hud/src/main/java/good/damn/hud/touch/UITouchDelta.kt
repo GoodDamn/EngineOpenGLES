@@ -2,14 +2,14 @@ package good.damn.hud.touch
 
 import android.view.MotionEvent
 
-class MGTouchDelta
-: MGTouchBound() {
+class UITouchDelta
+: UITouchBound() {
 
     companion object {
         private const val TAG = "MGTouchDelta"
     }
 
-    var onDelta: MGIListenerDelta? = null
+    var onDelta: UIIListenerDelta? = null
 
     private var mPrevX = 0f
     private var mPrevY = 0f

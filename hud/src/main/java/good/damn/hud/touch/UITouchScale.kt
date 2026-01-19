@@ -3,14 +3,14 @@ package good.damn.hud.touch
 import android.view.MotionEvent
 import kotlin.math.hypot
 
-class MGTouchScale
-: MGTouchBound(
+class UITouchScale
+: UITouchBound(
     maxTouches = 3
 ) {
 
-    var onDistance: MGIListenerDistance? = null
-    var onScale: MGIListenerScale? = null
-    var onDelta: MGIListenerDelta? = null
+    var onDistance: UIIListenerDistance? = null
+    var onScale: UIIListenerScale? = null
+    var onDelta: UIIListenerDelta? = null
 
     private var mPrevX = 0f
     private var mPrevY = 0f

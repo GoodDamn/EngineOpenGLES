@@ -5,8 +5,8 @@ import android.os.Looper
 import android.view.MotionEvent
 import kotlin.math.min
 
-class MGTouchMove
-: MGTouchBound(),
+class UITouchMove
+: UITouchBound(),
 Runnable {
 
     companion object {
@@ -14,7 +14,7 @@ Runnable {
         private const val DELAY_MOVE_MS = 16L
     }
 
-    private var onMove: MGIListenerMove? = null
+    private var onMove: UIIListenerMove? = null
 
     private var mAnchorX = 0f
     private var mAnchorY = 0f
@@ -47,7 +47,7 @@ Runnable {
     }
 
     fun setListenerMove(
-        l: MGIListenerMove?
+        l: UIIListenerMove?
     ) { onMove = l }
 
     override fun onTouchDown(

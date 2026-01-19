@@ -3,13 +3,13 @@ package good.damn.wrapper.hud.ui
 import android.view.MotionEvent
 import good.damn.hud.UIButton
 import good.damn.hud.UIIClick
-import good.damn.hud.touch.MGIListenerDelta
-import good.damn.hud.touch.MGIListenerDistance
-import good.damn.hud.touch.MGIListenerMove
-import good.damn.hud.touch.MGIListenerScale
-import good.damn.hud.touch.MGITouchable
+import good.damn.hud.touch.UIIListenerDelta
+import good.damn.hud.touch.UIIListenerDistance
+import good.damn.hud.touch.UIIListenerMove
+import good.damn.hud.touch.UIIListenerScale
+import good.damn.hud.touch.UIITouchable
 import good.damn.hud.touch.MGTouchFreeMove
-import good.damn.hud.touch.MGTouchScale
+import good.damn.hud.touch.UITouchScale
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import kotlin.math.min
 
@@ -19,7 +19,7 @@ class APUILayerEditor(
     clickSwitchDrawerMode: UIIClick,
     clickPlaceMesh: UIIClick,
     clickTriggerDrawing: UIIClick
-): MGITouchable {
+): UIITouchable {
 
     private val mBtnLoadUserContent = UIButton(
         click = clickLoadUserContent
@@ -38,26 +38,26 @@ class APUILayerEditor(
     )
 
     private val mTouchMove = MGTouchFreeMove()
-    private val mTouchScale = MGTouchScale()
+    private val mTouchScale = UITouchScale()
 
     fun setListenerTouchMove(
-        v: MGIListenerMove?
+        v: UIIListenerMove?
     ) = mTouchMove.setListenerMove(v)
 
     fun setListenerTouchDelta(
-        v: MGIListenerDelta?
+        v: UIIListenerDelta?
     ) = mTouchMove.setListenerDelta(v)
 
     fun setListenerTouchDeltaInteract(
-        v: MGIListenerDelta?
+        v: UIIListenerDelta?
     ) { mTouchScale.onDelta = v }
 
     fun setListenerTouchScaleInteract(
-        v: MGIListenerScale?
+        v: UIIListenerScale?
     ) { mTouchScale.onScale = v }
 
     fun setListenerTouch3Fingers(
-        v: MGIListenerDistance?
+        v: UIIListenerDistance?
     ) { mTouchScale.onDistance = v }
 
     fun layout(

@@ -1,6 +1,6 @@
 package good.damn.hud.touch
 
-interface MGIListenerDistance {
+interface UIIListenerDistance {
     fun onDistance(
         dst: Float
     )

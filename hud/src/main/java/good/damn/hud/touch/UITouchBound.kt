@@ -1,8 +1,8 @@
 package good.damn.hud.touch
 
-open class MGTouchBound(
+open class UITouchBound(
     maxTouches: Int = 1
-): MGTouchMulti(
+): UITouchMulti(
     maxTouches
 ) {
 

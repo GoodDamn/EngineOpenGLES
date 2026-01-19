@@ -1,6 +1,6 @@
 package good.damn.hud.touch
 
-interface MGIListenerMove {
+interface UIIListenerMove {
     fun onMove(
         x: Float,
         y: Float,

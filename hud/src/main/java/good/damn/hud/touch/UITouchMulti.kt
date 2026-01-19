@@ -3,9 +3,9 @@ package good.damn.hud.touch
 import android.util.Log
 import android.view.MotionEvent
 
-open class MGTouchMulti(
+open class UITouchMulti(
     private val maxTouches: Int
-): MGITouchable {
+): UIITouchable {
 
     private val mTouchIds = ArrayList<Int>(
         maxTouches
