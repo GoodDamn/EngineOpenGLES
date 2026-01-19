@@ -1,9 +1,11 @@
 package good.damn.engine2.level
 
+import android.opengl.GLES30
 import good.damn.apigl.drawers.GLDrawerLightPoint
 import good.damn.apigl.drawers.GLDrawerMaterialTexture
 import good.damn.apigl.drawers.GLDrawerMesh
 import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
+import good.damn.apigl.drawers.GLDrawerMeshNormals
 import good.damn.apigl.drawers.GLDrawerPositionEntity
 import good.damn.apigl.drawers.GLMaterial
 import good.damn.apigl.drawers.GLVolumeLight
@@ -309,11 +311,13 @@ object MGStreamLevel {
                                 )
                             )
                         ),
-                        GLDrawerMesh(
+                        GLDrawerMeshNormals(
                             poolMesh[0].drawerVertexArray,
                             GLDrawerPositionEntity(
                                 triggerMesh.matrix.matrixMesh.model
-                            )
+                            ),
+                            GLES30.GL_CCW,
+                            triggerMesh.matrix.matrixMesh.normal
                         )
                     )
                 )

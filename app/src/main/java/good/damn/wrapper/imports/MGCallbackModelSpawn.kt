@@ -1,8 +1,10 @@
 package good.damn.wrapper.imports
 
+import android.opengl.GLES30
 import good.damn.apigl.drawers.GLDrawerMaterialTexture
 import good.damn.apigl.drawers.GLDrawerMesh
 import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
+import good.damn.apigl.drawers.GLDrawerMeshNormals
 import good.damn.apigl.drawers.GLDrawerPositionEntity
 import good.damn.apigl.drawers.GLDrawerVertexArray
 import good.damn.apigl.drawers.GLMaterial
@@ -22,6 +24,7 @@ import good.damn.logic.triggers.LGTriggerMesh
 import good.damn.logic.triggers.entities.LGVolumeTrigger
 import good.damn.logic.triggers.managers.LGManagerTriggerMesh
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
+import good.damn.wrapper.hud.bridges.APRayIntersectImplModel
 
 class MGCallbackModelSpawn(
     private val bridgeRay: APBridgeRayIntersect,
@@ -132,7 +135,7 @@ class MGCallbackModelSpawn(
     private inline fun setupMatrix(
         matrix: LGMatrixTriggerMesh
     ) {
-        bridgeRay.intersectUpdate = good.damn.wrapper.hud.bridges.APRayIntersectImplModel(
+        bridgeRay.intersectUpdate = APRayIntersectImplModel(
             matrix
         )
 
@@ -166,11 +169,13 @@ class MGCallbackModelSpawn(
                         )
                     )
                 ),
-                GLDrawerMesh(
+                GLDrawerMeshNormals(
                     drawerVertexArray,
                     GLDrawerPositionEntity(
                         mesh.matrix.matrixMesh.model
-                    )
+                    ),
+                    GLES30.GL_CCW,
+                    mesh.matrix.matrixMesh.normal
                 )
             )
         )

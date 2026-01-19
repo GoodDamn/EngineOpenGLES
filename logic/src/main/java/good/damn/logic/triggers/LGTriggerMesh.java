@@ -109,16 +109,6 @@ public final class LGTriggerMesh {
         @NonNull final LGMatrixTriggerMesh matrix,
         @NonNull final LGITrigger triggerAction
     ) {
-        /*@NonNull
-        final MGDrawerMeshSwitchNormals drawerMeshSwitchNormals = new MGDrawerMeshSwitchNormals(
-            triggerPoint.getDrawerVertexArray(),
-            new MGDrawerPositionEntity(
-                matrix.matrixMesh.model
-            ),
-            GLES30.GL_CCW,
-            matrix.matrixMesh.normal
-        );*/
-
         return new LGTriggerMesh(
             matrix,
             new LGTriggerStateable(
