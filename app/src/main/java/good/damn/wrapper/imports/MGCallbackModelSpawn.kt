@@ -1,12 +1,12 @@
 package good.damn.wrapper.imports
 
-import android.opengl.GLES30
 import good.damn.apigl.drawers.GLDrawerMaterialTexture
 import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
 import good.damn.apigl.drawers.GLDrawerMeshNormals
 import good.damn.apigl.drawers.GLDrawerPositionEntity
 import good.damn.apigl.drawers.GLDrawerVertexArray
 import good.damn.apigl.drawers.GLMaterial
+import good.damn.apigl.enums.GLEnumFaceOrder
 import good.damn.apigl.shaders.GLShaderGeometryPassModel
 import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.engine2.opengl.models.MGMMeshDrawer
@@ -173,7 +173,7 @@ class MGCallbackModelSpawn(
                     GLDrawerPositionEntity(
                         mesh.matrix.matrixMesh.model
                     ),
-                    GLES30.GL_CCW,
+                    GLEnumFaceOrder.COUNTER_CLOCK_WISE,
                     mesh.matrix.matrixMesh.normal
                 )
             )

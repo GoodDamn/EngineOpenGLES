@@ -10,6 +10,7 @@ import good.damn.apigl.drawers.GLDrawerPositionEntity
 import good.damn.apigl.drawers.GLDrawerVertexArray
 import good.damn.apigl.drawers.GLMaterial
 import good.damn.apigl.enums.GLEnumArrayVertexConfiguration
+import good.damn.apigl.enums.GLEnumFaceOrder
 import good.damn.apigl.shaders.GLShaderGeometryPassModel
 import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.apigl.shaders.base.GLBinderAttribute
@@ -100,7 +101,7 @@ class MGSky {
                             invalidateScale()
                         }
                     ),
-                    GLES30.GL_CW
+                    GLEnumFaceOrder.CLOCK_WISE
                 )
             )
         )

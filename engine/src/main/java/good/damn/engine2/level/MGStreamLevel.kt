@@ -9,6 +9,7 @@ import good.damn.apigl.drawers.GLDrawerMeshNormals
 import good.damn.apigl.drawers.GLDrawerPositionEntity
 import good.damn.apigl.drawers.GLMaterial
 import good.damn.apigl.drawers.GLVolumeLight
+import good.damn.apigl.enums.GLEnumFaceOrder
 import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.apigl.shaders.base.GLBinderAttribute
 import good.damn.common.COHandlerGl
@@ -316,7 +317,7 @@ object MGStreamLevel {
                             GLDrawerPositionEntity(
                                 triggerMesh.matrix.matrixMesh.model
                             ),
-                            GLES30.GL_CCW,
+                            GLEnumFaceOrder.COUNTER_CLOCK_WISE,
                             triggerMesh.matrix.matrixMesh.normal
                         )
                     )
