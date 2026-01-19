@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import good.damn.apigl.enums.GLEnumArrayVertexConfiguration;
 import good.damn.common.utils.COUtilsFile;
 
-public final class MGObject3d {
+public final class ASObject3d {
 
     @NonNull
     public final FloatBuffer vertices;
@@ -33,7 +33,7 @@ public final class MGObject3d {
     @Nullable
     public final String[] texturesEmissiveFileName;
 
-    public MGObject3d(
+    public ASObject3d(
         @NonNull final FloatBuffer vertices,
         @NonNull final Buffer indices,
         @NonNull final GLEnumArrayVertexConfiguration config,
@@ -50,21 +50,21 @@ public final class MGObject3d {
         this.texturesEmissiveFileName = texturesEmissiveFileName;
     }
 
-    public MGObject3d(
+    public ASObject3d(
         @NonNull final float[] vertices,
         @NonNull final int[] indices,
         @Nullable final String[] texturesDiffuseFileName,
         @Nullable final String[] texturesMetallicFileName,
         @Nullable final String[] texturesEmissiveFileName
     ) {
-        this.vertices = MGUtilsBuffer.createFloat(
+        this.vertices = ASUtilsBuffer.createFloat(
             vertices
         );
 
         @Nullable final Pair<
             GLEnumArrayVertexConfiguration,
             Buffer
-        > pair = MGUtilsBuffer.createBufferIndicesDynamic(
+        > pair = ASUtilsBuffer.createBufferIndicesDynamic(
             indices,
             vertices.length / 8
         );
@@ -84,7 +84,7 @@ public final class MGObject3d {
     }
 
     @Nullable
-    public static MGObject3d[] createFromAssets(
+    public static ASObject3d[] createFromAssets(
         @NonNull final String localPath
     ) throws Exception {
         @NonNull final File filePub = COUtilsFile.getPublicFile(
@@ -101,7 +101,7 @@ public final class MGObject3d {
     }
 
     @Nullable
-    public static MGObject3d[] createFromPath(
+    public static ASObject3d[] createFromPath(
         @NonNull String path
     ) {
         return createFromPath(
@@ -112,7 +112,7 @@ public final class MGObject3d {
     }
 
     @Nullable
-    private static native MGObject3d[] createFromPath(
+    private static native ASObject3d[] createFromPath(
         @NonNull byte[] path
     );
 }

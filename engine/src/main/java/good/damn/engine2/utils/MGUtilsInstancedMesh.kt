@@ -7,7 +7,7 @@ import good.damn.common.COHandlerGl
 import good.damn.engine2.models.MGMInstanceArray
 import good.damn.common.matrices.COMatrixScaleRotation
 import good.damn.common.matrices.COMatrixTransformationNormal
-import good.damn.engine.MGUtilsBuffer
+import good.damn.engine.ASUtilsBuffer
 import java.nio.Buffer
 import java.nio.FloatBuffer
 
@@ -38,7 +38,7 @@ object MGUtilsInstancedMesh {
         )
 
         handlerGl.post(
-            good.damn.apigl.runnables.MGRunglGenVertexArrayInstanced(
+            good.damn.apigl.runnables.GLRunglGenVertexArrayInstanced(
                 vertexArray,
                 configurator,
                 bufferVertices,
@@ -63,10 +63,10 @@ object MGUtilsInstancedMesh {
             >
     ): MGMatrixBuffer {
         var i = 0
-        val outputModel = MGUtilsBuffer.allocateFloat(
+        val outputModel = ASUtilsBuffer.allocateFloat(
             v.size * 16
         )
-        val outputRotation = MGUtilsBuffer.allocateFloat(
+        val outputRotation = ASUtilsBuffer.allocateFloat(
             outputModel.capacity()
         )
 

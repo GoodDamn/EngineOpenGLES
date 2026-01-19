@@ -1,6 +1,5 @@
 package good.damn.logic.triggers;
 
-import android.opengl.GLES30;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -9,7 +8,7 @@ import good.damn.common.matrices.COMatrixScaleRotation;
 import good.damn.common.matrices.COMatrixTransformationInvert;
 import good.damn.common.matrices.COMatrixTransformationNormal;
 import good.damn.common.vertex.COMArrayVertexManager;
-import good.damn.engine.MGObject3d;
+import good.damn.engine.ASObject3d;
 import good.damn.engine.sdk.SDVector3;
 import good.damn.logic.models.LGTriggerPoint;
 import good.damn.logic.triggers.callbacks.LGManagerTriggerStateCallback;
@@ -35,7 +34,7 @@ public final class LGTriggerMesh {
 
     @NonNull
     public static LGTriggerPoint createTriggerPoint(
-        @NonNull final MGObject3d obj
+        @NonNull final ASObject3d obj
     ) {
         @NonNull
         final COMArrayVertexManager manager = new COMArrayVertexManager(

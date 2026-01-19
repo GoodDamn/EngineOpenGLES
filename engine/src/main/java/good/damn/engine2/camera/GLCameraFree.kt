@@ -4,7 +4,7 @@ import good.damn.apigl.buffers.GLBufferUniformCamera
 import good.damn.common.COHandlerGl
 import good.damn.common.camera.COICameraFree
 import good.damn.common.matrices.COMatrixTranslate
-import good.damn.engine.MGUtilsBuffer
+import good.damn.engine.ASUtilsBuffer
 import good.damn.engine.sdk.SDVector3
 
 class GLCameraFree(
@@ -13,11 +13,11 @@ class GLCameraFree(
     uniformBufferCamera: GLBufferUniformCamera
 ): COICameraFree {
 
-    private val mBufferView = MGUtilsBuffer.allocateByte(
+    private val mBufferView = ASUtilsBuffer.allocateByte(
         16 * 4
     )
 
-    private val mRunglSendCameraModel = good.damn.apigl.runnables.MGRunglSendDataCameraModel(
+    private val mRunglSendCameraModel = good.damn.apigl.runnables.GLRunglSendDataCameraModel(
         mBufferView,
         uniformBufferCamera
     )

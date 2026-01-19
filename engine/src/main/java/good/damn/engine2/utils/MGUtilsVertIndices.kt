@@ -1,6 +1,6 @@
 package good.damn.engine2.utils
 
-import good.damn.engine.MGUtilsBuffer
+import good.damn.engine.ASUtilsBuffer
 import good.damn.engine.sdk.SDVector3
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
@@ -19,12 +19,12 @@ object MGUtilsVertIndices {
 
         val stepsVertical = 3
         val radianStep = PI2 / countStepsHorizontal
-        val output = MGUtilsBuffer.allocateFloat(
+        val output = ASUtilsBuffer.allocateFloat(
             countStepsHorizontal * stepsVertical * 3 //+ 6 // 6 = 3 (top) + 3(bottom)
         )
 
         val indRows = countStepsHorizontal - 2
-        val indices = MGUtilsBuffer.allocateByte(
+        val indices = ASUtilsBuffer.allocateByte(
             (indRows + 1) * 3 * stepsVertical
         )
 

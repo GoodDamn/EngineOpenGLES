@@ -6,7 +6,7 @@ import good.damn.common.COIRunnableBounds
 import java.nio.Buffer
 import java.nio.FloatBuffer
 
-class MGRunglGenVertexArrayInstanced(
+class GLRunglGenVertexArrayInstanced(
     private val vertexArray: GLArrayVertexInstanced,
     private val configurator: GLArrayVertexConfigurator,
     private val bufferVertices: FloatBuffer,

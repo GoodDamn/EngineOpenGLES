@@ -41,7 +41,7 @@ import good.damn.common.camera.COMCamera
 import good.damn.common.matrices.COMatrixTranslate
 import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine2.opengl.models.MGMLightPass
-import good.damn.engine.MGObject3d
+import good.damn.engine.ASObject3d
 import good.damn.wrapper.hud.APHudScene
 import good.damn.engine2.camera.GLCameraFree
 import good.damn.engine2.camera.GLCameraProjection
@@ -56,7 +56,7 @@ import good.damn.engine2.opengl.pools.MGPoolTextures
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine2.shader.MGShaderCache
 import good.damn.engine2.shader.MGShaderSource
-import good.damn.engine.MGUtilsBuffer
+import good.damn.engine.ASUtilsBuffer
 import good.damn.engine2.models.MGMParameters
 import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.engine2.utils.MGUtilsFile
@@ -156,7 +156,7 @@ class APRendererLevelEditor(
         GLEnumArrayVertexConfiguration.BYTE
     )
 
-    private val verticesBox10Raw = MGUtilsBuffer.createFloat(
+    private val verticesBox10Raw = ASUtilsBuffer.createFloat(
         MGUtilsVertIndices.createCubeVertices(
             SDVector3(
                 -1.0f, -1.0f, -1.0f
@@ -348,10 +348,10 @@ class APRendererLevelEditor(
         }
 
         mVerticesQuad.configure(
-            MGUtilsBuffer.createFloat(
+            ASUtilsBuffer.createFloat(
                 MGUtilsVertIndices.createQuadVertices()
             ),
-            MGUtilsBuffer.createByte(
+            ASUtilsBuffer.createByte(
                 MGUtilsVertIndices.createQuadIndices()
             ),
             GLPointerAttribute.Builder()
@@ -411,7 +411,7 @@ class APRendererLevelEditor(
             .pointPosition()
             .build()
 
-        MGObject3d.createFromAssets(
+        ASObject3d.createFromAssets(
             "objs/sphere.fbx"
         )?.get(0)?.let {
             mVerticesSphere.configure(
@@ -425,12 +425,12 @@ class APRendererLevelEditor(
             )
         }
 
-        val indicesBox = MGUtilsBuffer.createByte(
+        val indicesBox = ASUtilsBuffer.createByte(
             MGUtilsVertIndices.createCubeIndices()
         )
 
         mVerticesBox05.configure(
-            MGUtilsBuffer.createFloat(
+            ASUtilsBuffer.createFloat(
                 MGUtilsVertIndices.createCubeVertices(
                     LGTriggerMethodBox.MIN,
                     LGTriggerMethodBox.MAX

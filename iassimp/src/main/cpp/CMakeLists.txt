@@ -34,7 +34,7 @@ add_library(
     SHARED
 
     # List C/C++ source files with relative paths to this CMakeLists.txt.
-    MGObject3d.cpp
+    ASObject3d.cpp
 )
 
 add_library(

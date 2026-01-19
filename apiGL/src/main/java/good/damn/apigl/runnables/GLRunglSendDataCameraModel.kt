@@ -4,18 +4,24 @@ import good.damn.apigl.buffers.GLBufferUniformCamera
 import good.damn.common.COIRunnableBounds
 import java.nio.ByteBuffer
 
-class MGRunglSendDataProjection(
+class GLRunglSendDataCameraModel(
     private val inputBuffer: ByteBuffer,
     private val buffer: GLBufferUniformCamera
 ): COIRunnableBounds {
+
+    var isUpdated = true
 
     override fun run(
         width: Int,
         height: Int
     ) {
-        buffer.setMatrixProjection(
+        synchronized(
             inputBuffer
-        )
+        ) {
+            buffer.setMatrixView(
+                inputBuffer
+            )
+        }
+        isUpdated = true
     }
-
 }

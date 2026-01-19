@@ -6,7 +6,7 @@ import good.damn.apigl.arrays.pointers.GLPointerAttribute
 import good.damn.apigl.drawers.GLDrawerVertexArray
 import good.damn.apigl.runnables.GLRunglConfigVertexArray
 import good.damn.common.COHandlerGl
-import good.damn.engine.MGObject3d
+import good.damn.engine.ASObject3d
 import good.damn.logic.triggers.LGTriggerMesh
 
 class MGPoolMeshesStatic(
@@ -32,7 +32,7 @@ class MGPoolMeshesStatic(
             return this
         }
 
-        val objs = MGObject3d.createFromAssets(
+        val objs = ASObject3d.createFromAssets(
             "objs/$fileNameModel"
         ) ?: return null
 

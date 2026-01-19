@@ -1,7 +1,7 @@
 package good.damn.engine2.loaders.texture
 
 import android.graphics.Bitmap
-import good.damn.apigl.runnables.MGRunglTextureSetupBitmap
+import good.damn.apigl.runnables.GLRunglTextureSetupBitmap
 import good.damn.apigl.textures.GLTexture
 import good.damn.apigl.textures.GLTextureBitmap
 import good.damn.common.COHandlerGl
@@ -15,7 +15,7 @@ class MGLoaderTextureAsync(
         texture: GLTexture
     ) {
         glHandler.post(
-            MGRunglTextureSetupBitmap(
+            GLRunglTextureSetupBitmap(
                 GLTextureBitmap(
                     texture
                 ),

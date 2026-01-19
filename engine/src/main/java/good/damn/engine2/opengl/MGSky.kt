@@ -15,7 +15,7 @@ import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.apigl.shaders.base.GLBinderAttribute
 import good.damn.common.matrices.COMatrixScale
 import good.damn.engine2.opengl.models.MGMMeshDrawer
-import good.damn.engine.MGObject3d
+import good.damn.engine.ASObject3d
 import good.damn.engine2.models.MGMInformatorShader
 import good.damn.engine2.opengl.pools.MGPoolTextures
 import good.damn.engine2.shader.generators.MGMMaterialShader
@@ -34,7 +34,7 @@ class MGSky {
             GLEnumArrayVertexConfiguration.SHORT
         )
 
-        MGObject3d.createFromAssets(
+        ASObject3d.createFromAssets(
             "objs/semi_sphere.obj"
         )?.get(0)?.apply {
             verticesSky.configure(

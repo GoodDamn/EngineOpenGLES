@@ -5,7 +5,7 @@ import android.opengl.GLES30
 import good.damn.apigl.textures.GLTextureBitmap
 import good.damn.common.COIRunnableBounds
 
-class MGRunglTextureSetupBitmap(
+class GLRunglTextureSetupBitmap(
     private val texture: GLTextureBitmap,
     private val bitmap: Bitmap
 ): COIRunnableBounds {

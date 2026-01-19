@@ -2,7 +2,6 @@ package good.damn.wrapper.imports
 
 import android.opengl.GLES30
 import good.damn.apigl.drawers.GLDrawerMaterialTexture
-import good.damn.apigl.drawers.GLDrawerMesh
 import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
 import good.damn.apigl.drawers.GLDrawerMeshNormals
 import good.damn.apigl.drawers.GLDrawerPositionEntity
@@ -11,7 +10,7 @@ import good.damn.apigl.drawers.GLMaterial
 import good.damn.apigl.shaders.GLShaderGeometryPassModel
 import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.engine2.opengl.models.MGMMeshDrawer
-import good.damn.engine.MGObject3d
+import good.damn.engine.ASObject3d
 import good.damn.apigl.shaders.base.GLBinderAttribute
 import good.damn.engine2.models.MGMInformatorShader
 import good.damn.engine2.models.MGMParameters
@@ -44,7 +43,7 @@ class MGCallbackModelSpawn(
 
     fun processObjects(
         fileName: String,
-        objs: Array<MGObject3d>?
+        objs: Array<ASObject3d>?
     ) {
         objs ?: return
         if (objs.isEmpty()) {

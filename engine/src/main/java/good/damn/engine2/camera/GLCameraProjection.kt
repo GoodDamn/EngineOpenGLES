@@ -5,7 +5,7 @@ import good.damn.common.COHandlerGl
 import good.damn.common.camera.COCameraProjection
 import good.damn.common.camera.COICameraProjection
 import good.damn.common.matrices.COMatrixTranslate
-import good.damn.engine.MGUtilsBuffer
+import good.damn.engine.ASUtilsBuffer
 
 class GLCameraProjection(
     private val camera: COCameraProjection,
@@ -13,7 +13,7 @@ class GLCameraProjection(
     private val uniformBufferCamera: GLBufferUniformCamera,
 ): COICameraProjection {
 
-    private val mProjectionBuffer = MGUtilsBuffer.allocateByte(
+    private val mProjectionBuffer = ASUtilsBuffer.allocateByte(
         16 * 4
     )
 
@@ -38,7 +38,7 @@ class GLCameraProjection(
         }
 
         handler.post(
-            good.damn.apigl.runnables.MGRunglSendDataProjection(
+            good.damn.apigl.runnables.GLRunglSendDataProjection(
                 mProjectionBuffer,
                 uniformBufferCamera
             )

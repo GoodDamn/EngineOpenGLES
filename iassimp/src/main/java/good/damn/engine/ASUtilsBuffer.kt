@@ -9,7 +9,7 @@ import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import java.nio.ShortBuffer
 
-object MGUtilsBuffer {
+object ASUtilsBuffer {
     private val BYTE_ORDER = ByteOrder.nativeOrder()
 
     @JvmStatic

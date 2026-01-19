@@ -1,6 +1,6 @@
 package good.damn.engine2.utils
 
-import good.damn.engine.MGUtilsBuffer
+import good.damn.engine.ASUtilsBuffer
 import java.nio.FloatBuffer
 
 object MGUtilsArray {
@@ -17,7 +17,7 @@ object MGUtilsArray {
     ): FloatBuffer {
         val vertexCount = position.size / 3
         val outSize = PUNTB * vertexCount
-        val output = MGUtilsBuffer.allocateFloat(
+        val output = ASUtilsBuffer.allocateFloat(
             outSize
         )
 

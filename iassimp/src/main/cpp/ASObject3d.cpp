@@ -6,7 +6,7 @@
 #include <list>
 #include <jni.h>
 
-const char* TAG = "MGObject3d.cpp";
+const char* TAG = "ASObject3d.cpp";
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
 #define NUM_TEXTURE_TYPES 3
 
@@ -256,7 +256,7 @@ jobjectArray processTextures(
 
 extern "C"
 JNIEXPORT jobjectArray JNICALL
-Java_good_damn_engine_MGObject3d_createFromPath(
+Java_good_damn_engine_ASObject3d_createFromPath(
     JNIEnv *env,
     jclass clazz,
     jbyteArray path
@@ -294,7 +294,7 @@ Java_good_damn_engine_MGObject3d_createFromPath(
     }
 
     jclass classElement = env->FindClass(
-        "good/damn/engine/MGObject3d"
+        "good/damn/engine/ASObject3d"
     );
 
     std::list<MGMesh*> meshes;
