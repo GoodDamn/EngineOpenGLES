@@ -31,11 +31,12 @@ import good.damn.engine2.opengl.models.MGMMeshDrawer
 import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
+import good.damn.engine2.logic.MGMGeometryFrustrumMesh
+import good.damn.engine2.logic.MGVolumeTriggerMesh
 import good.damn.engine2.triggers.MGTriggerSimple
 import good.damn.engine2.utils.MGUtilsJson
 import good.damn.engine2.utils.MGUtilsVector3
 import good.damn.logic.triggers.LGTriggerMesh
-import good.damn.logic.triggers.entities.LGVolumeTrigger
 import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import good.damn.mapimporter.MIImportMap
 import good.damn.mapimporter.models.MIMMap
@@ -299,33 +300,41 @@ object MGStreamLevel {
                 MGTriggerSimple()
             )
 
+            val drawerMesh = GLDrawerMeshMaterialMutable(
+                arrayOf(
+                    GLMaterial(
+                        GLDrawerMaterialTexture(
+                            pointInfo.first.first.textures
+                        )
+                    )
+                ),
+                GLDrawerMeshNormals(
+                    poolMesh[0].drawerVertexArray,
+                    GLDrawerPositionEntity(
+                        triggerMesh.matrix.matrixMesh.model
+                    ),
+                    GLEnumFaceOrder.COUNTER_CLOCK_WISE,
+                    triggerMesh.matrix.matrixMesh.normal
+                )
+            )
+
+            val frustrumMesh = MGMGeometryFrustrumMesh(
+                false,
+                drawerMesh
+            )
+
             geometry.meshes.add(
                 MGMMeshDrawer(
                     pointInfo.second,
-                    GLDrawerMeshMaterialMutable(
-                        arrayOf(
-                            GLMaterial(
-                                GLDrawerMaterialTexture(
-                                    pointInfo.first.first.textures
-                                )
-                            )
-                        ),
-                        GLDrawerMeshNormals(
-                            poolMesh[0].drawerVertexArray,
-                            GLDrawerPositionEntity(
-                                triggerMesh.matrix.matrixMesh.model
-                            ),
-                            GLEnumFaceOrder.COUNTER_CLOCK_WISE,
-                            triggerMesh.matrix.matrixMesh.normal
-                        )
-                    )
+                    frustrumMesh
                 )
             )
 
             managers.managerTrigger.addTrigger(
-                LGVolumeTrigger(
+                MGVolumeTriggerMesh(
                     triggerMesh.matrix.matrixTrigger.model,
-                    triggerMesh.triggerState.stateManager
+                    triggerMesh.triggerState.stateManager,
+                    frustrumMesh
                 )
             )
         }

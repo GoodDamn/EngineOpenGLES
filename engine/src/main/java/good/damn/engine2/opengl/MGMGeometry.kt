@@ -5,6 +5,7 @@ import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
 import good.damn.apigl.drawers.GLDrawerVertexArray
 import good.damn.apigl.shaders.GLShaderGeometryPassInstanced
 import good.damn.apigl.shaders.GLShaderGeometryPassModel
+import good.damn.engine2.logic.MGMGeometryFrustrumMesh
 import good.damn.engine2.opengl.models.MGMMeshDrawer
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -12,8 +13,8 @@ data class MGMGeometry(
     val meshes: ConcurrentLinkedQueue<
         MGMMeshDrawer<
             GLShaderGeometryPassModel,
-            GLDrawerMeshMaterialMutable
-            >
+            MGMGeometryFrustrumMesh
+        >
     >,
     val meshesInstanced: ConcurrentLinkedQueue<
         MGMMeshDrawer<
@@ -28,12 +29,16 @@ data class MGMGeometry(
 
     inline fun drawMeshes() {
         meshes.forEach {
+            if (!it.drawer.isOn) {
+                return@forEach
+            }
+
             it.shader.apply {
                 use()
-                it.drawer.drawNormals(
+                it.drawer.drawer.drawNormals(
                     this
                 )
-                it.drawer.drawMaterials(
+                it.drawer.drawer.drawMaterials(
                     materials,
                     this
                 )

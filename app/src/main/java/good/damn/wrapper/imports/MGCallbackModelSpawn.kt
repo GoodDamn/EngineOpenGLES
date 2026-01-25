@@ -12,6 +12,8 @@ import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.engine2.opengl.models.MGMMeshDrawer
 import good.damn.engine.ASObject3d
 import good.damn.apigl.shaders.base.GLBinderAttribute
+import good.damn.engine2.logic.MGMGeometryFrustrumMesh
+import good.damn.engine2.logic.MGVolumeTriggerMesh
 import good.damn.engine2.models.MGMInformatorShader
 import good.damn.engine2.models.MGMParameters
 import good.damn.engine2.opengl.MGMGeometry
@@ -20,7 +22,6 @@ import good.damn.engine2.shader.generators.MGMMaterialShader
 import good.damn.logic.triggers.LGITrigger
 import good.damn.logic.triggers.LGMatrixTriggerMesh
 import good.damn.logic.triggers.LGTriggerMesh
-import good.damn.logic.triggers.entities.LGVolumeTrigger
 import good.damn.logic.triggers.managers.LGManagerTriggerMesh
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.bridges.APRayIntersectImplModel
@@ -158,25 +159,32 @@ class MGCallbackModelSpawn(
         mesh: LGTriggerMesh,
         drawerVertexArray: GLDrawerVertexArray
     ) {
+        val drawerMesh = GLDrawerMeshMaterialMutable(
+            arrayOf(
+                GLMaterial(
+                    GLDrawerMaterialTexture(
+                        material.textures
+                    )
+                )
+            ),
+            GLDrawerMeshNormals(
+                drawerVertexArray,
+                GLDrawerPositionEntity(
+                    mesh.matrix.matrixMesh.model
+                ),
+                GLEnumFaceOrder.COUNTER_CLOCK_WISE,
+                mesh.matrix.matrixMesh.normal
+            )
+        )
+
+        val frustrumMesh = MGMGeometryFrustrumMesh(
+            false,
+            drawerMesh
+        )
+
         val meshMaterial = MGMMeshDrawer(
             shader,
-            GLDrawerMeshMaterialMutable(
-                arrayOf(
-                    GLMaterial(
-                        GLDrawerMaterialTexture(
-                            material.textures
-                        )
-                    )
-                ),
-                GLDrawerMeshNormals(
-                    drawerVertexArray,
-                    GLDrawerPositionEntity(
-                        mesh.matrix.matrixMesh.model
-                    ),
-                    GLEnumFaceOrder.COUNTER_CLOCK_WISE,
-                    mesh.matrix.matrixMesh.normal
-                )
-            )
+            frustrumMesh
         )
         parameters.currentEditMesh = meshMaterial
 
@@ -185,9 +193,10 @@ class MGCallbackModelSpawn(
         )
 
         managerTrigger.addTrigger(
-            LGVolumeTrigger(
+            MGVolumeTriggerMesh(
                 mesh.matrix.matrixTrigger.model,
-                mesh.triggerState.stateManager
+                mesh.triggerState.stateManager,
+                frustrumMesh
             )
         )
     }

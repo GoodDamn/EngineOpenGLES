@@ -144,10 +144,6 @@ class APRendererLevelEditor(
         GLEnumArrayVertexConfiguration.SHORT
     )
 
-    private val mVerticesBox05 = GLArrayVertexConfigurator(
-        GLEnumArrayVertexConfiguration.BYTE
-    )
-
     private val mVerticesBox10 = GLArrayVertexConfigurator(
         GLEnumArrayVertexConfiguration.BYTE
     )
@@ -160,10 +156,6 @@ class APRendererLevelEditor(
         MGUtilsVertIndices.createCubeVertices2(
             1.0f
         )
-    )
-
-    private val mDrawerBox05 = GLDrawerVertexArray(
-        mVerticesBox05
     )
 
     private val mDrawerBox10 = GLDrawerVertexArray(
@@ -422,16 +414,6 @@ class APRendererLevelEditor(
 
         val indicesBox = ASUtilsBuffer.createByte(
             MGUtilsVertIndices.createCubeIndices2()
-        )
-
-        mVerticesBox05.configure(
-            ASUtilsBuffer.createFloat(
-                MGUtilsVertIndices.createCubeVertices2(
-                    0.5f
-                )
-            ),
-            indicesBox,
-            pointPosition
         )
 
 

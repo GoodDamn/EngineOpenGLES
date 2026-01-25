@@ -86,7 +86,7 @@ class MGImportImage(
     ) {
         // attach material to model
         parameters.currentEditMesh?.apply {
-            drawer.material = arrayOf(
+            drawer.drawer.material = arrayOf(
                 GLMaterial(
                     GLDrawerMaterialTexture(
                         materialShader.textures
