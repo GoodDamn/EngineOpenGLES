@@ -24,40 +24,31 @@ object ASUtilsBuffer {
     @JvmStatic
     fun allocateFloat(
         size: Int
-    ) = ByteBuffer.allocateDirect(
+    ) = allocateByte(
         size * 4
-    ).order(
-        BYTE_ORDER
     ).asFloatBuffer()
 
     @JvmStatic
     fun allocateInt(
         size: Int
-    ) = ByteBuffer.allocateDirect(
+    ) = allocateByte(
         size * 4
-    ).order(
-        BYTE_ORDER
     ).asIntBuffer()
 
     @JvmStatic
     fun allocateShort(
         size: Int
-    ) = ByteBuffer.allocateDirect(
+    ) = allocateByte(
         size * 2
-    ).order(
-        BYTE_ORDER
     ).asShortBuffer()
 
     @JvmStatic
     fun createByte(
         i: ByteArray
     ): ByteBuffer {
-        val b = ByteBuffer
-            .allocateDirect(
-                i.size * 4
-            ).order(
-                BYTE_ORDER
-            ).put(i)
+        val b = allocateByte(
+            i.size
+        ).put(i)
         b.position(0)
         return b
     }
@@ -66,13 +57,9 @@ object ASUtilsBuffer {
     fun createFloat(
         i: FloatArray
     ): FloatBuffer {
-        val b = ByteBuffer
-            .allocateDirect(
-                i.size * 4
-            ).order(
-                BYTE_ORDER
-            ).asFloatBuffer()
-            .put(i)
+        val b = allocateFloat(
+            i.size
+        ).put(i)
         b.position(0)
         return b
     }
@@ -81,13 +68,9 @@ object ASUtilsBuffer {
     fun createShort(
         i: ShortArray
     ): ShortBuffer {
-        val b = ByteBuffer
-            .allocateDirect(
-                i.size * 2
-            ).order(
-                BYTE_ORDER
-            ).asShortBuffer()
-            .put(i)
+        val b = allocateShort(
+            i.size
+        ).put(i)
         b.position(0)
         return b
     }
@@ -96,13 +79,9 @@ object ASUtilsBuffer {
     fun createInt(
         i: IntArray
     ): IntBuffer {
-        val b = ByteBuffer
-            .allocateDirect(
-                i.size * 4
-            ).order(
-                BYTE_ORDER
-            ).asIntBuffer()
-            .put(i)
+        val b = allocateInt(
+            i.size
+        ).put(i)
         b.position(0)
         return b
     }
@@ -111,8 +90,11 @@ object ASUtilsBuffer {
     inline fun createBufferIndicesDynamic(
         indices: IntArray,
         vertexCount: Int
-    ): Pair<GLEnumArrayVertexConfiguration, Buffer> {
-        if (vertexCount > Short.MAX_VALUE.toInt() and 0xffff) {
+    ): Pair<
+        GLEnumArrayVertexConfiguration,
+        Buffer
+    > {
+        if (vertexCount > (Short.MAX_VALUE.toInt() and 0xffff)) {
             return Pair(
                 GLEnumArrayVertexConfiguration.INT,
                 allocateInt(
@@ -125,7 +107,7 @@ object ASUtilsBuffer {
             )
         }
 
-        if (vertexCount > Byte.MAX_VALUE.toInt() and 0xff) {
+        if (vertexCount > (Byte.MAX_VALUE.toInt() and 0xff)) {
             return Pair(
                 GLEnumArrayVertexConfiguration.SHORT,
                 allocateShort(

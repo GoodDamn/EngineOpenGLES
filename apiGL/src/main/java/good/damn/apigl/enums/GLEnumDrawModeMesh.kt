@@ -9,6 +9,6 @@ enum class GLEnumDrawModeMesh(
         GLES30.GL_TRIANGLES
     ),
     LINES(
-        GLES30.GL_LINES
+        GLES30.GL_LINE_LOOP
     )
 }

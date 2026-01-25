@@ -31,6 +31,8 @@ class LevelEditorView(
             8
         )
 
+        //preserveEGLContextOnPause = true
+
         mRenderer = APRendererLevelEditor(
             requesterUserContent
         )

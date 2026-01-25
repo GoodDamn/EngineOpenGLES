@@ -157,13 +157,8 @@ class APRendererLevelEditor(
     )
 
     private val verticesBox10Raw = ASUtilsBuffer.createFloat(
-        MGUtilsVertIndices.createCubeVertices(
-            SDVector3(
-                -1.0f, -1.0f, -1.0f
-            ),
-            SDVector3(
-                1.0f, 1.0f, 1.0f
-            )
+        MGUtilsVertIndices.createCubeVertices2(
+            1.0f
         )
     )
 
@@ -426,14 +421,13 @@ class APRendererLevelEditor(
         }
 
         val indicesBox = ASUtilsBuffer.createByte(
-            MGUtilsVertIndices.createCubeIndices()
+            MGUtilsVertIndices.createCubeIndices2()
         )
 
         mVerticesBox05.configure(
             ASUtilsBuffer.createFloat(
-                MGUtilsVertIndices.createCubeVertices(
-                    LGTriggerMethodBox.MIN,
-                    LGTriggerMethodBox.MAX
+                MGUtilsVertIndices.createCubeVertices2(
+                    0.5f
                 )
             ),
             indicesBox,

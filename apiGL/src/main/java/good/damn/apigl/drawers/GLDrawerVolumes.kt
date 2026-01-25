@@ -1,6 +1,7 @@
 package good.damn.apigl.drawers
 
 import android.opengl.GLES30
+import good.damn.apigl.enums.GLEnumDrawModeMesh
 import good.damn.apigl.shaders.GLIShaderModel
 import good.damn.common.volume.COManagerFrustrum
 
@@ -19,7 +20,7 @@ class GLDrawerVolumes(
             )
 
             drawerPrimitive.draw(
-                GLES30.GL_LINES
+                GLEnumDrawModeMesh.LINES.v
             )
         }
     }

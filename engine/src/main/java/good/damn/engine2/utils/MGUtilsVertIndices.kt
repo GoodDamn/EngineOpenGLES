@@ -187,8 +187,7 @@ object MGUtilsVertIndices {
         );
     }
 
-
-    @JvmStatic
+    /*@JvmStatic
     fun createCubeVertices(
         min: SDVector3,
         max: SDVector3
@@ -236,6 +235,31 @@ object MGUtilsVertIndices {
         // back
         4, 5, 6,
         6, 7, 5
+    )*/
+
+    @JvmStatic
+    fun createCubeVertices2(
+        scale: Float
+    ) = floatArrayOf(
+         scale,  scale, -scale,
+         scale, -scale, -scale,
+         scale,  scale,  scale,
+         scale, -scale,  scale,
+
+        -scale,  scale, -scale,
+        -scale, -scale, -scale,
+        -scale,  scale,  scale,
+        -scale, -scale,  scale,
+    )
+
+    @JvmStatic
+    fun createCubeIndices2() = byteArrayOf(
+        0, 4, 6, 2,
+        3, 2, 6, 7,
+        7, 6, 4, 5,
+        5, 1, 3, 7,
+        1, 0, 2, 3,
+        5, 4, 0, 1
     )
 
 
