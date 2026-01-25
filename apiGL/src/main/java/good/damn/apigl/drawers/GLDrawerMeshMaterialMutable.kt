@@ -6,20 +6,12 @@ import good.damn.apigl.shaders.GLShaderMaterial
 
 class GLDrawerMeshMaterialMutable(
     var material: Array<GLMaterial>,
-    var drawerMesh: GLDrawerMesh
+    private val drawerMesh: GLDrawerMesh
 ) {
     fun drawNormals(
         shader: GLIShaderNormal
     ) {
         drawerMesh.drawNormals(
-            shader
-        )
-    }
-
-    fun drawVertices(
-        shader: GLIShaderModel
-    ) {
-        drawerMesh.draw(
             shader
         )
     }
