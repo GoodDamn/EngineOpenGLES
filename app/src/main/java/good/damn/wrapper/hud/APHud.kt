@@ -67,7 +67,8 @@ class APHud(
         shaders,
         geometry,
         parameters,
-        managers.managerTrigger
+        managers.managerTrigger,
+        managers.managerFrustrum
     )
 
     private val mLayerEditor = APUILayerEditor(

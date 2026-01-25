@@ -12,11 +12,14 @@ import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.engine2.opengl.models.MGMMeshDrawer
 import good.damn.engine.ASObject3d
 import good.damn.apigl.shaders.base.GLBinderAttribute
+import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine2.logic.MGMGeometryFrustrumMesh
 import good.damn.engine2.logic.MGVolumeTriggerMesh
 import good.damn.engine2.models.MGMInformatorShader
+import good.damn.engine2.models.MGMManagers
 import good.damn.engine2.models.MGMParameters
 import good.damn.engine2.opengl.MGMGeometry
+import good.damn.engine2.opengl.MGMVolume
 import good.damn.engine2.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine2.shader.generators.MGMMaterialShader
 import good.damn.logic.triggers.LGITrigger
@@ -33,7 +36,8 @@ class MGCallbackModelSpawn(
     private val shaders: MGMInformatorShader,
     private val geometry: MGMGeometry,
     private val parameters: MGMParameters,
-    private val managerTrigger: LGManagerTriggerMesh
+    private val managerTrigger: LGManagerTriggerMesh,
+    private val managerVolumes: COManagerFrustrum
 ) {
 
     private val mBinderAttr = GLBinderAttribute.Builder()
@@ -186,18 +190,25 @@ class MGCallbackModelSpawn(
             shader,
             frustrumMesh
         )
+
+        val volume = MGVolumeTriggerMesh(
+            mesh.matrix.matrixTrigger.model,
+            mesh.triggerState.stateManager,
+            frustrumMesh
+        )
+
         parameters.currentEditMesh = meshMaterial
 
         geometry.meshes.add(
             meshMaterial
         )
 
+        managerVolumes.volumes.add(
+            volume
+        )
+
         managerTrigger.addTrigger(
-            MGVolumeTriggerMesh(
-                mesh.matrix.matrixTrigger.model,
-                mesh.triggerState.stateManager,
-                frustrumMesh
-            )
+            volume
         )
     }
 }

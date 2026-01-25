@@ -323,6 +323,12 @@ object MGStreamLevel {
                 drawerMesh
             )
 
+            val volume = MGVolumeTriggerMesh(
+                triggerMesh.matrix.matrixTrigger.model,
+                triggerMesh.triggerState.stateManager,
+                frustrumMesh
+            )
+
             geometry.meshes.add(
                 MGMMeshDrawer(
                     pointInfo.second,
@@ -330,12 +336,12 @@ object MGStreamLevel {
                 )
             )
 
+            managers.managerFrustrum.volumes.add(
+                volume
+            )
+
             managers.managerTrigger.addTrigger(
-                MGVolumeTriggerMesh(
-                    triggerMesh.matrix.matrixTrigger.model,
-                    triggerMesh.triggerState.stateManager,
-                    frustrumMesh
-                )
+                volume
             )
         }
     }
