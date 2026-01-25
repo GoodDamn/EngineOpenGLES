@@ -7,7 +7,6 @@ import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.sdk.models.SDMLightPointEntity
 import good.damn.engine.sdk.process.SDIProcessTime
 import good.damn.logic.process.LGManagerProcessTime
-import good.damn.logic.triggers.entities.LGVolumeTrigger
 import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import java.io.File
 

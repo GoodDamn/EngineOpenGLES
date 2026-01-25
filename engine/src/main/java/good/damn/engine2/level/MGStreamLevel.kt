@@ -1,9 +1,7 @@
 package good.damn.engine2.level
 
-import android.opengl.GLES30
 import good.damn.apigl.drawers.GLDrawerLightPoint
 import good.damn.apigl.drawers.GLDrawerMaterialTexture
-import good.damn.apigl.drawers.GLDrawerMesh
 import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
 import good.damn.apigl.drawers.GLDrawerMeshNormals
 import good.damn.apigl.drawers.GLDrawerPositionEntity
