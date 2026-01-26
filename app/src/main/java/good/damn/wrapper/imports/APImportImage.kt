@@ -9,13 +9,14 @@ import good.damn.engine2.models.MGMInformatorShader
 import good.damn.engine2.models.MGMParameters
 import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.engine2.shader.generators.MGMMaterialShader
+import good.damn.wrapper.models.APMUserContent
 import java.io.File
 
 class APImportImage(
     private val pools: MGMPools,
     private val shaders: MGMInformatorShader,
     private val parameters: MGMParameters
-): APImportImplTempFile() {
+): APIImport {
 
     private val mBinderAttribute = GLBinderAttribute.Builder()
         .bindPosition()
@@ -34,10 +35,10 @@ class APImportImage(
         return mIndexSubString > 0
     }
 
-    override fun onProcessTempFile(
-        file: File
+    override fun processUserContent(
+        userContent: APMUserContent
     ) {
-        val fileNameDiffuse = file.name.substring(
+        val fileNameDiffuse = userContent.fileName.substring(
             0, mIndexSubString
         )
 
