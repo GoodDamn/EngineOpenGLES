@@ -6,17 +6,17 @@ import good.damn.hud.touch.UIIListenerDistance
 import good.damn.hud.touch.UIIListenerMove
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 
-class MGCallbackOnCameraMovement(
+class APCallbackOnCameraMovement(
     private val camera: COICameraFree,
     private val bridge: APBridgeRayIntersect
 ): UIIListenerDelta,
 UIIListenerMove,
 UIIListenerDistance {
 
-    private var mListenerIntersect: MGIListenerOnIntersectPosition? = null
+    private var mListenerIntersect: APIListenerOnIntersectPosition? = null
 
     fun setListenerIntersection(
-        v: MGIListenerOnIntersectPosition?
+        v: APIListenerOnIntersectPosition?
     ) {
         mListenerIntersect = v
     }

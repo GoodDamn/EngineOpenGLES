@@ -1,15 +1,15 @@
 package good.damn.wrapper.imports
 
 import good.damn.common.extensions.copyTo
-import good.damn.wrapper.models.MGMUserContent
+import good.damn.wrapper.models.APMUserContent
 import good.damn.wrapper.APApp
 import java.io.File
 
-abstract class MGImportImplTempFile
-: MGIImport {
+abstract class APImportImplTempFile
+: APIImport {
 
     final override fun processUserContent(
-        userContent: MGMUserContent
+        userContent: APMUserContent
     ) {
         createTempFile(
             userContent
@@ -23,7 +23,7 @@ abstract class MGImportImplTempFile
     )
 
     private inline fun createTempFile(
-        userContent: MGMUserContent
+        userContent: APMUserContent
     ): File? {
         val temp = File(
             APApp.DIR_PUBLIC_TEMP,

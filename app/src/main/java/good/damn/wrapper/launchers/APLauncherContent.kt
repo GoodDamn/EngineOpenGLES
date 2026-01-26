@@ -3,13 +3,11 @@ package good.damn.wrapper.launchers
 import android.net.Uri
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import good.damn.wrapper.contracts.APContractActivityGetContent
 
-class ContentLauncher(
+class APLauncherContent(
     activity: AppCompatActivity,
     callback: ActivityResultCallback<Uri?>
 ): ActivityResultLauncher<Array<String>>(){

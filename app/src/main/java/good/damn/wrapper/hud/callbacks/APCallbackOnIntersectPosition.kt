@@ -3,9 +3,9 @@ package good.damn.wrapper.hud.callbacks
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.engine.sdk.SDVector3
 
-class MGCallbackOnIntersectPosition(
+class APCallbackOnIntersectPosition(
     private val bridgeMatrix: APBridgeRayIntersect
-): MGIListenerOnIntersectPosition {
+): APIListenerOnIntersectPosition {
 
     override fun onIntersectPosition(
         p: SDVector3

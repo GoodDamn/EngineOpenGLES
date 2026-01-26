@@ -4,18 +4,18 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.Log
 import android.view.MotionEvent
-import good.damn.wrapper.interfaces.MGIRequestUserContent
+import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.wrapper.renderer.APRendererLevelEditor
 
-class LevelEditorView(
+class APViewLevelEditor(
     context: Context,
-    requesterUserContent: MGIRequestUserContent
+    requesterUserContent: APIRequestUserContent
 ): GLSurfaceView(
     context
 ) {
 
     companion object {
-        private const val TAG = "LevelEditorView"
+        private const val TAG = "APViewLevelEditor"
     }
 
     private val mRenderer: APRendererLevelEditor

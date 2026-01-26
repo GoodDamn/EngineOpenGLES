@@ -9,30 +9,30 @@ import good.damn.engine2.models.MGMInformatorShader
 import good.damn.engine2.models.MGMManagers
 import good.damn.engine2.models.MGMParameters
 import good.damn.engine2.opengl.MGMGeometry
-import good.damn.wrapper.imports.MGImportImage
-import good.damn.wrapper.imports.MGImportImplLight
-import good.damn.wrapper.interfaces.MGIRequestUserContent
+import good.damn.wrapper.imports.APImportImage
+import good.damn.wrapper.imports.APImportImplLight
+import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.engine2.opengl.MGSwitcherDrawMode
 import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
-import good.damn.wrapper.hud.callbacks.MGCallbackOnCameraMovement
-import good.damn.wrapper.hud.callbacks.MGCallbackOnDeltaInteract
-import good.damn.wrapper.hud.callbacks.MGCallbackOnIntersectPosition
-import good.damn.wrapper.hud.callbacks.MGCallbackOnScale
-import good.damn.wrapper.imports.MGCallbackModelSpawn
+import good.damn.wrapper.hud.callbacks.APCallbackOnCameraMovement
+import good.damn.wrapper.hud.callbacks.APCallbackOnDeltaInteract
+import good.damn.wrapper.hud.callbacks.APCallbackOnIntersectPosition
+import good.damn.wrapper.hud.callbacks.APCallbackOnScale
+import good.damn.wrapper.imports.APCallbackModelSpawn
 import good.damn.wrapper.hud.ui.APUILayerEditor
 import good.damn.wrapper.hud.ui.clicks.APClickImport
 import good.damn.wrapper.hud.ui.clicks.APClickPlaceMesh
 import good.damn.wrapper.hud.ui.clicks.APClickSwitchDrawMode
 import good.damn.wrapper.hud.ui.clicks.APClickTriggerDrawingFlag
-import good.damn.wrapper.imports.MGImportImplA3D
-import good.damn.wrapper.imports.MGImportImplLevel
-import good.damn.wrapper.imports.MGImportImplModel
-import good.damn.wrapper.imports.MGMImportMisc
+import good.damn.wrapper.imports.APImportImplA3D
+import good.damn.wrapper.imports.APImportImplLevel
+import good.damn.wrapper.imports.APImportImplModel
+import good.damn.wrapper.imports.APMImportMisc
 
 class APHud(
     camera: COICameraFree,
-    requesterUserContent: MGIRequestUserContent,
+    requesterUserContent: APIRequestUserContent,
     switcherDrawMode: MGSwitcherDrawMode,
     parameters: MGMParameters,
     pools: MGMPools,
@@ -44,22 +44,22 @@ class APHud(
 
     private val mBridgeMatrix = APBridgeRayIntersect()
 
-    private val mCallbackOnDeltaInteract = MGCallbackOnDeltaInteract(
+    private val mCallbackOnDeltaInteract = APCallbackOnDeltaInteract(
         mBridgeMatrix
     )
 
-    private val mCallbackOnCameraMove = MGCallbackOnCameraMovement(
+    private val mCallbackOnCameraMove = APCallbackOnCameraMovement(
         camera,
         mBridgeMatrix
     ).apply {
         setListenerIntersection(
-            MGCallbackOnIntersectPosition(
+            APCallbackOnIntersectPosition(
                 mBridgeMatrix
             )
         )
     }
 
-    private val mCallbackModelSpawn = MGCallbackModelSpawn(
+    private val mCallbackModelSpawn = APCallbackModelSpawn(
         mBridgeMatrix,
         pools.meshes,
         shaders,
@@ -70,7 +70,7 @@ class APHud(
     )
 
     private val mLayerEditor = APUILayerEditor(
-        clickLoadUserContent = MGMImportMisc(
+        clickLoadUserContent = APMImportMisc(
             Handler(
                 Looper.getMainLooper()
             ),
@@ -79,10 +79,10 @@ class APHud(
         ).run {
             APClickImport(
                 arrayOf(
-                    MGImportImplModel(
+                    APImportImplModel(
                         this
                     ),
-                    MGImportImplLevel(
+                    APImportImplLevel(
                         this,
                         geometry,
                         pools,
@@ -90,15 +90,15 @@ class APHud(
                         glHandler,
                         managers
                     ),
-                    MGImportImplA3D(
+                    APImportImplA3D(
                         this
                     ),
-                    MGImportImage(
+                    APImportImage(
                         pools,
                         shaders,
                         parameters
                     ),
-                    MGImportImplLight(
+                    APImportImplLight(
                         mBridgeMatrix,
                         managers
                     )
@@ -131,7 +131,7 @@ class APHud(
         )
 
         setListenerTouchScaleInteract(
-            MGCallbackOnScale(
+            APCallbackOnScale(
                 mBridgeMatrix
             )
         )

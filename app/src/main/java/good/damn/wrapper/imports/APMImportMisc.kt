@@ -2,8 +2,8 @@ package good.damn.wrapper.imports
 
 import android.os.Handler
 
-data class MGMImportMisc(
+data class APMImportMisc(
     val handler: Handler,
-    val modelsCallback: MGCallbackModelSpawn,
+    val modelsCallback: APCallbackModelSpawn,
     val buffer: ByteArray,
 )

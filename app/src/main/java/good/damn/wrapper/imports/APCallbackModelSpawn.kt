@@ -16,20 +16,17 @@ import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine2.logic.MGMGeometryFrustrumMesh
 import good.damn.engine2.logic.MGVolumeTriggerMesh
 import good.damn.engine2.models.MGMInformatorShader
-import good.damn.engine2.models.MGMManagers
 import good.damn.engine2.models.MGMParameters
 import good.damn.engine2.opengl.MGMGeometry
-import good.damn.engine2.opengl.MGMVolume
 import good.damn.engine2.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine2.shader.generators.MGMMaterialShader
-import good.damn.logic.triggers.LGITrigger
 import good.damn.logic.triggers.LGMatrixTriggerMesh
 import good.damn.logic.triggers.LGTriggerMesh
 import good.damn.logic.triggers.managers.LGManagerTriggerMesh
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.bridges.APRayIntersectImplModel
 
-class MGCallbackModelSpawn(
+class APCallbackModelSpawn(
     private val bridgeRay: APBridgeRayIntersect,
     private val poolMeshes: MGPoolMeshesStatic,
     private val shaders: MGMInformatorShader,

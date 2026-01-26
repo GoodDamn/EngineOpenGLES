@@ -3,9 +3,9 @@ package good.damn.wrapper.imports
 import good.damn.engine.ASObject3d
 import java.io.File
 
-class MGImportImplModel(
-    private val misc: MGMImportMisc
-): MGImportImplTempFile() {
+class APImportImplModel(
+    private val misc: APMImportMisc
+): APImportImplTempFile() {
 
     override fun isValidExtension(
         fileName: String
@@ -29,7 +29,7 @@ class MGImportImplModel(
     }
 
     private class MGRunnableLoadModel(
-        private val modelsCallback: MGCallbackModelSpawn,
+        private val modelsCallback: APCallbackModelSpawn,
         private val file: File
     ): Runnable {
         override fun run() {

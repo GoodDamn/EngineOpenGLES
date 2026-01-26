@@ -1,13 +1,13 @@
 package good.damn.wrapper.imports
 
-import good.damn.wrapper.models.MGMUserContent
+import good.damn.wrapper.models.APMUserContent
 
-interface MGIImport {
+interface APIImport {
     fun isValidExtension(
         fileName: String
     ): Boolean
 
     fun processUserContent(
-        userContent: MGMUserContent
+        userContent: APMUserContent
     )
 }

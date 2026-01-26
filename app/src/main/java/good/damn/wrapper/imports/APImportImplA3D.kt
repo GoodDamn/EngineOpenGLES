@@ -7,9 +7,9 @@ import good.damn.ia3d.stream.A3DInputStream
 import java.io.File
 import java.io.FileInputStream
 
-class MGImportImplA3D(
-    private val misc: MGMImportMisc
-): MGImportImplTempFile() {
+class APImportImplA3D(
+    private val misc: APMImportMisc
+): APImportImplTempFile() {
 
     override fun isValidExtension(
         fileName: String
@@ -30,7 +30,7 @@ class MGImportImplA3D(
 
     private class MGRunnableA3D(
         private val file: File,
-        private val misc: MGMImportMisc
+        private val misc: APMImportMisc
     ): Runnable {
         override fun run() {
             val asset = A3DImport.createFromStream(

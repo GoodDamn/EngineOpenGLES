@@ -1,8 +1,8 @@
 package good.damn.wrapper.interfaces
 
-interface MGIRequestUserContent {
+interface APIRequestUserContent {
     fun requestUserContent(
-        callback: MGIListenerOnGetUserContent,
+        callback: APIListenerOnGetUserContent,
         mimeType: Array<String>
     )
 }

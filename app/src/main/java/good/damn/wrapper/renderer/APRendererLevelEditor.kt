@@ -30,7 +30,7 @@ import good.damn.apigl.shaders.lightpass.GLShaderLightPass
 import good.damn.apigl.shaders.lightpass.GLShaderLightPassPointLight
 import good.damn.common.COHandlerGl
 import good.damn.common.COIRunnableBounds
-import good.damn.wrapper.interfaces.MGIRequestUserContent
+import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.engine2.loaders.texture.MGLoaderTextureAsync
 import good.damn.engine2.models.MGMInformatorShader
 import good.damn.common.vertex.COMArrayVertexManager
@@ -53,7 +53,6 @@ import good.damn.engine2.opengl.MGSwitcherDrawMode
 import good.damn.engine2.opengl.pools.MGPoolMaterials
 import good.damn.engine2.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine2.opengl.pools.MGPoolTextures
-import good.damn.engine.sdk.SDVector3
 import good.damn.engine2.shader.MGShaderCache
 import good.damn.engine2.shader.MGShaderSource
 import good.damn.engine.ASUtilsBuffer
@@ -63,13 +62,12 @@ import good.damn.engine2.utils.MGUtilsFile
 import good.damn.engine2.utils.MGUtilsVertIndices
 import good.damn.logic.process.LGManagerProcessTime
 import good.damn.logic.triggers.managers.LGManagerTriggerMesh
-import good.damn.logic.triggers.methods.LGTriggerMethodBox
 import good.damn.script.SCLoaderScripts
 import good.damn.wrapper.files.APFile
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class APRendererLevelEditor(
-    requesterUserContent: MGIRequestUserContent
+    requesterUserContent: APIRequestUserContent
 ): GLSurfaceView.Renderer {
 
     companion object {

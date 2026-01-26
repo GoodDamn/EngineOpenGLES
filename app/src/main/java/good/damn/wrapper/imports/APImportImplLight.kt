@@ -4,7 +4,7 @@ import good.damn.apigl.drawers.GLDrawerLightPoint
 import good.damn.apigl.drawers.GLVolumeLight
 import good.damn.engine2.models.MGMManagers
 import good.damn.engine2.models.json.light.MGMLight
-import good.damn.wrapper.models.MGMUserContent
+import good.damn.wrapper.models.APMUserContent
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine2.utils.MGUtilsJson
@@ -13,10 +13,10 @@ import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.bridges.APRayIntersectImplLight
 
-class MGImportImplLight(
+class APImportImplLight(
     private val bridgeRay: APBridgeRayIntersect,
     private val managers: MGMManagers
-): MGIImport {
+): APIImport {
 
     override fun isValidExtension(
         fileName: String
@@ -25,7 +25,7 @@ class MGImportImplLight(
     )
 
     override fun processUserContent(
-        userContent: MGMUserContent
+        userContent: APMUserContent
     ) {
         val json = try {
             MGUtilsJson.createFromStream(

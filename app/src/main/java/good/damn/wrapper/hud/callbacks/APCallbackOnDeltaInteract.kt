@@ -3,7 +3,7 @@ package good.damn.wrapper.hud.callbacks
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.hud.touch.UIIListenerDelta
 
-class MGCallbackOnDeltaInteract(
+class APCallbackOnDeltaInteract(
     private val bridge: APBridgeRayIntersect
 ): UIIListenerDelta {
 

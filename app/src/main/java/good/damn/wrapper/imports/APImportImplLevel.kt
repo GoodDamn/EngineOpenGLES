@@ -12,14 +12,14 @@ import good.damn.engine2.opengl.pools.MGMPools
 import java.io.File
 import java.io.FileInputStream
 
-class MGImportImplLevel(
-    private val misc: MGMImportMisc,
+class APImportImplLevel(
+    private val misc: APMImportMisc,
     private val geometry: MGMGeometry,
     private val pools: MGMPools,
     private val shaders: MGMInformatorShader,
     private val glHandler: COHandlerGl,
     private val managers: MGMManagers,
-): MGImportImplTempFile() {
+): APImportImplTempFile() {
 
     override fun isValidExtension(
         fileName: String
@@ -50,7 +50,7 @@ class MGImportImplLevel(
         private val shaders: MGMInformatorShader,
         private val glHandler: COHandlerGl,
         private val managers: MGMManagers,
-        private val misc: MGMImportMisc
+        private val misc: APMImportMisc
     ): Runnable {
         override fun run() {
             Thread {

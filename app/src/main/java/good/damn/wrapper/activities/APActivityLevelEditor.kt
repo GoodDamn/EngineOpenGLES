@@ -12,28 +12,23 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import good.damn.wrapper.interfaces.MGIListenerOnGetUserContent
-import good.damn.wrapper.interfaces.MGIRequestUserContent
-import good.damn.wrapper.models.MGMUserContent
+import good.damn.wrapper.interfaces.APIListenerOnGetUserContent
+import good.damn.wrapper.interfaces.APIRequestUserContent
+import good.damn.wrapper.models.APMUserContent
 import good.damn.wrapper.callbacks.APCallbackResultAllFiles
 import good.damn.wrapper.callbacks.APCallbackResultAllFilesApi30
-import good.damn.wrapper.launchers.ContentLauncher
+import good.damn.wrapper.launchers.APLauncherContent
 import good.damn.wrapper.viewmodels.APIViewModelFileAccess
 import good.damn.wrapper.viewmodels.APViewModelFileAccessApi30
 import good.damn.wrapper.viewmodels.APViewModelFileAccessImpl
-import good.damn.wrapper.views.LevelEditorView
+import good.damn.wrapper.views.APViewLevelEditor
 
-class LevelEditorActivity
+class APActivityLevelEditor
 : AppCompatActivity(),
-ActivityResultCallback<Uri?>, MGIRequestUserContent {
-
-    companion object {
-        private const val TAG = "LevelEditorActivity"
-    }
-
-    private var mContentLauncher: ContentLauncher? = null
+ActivityResultCallback<Uri?>, APIRequestUserContent {
+    private var mContentLauncher: APLauncherContent? = null
     private var mViewModelAllFiles: APIViewModelFileAccess? = null
-    private var mCallbackRequestUserContent: MGIListenerOnGetUserContent? = null
+    private var mCallbackRequestUserContent: APIListenerOnGetUserContent? = null
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(
@@ -45,7 +40,7 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
 
         val context = this
 
-        mContentLauncher = ContentLauncher(
+        mContentLauncher = APLauncherContent(
             context,
             context
         )
@@ -147,7 +142,7 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
         ) ?: return
 
         mCallbackRequestUserContent?.onGetUserContent(
-            MGMUserContent(
+            APMUserContent(
                 fileName,
                 mimeType,
                 stream
@@ -157,7 +152,7 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
     }
 
     override fun requestUserContent(
-        callback: MGIListenerOnGetUserContent,
+        callback: APIListenerOnGetUserContent,
         mimeType: Array<String>
     ) {
         mCallbackRequestUserContent = callback
@@ -174,7 +169,7 @@ ActivityResultCallback<Uri?>, MGIRequestUserContent {
 
     fun initContentView() {
         setContentView(
-            LevelEditorView(
+            APViewLevelEditor(
                 this,
                 this
             )

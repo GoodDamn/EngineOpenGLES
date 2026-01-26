@@ -11,11 +11,11 @@ import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.engine2.shader.generators.MGMMaterialShader
 import java.io.File
 
-class MGImportImage(
+class APImportImage(
     private val pools: MGMPools,
     private val shaders: MGMInformatorShader,
     private val parameters: MGMParameters
-): MGImportImplTempFile() {
+): APImportImplTempFile() {
 
     private val mBinderAttribute = GLBinderAttribute.Builder()
         .bindPosition()

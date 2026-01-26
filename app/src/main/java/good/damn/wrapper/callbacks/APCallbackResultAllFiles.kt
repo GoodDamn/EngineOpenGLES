@@ -1,11 +1,10 @@
 package good.damn.wrapper.callbacks
 
 import androidx.activity.result.ActivityResultCallback
-import good.damn.wrapper.activities.LevelEditorActivity
-import good.damn.wrapper.viewmodels.APIViewModelFileAccess
+import good.damn.wrapper.activities.APActivityLevelEditor
 
 class APCallbackResultAllFiles(
-    private val activity: LevelEditorActivity
+    private val activity: APActivityLevelEditor
 ): ActivityResultCallback<Map<String,Boolean>> {
 
     override fun onActivityResult(
