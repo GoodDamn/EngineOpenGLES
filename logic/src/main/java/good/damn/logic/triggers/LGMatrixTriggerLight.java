@@ -8,6 +8,8 @@ import good.damn.engine.sdk.SDVector3;
 
 public final class LGMatrixTriggerLight {
 
+    private static final float SCALE_DT = 2f;
+
     @NonNull
     public final COMatrixTransformationInvert<
             COMatrixScale
@@ -32,16 +34,16 @@ public final class LGMatrixTriggerLight {
     }
 
     public final float getRadius() {
-        return matrixTrigger.model.msx;
+        return matrixTrigger.model.msx / SCALE_DT;
     }
 
     public final void subtractRadius(
         float radius
     ) {
         matrixTrigger.model.subtractScale(
-            radius,
-            radius,
-            radius
+            radius * SCALE_DT,
+            radius * SCALE_DT,
+            radius * SCALE_DT
         );
     }
 
@@ -49,9 +51,9 @@ public final class LGMatrixTriggerLight {
         float radius
     ) {
         matrixTrigger.model.setScale(
-            radius,
-            radius,
-            radius
+            radius * SCALE_DT,
+            radius * SCALE_DT,
+            radius * SCALE_DT
         );
     }
 
