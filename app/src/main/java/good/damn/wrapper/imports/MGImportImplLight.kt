@@ -11,6 +11,7 @@ import good.damn.engine2.utils.MGUtilsJson
 import good.damn.engine2.utils.MGUtilsVector3
 import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
+import good.damn.wrapper.hud.bridges.APRayIntersectImplLight
 
 class MGImportImplLight(
     private val bridgeRay: APBridgeRayIntersect,
@@ -60,7 +61,7 @@ class MGImportImplLight(
             modelMatrix.invalidateRadius()
             modelMatrix.calculateInvertTrigger()
 
-            bridgeRay.intersectUpdate = good.damn.wrapper.hud.bridges.APRayIntersectImplLight(
+            bridgeRay.intersectUpdate = APRayIntersectImplLight(
                 modelMatrix,
                 light.interpolation
             )

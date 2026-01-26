@@ -154,7 +154,7 @@ class APRendererLevelEditor(
 
     private val verticesBox10Raw = ASUtilsBuffer.createFloat(
         MGUtilsVertIndices.createCubeVertices2(
-            1.0f
+            0.5f
         )
     )
 
