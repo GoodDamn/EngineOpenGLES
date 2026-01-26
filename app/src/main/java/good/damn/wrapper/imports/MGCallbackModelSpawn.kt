@@ -31,7 +31,6 @@ import good.damn.wrapper.hud.bridges.APRayIntersectImplModel
 
 class MGCallbackModelSpawn(
     private val bridgeRay: APBridgeRayIntersect,
-    private val triggerAction: LGITrigger,
     private val poolMeshes: MGPoolMeshesStatic,
     private val shaders: MGMInformatorShader,
     private val geometry: MGMGeometry,
@@ -69,8 +68,7 @@ class MGCallbackModelSpawn(
                     shaders.source
                 ),
                 LGTriggerMesh.createFromMatrix(
-                    triggerMatrix,
-                    triggerAction
+                    triggerMatrix
                 ),
                 poolMesh[0].drawerVertexArray
             )
@@ -193,7 +191,6 @@ class MGCallbackModelSpawn(
 
         val volume = MGVolumeTriggerMesh(
             mesh.matrix.matrixTrigger.model,
-            mesh.triggerState.stateManager,
             frustrumMesh
         )
 

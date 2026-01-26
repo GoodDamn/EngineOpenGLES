@@ -9,29 +9,19 @@ import good.damn.logic.triggers.methods.LGTriggerMethodSphere
 
 data class LGTriggerStateableLight(
     val light: SDMLightPoint,
-    val stateManager: LGManagerTriggerState,
     val modelMatrix: LGMatrixTriggerLight
 ) {
     companion object {
         @JvmStatic
         fun createFromLight(
             light: SDMLightPoint
-        ): LGTriggerStateableLight {
-            val matrix = LGMatrixTriggerLight(
+        ) = LGTriggerStateableLight(
+            light,
+            LGMatrixTriggerLight(
                 COMatrixTransformationInvert(
                     COMatrixScale()
                 )
             )
-
-            return LGTriggerStateableLight(
-                light,
-                LGManagerTriggerState(
-                    LGTriggerMethodSphere(
-                        matrix.matrixTrigger.invert
-                    )
-                ),
-                matrix
-            )
-        }
+        )
     }
 }

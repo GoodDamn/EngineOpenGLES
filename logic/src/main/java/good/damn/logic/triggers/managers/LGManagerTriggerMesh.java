@@ -3,11 +3,11 @@ package good.damn.logic.triggers.managers;
 import androidx.annotation.NonNull;
 
 import good.damn.common.matrices.COMatrixScaleRotation;
-import good.damn.logic.triggers.callbacks.LGIManagerTriggerState;
+import good.damn.logic.triggers.LGITrigger;
 
 public final class LGManagerTriggerMesh
 extends LGManagerTrigger<
-    LGIManagerTriggerState
+    LGITrigger
 > {
     @Override
     public synchronized void loopTriggers(
@@ -20,14 +20,14 @@ extends LGManagerTrigger<
 
         for (
             @NonNull
-            final LGIManagerTriggerState trigger : mTriggers
+            final LGITrigger trigger : mTriggers
         ) {
             matrix = trigger.getModelMatrix();
             position4[0] = checkX - matrix.getX();
             position4[1] = checkY - matrix.getY();
             position4[2] = checkZ - matrix.getZ();
 
-            trigger.getState().trigger(
+            trigger.trigger(
                 position4
             );
         }

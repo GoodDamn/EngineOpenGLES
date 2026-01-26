@@ -22,7 +22,7 @@ class LGManagerTriggerState(
         }
 
         if (triggerMethod.canTrigger(
-           position4
+            position4
         )) {
             mIsInside = true
             return LGEnumStateTrigger.BEGIN

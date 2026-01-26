@@ -33,7 +33,6 @@ import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine2.logic.MGMGeometryFrustrumMesh
 import good.damn.engine2.logic.MGVolumeTriggerMesh
-import good.damn.engine2.triggers.MGTriggerSimple
 import good.damn.engine2.utils.MGUtilsJson
 import good.damn.engine2.utils.MGUtilsVector3
 import good.damn.logic.triggers.LGTriggerMesh
@@ -296,8 +295,7 @@ object MGStreamLevel {
             }
 
             val triggerMesh = LGTriggerMesh.createFromMatrix(
-                triggerMatrix,
-                MGTriggerSimple()
+                triggerMatrix
             )
 
             val drawerMesh = GLDrawerMeshMaterialMutable(
@@ -325,7 +323,6 @@ object MGStreamLevel {
 
             val volume = MGVolumeTriggerMesh(
                 triggerMesh.matrix.matrixTrigger.model,
-                triggerMesh.triggerState.stateManager,
                 frustrumMesh
             )
 

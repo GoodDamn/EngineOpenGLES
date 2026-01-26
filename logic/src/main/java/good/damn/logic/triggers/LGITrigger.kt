@@ -1,6 +1,10 @@
 package good.damn.logic.triggers
 
+import good.damn.common.matrices.COMatrixScaleRotation
+
 interface LGITrigger {
-    fun onTriggerBegin()
-    fun onTriggerEnd()
+    val modelMatrix: COMatrixScaleRotation
+    fun trigger(
+        position4: FloatArray
+    )
 }

@@ -9,10 +9,10 @@ class LGTriggerMethodBox(
     modelMatrix
 ) {
     companion object {
-        val MIN = SDVector3(
+        private val MIN = SDVector3(
             -0.5f, -0.5f, -0.5f
         )
-        val MAX = SDVector3(
+        private val MAX = SDVector3(
             0.5f, 0.5f, 0.5f
         )
     }

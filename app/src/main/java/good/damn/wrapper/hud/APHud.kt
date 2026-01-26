@@ -14,7 +14,6 @@ import good.damn.wrapper.imports.MGImportImplLight
 import good.damn.wrapper.interfaces.MGIRequestUserContent
 import good.damn.engine2.opengl.MGSwitcherDrawMode
 import good.damn.engine2.opengl.pools.MGMPools
-import good.damn.engine2.triggers.MGTriggerSimple
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.callbacks.MGCallbackOnCameraMovement
 import good.damn.wrapper.hud.callbacks.MGCallbackOnDeltaInteract
@@ -62,7 +61,6 @@ class APHud(
 
     private val mCallbackModelSpawn = MGCallbackModelSpawn(
         mBridgeMatrix,
-        MGTriggerSimple(),
         pools.meshes,
         shaders,
         geometry,

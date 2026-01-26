@@ -11,9 +11,7 @@ import good.damn.common.vertex.COMArrayVertexManager;
 import good.damn.engine.ASObject3d;
 import good.damn.engine.sdk.SDVector3;
 import good.damn.logic.models.LGTriggerPoint;
-import good.damn.logic.triggers.callbacks.LGManagerTriggerStateCallback;
 import good.damn.logic.triggers.methods.LGTriggerMethodBox;
-import good.damn.logic.triggers.stateables.LGTriggerStateable;
 import good.damn.logic.utils.LGUtilsAlgo;
 
 public final class LGTriggerMesh {
@@ -21,15 +19,10 @@ public final class LGTriggerMesh {
     @NonNull
     public final LGMatrixTriggerMesh matrix;
 
-    @NonNull
-    public final LGTriggerStateable triggerState;
-
     private LGTriggerMesh(
-        @NonNull final LGMatrixTriggerMesh matrix,
-        @NonNull final LGTriggerStateable triggerState
+        @NonNull final LGMatrixTriggerMesh matrix
     ) {
         this.matrix = matrix;
-        this.triggerState = triggerState;
     }
 
     @NonNull
@@ -105,20 +98,10 @@ public final class LGTriggerMesh {
 
     @NonNull
     public static LGTriggerMesh createFromMatrix(
-        @NonNull final LGMatrixTriggerMesh matrix,
-        @NonNull final LGITrigger triggerAction
+        @NonNull final LGMatrixTriggerMesh matrix
     ) {
         return new LGTriggerMesh(
-            matrix,
-            new LGTriggerStateable(
-                new LGManagerTriggerStateCallback(
-                    new LGTriggerMethodBox(
-                        matrix.matrixTrigger.invert
-                    ),
-                    triggerAction
-                ),
-                matrix.matrixTrigger.model
-            )
+            matrix
         );
     }
 }
