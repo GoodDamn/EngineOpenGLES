@@ -23,6 +23,7 @@ import good.damn.wrapper.models.APMUserContent
 import good.damn.wrapper.callbacks.APCallbackResultAllFiles
 import good.damn.wrapper.callbacks.APCallbackResultAllFilesApi30
 import good.damn.wrapper.launchers.APLauncherContent
+import good.damn.wrapper.renderer.APRendererLevelEditor
 import good.damn.wrapper.viewmodels.APIViewModelFileAccess
 import good.damn.wrapper.viewmodels.APViewModelFileAccessApi30
 import good.damn.wrapper.viewmodels.APViewModelFileAccessImpl
@@ -49,10 +50,12 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
         )
     )
 
+    private val mRenderer = APRendererLevelEditor(
+        this
+    )
+
     private val managerSensor = MGManagerSensor(
-        arrayListOf(
-            MGSensorAccelerometer()
-        )
+        mRenderer.sensors
     )
 
     private lateinit var managerSensorApi: SensorManager
@@ -184,13 +187,13 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
         mimeType: Array<String>
     ) {
         mCallbackRequestUserContent = callback
-        mContentLauncher?.launch(
+        mContentLauncher.launch(
             mimeType
         )
     }
 
     fun requestPermissionAllFiles() {
-        mViewModelAllFiles?.requestPermissionAllFiles(
+        mViewModelAllFiles.requestPermissionAllFiles(
             application.packageName
         )
     }
@@ -199,7 +202,7 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
         setContentView(
             APViewLevelEditor(
                 this,
-                this
+                mRenderer
             )
         )
     }

@@ -9,7 +9,7 @@ import good.damn.wrapper.renderer.APRendererLevelEditor
 
 class APViewLevelEditor(
     context: Context,
-    requesterUserContent: APIRequestUserContent
+    private val mRenderer: APRendererLevelEditor
 ): GLSurfaceView(
     context
 ) {
@@ -18,7 +18,6 @@ class APViewLevelEditor(
         private const val TAG = "APViewLevelEditor"
     }
 
-    private val mRenderer: APRendererLevelEditor
 
     init {
         setEGLContextClientVersion(
@@ -32,10 +31,6 @@ class APViewLevelEditor(
         )
 
         //preserveEGLContextOnPause = true
-
-        mRenderer = APRendererLevelEditor(
-            requesterUserContent
-        )
 
         setRenderer(
             mRenderer

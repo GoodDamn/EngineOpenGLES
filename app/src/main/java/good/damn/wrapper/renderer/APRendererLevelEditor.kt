@@ -58,6 +58,7 @@ import good.damn.engine2.shader.MGShaderSource
 import good.damn.engine.ASUtilsBuffer
 import good.damn.engine2.models.MGMParameters
 import good.damn.engine2.opengl.pools.MGMPools
+import good.damn.engine2.sensors.MGSensorGyroscope
 import good.damn.engine2.utils.MGUtilsFile
 import good.damn.engine2.utils.MGUtilsVertIndices
 import good.damn.logic.process.LGManagerProcessTime
@@ -73,6 +74,10 @@ class APRendererLevelEditor(
     companion object {
         private const val TAG = "MGRendererLevelEditor"
     }
+
+    val sensors = arrayListOf(
+        MGSensorGyroscope()
+    )
 
     private val mHandlerGlExecutor = COHandlerGlExecutor()
 
