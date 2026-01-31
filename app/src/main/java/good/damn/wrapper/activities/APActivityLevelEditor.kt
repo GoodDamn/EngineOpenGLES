@@ -1,6 +1,9 @@
 package good.damn.wrapper.activities
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +15,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import good.damn.engine2.sensors.MGManagerSensor
+import good.damn.engine2.sensors.MGSensorAccelerometer
 import good.damn.wrapper.interfaces.APIListenerOnGetUserContent
 import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.wrapper.models.APMUserContent
@@ -26,8 +31,32 @@ import good.damn.wrapper.views.APViewLevelEditor
 class APActivityLevelEditor
 : AppCompatActivity(),
 ActivityResultCallback<Uri?>, APIRequestUserContent {
-    private var mContentLauncher: APLauncherContent? = null
-    private var mViewModelAllFiles: APIViewModelFileAccess? = null
+
+    private val mContentLauncher = APLauncherContent(
+        this,
+        this
+    )
+
+    private val mViewModelAllFiles = if (
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+    ) APViewModelFileAccessApi30(
+        APCallbackResultAllFilesApi30(
+            this
+        )
+    ) else APViewModelFileAccessImpl(
+        APCallbackResultAllFiles(
+            this
+        )
+    )
+
+    private val managerSensor = MGManagerSensor(
+        arrayListOf(
+            MGSensorAccelerometer()
+        )
+    )
+
+    private lateinit var managerSensorApi: SensorManager
+
     private var mCallbackRequestUserContent: APIListenerOnGetUserContent? = null
 
     @SuppressLint("ClickableViewAccessibility")
@@ -38,12 +67,11 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
             savedInstanceState
         )
 
-        val context = this
+        managerSensorApi = getSystemService(
+            Context.SENSOR_SERVICE
+        ) as SensorManager
 
-        mContentLauncher = APLauncherContent(
-            context,
-            context
-        )
+        val context = this
 
         val windowController = WindowCompat.getInsetsController(
             window,
@@ -78,28 +106,14 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
                 )
         }
 
-        val viewModel = if (
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-        ) APViewModelFileAccessApi30(
-            APCallbackResultAllFilesApi30(
-                this
-            )
-        ) else APViewModelFileAccessImpl(
-            APCallbackResultAllFiles(
-                this
-            )
-        )
-
-        if (viewModel.isExternalStorageManager(
+        if (mViewModelAllFiles.isExternalStorageManager(
             context
         )) {
             initContentView()
             return
         }
 
-        mViewModelAllFiles = viewModel
-
-        viewModel.registerLauncher(
+        mViewModelAllFiles.registerLauncher(
             this
         )
 
@@ -107,9 +121,23 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
     }
 
     override fun onDestroy() {
-        mContentLauncher?.unregister()
-        mViewModelAllFiles?.unregisterLauncher()
+        mContentLauncher.unregister()
+        mViewModelAllFiles.unregisterLauncher()
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        managerSensor.register(
+            managerSensorApi
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        managerSensor.unregister(
+            managerSensorApi
+        )
     }
 
     override fun onActivityResult(
