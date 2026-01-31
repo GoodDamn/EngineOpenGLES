@@ -67,12 +67,6 @@ class COCameraFree(
             direction.z * mSpeed * -directionY
         )
 
-        mPositionDirection.cross(
-            direction,
-            mUp
-        )
-        mPositionDirection.normalize()
-
         modelMatrix.addPosition(
             mPositionDirection.x * mSpeed * directionX,
             mPositionDirection.y * mSpeed * directionX,
@@ -99,5 +93,11 @@ class COCameraFree(
         direction.y = sin(mPitch)
         direction.z = sin(mYaw) * cosPitch
         direction.normalize()
+
+        mPositionDirection.cross(
+            direction,
+            mUp
+        )
+        mPositionDirection.normalize()
     }
 }
