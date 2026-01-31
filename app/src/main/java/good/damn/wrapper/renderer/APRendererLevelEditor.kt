@@ -75,10 +75,6 @@ class APRendererLevelEditor(
         private const val TAG = "MGRendererLevelEditor"
     }
 
-    val sensors = arrayListOf(
-        MGSensorGyroscope()
-    )
-
     private val mHandlerGlExecutor = COHandlerGlExecutor()
 
     private val mBuffer = ByteArray(
@@ -287,6 +283,12 @@ class APRendererLevelEditor(
         mInformatorShader,
         mGeometry,
         mHandlerGl
+    )
+
+    val sensors = arrayListOf(
+        MGSensorGyroscope(
+            mCameraFree.camera
+        )
     )
 
     init {
