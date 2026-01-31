@@ -7,5 +7,8 @@ enum class MGEnumSensor(
 ) {
     ACCELEROMETER(
         Sensor.TYPE_ACCELEROMETER
+    ),
+    GYROSCOPE(
+        Sensor.TYPE_GYROSCOPE
     )
 }
