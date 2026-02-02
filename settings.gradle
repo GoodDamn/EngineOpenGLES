@@ -21,9 +21,13 @@ dependencyResolutionManagement {
 
 rootProject.name = "EngineOpenGLES"
 include ':app'
-include ':engine'
+include ':iassimp'
 include ':imap'
 include ':ia3d'
 include ':sdk'
 include ':hud'
 include ':common'
+include ':script'
+include ':logic'
+include ':apiGL'
+include ':engine'

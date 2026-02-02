@@ -1,6 +1,5 @@
 package good.damn.common.camera
 
-import good.damn.common.matrices.MGMatrixModel
 import good.damn.engine.sdk.SDVector3
 
 interface COICameraFree

@@ -1,6 +1,6 @@
 package good.damn.wrapper.imports
 
-import good.damn.engine.opengl.objects.MGObject3d
+import good.damn.engine.ASObject3d
 import java.io.File
 
 class MGImportImplModel(
@@ -33,7 +33,7 @@ class MGImportImplModel(
         private val file: File
     ): Runnable {
         override fun run() {
-            val arrModels = MGObject3d.createFromPath(
+            val arrModels = ASObject3d.createFromPath(
                 file.path
             )
 

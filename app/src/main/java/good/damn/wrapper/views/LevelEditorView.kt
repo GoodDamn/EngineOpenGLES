@@ -4,7 +4,7 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.Log
 import android.view.MotionEvent
-import good.damn.engine.interfaces.MGIRequestUserContent
+import good.damn.wrapper.interfaces.MGIRequestUserContent
 import good.damn.wrapper.renderer.APRendererLevelEditor
 
 class LevelEditorView(
@@ -30,6 +30,8 @@ class LevelEditorView(
             24,
             8
         )
+
+        //preserveEGLContextOnPause = true
 
         mRenderer = APRendererLevelEditor(
             requesterUserContent

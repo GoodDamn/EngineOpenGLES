@@ -36,12 +36,15 @@ dependencies {
 
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
-    implementation libs.material
+    implementation project(':iassimp')
     implementation project(':engine')
     implementation project(':sdk')
     implementation project(":hud")
     implementation project(":common")
     implementation project(':ia3d')
+    implementation project(":script")
+    implementation project(":logic")
+    implementation project(":apiGL")
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit

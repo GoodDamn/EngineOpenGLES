@@ -1,19 +1,11 @@
-import org.jetbrains.kotlin.cli.jvm.main
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
 }
 
 android {
-    namespace = "good.damn.engine"
+    namespace = "good.damn.engine2"
     compileSdk = 34
-
-    sourceSets.getByName(
-        "main"
-    ).jniLibs.setSrcDirs(
-        listOf("libs")
-    )
 
     defaultConfig {
         minSdk = 21
@@ -38,17 +30,24 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    externalNativeBuild {
-        cmake {
-            path = file("src/main/cpp/CMakeLists.txt")
-            version = "3.22.1"
-        }
-    }
 }
 
 dependencies {
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+
+    implementation(
+        project(":common")
+    )
+
+    implementation(
+        project(":sdk")
+    )
+
+    implementation(
+        project(":apiGL")
+    )
 
     implementation(
         project(":imap")
@@ -59,13 +58,8 @@ dependencies {
     )
 
     implementation(
-        project(":common")
+        project(":logic")
     )
+    implementation(project(":iassimp"))
 
-    implementation(
-        project(":sdk")
-    )
-    //testImplementation(libs.junit)
-    //androidTestImplementation(libs.androidx.junit)
-    //androidTestImplementation(libs.androidx.espresso.core)
 }

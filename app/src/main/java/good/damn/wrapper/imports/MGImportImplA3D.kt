@@ -1,7 +1,7 @@
 package good.damn.wrapper.imports
 
-import good.damn.engine.opengl.objects.MGObject3d
-import good.damn.engine.utils.MGUtilsA3D
+import good.damn.engine.ASObject3d
+import good.damn.engine2.utils.MGUtilsA3D
 import good.damn.ia3d.A3DImport
 import good.damn.ia3d.stream.A3DInputStream
 import java.io.File
@@ -49,7 +49,7 @@ class MGImportImplA3D(
             misc.modelsCallback.processObjects(
                 file.name,
                 arrayOf(
-                    MGObject3d(
+                    ASObject3d(
                         MGUtilsA3D.createMergedVertexBuffer(
                             mesh,
                             1.0f

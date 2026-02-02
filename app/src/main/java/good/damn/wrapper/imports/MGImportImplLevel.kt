@@ -1,16 +1,24 @@
 package good.damn.wrapper.imports
 
-import good.damn.engine.flow.MGFlowLevel
-import good.damn.engine.level.MGStreamLevel
-import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.drawers.instance.MGDrawerMeshInstanced
-import good.damn.engine.opengl.models.MGMMeshDrawer
+import good.damn.apigl.drawers.GLDrawerMeshInstanced
+import good.damn.common.COHandlerGl
+import good.damn.engine2.flow.MGFlowLevel
+import good.damn.engine2.level.MGStreamLevel
+import good.damn.engine2.models.MGMInformatorShader
+import good.damn.engine2.models.MGMManagers
+import good.damn.engine2.opengl.MGMGeometry
+import good.damn.engine2.opengl.models.MGMMeshDrawer
+import good.damn.engine2.opengl.pools.MGMPools
 import java.io.File
 import java.io.FileInputStream
 
 class MGImportImplLevel(
     private val misc: MGMImportMisc,
-    private val informator: MGMInformator
+    private val geometry: MGMGeometry,
+    private val pools: MGMPools,
+    private val shaders: MGMInformatorShader,
+    private val glHandler: COHandlerGl,
+    private val managers: MGMManagers,
 ): MGImportImplTempFile() {
 
     override fun isValidExtension(
@@ -25,7 +33,11 @@ class MGImportImplLevel(
         misc.handler.post(
             MGRunnableMap(
                 file,
-                informator,
+                geometry,
+                pools,
+                shaders,
+                glHandler,
+                managers,
                 misc
             )
         )
@@ -33,17 +45,21 @@ class MGImportImplLevel(
 
     private class MGRunnableMap(
         private val file: File,
-        private val informator: MGMInformator,
+        private val geometry: MGMGeometry,
+        private val pools: MGMPools,
+        private val shaders: MGMInformatorShader,
+        private val glHandler: COHandlerGl,
+        private val managers: MGMManagers,
         private val misc: MGMImportMisc
     ): Runnable {
         override fun run() {
             Thread {
                 MGStreamLevel.readBin(
                     MGFlowLevel {
-                        informator.meshesInstanced.add(
+                        geometry.meshesInstanced.add(
                             MGMMeshDrawer(
                                 it.shader,
-                                MGDrawerMeshInstanced(
+                                GLDrawerMeshInstanced(
                                     it.enableCullFace,
                                     it.vertexArray,
                                     it.material
@@ -54,8 +70,12 @@ class MGImportImplLevel(
                     FileInputStream(
                         file
                     ),
-                    informator,
-                    misc.buffer
+                    misc.buffer,
+                    pools,
+                    shaders,
+                    glHandler,
+                    geometry,
+                    managers
                 )
 
                 file.delete()

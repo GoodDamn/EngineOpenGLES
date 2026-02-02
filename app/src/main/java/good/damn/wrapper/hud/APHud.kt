@@ -3,42 +3,53 @@ package good.damn.wrapper.hud
 import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
+import good.damn.common.COHandlerGl
+import good.damn.common.camera.COICameraFree
+import good.damn.engine2.models.MGMInformatorShader
+import good.damn.engine2.models.MGMManagers
+import good.damn.engine2.models.MGMParameters
+import good.damn.engine2.opengl.MGMGeometry
 import good.damn.wrapper.imports.MGImportImage
 import good.damn.wrapper.imports.MGImportImplLight
-import good.damn.engine.interfaces.MGIRequestUserContent
-import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.MGSwitcherDrawMode
-import good.damn.wrapper.hud.bridges.MGBridgeRayIntersect
+import good.damn.wrapper.interfaces.MGIRequestUserContent
+import good.damn.engine2.opengl.MGSwitcherDrawMode
+import good.damn.engine2.opengl.pools.MGMPools
+import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.callbacks.MGCallbackOnCameraMovement
 import good.damn.wrapper.hud.callbacks.MGCallbackOnDeltaInteract
 import good.damn.wrapper.hud.callbacks.MGCallbackOnIntersectPosition
 import good.damn.wrapper.hud.callbacks.MGCallbackOnScale
-import good.damn.engine.opengl.triggers.MGTriggerSimple
 import good.damn.wrapper.imports.MGCallbackModelSpawn
-import good.damn.wrapper.hud.ui.MGUILayerEditor
-import good.damn.wrapper.hud.ui.clicks.MGClickImport
-import good.damn.wrapper.hud.ui.clicks.MGClickPlaceMesh
-import good.damn.wrapper.hud.ui.clicks.MGClickSwitchDrawMode
-import good.damn.wrapper.hud.ui.clicks.MGClickTriggerDrawingFlag
+import good.damn.wrapper.hud.ui.APUILayerEditor
+import good.damn.wrapper.hud.ui.clicks.APClickImport
+import good.damn.wrapper.hud.ui.clicks.APClickPlaceMesh
+import good.damn.wrapper.hud.ui.clicks.APClickSwitchDrawMode
+import good.damn.wrapper.hud.ui.clicks.APClickTriggerDrawingFlag
 import good.damn.wrapper.imports.MGImportImplA3D
 import good.damn.wrapper.imports.MGImportImplLevel
 import good.damn.wrapper.imports.MGImportImplModel
 import good.damn.wrapper.imports.MGMImportMisc
 
 class APHud(
+    camera: COICameraFree,
     requesterUserContent: MGIRequestUserContent,
-    informator: MGMInformator,
-    switcherDrawMode: MGSwitcherDrawMode
+    switcherDrawMode: MGSwitcherDrawMode,
+    parameters: MGMParameters,
+    pools: MGMPools,
+    shaders: MGMInformatorShader,
+    managers: MGMManagers,
+    geometry: MGMGeometry,
+    glHandler: COHandlerGl
 ) {
 
-    private val mBridgeMatrix = MGBridgeRayIntersect()
+    private val mBridgeMatrix = APBridgeRayIntersect()
 
     private val mCallbackOnDeltaInteract = MGCallbackOnDeltaInteract(
         mBridgeMatrix
     )
 
     private val mCallbackOnCameraMove = MGCallbackOnCameraMovement(
-        informator.camera.camera,
+        camera,
         mBridgeMatrix
     ).apply {
         setListenerIntersection(
@@ -50,13 +61,15 @@ class APHud(
 
     private val mCallbackModelSpawn = MGCallbackModelSpawn(
         mBridgeMatrix,
-        MGTriggerSimple(
-            informator.drawerLightDirectional
-        ),
-        informator
+        pools.meshes,
+        shaders,
+        geometry,
+        parameters,
+        managers.managerTrigger,
+        managers.managerFrustrum
     )
 
-    private val mLayerEditor = MGUILayerEditor(
+    private val mLayerEditor = APUILayerEditor(
         clickLoadUserContent = MGMImportMisc(
             Handler(
                 Looper.getMainLooper()
@@ -64,39 +77,44 @@ class APHud(
             mCallbackModelSpawn,
             ByteArray(1024)
         ).run {
-            MGClickImport(
+            APClickImport(
                 arrayOf(
                     MGImportImplModel(
                         this
                     ),
                     MGImportImplLevel(
                         this,
-                        informator
+                        geometry,
+                        pools,
+                        shaders,
+                        glHandler,
+                        managers
                     ),
                     MGImportImplA3D(
                         this
                     ),
                     MGImportImage(
-                        informator
+                        pools,
+                        shaders,
+                        parameters
                     ),
                     MGImportImplLight(
                         mBridgeMatrix,
-                        informator.managerLight,
-                        informator.managerLightVolumes
+                        managers
                     )
                 ),
                 requesterUserContent
             )
         },
-        clickPlaceMesh = MGClickPlaceMesh(
+        clickPlaceMesh = APClickPlaceMesh(
             mBridgeMatrix
         ),
-        clickSwitchDrawerMode = MGClickSwitchDrawMode(
-            informator,
+        clickSwitchDrawerMode = APClickSwitchDrawMode(
+            glHandler,
             switcherDrawMode
         ),
-        clickTriggerDrawing = MGClickTriggerDrawingFlag(
-            informator
+        clickTriggerDrawing = APClickTriggerDrawingFlag(
+            parameters
         ),
         bridgeMatrix = mBridgeMatrix
     ).apply {

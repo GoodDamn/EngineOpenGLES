@@ -12,9 +12,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import good.damn.engine.interfaces.MGIListenerOnGetUserContent
-import good.damn.engine.interfaces.MGIRequestUserContent
-import good.damn.engine.opengl.models.MGMUserContent
+import good.damn.wrapper.interfaces.MGIListenerOnGetUserContent
+import good.damn.wrapper.interfaces.MGIRequestUserContent
+import good.damn.wrapper.models.MGMUserContent
 import good.damn.wrapper.callbacks.APCallbackResultAllFiles
 import good.damn.wrapper.callbacks.APCallbackResultAllFilesApi30
 import good.damn.wrapper.launchers.ContentLauncher

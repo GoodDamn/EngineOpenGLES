@@ -1,21 +1,21 @@
 package good.damn.wrapper.imports
 
-import good.damn.common.volume.COManagerFrustrum
-import good.damn.engine.models.json.light.MGMLight
-import good.damn.engine.opengl.drawers.light.MGDrawerLightPoint
-import good.damn.engine.opengl.drawers.volume.MGVolumeLight
-import good.damn.engine.opengl.managers.MGManagerLight
-import good.damn.engine.opengl.models.MGMUserContent
-import good.damn.engine.opengl.triggers.stateables.MGDrawerTriggerStateableLight
+import good.damn.apigl.drawers.GLDrawerLightPoint
+import good.damn.apigl.drawers.GLVolumeLight
+import good.damn.engine2.models.MGMManagers
+import good.damn.engine2.models.json.light.MGMLight
+import good.damn.wrapper.models.MGMUserContent
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
-import good.damn.engine.utils.MGUtilsJson
-import good.damn.engine.utils.MGUtilsVector3
+import good.damn.engine2.utils.MGUtilsJson
+import good.damn.engine2.utils.MGUtilsVector3
+import good.damn.logic.triggers.stateables.LGTriggerStateableLight
+import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
+import good.damn.wrapper.hud.bridges.APRayIntersectImplLight
 
 class MGImportImplLight(
-    private val bridgeRay: good.damn.wrapper.hud.bridges.MGBridgeRayIntersect,
-    private val managerLight: MGManagerLight,
-    private val managerLightVolume: COManagerFrustrum
+    private val bridgeRay: APBridgeRayIntersect,
+    private val managers: MGMManagers
 ): MGIImport {
 
     override fun isValidExtension(
@@ -41,7 +41,7 @@ class MGImportImplLight(
             json
         )
 
-        val triggerLight = MGDrawerTriggerStateableLight.createFromLight(
+        val triggerLight = LGTriggerStateableLight.createFromLight(
             SDMLightPoint(
                 MGUtilsVector3.createFromColorInt(
                     jsonModel.color
@@ -61,22 +61,23 @@ class MGImportImplLight(
             modelMatrix.invalidateRadius()
             modelMatrix.calculateInvertTrigger()
 
-            bridgeRay.intersectUpdate = good.damn.wrapper.hud.bridges.MGRayIntersectImplLight(
+            bridgeRay.intersectUpdate = APRayIntersectImplLight(
                 modelMatrix,
                 light.interpolation
             )
         }
 
-        val drawerLightPoint = MGDrawerLightPoint(
-            triggerLight
+        val drawerLightPoint = GLDrawerLightPoint(
+            triggerLight.modelMatrix.matrixTrigger.model,
+            triggerLight.light
         )
 
-        managerLight.register(
+        managers.managerLight.register(
             drawerLightPoint
         )
 
-        managerLightVolume.volumes.add(
-            MGVolumeLight(
+        managers.managerFrustrum.volumes.add(
+            GLVolumeLight(
                 drawerLightPoint,
                 triggerLight.modelMatrix.matrixTrigger.model
             )

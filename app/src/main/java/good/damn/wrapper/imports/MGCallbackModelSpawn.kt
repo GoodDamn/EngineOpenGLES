@@ -1,26 +1,45 @@
 package good.damn.wrapper.imports
 
-import good.damn.engine.models.MGMInformator
-import good.damn.engine.opengl.drawers.MGDrawerMeshMaterialMutable
-import good.damn.engine.opengl.entities.MGMaterial
-import good.damn.engine.opengl.models.MGMMeshDrawer
-import good.damn.engine.opengl.objects.MGObject3d
-import good.damn.engine.opengl.shaders.MGShaderGeometryPassModel
-import good.damn.engine.opengl.shaders.MGShaderMaterial
-import good.damn.engine.opengl.shaders.base.binder.MGBinderAttribute
-import good.damn.engine.opengl.triggers.MGITrigger
-import good.damn.engine.opengl.triggers.MGMatrixTriggerMesh
-import good.damn.engine.opengl.triggers.MGTriggerMesh
-import good.damn.engine.shader.generators.MGMMaterialShader
-import good.damn.wrapper.hud.bridges.MGBridgeRayIntersect
+import good.damn.apigl.drawers.GLDrawerMaterialTexture
+import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
+import good.damn.apigl.drawers.GLDrawerMeshNormals
+import good.damn.apigl.drawers.GLDrawerPositionEntity
+import good.damn.apigl.drawers.GLDrawerVertexArray
+import good.damn.apigl.drawers.GLMaterial
+import good.damn.apigl.enums.GLEnumFaceOrder
+import good.damn.apigl.shaders.GLShaderGeometryPassModel
+import good.damn.apigl.shaders.GLShaderMaterial
+import good.damn.engine2.opengl.models.MGMMeshDrawer
+import good.damn.engine.ASObject3d
+import good.damn.apigl.shaders.base.GLBinderAttribute
+import good.damn.common.volume.COManagerFrustrum
+import good.damn.engine2.logic.MGMGeometryFrustrumMesh
+import good.damn.engine2.logic.MGVolumeTriggerMesh
+import good.damn.engine2.models.MGMInformatorShader
+import good.damn.engine2.models.MGMManagers
+import good.damn.engine2.models.MGMParameters
+import good.damn.engine2.opengl.MGMGeometry
+import good.damn.engine2.opengl.MGMVolume
+import good.damn.engine2.opengl.pools.MGPoolMeshesStatic
+import good.damn.engine2.shader.generators.MGMMaterialShader
+import good.damn.logic.triggers.LGITrigger
+import good.damn.logic.triggers.LGMatrixTriggerMesh
+import good.damn.logic.triggers.LGTriggerMesh
+import good.damn.logic.triggers.managers.LGManagerTriggerMesh
+import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
+import good.damn.wrapper.hud.bridges.APRayIntersectImplModel
 
 class MGCallbackModelSpawn(
-    private val bridgeRay: MGBridgeRayIntersect,
-    private val triggerAction: MGITrigger,
-    private val informator: MGMInformator
+    private val bridgeRay: APBridgeRayIntersect,
+    private val poolMeshes: MGPoolMeshesStatic,
+    private val shaders: MGMInformatorShader,
+    private val geometry: MGMGeometry,
+    private val parameters: MGMParameters,
+    private val managerTrigger: LGManagerTriggerMesh,
+    private val managerVolumes: COManagerFrustrum
 ) {
 
-    private val mBinderAttr = MGBinderAttribute.Builder()
+    private val mBinderAttr = GLBinderAttribute.Builder()
         .bindPosition()
         .bindTextureCoordinates()
         .bindNormal()
@@ -28,7 +47,7 @@ class MGCallbackModelSpawn(
 
     fun processObjects(
         fileName: String,
-        objs: Array<MGObject3d>?
+        objs: Array<ASObject3d>?
     ) {
         objs ?: return
         if (objs.isEmpty()) {
@@ -36,19 +55,22 @@ class MGCallbackModelSpawn(
         }
 
         if (objs.size == 1) {
-            val poolMesh = informator.poolMeshes.loadOrGetFromCache(
-                fileName,
-                informator
+            val poolMesh = poolMeshes.loadOrGetFromCache(
+                fileName
             ) ?: return
+
+            val triggerMatrix = LGTriggerMesh.createTriggerPointMatrix(
+                poolMesh[0].triggerPoint
+            )
 
             processMesh(
                 MGMMaterialShader.getDefault(
-                    informator.shaders.source
+                    shaders.source
                 ),
-                MGTriggerMesh.createFromMeshPool(
-                    poolMesh[0],
-                    triggerAction
-                )
+                LGTriggerMesh.createFromMatrix(
+                    triggerMatrix
+                ),
+                poolMesh[0].drawerVertexArray
             )
 
             return
@@ -76,22 +98,25 @@ class MGCallbackModelSpawn(
 
     private inline fun processMesh(
         material: MGMMaterialShader,
-        mesh: MGTriggerMesh
+        mesh: LGTriggerMesh,
+        drawerVertexArray: GLDrawerVertexArray
     ) {
         addMesh(
-            informator.shaders.cacheGeometryPass.loadOrGetFromCache(
+            shaders.cacheGeometryPass.loadOrGetFromCache(
                 material.srcCodeMaterial,
-                informator.shaders.source.vert,
+                shaders.source.vert,
                 mBinderAttr,
                 arrayOf(
-                    MGShaderMaterial(
+                    GLShaderMaterial(
                         material.shaderTextures
                     )
                 )
             ),
             material,
-            mesh
+            mesh,
+            drawerVertexArray
         )
+
         setupMatrix(
             mesh.matrix
         )
@@ -110,9 +135,9 @@ class MGCallbackModelSpawn(
     }*/
 
     private inline fun setupMatrix(
-        matrix: MGMatrixTriggerMesh
+        matrix: LGMatrixTriggerMesh
     ) {
-        bridgeRay.intersectUpdate = good.damn.wrapper.hud.bridges.MGRayIntersectImplModel(
+        bridgeRay.intersectUpdate = APRayIntersectImplModel(
             matrix
         )
 
@@ -131,29 +156,56 @@ class MGCallbackModelSpawn(
     }
 
     private inline fun addMesh(
-        shader: MGShaderGeometryPassModel,
+        shader: GLShaderGeometryPassModel,
         material: MGMMaterialShader,
-        mesh: MGTriggerMesh
+        mesh: LGTriggerMesh,
+        drawerVertexArray: GLDrawerVertexArray
     ) {
-        val meshMaterial = MGMMeshDrawer(
-            shader,
-            MGDrawerMeshMaterialMutable(
-                arrayOf(
-                    MGMaterial(
-                        material.materialTexture
+        val drawerMesh = GLDrawerMeshMaterialMutable(
+            arrayOf(
+                GLMaterial(
+                    GLDrawerMaterialTexture(
+                        material.textures
                     )
+                )
+            ),
+            GLDrawerMeshNormals(
+                drawerVertexArray,
+                GLDrawerPositionEntity(
+                    mesh.matrix.matrixMesh.model
                 ),
-                mesh.mesh
+                GLEnumFaceOrder.COUNTER_CLOCK_WISE,
+                mesh.matrix.matrixMesh.normal
             )
         )
-        informator.currentEditMesh = meshMaterial
 
-        informator.meshes.add(
+        val frustrumMesh = MGMGeometryFrustrumMesh(
+            false,
+            drawerMesh
+        )
+
+        val meshMaterial = MGMMeshDrawer(
+            shader,
+            frustrumMesh
+        )
+
+        val volume = MGVolumeTriggerMesh(
+            mesh.matrix.matrixTrigger.model,
+            frustrumMesh
+        )
+
+        parameters.currentEditMesh = meshMaterial
+
+        geometry.meshes.add(
             meshMaterial
         )
 
-        informator.managerTrigger.addTrigger(
-            mesh.triggerState
+        managerVolumes.volumes.add(
+            volume
+        )
+
+        managerTrigger.addTrigger(
+            volume
         )
     }
 }

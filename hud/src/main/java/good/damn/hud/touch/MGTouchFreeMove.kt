@@ -3,10 +3,10 @@ package good.damn.hud.touch
 import android.view.MotionEvent
 
 class MGTouchFreeMove
-: MGITouchable {
+: UIITouchable {
 
-    private val mTouchMove = MGTouchMove()
-    private val mTouchDelta = MGTouchDelta()
+    private val mTouchMove = UITouchMove()
+    private val mTouchDelta = UITouchDelta()
 
     fun setBoundsMove(
         left: Float,
@@ -29,13 +29,13 @@ class MGTouchFreeMove
     )
 
     fun setListenerDelta(
-        l: MGIListenerDelta?
+        l: UIIListenerDelta?
     ) {
         mTouchDelta.onDelta = l
     }
 
     fun setListenerMove(
-        l: MGIListenerMove?
+        l: UIIListenerMove?
     ) = mTouchMove.setListenerMove(l)
 
     override fun onTouchEvent(
