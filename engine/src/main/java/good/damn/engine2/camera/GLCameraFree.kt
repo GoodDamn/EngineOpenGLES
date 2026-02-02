@@ -54,8 +54,9 @@ class GLCameraFree(
 
     override fun addRotation(
         yaw: Float,
-        pitch: Float
+        pitch: Float,
+        roll: Float
     ) = cameraFree.addRotation(
-        yaw, pitch
+        yaw, pitch, roll
     )
 }

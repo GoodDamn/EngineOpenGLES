@@ -1,6 +1,7 @@
 package good.damn.common.camera
 
 import android.opengl.Matrix.setLookAtM
+import android.util.Log
 import good.damn.common.matrices.COMatrixTranslate
 import good.damn.engine.sdk.SDVector3
 import kotlin.math.cos
@@ -17,19 +18,20 @@ class COCameraFree(
     }
 
     override val direction = SDVector3(
-        0.0f, 0.0f, -1.0f
-    )
-
-    private val mUp = SDVector3(
-        0.0f, 1.0f, 0.0f
+        1.0f, 0.0f, 0.0f
     )
 
     private val mPositionDirection = SDVector3(0.0f)
 
+    private val mVectorUp = SDVector3(
+        0.0f, 1.0f, 0.0f
+    )
+
     private var mSpeed = 2.0f
 
-    private var mYaw = 0.0f
-    private var mPitch = 0.0f
+    private var mYaw = .0f
+    private var mPitch = .0f
+    private var mRoll = .0f
 
     override fun invalidatePosition() {
         val x = modelMatrix.x
@@ -47,7 +49,9 @@ class COCameraFree(
             direction.x + x,
             direction.y + y,
             direction.z + z,
-            0.0f, 1.0f, 0.0f
+            mVectorUp.x,
+            mVectorUp.y,
+            mVectorUp.z
         )
     }
 
@@ -76,10 +80,12 @@ class COCameraFree(
 
     override fun addRotation(
         yaw: Float,
-        pitch: Float
+        pitch: Float,
+        roll: Float
     ) {
         mYaw += yaw
         mPitch += pitch
+        mRoll += roll
 
         if (mPitch > MAX_PITCH)
             mPitch = MAX_PITCH
@@ -88,15 +94,79 @@ class COCameraFree(
             mPitch = MIN_PITCH
 
         val cosPitch = cos(mPitch)
+        val sinPitch = sin(mPitch)
+        val sinYaw = sin(mYaw)
+        val cosYaw = cos(mYaw)
 
-        direction.x = cos(mYaw) * cosPitch
-        direction.y = sin(mPitch)
-        direction.z = sin(mYaw) * cosPitch
+        direction.x = cosYaw * cosPitch // 1.0f
+        direction.y = sinPitch // 0.0f
+        direction.z = sinYaw * cosPitch // 0.0f
         direction.normalize()
+
+        val dirX = direction.x
+        val dirY = direction.y
+        val dirZ = direction.z
+
+        val sinRoll = sin(roll)
+        val cosRoll = cos(roll)
+
+        val negativeCosRoll = 1.0f - cosRoll
+
+        val xs = dirX * sinRoll
+        val ys = dirY * sinRoll
+        val zs = dirZ * sinRoll
+
+        val zxn = dirZ * dirX * negativeCosRoll
+        val xyn = dirX * dirY * negativeCosRoll
+        val yzn = dirY * dirZ * negativeCosRoll
+
+        val x2 = mVectorUp.x
+        val y2 = mVectorUp.y
+        val z2 = mVectorUp.z
+
+        mVectorUp.x = x2 * (
+            dirX * dirX * negativeCosRoll + cosRoll
+        ) + y2 * (
+            xyn - zs
+        ) + z2 * (
+            zxn + ys
+        )
+
+        mVectorUp.y = x2 * (
+            xyn + zs
+        ) + y2 * (
+            dirY * dirY * negativeCosRoll + cosRoll
+        ) + z2 * (
+            yzn - xs
+        )
+
+        mVectorUp.z = x2 * (
+            zxn - ys
+        ) + y2 * (
+            yzn + xs
+        ) + z2 * (
+            dirZ * dirZ * negativeCosRoll + cosRoll
+        )
+
+        mVectorUp.normalize()
+
+        /*val cosRoll = cos(mRoll)
+        val sinRoll = sin(mRoll)
+
+        mRight.x = -sinYaw // 0.0f
+        mRight.y = sinRoll * cosYaw
+        mRight.z = cosRoll * cosYaw
+        mRight.normalize()
+
+        mUp.cross(
+            mRight,
+            direction
+        )
+        mUp.normalize()*/
 
         mPositionDirection.cross(
             direction,
-            mUp
+            mVectorUp
         )
         mPositionDirection.normalize()
     }

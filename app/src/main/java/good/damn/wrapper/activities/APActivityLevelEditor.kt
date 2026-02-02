@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.util.Log
 import android.view.WindowManager
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -50,13 +51,7 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
         )
     )
 
-    private val mRenderer = APRendererLevelEditor(
-        this
-    )
-
-    private val managerSensor = MGManagerSensor(
-        mRenderer.sensors
-    )
+    private var managerSensor: MGManagerSensor? = null
 
     private lateinit var managerSensorApi: SensorManager
 
@@ -131,14 +126,14 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
 
     override fun onResume() {
         super.onResume()
-        managerSensor.register(
+        managerSensor?.register(
             managerSensorApi
         )
     }
 
     override fun onPause() {
         super.onPause()
-        managerSensor.unregister(
+        managerSensor?.unregister(
             managerSensorApi
         )
     }
@@ -199,10 +194,18 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
     }
 
     fun initContentView() {
+        val renderer = APRendererLevelEditor(
+            this
+        )
+
+        managerSensor = MGManagerSensor(
+            renderer.sensors
+        )
+
         setContentView(
             APViewLevelEditor(
                 this,
-                mRenderer
+                renderer
             )
         )
     }

@@ -27,7 +27,8 @@ UIIListenerDistance {
     ) {
         camera.addRotation(
             dx * 0.001f,
-            dy * 0.001f
+            dy * 0.001f,
+            0f
         )
         camera.invalidatePosition()
         updateIntersection()
