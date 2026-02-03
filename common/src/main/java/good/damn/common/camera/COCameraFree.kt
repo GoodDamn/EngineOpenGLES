@@ -1,7 +1,7 @@
 package good.damn.common.camera
 
+import android.opengl.Matrix
 import android.opengl.Matrix.setLookAtM
-import android.util.Log
 import good.damn.common.matrices.COMatrixTranslate
 import good.damn.engine.sdk.SDVector3
 import kotlin.math.cos
@@ -26,6 +26,14 @@ class COCameraFree(
     private val mVectorUp = SDVector3(
         0.0f, 1.0f, 0.0f
     )
+
+    private val mRotationYaw = FloatArray(16)
+    private val mRotationPitch = FloatArray(16)
+    //private val mRotationRoll = FloatArray(16)
+
+    private val mRotationResult = FloatArray(16)
+
+    private val mVector = FloatArray(4)
 
     private var mSpeed = 2.0f
 
@@ -77,19 +85,62 @@ class COCameraFree(
         )
     }
 
+    private var mRoll = 0f
+
     override fun addRotation(
         yaw: Float,
         pitch: Float,
         roll: Float
     ) {
+        mRoll += roll
         mYaw += yaw
         mPitch += pitch
 
-        if (mPitch > MAX_PITCH)
+
+        /*Matrix.setRotateM(
+            mRotationYaw,
+            0,
+            Math.toDegrees(
+                -yaw.toDouble()
+            ).toFloat(),
+            0.0f,
+            1.0f,
+            0.0f
+        )
+
+        Matrix.setRotateM(
+            mRotationPitch,
+            0,
+            Math.toDegrees(
+                pitch.toDouble()
+            ).toFloat(),
+            0.0f,
+            0.0f,
+            1.0f
+        )
+
+        Matrix.multiplyMM(
+            mRotationResult,
+            0,
+            mRotationPitch,
+            0,
+            mRotationYaw,
+            0
+        )
+
+        copyToVector(
+            direction
+        )
+
+        copyToVector(
+            mVectorUp
+        )*/
+
+/*if (mPitch > MAX_PITCH)
             mPitch = MAX_PITCH
 
         if (mPitch < MIN_PITCH)
-            mPitch = MIN_PITCH
+            mPitch = MIN_PITCH*/
 
         val cosPitch = cos(mPitch)
         val sinPitch = sin(mPitch)
@@ -101,54 +152,28 @@ class COCameraFree(
         direction.z = sinYaw * cosPitch // 0.0f
         direction.normalize()
 
-        val dirX = direction.x
-        val dirY = direction.y
-        val dirZ = direction.z
-
-        val sinRoll = sin(roll)
-        val cosRoll = cos(roll)
-
-        val negativeCosRoll = 1.0f - cosRoll
-
-        val xs = dirX * sinRoll
-        val ys = dirY * sinRoll
-        val zs = dirZ * sinRoll
-
-        val zxn = dirZ * dirX * negativeCosRoll
-        val xyn = dirX * dirY * negativeCosRoll
-        val yzn = dirY * dirZ * negativeCosRoll
-
-        val x2 = mVectorUp.x
-        val y2 = mVectorUp.y
-        val z2 = mVectorUp.z
-
-        mVectorUp.x = x2 * (
-            dirX * dirX * negativeCosRoll + cosRoll
-        ) + y2 * (
-            xyn - zs
-        ) + z2 * (
-            zxn + ys
+        /*Matrix.setRotateM(
+            mRotationResult,
+            0,
+            Math.toDegrees(
+                roll.toDouble()
+            ).toFloat(),
+            direction.x,
+            direction.y,
+            direction.z
         )
 
-        mVectorUp.y = x2 * (
-            xyn + zs
-        ) + y2 * (
-            dirY * dirY * negativeCosRoll + cosRoll
-        ) + z2 * (
-            yzn - xs
+        copyToVector(
+            mVectorUp
+        )*/
+
+        /*rotateVector(
+            roll,
+            direction,
+            mVectorUp
         )
 
-        mVectorUp.z = x2 * (
-            zxn - ys
-        ) + y2 * (
-            yzn + xs
-        ) + z2 * (
-            dirZ * dirZ * negativeCosRoll + cosRoll
-        )
-
-        mVectorUp.normalize()
-
-        /*val cosRoll = cos(mRoll)
+        val cosRoll = cos(mRoll)
         val sinRoll = sin(mRoll)
 
         mRight.x = -sinYaw // 0.0f
@@ -167,5 +192,80 @@ class COCameraFree(
             mVectorUp
         )
         mPositionDirection.normalize()
+    }
+
+    private inline fun copyToVector(
+        to: SDVector3
+    ) {
+        mVector[0] = to.x
+        mVector[1] = to.y
+        mVector[2] = to.z
+
+        Matrix.multiplyMV(
+            mVector,
+            0,
+            mRotationResult,
+            0,
+            mVector,
+            0
+        )
+
+        to.x = mVector[0]
+        to.y = mVector[1]
+        to.z = mVector[2]
+        to.normalize()
+    }
+
+    private inline fun rotateVector(
+        radians: Float,
+        inputVector: SDVector3,
+        outputVector: SDVector3
+    ) {
+        val dirX = inputVector.x
+        val dirY = inputVector.y
+        val dirZ = inputVector.z
+
+        val sinRoll = sin(radians)
+        val cosRoll = cos(radians)
+
+        val negativeCosRoll = 1.0f - cosRoll
+
+        val xs = dirX * sinRoll
+        val ys = dirY * sinRoll
+        val zs = dirZ * sinRoll
+
+        val zxn = dirZ * dirX * negativeCosRoll
+        val xyn = dirX * dirY * negativeCosRoll
+        val yzn = dirY * dirZ * negativeCosRoll
+
+        val x2 = outputVector.x
+        val y2 = outputVector.y
+        val z2 = outputVector.z
+
+        outputVector.x = x2 * (
+            dirX * dirX * negativeCosRoll + cosRoll
+        ) + y2 * (
+            xyn - zs
+        ) + z2 * (
+            zxn + ys
+        )
+
+        outputVector.y = x2 * (
+            xyn + zs
+        ) + y2 * (
+            dirY * dirY * negativeCosRoll + cosRoll
+        ) + z2 * (
+            yzn - xs
+        )
+
+        outputVector.z = x2 * (
+            zxn - ys
+        ) + y2 * (
+            yzn + xs
+        ) + z2 * (
+            dirZ * dirZ * negativeCosRoll + cosRoll
+        )
+
+        outputVector.normalize()
     }
 }
