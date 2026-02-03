@@ -31,7 +31,6 @@ class COCameraFree(
 
     private var mYaw = .0f
     private var mPitch = .0f
-    private var mRoll = .0f
 
     override fun invalidatePosition() {
         val x = modelMatrix.x
@@ -85,7 +84,6 @@ class COCameraFree(
     ) {
         mYaw += yaw
         mPitch += pitch
-        mRoll += roll
 
         if (mPitch > MAX_PITCH)
             mPitch = MAX_PITCH
