@@ -8,16 +8,21 @@ class MGSensorGyroscope(
     private val cameraFree: COICameraFree
 ): MGISensor {
 
+    companion object {
+        private val DELAY = MGEnumSensorDelay.GAME
+        private val SCALE = -DELAY.milliseconds
+    }
+
     override val type = MGEnumSensor.GYROSCOPE
-    override val delay = MGEnumSensorDelay.GAME
+    override val delay = DELAY
 
     override fun processChanges(
         values: FloatArray
     ) {
         cameraFree.addRotation(
-            values[0] * -delay.milliseconds,
-            values[1] * -delay.milliseconds,
-            0f
+            values[0] * SCALE,
+            values[1] * SCALE,
+            values[2] * SCALE
         )
 
         cameraFree.invalidatePosition()
