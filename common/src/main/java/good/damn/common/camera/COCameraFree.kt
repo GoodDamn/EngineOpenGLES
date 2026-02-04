@@ -27,8 +27,8 @@ class COCameraFree(
         0.0f, 1.0f, 0.0f
     )
 
-    private val mRotationYaw = FloatArray(16)
-    private val mRotationPitch = FloatArray(16)
+    //private val mRotationYaw = FloatArray(16)
+    // private val mRotationPitch = FloatArray(16)
     //private val mRotationRoll = FloatArray(16)
 
     private val mRotationResult = FloatArray(16)
@@ -96,6 +96,21 @@ class COCameraFree(
         mYaw += yaw
         mPitch += pitch
 
+        val cosPitch = cos(mPitch)
+        val sinPitch = sin(mPitch)
+        val sinYaw = sin(mYaw)
+        val cosYaw = cos(mYaw)
+
+        direction.x = cosYaw * cosPitch // 1.0f
+        direction.y = sinPitch // 0.0f
+        direction.z = sinYaw * cosPitch // 0.0f
+        direction.normalize()
+
+        mPositionDirection.cross(
+            direction,
+            mVectorUp
+        )
+        mPositionDirection.normalize()
 
         /*Matrix.setRotateM(
             mRotationYaw,
@@ -136,21 +151,11 @@ class COCameraFree(
             mVectorUp
         )*/
 
-/*if (mPitch > MAX_PITCH)
+        /*if (mPitch > MAX_PITCH)
             mPitch = MAX_PITCH
 
         if (mPitch < MIN_PITCH)
             mPitch = MIN_PITCH*/
-
-        val cosPitch = cos(mPitch)
-        val sinPitch = sin(mPitch)
-        val sinYaw = sin(mYaw)
-        val cosYaw = cos(mYaw)
-
-        direction.x = cosYaw * cosPitch // 1.0f
-        direction.y = sinPitch // 0.0f
-        direction.z = sinYaw * cosPitch // 0.0f
-        direction.normalize()
 
         /*Matrix.setRotateM(
             mRotationResult,
@@ -186,12 +191,6 @@ class COCameraFree(
             direction
         )
         mUp.normalize()*/
-
-        mPositionDirection.cross(
-            direction,
-            mVectorUp
-        )
-        mPositionDirection.normalize()
     }
 
     private inline fun copyToVector(
