@@ -2,13 +2,11 @@ package good.damn.wrapper.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
-import android.util.Log
 import android.view.WindowManager
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -17,15 +15,13 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import good.damn.engine2.sensors.MGManagerSensor
-import good.damn.engine2.sensors.MGSensorAccelerometer
 import good.damn.wrapper.interfaces.APIListenerOnGetUserContent
 import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.wrapper.models.APMUserContent
 import good.damn.wrapper.callbacks.APCallbackResultAllFiles
 import good.damn.wrapper.callbacks.APCallbackResultAllFilesApi30
 import good.damn.wrapper.launchers.APLauncherContent
-import good.damn.wrapper.renderer.APRendererLevelEditor
-import good.damn.wrapper.viewmodels.APIViewModelFileAccess
+import good.damn.wrapper.renderer.APRendererHandler
 import good.damn.wrapper.viewmodels.APViewModelFileAccessApi30
 import good.damn.wrapper.viewmodels.APViewModelFileAccessImpl
 import good.damn.wrapper.views.APViewLevelEditor
@@ -194,7 +190,7 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
     }
 
     fun initContentView() {
-        val renderer = APRendererLevelEditor(
+        val renderer = APRendererHandler(
             this
         )
 

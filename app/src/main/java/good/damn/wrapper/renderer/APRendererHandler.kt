@@ -39,10 +39,10 @@ import good.damn.common.COHandlerGlExecutor
 import good.damn.common.camera.COCameraProjection
 import good.damn.common.camera.COMCamera
 import good.damn.common.matrices.COMatrixTranslate
+import good.damn.common.utils.COUtilsFile
 import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine2.opengl.models.MGMLightPass
 import good.damn.engine.ASObject3d
-import good.damn.wrapper.hud.APHudScene
 import good.damn.engine2.camera.GLCameraFree
 import good.damn.engine2.camera.GLCameraProjection
 import good.damn.engine2.models.MGMManagers
@@ -57,6 +57,7 @@ import good.damn.engine2.shader.MGShaderCache
 import good.damn.engine2.shader.MGShaderSource
 import good.damn.engine.ASUtilsBuffer
 import good.damn.engine2.models.MGMParameters
+import good.damn.engine2.opengl.MGRunnableCycleSwitcherDrawMode
 import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.engine2.sensors.MGSensorGyroscope
 import good.damn.engine2.utils.MGUtilsFile
@@ -64,10 +65,12 @@ import good.damn.engine2.utils.MGUtilsVertIndices
 import good.damn.logic.process.LGManagerProcessTime
 import good.damn.logic.triggers.managers.LGManagerTriggerMesh
 import good.damn.script.SCLoaderScripts
+import good.damn.script.SCScriptLightPlacement
 import good.damn.wrapper.files.APFile
+import good.damn.wrapper.hud.APHud
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class APRendererLevelEditor(
+class APRendererHandler(
     requesterUserContent: APIRequestUserContent
 ): GLSurfaceView.Renderer {
 
@@ -263,24 +266,27 @@ class APRendererLevelEditor(
         LGManagerTriggerMesh()
     )
 
-    private val mHudScene = APHudScene(
-        MGSwitcherDrawMode(
-            mFramebufferG,
-            mInformatorShader,
-            mGeometry,
-            mVolume,
-            mDrawerLightDirectional,
-            GLDrawerFramebufferG(
-                mFramebufferG
-            ),
-            managers.managerLight
+
+    private val mSwitcherDrawMode = MGSwitcherDrawMode(
+        mFramebufferG,
+        mInformatorShader,
+        mGeometry,
+        mVolume,
+        mDrawerLightDirectional,
+        GLDrawerFramebufferG(
+            mFramebufferG
         ),
-        requesterUserContent,
+        managers.managerLight
+    )
+
+    private val mHud = APHud(
         mCameraFree.camera,
-        managers,
+        requesterUserContent,
+        mSwitcherDrawMode,
         mParameters,
         mPools,
         mInformatorShader,
+        managers,
         mGeometry,
         mHandlerGl
     )
@@ -292,6 +298,16 @@ class APRendererLevelEditor(
     )
 
     init {
+        val scriptLightPlacement = SCScriptLightPlacement(
+            COUtilsFile.getPublicFile(
+                "scripts"
+            ),
+            managers.managerProcessTime,
+            managers.managerLight,
+            managers.managerFrustrum
+        )
+        scriptLightPlacement.execute()
+
         mHandlerGl.post(
             object: COIRunnableBounds {
                 override fun run(
@@ -301,7 +317,7 @@ class APRendererLevelEditor(
                     mFramebufferG.generate(
                         width, height
                     )
-                    mHudScene.hud.layout(
+                    mHud.layout(
                         width.toFloat(),
                         height.toFloat()
                     )
@@ -310,7 +326,9 @@ class APRendererLevelEditor(
         )
 
         mHandlerGl.registerCycleTask(
-            mHudScene.runnableCycle
+            MGRunnableCycleSwitcherDrawMode(
+                mSwitcherDrawMode
+            )
         )
     }
 
@@ -463,7 +481,7 @@ class APRendererLevelEditor(
         Log.d(TAG, "onSurfaceChanged: ${Thread.currentThread().name}")
 
         mCameraFree.projection.setPerspective(
-            width,
+            width / 2,
             height
         )
 
@@ -485,7 +503,7 @@ class APRendererLevelEditor(
 
     fun onTouchEvent(
         event: MotionEvent
-    ) = mHudScene.hud.touchEvent(
+    ) = mHud.touchEvent(
         event
     )
 }

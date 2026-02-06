@@ -4,12 +4,11 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.Log
 import android.view.MotionEvent
-import good.damn.wrapper.interfaces.APIRequestUserContent
-import good.damn.wrapper.renderer.APRendererLevelEditor
+import good.damn.wrapper.renderer.APRendererHandler
 
 class APViewLevelEditor(
     context: Context,
-    private val mRenderer: APRendererLevelEditor
+    private val mRenderer: APRendererHandler
 ): GLSurfaceView(
     context
 ) {
