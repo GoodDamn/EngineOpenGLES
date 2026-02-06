@@ -9,7 +9,7 @@ import java.io.FileInputStream
 
 class APImportImplA3D(
     private val misc: APMImportMisc
-): APImportImplTempFile() {
+): APIProcessTempFile {
 
     override fun isValidExtension(
         fileName: String

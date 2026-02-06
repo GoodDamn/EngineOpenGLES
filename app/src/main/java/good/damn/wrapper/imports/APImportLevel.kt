@@ -1,25 +1,18 @@
 package good.damn.wrapper.imports
 
 import good.damn.apigl.drawers.GLDrawerMeshInstanced
-import good.damn.common.COHandlerGl
 import good.damn.engine2.flow.MGFlowLevel
 import good.damn.engine2.level.MGStreamLevel
-import good.damn.engine2.models.MGMInformatorShader
-import good.damn.engine2.models.MGMManagers
-import good.damn.engine2.opengl.MGMGeometry
 import good.damn.engine2.opengl.models.MGMMeshDrawer
-import good.damn.engine2.opengl.pools.MGMPools
+import good.damn.wrapper.models.APMProviderGL
+import good.damn.wrapper.providers.APProviderGL
 import java.io.File
 import java.io.FileInputStream
 
-class APImportImplLevel(
-    private val misc: APMImportMisc,
-    private val geometry: MGMGeometry,
-    private val pools: MGMPools,
-    private val shaders: MGMInformatorShader,
-    private val glHandler: COHandlerGl,
-    private val managers: MGMManagers,
-): APImportImplTempFile() {
+class APImportLevel(
+    private val misc: APMImportMisc
+): APProviderGL(),
+APIProcessTempFile {
 
     override fun isValidExtension(
         fileName: String
@@ -31,32 +24,25 @@ class APImportImplLevel(
         file: File
     ) {
         misc.handler.post(
-            MGRunnableMap(
+            APRunnableMap(
                 file,
-                geometry,
-                pools,
-                shaders,
-                glHandler,
-                managers,
-                misc
+                misc,
+                glProvider
             )
         )
     }
 
-    private class MGRunnableMap(
+    private class APRunnableMap(
         private val file: File,
-        private val geometry: MGMGeometry,
-        private val pools: MGMPools,
-        private val shaders: MGMInformatorShader,
-        private val glHandler: COHandlerGl,
-        private val managers: MGMManagers,
-        private val misc: APMImportMisc
+        private val misc: APMImportMisc,
+        private val provider: APMProviderGL
     ): Runnable {
+
         override fun run() {
             Thread {
                 MGStreamLevel.readBin(
                     MGFlowLevel {
-                        geometry.meshesInstanced.add(
+                        provider.geometry.meshesInstanced.add(
                             MGMMeshDrawer(
                                 it.shader,
                                 GLDrawerMeshInstanced(
@@ -71,16 +57,17 @@ class APImportImplLevel(
                         file
                     ),
                     misc.buffer,
-                    pools,
-                    shaders,
-                    glHandler,
-                    geometry,
-                    managers
+                    provider.pools,
+                    provider.shaders,
+                    provider.glHandler,
+                    provider.geometry,
+                    provider.managers
                 )
 
                 file.delete()
             }.start()
         }
+
     }
 
 }

@@ -3,9 +3,9 @@ package good.damn.wrapper.imports
 import good.damn.engine.ASObject3d
 import java.io.File
 
-class APImportImplModel(
+class APImportModel(
     private val misc: APMImportMisc
-): APImportImplTempFile() {
+): APIProcessTempFile {
 
     override fun isValidExtension(
         fileName: String

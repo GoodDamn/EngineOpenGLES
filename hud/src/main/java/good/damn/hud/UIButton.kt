@@ -1,12 +1,14 @@
 package good.damn.hud
 
 class UIButton(
-    private var mX: Float = 0f,
-    private var mY: Float = 0f,
-    private var mWidth: Float = 0f,
-    private var mHeight: Float = 0f,
     private val click: UIIClick
 ) {
+
+    private var mX = 0f
+    private var mY = 0f
+    private var mWidth = 0f
+    private var mHeight = 0f
+
     fun bounds(
         x: Float,
         y: Float,
@@ -17,6 +19,22 @@ class UIButton(
         mY = y
         mWidth = width
         mHeight = height
+    }
+
+    fun x(i: Float) = apply {
+        mX = i
+    }
+
+    fun y(i: Float) = apply {
+        mY = i
+    }
+
+    fun width(i: Float) = apply {
+        mWidth = i
+    }
+
+    fun height(i: Float) = apply {
+        mHeight = i
     }
 
     fun intercept(

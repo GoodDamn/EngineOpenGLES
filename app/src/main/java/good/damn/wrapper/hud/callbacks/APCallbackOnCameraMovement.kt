@@ -5,11 +5,12 @@ import good.damn.hud.touch.UIIListenerDelta
 import good.damn.hud.touch.UIIListenerDistance
 import good.damn.hud.touch.UIIListenerMove
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
+import good.damn.wrapper.providers.APProviderGL
 
 class APCallbackOnCameraMovement(
-    private val camera: COICameraFree,
     private val bridge: APBridgeRayIntersect
-): UIIListenerDelta,
+): APProviderGL(),
+UIIListenerDelta,
 UIIListenerMove,
 UIIListenerDistance {
 
@@ -25,13 +26,15 @@ UIIListenerDistance {
         dx: Float,
         dy: Float
     ) {
-        camera.addRotation(
-            dx * 0.001f,
-            dy * 0.001f,
-            0f
-        )
-        camera.invalidatePosition()
-        updateIntersection()
+        glProvider.apply {
+            camera.addRotation(
+                dx * 0.001f,
+                dy * 0.001f,
+                0f
+            )
+            camera.invalidatePosition()
+            updateIntersection()
+        }
     }
 
     override fun onMove(
@@ -40,36 +43,38 @@ UIIListenerDistance {
         directionX: Float,
         directionY: Float
     ) {
-        camera.addPosition(
-            x, y,
-            directionX,
-            directionY
-        )
-
-        camera.invalidatePosition()
-
-        updateIntersection()
+        glProvider.apply {
+            camera.addPosition(
+                x, y,
+                directionX,
+                directionY
+            )
+            camera.invalidatePosition()
+            updateIntersection()
+        }
     }
 
     override fun onDistance(
         dst: Float
     ) {
         bridge.distance += dst
-        camera.invalidatePosition()
+        glProvider.camera.invalidatePosition()
         updateIntersection()
     }
 
     private inline fun updateIntersection() {
-        val direction = camera.direction
-        bridge.outPointLead.apply {
-            x = camera.modelMatrix.x + direction.x * bridge.distance
-            y = camera.modelMatrix.y + direction.y * bridge.distance
-            z = camera.modelMatrix.z + direction.z * bridge.distance
-        }
+        glProvider.apply {
+            val direction = camera.direction
+            bridge.outPointLead.apply {
+                x = camera.modelMatrix.x + direction.x * bridge.distance
+                y = camera.modelMatrix.y + direction.y * bridge.distance
+                z = camera.modelMatrix.z + direction.z * bridge.distance
+            }
 
-        mListenerIntersect?.onIntersectPosition(
-            bridge.outPointLead
-        )
+            mListenerIntersect?.onIntersectPosition(
+                bridge.outPointLead
+            )
+        }
     }
 
 }

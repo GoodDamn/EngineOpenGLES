@@ -10,13 +10,12 @@ import good.damn.engine2.models.MGMParameters
 import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.engine2.shader.generators.MGMMaterialShader
 import good.damn.wrapper.models.APMUserContent
+import good.damn.wrapper.providers.APProviderGL
 import java.io.File
 
-class APImportImage(
-    private val pools: MGMPools,
-    private val shaders: MGMInformatorShader,
-    private val parameters: MGMParameters
-): APIImport {
+class APImportImage
+: APProviderGL(),
+APIImport {
 
     private val mBinderAttribute = GLBinderAttribute.Builder()
         .bindPosition()
@@ -42,7 +41,7 @@ class APImportImage(
             0, mIndexSubString
         )
 
-        val material = pools.materials.loadOrGetFromCache(
+        val material = glProvider.pools.materials.loadOrGetFromCache(
             fileNameDiffuse,
             "textures/$fileNameDiffuse"
         )
@@ -55,9 +54,9 @@ class APImportImage(
     private inline fun processShader(
         materialShader: MGMMaterialShader
     ) {
-        val shader = shaders.cacheGeometryPass.loadOrGetFromCache(
+        val shader = glProvider.shaders.cacheGeometryPass.loadOrGetFromCache(
             materialShader.srcCodeMaterial,
-            shaders.source.vert,
+            glProvider.shaders.source.vert,
             mBinderAttribute,
             arrayOf(
                 GLShaderMaterial(
@@ -86,7 +85,7 @@ class APImportImage(
         materialShader: MGMMaterialShader
     ) {
         // attach material to model
-        parameters.currentEditMesh?.apply {
+        glProvider.parameters.currentEditMesh?.apply {
             drawer.drawer.material = arrayOf(
                 GLMaterial(
                     GLDrawerMaterialTexture(

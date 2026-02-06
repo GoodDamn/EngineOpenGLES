@@ -1,5 +1,6 @@
 package good.damn.wrapper.models
 
+import good.damn.common.COHandlerGl
 import good.damn.common.camera.COICameraFree
 import good.damn.engine2.models.MGMInformatorShader
 import good.damn.engine2.models.MGMManagers
@@ -13,5 +14,6 @@ data class APMProviderGL(
     var managers: MGMManagers,
     var shaders: MGMInformatorShader,
     var parameters: MGMParameters,
-    var camera: COICameraFree
+    var camera: COICameraFree,
+    var glHandler: COHandlerGl
 )

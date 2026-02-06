@@ -5,8 +5,9 @@ import good.damn.wrapper.models.APMUserContent
 import good.damn.wrapper.APApp
 import java.io.File
 
-abstract class APImportImplTempFile
-: APIImport {
+class APImportImplTempFile(
+    private val processTempFile: APIProcessTempFile
+): APIImport {
 
     final override fun processUserContent(
         userContent: APMUserContent
@@ -14,12 +15,16 @@ abstract class APImportImplTempFile
         createTempFile(
             userContent
         )?.apply {
-            onProcessTempFile(this)
+            processTempFile.onProcessTempFile(
+                this
+            )
         }
     }
 
-    protected abstract fun onProcessTempFile(
-        file: File
+    override fun isValidExtension(
+        fileName: String
+    ) = processTempFile.isValidExtension(
+        fileName
     )
 
     private inline fun createTempFile(

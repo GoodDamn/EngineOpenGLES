@@ -2,7 +2,6 @@ package good.damn.wrapper.imports
 
 import good.damn.apigl.drawers.GLDrawerLightPoint
 import good.damn.apigl.drawers.GLVolumeLight
-import good.damn.engine2.models.MGMManagers
 import good.damn.engine2.models.json.light.MGMLight
 import good.damn.wrapper.models.APMUserContent
 import good.damn.engine.sdk.models.SDMLightPoint
@@ -12,11 +11,12 @@ import good.damn.engine2.utils.MGUtilsVector3
 import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.bridges.APRayIntersectImplLight
+import good.damn.wrapper.providers.APProviderGL
 
-class APImportImplLight(
-    private val bridgeRay: APBridgeRayIntersect,
-    private val managers: MGMManagers
-): APIImport {
+class APImportLight(
+    private val bridgeRay: APBridgeRayIntersect
+): APProviderGL(),
+APIImport {
 
     override fun isValidExtension(
         fileName: String
@@ -72,11 +72,11 @@ class APImportImplLight(
             triggerLight.light
         )
 
-        managers.managerLight.register(
+        glProvider.managers.managerLight.register(
             drawerLightPoint
         )
 
-        managers.managerFrustrum.volumes.add(
+        glProvider.managers.managerFrustrum.volumes.add(
             GLVolumeLight(
                 drawerLightPoint,
                 triggerLight.modelMatrix.matrixTrigger.model

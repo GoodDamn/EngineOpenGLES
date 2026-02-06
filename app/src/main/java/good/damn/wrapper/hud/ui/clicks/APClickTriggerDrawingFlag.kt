@@ -2,13 +2,12 @@ package good.damn.wrapper.hud.ui.clicks
 
 import good.damn.engine2.models.MGMParameters
 import good.damn.hud.UIIClick
+import good.damn.wrapper.providers.APProviderGL
 
-class APClickTriggerDrawingFlag(
-    private val parameters: MGMParameters
-): UIIClick {
-
+class APClickTriggerDrawingFlag
+: APProviderGL(), UIIClick {
     override fun onClick() {
-        parameters.apply {
+        glProvider.parameters.apply {
             canDrawTriggers = !canDrawTriggers
         }
     }
