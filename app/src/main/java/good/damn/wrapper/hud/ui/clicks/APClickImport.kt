@@ -5,12 +5,14 @@ import good.damn.wrapper.interfaces.APIListenerOnGetUserContent
 import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.wrapper.models.APMUserContent
 import good.damn.hud.UIIClick
+import java.util.LinkedList
 
 class APClickImport(
-    private val imports: Array<APIImport>,
     private val requester: APIRequestUserContent
 ): UIIClick,
-    APIListenerOnGetUserContent {
+APIListenerOnGetUserContent {
+
+    val imports = LinkedList<APIImport>()
 
     override fun onClick() {
         requester.requestUserContent(

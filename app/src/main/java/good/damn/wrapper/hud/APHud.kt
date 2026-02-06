@@ -29,18 +29,12 @@ import good.damn.wrapper.imports.APImportImplA3D
 import good.damn.wrapper.imports.APImportImplLevel
 import good.damn.wrapper.imports.APImportImplModel
 import good.damn.wrapper.imports.APMImportMisc
+import good.damn.wrapper.models.APMProviderGL
+import good.damn.wrapper.providers.APIProviderGLRegister
 
 class APHud(
-    camera: COICameraFree,
-    requesterUserContent: APIRequestUserContent,
     switcherDrawMode: MGSwitcherDrawMode,
-    parameters: MGMParameters,
-    pools: MGMPools,
-    shaders: MGMInformatorShader,
-    managers: MGMManagers,
-    geometry: MGMGeometry,
-    glHandler: COHandlerGl
-) {
+): APIProviderGLRegister {
 
     private val mBridgeMatrix = APBridgeRayIntersect()
 
@@ -60,52 +54,17 @@ class APHud(
     }
 
     private val mCallbackModelSpawn = APCallbackModelSpawn(
-        mBridgeMatrix,
-        pools.meshes,
-        shaders,
-        geometry,
-        parameters,
-        managers.managerTrigger,
-        managers.managerFrustrum
+        mBridgeMatrix
     )
 
     private val mLayerEditor = APUILayerEditor(
-        clickLoadUserContent = APMImportMisc(
+        /*clickLoadUserContent = APMImportMisc(
             Handler(
                 Looper.getMainLooper()
             ),
             mCallbackModelSpawn,
             ByteArray(1024)
-        ).run {
-            APClickImport(
-                arrayOf(
-                    APImportImplModel(
-                        this
-                    ),
-                    APImportImplLevel(
-                        this,
-                        geometry,
-                        pools,
-                        shaders,
-                        glHandler,
-                        managers
-                    ),
-                    APImportImplA3D(
-                        this
-                    ),
-                    APImportImage(
-                        pools,
-                        shaders,
-                        parameters
-                    ),
-                    APImportImplLight(
-                        mBridgeMatrix,
-                        managers
-                    )
-                ),
-                requesterUserContent
-            )
-        },
+        ),
         clickPlaceMesh = APClickPlaceMesh(
             mBridgeMatrix
         ),
@@ -116,7 +75,7 @@ class APHud(
         clickTriggerDrawing = APClickTriggerDrawingFlag(
             parameters
         ),
-        bridgeMatrix = mBridgeMatrix
+        bridgeMatrix = mBridgeMatrix*/
     ).apply {
         setListenerTouchMove(
             mCallbackOnCameraMove
@@ -139,6 +98,12 @@ class APHud(
         setListenerTouchDeltaInteract(
             mCallbackOnDeltaInteract
         )
+    }
+
+    override fun registerGlProvider(
+        provider: APMProviderGL
+    ) {
+        mCallbackModelSpawn.glProvider = provider
     }
 
     fun layout(

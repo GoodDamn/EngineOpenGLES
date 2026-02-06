@@ -25,16 +25,11 @@ import good.damn.logic.triggers.LGTriggerMesh
 import good.damn.logic.triggers.managers.LGManagerTriggerMesh
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.bridges.APRayIntersectImplModel
+import good.damn.wrapper.providers.APProviderGL
 
 class APCallbackModelSpawn(
-    private val bridgeRay: APBridgeRayIntersect,
-    private val poolMeshes: MGPoolMeshesStatic,
-    private val shaders: MGMInformatorShader,
-    private val geometry: MGMGeometry,
-    private val parameters: MGMParameters,
-    private val managerTrigger: LGManagerTriggerMesh,
-    private val managerVolumes: COManagerFrustrum
-) {
+    private val bridgeRay: APBridgeRayIntersect
+): APProviderGL() {
 
     private val mBinderAttr = GLBinderAttribute.Builder()
         .bindPosition()
@@ -52,7 +47,7 @@ class APCallbackModelSpawn(
         }
 
         if (objs.size == 1) {
-            val poolMesh = poolMeshes.loadOrGetFromCache(
+            val poolMesh = glProvider.pools.meshes.loadOrGetFromCache(
                 fileName
             ) ?: return
 
@@ -62,7 +57,7 @@ class APCallbackModelSpawn(
 
             processMesh(
                 MGMMaterialShader.getDefault(
-                    shaders.source
+                    glProvider.shaders.source
                 ),
                 LGTriggerMesh.createFromMatrix(
                     triggerMatrix
@@ -99,9 +94,9 @@ class APCallbackModelSpawn(
         drawerVertexArray: GLDrawerVertexArray
     ) {
         addMesh(
-            shaders.cacheGeometryPass.loadOrGetFromCache(
+            glProvider.shaders.cacheGeometryPass.loadOrGetFromCache(
                 material.srcCodeMaterial,
-                shaders.source.vert,
+                glProvider.shaders.source.vert,
                 mBinderAttr,
                 arrayOf(
                     GLShaderMaterial(
@@ -191,18 +186,19 @@ class APCallbackModelSpawn(
             frustrumMesh
         )
 
-        parameters.currentEditMesh = meshMaterial
+        glProvider.apply {
+            parameters.currentEditMesh = meshMaterial
+            geometry.meshes.add(
+                meshMaterial
+            )
 
-        geometry.meshes.add(
-            meshMaterial
-        )
+            managers.managerFrustrum.volumes.add(
+                volume
+            )
 
-        managerVolumes.volumes.add(
-            volume
-        )
-
-        managerTrigger.addTrigger(
-            volume
-        )
+            managers.managerTrigger.addTrigger(
+                volume
+            )
+        }
     }
 }
