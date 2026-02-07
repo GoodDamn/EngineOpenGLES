@@ -1,20 +1,25 @@
 package good.damn.wrapper.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.Log
 import android.view.MotionEvent
+import good.damn.wrapper.hud.APHud
+import good.damn.wrapper.renderer.APRendererEditor
 import good.damn.wrapper.renderer.APRendererHandler
 
-class APViewLevelEditor(
+@SuppressLint("ViewConstructor")
+class APViewGlHandler(
     context: Context,
-    private val mRenderer: APRendererHandler
+    renderer: APRendererHandler,
+    private val mHud: APHud
 ): GLSurfaceView(
     context
 ) {
 
     companion object {
-        private const val TAG = "APViewLevelEditor"
+        private const val TAG = "APViewGlHandler"
     }
 
 
@@ -32,7 +37,7 @@ class APViewLevelEditor(
         //preserveEGLContextOnPause = true
 
         setRenderer(
-            mRenderer
+            renderer
         )
 
         renderMode = RENDERMODE_CONTINUOUSLY
@@ -47,10 +52,12 @@ class APViewLevelEditor(
     override fun onTouchEvent(
         event: MotionEvent?
     ): Boolean {
+
         if (event == null) {
             return false
         }
-        mRenderer.onTouchEvent(
+
+        mHud.layerEditor.onTouchEvent(
             event
         )
 

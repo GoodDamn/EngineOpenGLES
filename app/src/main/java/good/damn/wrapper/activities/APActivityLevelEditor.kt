@@ -15,16 +15,19 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import good.damn.engine2.sensors.MGManagerSensor
+import good.damn.engine2.sensors.MGSensorGyroscope
 import good.damn.wrapper.interfaces.APIListenerOnGetUserContent
 import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.wrapper.models.APMUserContent
 import good.damn.wrapper.callbacks.APCallbackResultAllFiles
 import good.damn.wrapper.callbacks.APCallbackResultAllFilesApi30
+import good.damn.wrapper.hud.APHud
 import good.damn.wrapper.launchers.APLauncherContent
+import good.damn.wrapper.renderer.APRendererEditor
 import good.damn.wrapper.renderer.APRendererHandler
 import good.damn.wrapper.viewmodels.APViewModelFileAccessApi30
 import good.damn.wrapper.viewmodels.APViewModelFileAccessImpl
-import good.damn.wrapper.views.APViewLevelEditor
+import good.damn.wrapper.views.APViewGlHandler
 
 class APActivityLevelEditor
 : AppCompatActivity(),
@@ -146,7 +149,11 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
         ) ?: return
 
         val fileName = contentResolver.query(
-            result, null, null, null, null
+            result,
+            null,
+            null,
+            null,
+            null
         )?.run {
             val nameIndex = getColumnIndex(
                 OpenableColumns.DISPLAY_NAME
@@ -190,18 +197,26 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
     }
 
     fun initContentView() {
-        val renderer = APRendererHandler(
-            this
+        val handler = APRendererHandler()
+        val renderer = APRendererEditor(
+            handler.handlerGl
+        )
+
+        handler.handlerGl.post(
+            renderer
         )
 
         managerSensor = MGManagerSensor(
-            renderer.sensors
+            arrayOf(
+                MGSensorGyroscope()
+            )
         )
 
         setContentView(
-            APViewLevelEditor(
+            APViewGlHandler(
                 this,
-                renderer
+                handler,
+                APHud()
             )
         )
     }

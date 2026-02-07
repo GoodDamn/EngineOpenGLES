@@ -62,11 +62,12 @@ import good.damn.logic.triggers.managers.LGManagerTriggerMesh
 import good.damn.script.SCLoaderScripts
 import good.damn.script.SCScriptLightPlacement
 import good.damn.wrapper.files.APFile
-import good.damn.wrapper.hud.APHud
+import good.damn.wrapper.models.APMProviderGL
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class APRendererEditor
-: COIRunnableBounds {
+class APRendererEditor(
+    private val handlerGl: COHandlerGl
+): COIRunnableBounds {
 
 
     private val mBuffer = ByteArray(
@@ -80,12 +81,12 @@ class APRendererEditor
         ),
         cacheGeometryPass = MGShaderCache(
             SparseArray(50),
-            mHandlerGl,
+            handlerGl,
             GLShaderCreatorGeomPassModel()
         ),
         cacheGeometryPassInstanced = MGShaderCache(
             SparseArray(50),
-            mHandlerGl,
+            handlerGl,
             GLShaderCreatorGeomPassInstanced()
         ),
         wireframe = GLShaderGeometryPassModel(
@@ -160,14 +161,14 @@ class APRendererEditor
                 COCameraFree(
                     this
                 ),
-                mHandlerGl,
+                handlerGl,
                 mBufferUniformCamera
             ),
             GLCameraProjection(
                 COCameraProjection(
                     this
                 ),
-                mHandlerGl,
+                handlerGl,
                 mBufferUniformCamera
             )
         )
@@ -217,7 +218,7 @@ class APRendererEditor
 
     private val mPools = MGPoolTextures(
         MGLoaderTextureAsync(
-            mHandlerGl
+            handlerGl
         )
     ).run {
         MGMPools(
@@ -226,7 +227,7 @@ class APRendererEditor
                 mInformatorShader
             ),
             MGPoolMeshesStatic(
-                mHandlerGl
+                handlerGl
             ),
             this
         )
@@ -263,22 +264,14 @@ class APRendererEditor
         managers.managerLight
     )
 
-    private val mHud = APHud(
-        mCameraFree.camera,
-        requesterUserContent,
-        mSwitcherDrawMode,
-        mParameters,
-        mPools,
-        mInformatorShader,
-        managers,
+    val providerModel = APMProviderGL(
         mGeometry,
-        mHandlerGl
-    )
-
-    val sensors = arrayListOf(
-        MGSensorGyroscope(
-            mCameraFree.camera
-        )
+        mPools,
+        managers,
+        mInformatorShader,
+        mParameters,
+        mCameraFree.camera,
+        handlerGl
     )
 
     init {
@@ -291,8 +284,6 @@ class APRendererEditor
             managers.managerFrustrum
         )
         scriptLightPlacement.execute()
-
-
     }
 
     override fun run(
@@ -301,10 +292,6 @@ class APRendererEditor
     ) {
         mFramebufferG.generate(
             width, height
-        )
-        mHud.layout(
-            width.toFloat(),
-            height.toFloat()
         )
 
         mBufferUniformCamera.apply {
