@@ -5,6 +5,7 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.Log
 import android.view.MotionEvent
+import good.damn.logic.process.LGManagerProcessTime
 import good.damn.wrapper.hud.APHud
 import good.damn.wrapper.renderer.APRendererEditor
 import good.damn.wrapper.renderer.APRendererHandler
@@ -12,6 +13,7 @@ import good.damn.wrapper.renderer.APRendererHandler
 @SuppressLint("ViewConstructor")
 class APViewGlHandler(
     context: Context,
+    private val managerProcess: LGManagerProcessTime,
     renderer: APRendererHandler,
     private val mHud: APHud
 ): GLSurfaceView(
@@ -45,7 +47,10 @@ class APViewGlHandler(
 
     override fun onDetachedFromWindow() {
         Log.d(TAG, "onDetachedFromWindow: ")
-        mRenderer.stop()
+        managerProcess.apply {
+            stop()
+            unregisterAll()
+        }
         super.onDetachedFromWindow()
     }
 

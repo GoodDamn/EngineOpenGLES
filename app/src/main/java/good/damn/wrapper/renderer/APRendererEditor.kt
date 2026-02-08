@@ -423,7 +423,7 @@ class APRendererEditor(
         )
 
         mCameraFree.projection.setPerspective(
-            width / 2,
+            width,
             height
         )
     }

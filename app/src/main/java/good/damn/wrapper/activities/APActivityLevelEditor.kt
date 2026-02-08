@@ -218,15 +218,21 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
         )
 
         val displayMetrics = resources.displayMetrics
+        val layoutWidth = displayMetrics.widthPixels.toFloat()
+        val layoutHeight = displayMetrics.heightPixels.toFloat()
         val hud = APHud(
             renderer.switcherDrawMode,
             this,
-            displayMetrics.widthPixels.toFloat(),
-            displayMetrics.heightPixels.toFloat()
+            layoutWidth,
+            layoutHeight
         )
 
         glHandler.post(
             renderer
+        )
+
+        glHandler.registerCycleTask(
+            renderer.switcherDrawMode
         )
 
         sensors.forEach {
@@ -241,9 +247,16 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
             sensors
         )
 
+        hud.layerEditor.layout(
+            0f, 0f,
+            layoutWidth,
+            layoutHeight
+        )
+
         setContentView(
             APViewGlHandler(
                 this,
+                renderer.providerModel.managers.managerProcessTime,
                 handler,
                 hud
             )

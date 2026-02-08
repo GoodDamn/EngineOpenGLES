@@ -79,13 +79,19 @@ class APHud(
         misc
     )
 
+    private val mClickSwitchDrawMode = APClickSwitchDrawMode(
+        switcherDrawMode
+    )
+
+    private val mClickTriggerDrawingFlag = APClickTriggerDrawingFlag()
+
     val layerEditor = APUILayerEditor(
         bridgeMatrix = mBridgeMatrix
     ).apply {
 
         val btnSize = min(
             width, height
-        )
+        ) * 0.1f
 
 
         buttons.add(
@@ -142,9 +148,7 @@ class APHud(
 
         buttons.add(
             UIButton(
-                APClickSwitchDrawMode(
-                    switcherDrawMode
-                )
+                mClickSwitchDrawMode
             ).apply {
                 x = width - btnSize
                 y = height - btnSize
@@ -155,8 +159,8 @@ class APHud(
 
         buttons.add(
             UIButton(
-                APClickTriggerDrawingFlag()
-            ).apply { 
+                mClickTriggerDrawingFlag
+            ).apply {
                 x = 0f
                 y = height - btnSize
                 this.width = btnSize
@@ -195,5 +199,7 @@ class APHud(
         mImportImage.glProvider = provider
         mImportLight.glProvider = provider
         mImportTempLevel.glProvider = provider
+        mClickSwitchDrawMode.glProvider = provider
+        mClickTriggerDrawingFlag.glProvider = provider
     }
 }
