@@ -4,48 +4,20 @@ class UIButton(
     private val click: UIIClick
 ) {
 
-    private var mX = 0f
-    private var mY = 0f
-    private var mWidth = 0f
-    private var mHeight = 0f
-
-    fun bounds(
-        x: Float,
-        y: Float,
-        width: Float,
-        height: Float
-    ) {
-        mX = x
-        mY = y
-        mWidth = width
-        mHeight = height
-    }
-
-    fun x(i: Float) = apply {
-        mX = i
-    }
-
-    fun y(i: Float) = apply {
-        mY = i
-    }
-
-    fun width(i: Float) = apply {
-        mWidth = i
-    }
-
-    fun height(i: Float) = apply {
-        mHeight = i
-    }
+    var x = 0f
+    var y = 0f
+    var width = 0f
+    var height = 0f
 
     fun intercept(
         x: Float,
         y: Float
     ): Boolean {
-        if (mX > x || x > mX + mWidth) {
+        if (this.x > x || x > this.x + width) {
             return false
         }
 
-        if (mY > y || y > mY + mHeight) {
+        if (this.y > y || y > this.y + height) {
             return false
         }
 
