@@ -4,14 +4,14 @@ import good.damn.apigl.drawers.GLDrawerMeshInstanced
 import good.damn.engine2.flow.MGFlowLevel
 import good.damn.engine2.level.MGStreamLevel
 import good.damn.engine2.opengl.models.MGMMeshDrawer
-import good.damn.wrapper.models.APMProviderGL
-import good.damn.wrapper.providers.APProviderGL
+import good.damn.engine2.providers.MGMProviderGL
+import good.damn.engine2.providers.MGProviderGL
 import java.io.File
 import java.io.FileInputStream
 
 class APImportLevel(
     private val misc: APMImportMisc
-): APProviderGL(),
+): MGProviderGL(),
 APIProcessTempFile {
 
     override fun isValidExtension(
@@ -35,7 +35,7 @@ APIProcessTempFile {
     private class APRunnableMap(
         private val file: File,
         private val misc: APMImportMisc,
-        private val provider: APMProviderGL
+        private val provider: MGMProviderGL
     ): Runnable {
 
         override fun run() {

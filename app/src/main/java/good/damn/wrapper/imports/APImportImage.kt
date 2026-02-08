@@ -5,16 +5,12 @@ import good.damn.apigl.drawers.GLMaterial
 import good.damn.apigl.shaders.GLShaderGeometryPassModel
 import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.apigl.shaders.base.GLBinderAttribute
-import good.damn.engine2.models.MGMInformatorShader
-import good.damn.engine2.models.MGMParameters
-import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.engine2.shader.generators.MGMMaterialShader
 import good.damn.wrapper.models.APMUserContent
-import good.damn.wrapper.providers.APProviderGL
-import java.io.File
+import good.damn.engine2.providers.MGProviderGL
 
 class APImportImage
-: APProviderGL(),
+: MGProviderGL(),
 APIImport {
 
     private val mBinderAttribute = GLBinderAttribute.Builder()

@@ -14,6 +14,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import good.damn.common.COHandlerGl
+import good.damn.common.COHandlerGlExecutor
 import good.damn.engine2.sensors.MGManagerSensor
 import good.damn.engine2.sensors.MGSensorGyroscope
 import good.damn.wrapper.interfaces.APIListenerOnGetUserContent
@@ -197,12 +199,21 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
     }
 
     fun initContentView() {
-        val handler = APRendererHandler()
-        val renderer = APRendererEditor(
-            handler.handlerGl
+        val handlerExecutor = COHandlerGlExecutor()
+        val glHandler = COHandlerGl(
+            handlerExecutor.queue,
+            handlerExecutor.queueCycle,
         )
 
-        handler.handlerGl.post(
+        val handler = APRendererHandler(
+            handlerExecutor
+        )
+
+        val renderer = APRendererEditor(
+            glHandler
+        )
+
+        glHandler.post(
             renderer
         )
 

@@ -53,7 +53,6 @@ import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.engine2.opengl.pools.MGPoolMaterials
 import good.damn.engine2.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine2.opengl.pools.MGPoolTextures
-import good.damn.engine2.sensors.MGSensorGyroscope
 import good.damn.engine2.shader.MGShaderCache
 import good.damn.engine2.shader.MGShaderSource
 import good.damn.engine2.utils.MGUtilsVertIndices
@@ -62,7 +61,7 @@ import good.damn.logic.triggers.managers.LGManagerTriggerMesh
 import good.damn.script.SCLoaderScripts
 import good.damn.script.SCScriptLightPlacement
 import good.damn.wrapper.files.APFile
-import good.damn.wrapper.models.APMProviderGL
+import good.damn.engine2.providers.MGMProviderGL
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class APRendererEditor(
@@ -264,7 +263,7 @@ class APRendererEditor(
         managers.managerLight
     )
 
-    val providerModel = APMProviderGL(
+    val providerModel = MGMProviderGL(
         mGeometry,
         mPools,
         managers,

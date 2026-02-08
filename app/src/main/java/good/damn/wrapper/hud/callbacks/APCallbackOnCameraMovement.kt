@@ -1,15 +1,14 @@
 package good.damn.wrapper.hud.callbacks
 
-import good.damn.common.camera.COICameraFree
 import good.damn.hud.touch.UIIListenerDelta
 import good.damn.hud.touch.UIIListenerDistance
 import good.damn.hud.touch.UIIListenerMove
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
-import good.damn.wrapper.providers.APProviderGL
+import good.damn.engine2.providers.MGProviderGL
 
 class APCallbackOnCameraMovement(
     private val bridge: APBridgeRayIntersect
-): APProviderGL(),
+): MGProviderGL(),
 UIIListenerDelta,
 UIIListenerMove,
 UIIListenerDistance {

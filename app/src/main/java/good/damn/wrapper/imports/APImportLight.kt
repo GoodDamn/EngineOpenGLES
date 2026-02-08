@@ -11,11 +11,11 @@ import good.damn.engine2.utils.MGUtilsVector3
 import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.bridges.APRayIntersectImplLight
-import good.damn.wrapper.providers.APProviderGL
+import good.damn.engine2.providers.MGProviderGL
 
 class APImportLight(
     private val bridgeRay: APBridgeRayIntersect
-): APProviderGL(),
+): MGProviderGL(),
 APIImport {
 
     override fun isValidExtension(

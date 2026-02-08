@@ -12,24 +12,18 @@ import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.engine2.opengl.models.MGMMeshDrawer
 import good.damn.engine.ASObject3d
 import good.damn.apigl.shaders.base.GLBinderAttribute
-import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine2.logic.MGMGeometryFrustrumMesh
 import good.damn.engine2.logic.MGVolumeTriggerMesh
-import good.damn.engine2.models.MGMInformatorShader
-import good.damn.engine2.models.MGMParameters
-import good.damn.engine2.opengl.MGMGeometry
-import good.damn.engine2.opengl.pools.MGPoolMeshesStatic
 import good.damn.engine2.shader.generators.MGMMaterialShader
 import good.damn.logic.triggers.LGMatrixTriggerMesh
 import good.damn.logic.triggers.LGTriggerMesh
-import good.damn.logic.triggers.managers.LGManagerTriggerMesh
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.bridges.APRayIntersectImplModel
-import good.damn.wrapper.providers.APProviderGL
+import good.damn.engine2.providers.MGProviderGL
 
 class APCallbackModelSpawn(
     private val bridgeRay: APBridgeRayIntersect
-): APProviderGL() {
+): MGProviderGL() {
 
     private val mBinderAttr = GLBinderAttribute.Builder()
         .bindPosition()

@@ -23,13 +23,13 @@ import good.damn.wrapper.imports.APImportLevel
 import good.damn.wrapper.imports.APImportModel
 import good.damn.wrapper.imports.APImportImplTempFile
 import good.damn.wrapper.imports.APMImportMisc
-import good.damn.wrapper.models.APMProviderGL
-import good.damn.wrapper.providers.APIProviderGLRegister
+import good.damn.engine2.providers.MGMProviderGL
+import good.damn.engine2.providers.MGIProviderGLRegister
 
 class APHud(
     switcherDrawMode: MGSwitcherDrawMode,
     requesterUserContent: APIRequestUserContent
-): APIProviderGLRegister {
+): MGIProviderGLRegister {
 
     private val mBridgeMatrix = APBridgeRayIntersect()
 
@@ -160,7 +160,7 @@ class APHud(
     }
 
     override fun registerGlProvider(
-        provider: APMProviderGL
+        provider: MGMProviderGL
     ) {
         mCallbackModelSpawn.glProvider = provider
         mCallbackOnCameraMove.glProvider = provider
