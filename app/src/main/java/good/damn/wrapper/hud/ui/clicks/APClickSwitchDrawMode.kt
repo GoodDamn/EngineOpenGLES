@@ -1,12 +1,12 @@
 package good.damn.wrapper.hud.ui.clicks
 
 import good.damn.common.COIRunnableBounds
-import good.damn.engine2.opengl.MGSwitcherDrawMode
+import good.damn.engine2.opengl.drawmodes.MGRunglCycleDrawerModes
 import good.damn.hud.UIIClick
 import good.damn.engine2.providers.MGProviderGL
 
 class APClickSwitchDrawMode(
-    private val switcher: MGSwitcherDrawMode,
+    private val switcher: MGRunglCycleDrawerModes,
 ): MGProviderGL(),
 UIIClick,
 COIRunnableBounds {

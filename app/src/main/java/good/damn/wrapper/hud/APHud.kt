@@ -4,7 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import good.damn.wrapper.imports.APImportImage
 import good.damn.wrapper.interfaces.APIRequestUserContent
-import good.damn.engine2.opengl.MGSwitcherDrawMode
+import good.damn.engine2.opengl.drawmodes.MGRunglCycleDrawerModes
 import good.damn.hud.UIButton
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.callbacks.APCallbackOnCameraMovement
@@ -27,7 +27,7 @@ import good.damn.engine2.providers.MGMProviderGL
 import good.damn.engine2.providers.MGIProviderGLRegister
 
 class APHud(
-    switcherDrawMode: MGSwitcherDrawMode,
+    switcherDrawMode: MGRunglCycleDrawerModes,
     requesterUserContent: APIRequestUserContent
 ): MGIProviderGLRegister {
 

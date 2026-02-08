@@ -213,21 +213,36 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
             glHandler
         )
 
+        val sensors = arrayListOf(
+            MGSensorGyroscope()
+        )
+
+        val hud = APHud(
+            renderer.switcherDrawMode,
+            this
+        )
+
         glHandler.post(
             renderer
         )
 
+        sensors.forEach {
+            it.glProvider = renderer.providerModel
+        }
+
+        hud.registerGlProvider(
+            renderer.providerModel
+        )
+
         managerSensor = MGManagerSensor(
-            arrayOf(
-                MGSensorGyroscope()
-            )
+            sensors
         )
 
         setContentView(
             APViewGlHandler(
                 this,
                 handler,
-                APHud()
+                hud
             )
         )
     }

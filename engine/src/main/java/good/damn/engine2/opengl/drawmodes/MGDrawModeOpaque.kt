@@ -1,44 +1,49 @@
-package good.damn.engine2.opengl
+package good.damn.engine2.opengl.drawmodes
 
 import android.opengl.GLES30
 import android.opengl.GLES30.GL_CULL_FACE
 import android.opengl.GLES30.glEnable
-import good.damn.apigl.drawers.GLDrawerFramebufferG
-import good.damn.apigl.drawers.GLDrawerLightDirectional
+import good.damn.apigl.GLRenderVars
 import good.damn.apigl.drawers.GLDrawerLightPass
-import good.damn.apigl.drawers.GLDrawerLights
-import good.damn.apigl.drawers.GLIDrawer
+import good.damn.apigl.enums.GLEnumDrawModeMesh
 import good.damn.apigl.shaders.lightpass.GLShaderLightPass
-import good.damn.engine2.models.MGMInformatorShader
+import good.damn.engine2.providers.MGProviderGL
 
 class MGDrawModeOpaque(
-    private val shaders: MGMInformatorShader,
-    private val lightPassDrawer: GLDrawerLightPass,
-    private val lightPassDrawerLights: GLDrawerLights,
-    private val lightPassShader: GLShaderLightPass,
-    private val drawerGeometry: MGMGeometry,
-    private val drawerFramebufferG: GLDrawerFramebufferG,
-    private val drawerLightDirectional: GLDrawerLightDirectional,
-    private val volume: MGMVolume
-): GLIDrawer {
+    lightPassDrawer: GLDrawerLightPass,
+    lightPassShader: GLShaderLightPass
+): MGDrawModeBase(
+    lightPassDrawer,
+    lightPassShader
+) {
 
     override fun draw(
         width: Int,
         height: Int
     ) {
+        drawIt(
+            width,
+            height
+        )
+    }
+
+    private inline fun drawIt(
+        width: Int,
+        height: Int
+    ) = glProvider.apply {
         //val camera = informator.camera
 
         // Geometry pass
-        drawerFramebufferG.bind()
-        drawerGeometry.draw()
+        drawers.drawerFramebuffer.bind()
+        geometry.draw()
         shaders.wireframe.apply {
             use()
-            volume.draw(
+            volumes.draw(
                 this
             )
         }
 
-        drawerFramebufferG.unbind(
+        drawers.drawerFramebuffer.unbind(
             width,
             height
         )
@@ -49,7 +54,7 @@ class MGDrawModeOpaque(
                 this
             )*/
 
-            drawerLightDirectional.draw(
+            drawers.drawerLightDirectional.draw(
                 lightDirectional
             )
 
@@ -68,7 +73,7 @@ class MGDrawModeOpaque(
                 this
             )*/
 
-            drawerLightDirectional.draw(
+            drawers.drawerLightDirectional.draw(
                 lightDirectional
             )
 
@@ -78,7 +83,7 @@ class MGDrawModeOpaque(
                 height.toFloat()
             )
 
-            lightPassDrawerLights.draw(
+            managers.managerLight.draw(
                 lightPoint,
                 this,
                 textures
