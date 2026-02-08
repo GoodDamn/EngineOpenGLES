@@ -56,57 +56,12 @@ class APUILayerEditor(
             height
         )
 
-        val targetLen = min(
-            width,
-            height
-        )
-
-        val btnLen = targetLen * 0.1f
-
         mTouchMove.setBoundsDelta(
             width * 0.5f,
             0f,
             width,
             height
         )
-
-        buttons.forEach {
-            it.bounds(
-                left,
-                top,
-                width,
-                height
-            )
-        }
-
-        mBtnSwitchWireframe.bounds(
-            width - btnLen,
-            height - btnLen,
-            btnLen,
-            btnLen
-        )
-
-        mBtnLoadUserContent.bounds(
-            width - btnLen,
-            0f,
-            btnLen,
-            btnLen
-        )
-
-        mBtnPlaceMesh.bounds(
-            (width - btnLen) * 0.5f,
-            height - btnLen,
-            btnLen,
-            btnLen
-        )
-
-        mBtnTriggerDrawing.bounds(
-            0f,
-            height - btnLen,
-            btnLen,
-            btnLen
-        )
-
         val btnLen2 = min(
             width,
             height

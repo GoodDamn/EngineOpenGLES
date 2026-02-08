@@ -217,9 +217,12 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
             MGSensorGyroscope()
         )
 
+        val displayMetrics = resources.displayMetrics
         val hud = APHud(
             renderer.switcherDrawMode,
-            this
+            this,
+            displayMetrics.widthPixels.toFloat(),
+            displayMetrics.heightPixels.toFloat()
         )
 
         glHandler.post(

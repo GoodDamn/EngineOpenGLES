@@ -25,10 +25,13 @@ import good.damn.wrapper.imports.APImportImplTempFile
 import good.damn.wrapper.imports.APMImportMisc
 import good.damn.engine2.providers.MGMProviderGL
 import good.damn.engine2.providers.MGIProviderGLRegister
+import kotlin.math.min
 
 class APHud(
     switcherDrawMode: MGRunglCycleDrawerModes,
-    requesterUserContent: APIRequestUserContent
+    requesterUserContent: APIRequestUserContent,
+    width: Float,
+    height: Float
 ): MGIProviderGLRegister {
 
     private val mBridgeMatrix = APBridgeRayIntersect()
@@ -80,6 +83,11 @@ class APHud(
         bridgeMatrix = mBridgeMatrix
     ).apply {
 
+        val btnSize = min(
+            width, height
+        )
+
+
         buttons.add(
             UIButton(
                 APClickImport(
@@ -111,7 +119,12 @@ class APHud(
                         )
                     )
                 }
-            )
+            ).apply {
+                x = width - btnSize
+                y = 0f
+                this.width = btnSize
+                this.height = btnSize
+            }
         )
 
         buttons.add(
@@ -119,7 +132,12 @@ class APHud(
                 APClickPlaceMesh(
                     mBridgeMatrix
                 )
-            )
+            ).apply {
+                x = (width - btnSize) * 0.5f
+                y = height - btnSize
+                this.width = btnSize
+                this.height = btnSize
+            }
         )
 
         buttons.add(
@@ -127,13 +145,23 @@ class APHud(
                 APClickSwitchDrawMode(
                     switcherDrawMode
                 )
-            )
+            ).apply {
+                x = width - btnSize
+                y = height - btnSize
+                this.width = btnSize
+                this.height = btnSize
+            }
         )
 
         buttons.add(
             UIButton(
                 APClickTriggerDrawingFlag()
-            )
+            ).apply { 
+                x = 0f
+                y = height - btnSize
+                this.width = btnSize
+                this.height = btnSize
+            }
         )
 
         setListenerTouchMove(
