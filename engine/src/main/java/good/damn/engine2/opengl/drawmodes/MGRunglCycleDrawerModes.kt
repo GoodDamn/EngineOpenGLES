@@ -32,7 +32,7 @@ class MGRunglCycleDrawerModes(
 
     fun switchDrawMode() {
         mCurrentDrawModeIndex++
-        if (drawModes.size >= mCurrentDrawModeIndex) {
+        if (mCurrentDrawModeIndex >= drawModes.size) {
             mCurrentDrawModeIndex = 0
         }
 

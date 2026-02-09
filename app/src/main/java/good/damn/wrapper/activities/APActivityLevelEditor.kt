@@ -217,14 +217,13 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
             MGSensorGyroscope()
         )
 
-        val displayMetrics = resources.displayMetrics
-        val layoutWidth = displayMetrics.widthPixels.toFloat()
-        val layoutHeight = displayMetrics.heightPixels.toFloat()
         val hud = APHud(
             renderer.switcherDrawMode,
-            this,
-            layoutWidth,
-            layoutHeight
+            this
+        )
+
+        glHandler.post(
+            hud
         )
 
         glHandler.post(
@@ -245,12 +244,6 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
 
         managerSensor = MGManagerSensor(
             sensors
-        )
-
-        hud.layerEditor.layout(
-            0f, 0f,
-            layoutWidth,
-            layoutHeight
         )
 
         setContentView(

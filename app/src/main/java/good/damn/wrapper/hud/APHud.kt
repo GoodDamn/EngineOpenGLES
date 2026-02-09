@@ -2,6 +2,7 @@ package good.damn.wrapper.hud
 
 import android.os.Handler
 import android.os.Looper
+import good.damn.common.COIRunnableBounds
 import good.damn.wrapper.imports.APImportImage
 import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.engine2.opengl.drawmodes.MGRunglCycleDrawerModes
@@ -25,14 +26,14 @@ import good.damn.wrapper.imports.APImportImplTempFile
 import good.damn.wrapper.imports.APMImportMisc
 import good.damn.engine2.providers.MGMProviderGL
 import good.damn.engine2.providers.MGIProviderGLRegister
+import java.util.LinkedList
 import kotlin.math.min
+import kotlin.times
 
 class APHud(
     switcherDrawMode: MGRunglCycleDrawerModes,
-    requesterUserContent: APIRequestUserContent,
-    width: Float,
-    height: Float
-): MGIProviderGLRegister {
+    requesterUserContent: APIRequestUserContent
+): MGIProviderGLRegister, COIRunnableBounds {
 
     private val mBridgeMatrix = APBridgeRayIntersect()
 
@@ -85,87 +86,69 @@ class APHud(
 
     private val mClickTriggerDrawingFlag = APClickTriggerDrawingFlag()
 
+    private val mBtnImport = UIButton(
+        APClickImport(
+            requesterUserContent
+        ).apply {
+            imports.add(
+                mImportImage
+            )
+
+            imports.add(
+                mImportLight
+            )
+
+            imports.add(
+                APImportImplTempFile(
+                    mImportTempLevel
+                )
+            )
+
+            imports.add(
+                APImportImplTempFile(
+                    mImportTempModel
+                )
+            )
+
+            imports.add(
+                APImportImplTempFile(
+                    mImportTempA3d
+                )
+            )
+        }
+    )
+
+    private val mBtnPlaceMesh = UIButton(
+        APClickPlaceMesh(
+            mBridgeMatrix
+        )
+    )
+
+    private val mBtnSwitchDrawMode = UIButton(
+        mClickSwitchDrawMode
+    )
+
+    private val mBtnTriggerDrawFlag = UIButton(
+        mClickTriggerDrawingFlag
+    )
+
     val layerEditor = APUILayerEditor(
         bridgeMatrix = mBridgeMatrix
     ).apply {
-
-        val btnSize = min(
-            width, height
-        ) * 0.1f
-
-
         buttons.add(
-            UIButton(
-                APClickImport(
-                    requesterUserContent
-                ).apply {
-                    imports.add(
-                        mImportImage
-                    )
-
-                    imports.add(
-                        mImportLight
-                    )
-
-                    imports.add(
-                        APImportImplTempFile(
-                            mImportTempLevel
-                        )
-                    )
-
-                    imports.add(
-                        APImportImplTempFile(
-                            mImportTempModel
-                        )
-                    )
-
-                    imports.add(
-                        APImportImplTempFile(
-                            mImportTempA3d
-                        )
-                    )
-                }
-            ).apply {
-                x = width - btnSize
-                y = 0f
-                this.width = btnSize
-                this.height = btnSize
-            }
+            mBtnImport
         )
 
         buttons.add(
-            UIButton(
-                APClickPlaceMesh(
-                    mBridgeMatrix
-                )
-            ).apply {
-                x = (width - btnSize) * 0.5f
-                y = height - btnSize
-                this.width = btnSize
-                this.height = btnSize
-            }
+            mBtnPlaceMesh
         )
 
         buttons.add(
-            UIButton(
-                mClickSwitchDrawMode
-            ).apply {
-                x = width - btnSize
-                y = height - btnSize
-                this.width = btnSize
-                this.height = btnSize
-            }
+            mBtnSwitchDrawMode
         )
 
         buttons.add(
-            UIButton(
-                mClickTriggerDrawingFlag
-            ).apply {
-                x = 0f
-                y = height - btnSize
-                this.width = btnSize
-                this.height = btnSize
-            }
+            mBtnTriggerDrawFlag
         )
 
         setListenerTouchMove(
@@ -188,6 +171,53 @@ class APHud(
 
         setListenerTouchDeltaInteract(
             mCallbackOnDeltaInteract
+        )
+    }
+
+    override fun run(
+        w: Int,
+        h: Int
+    ) {
+        val width = w.toFloat()
+        val height = h.toFloat()
+
+        val btnSize = min(
+            width, height
+        ) * 0.1f
+
+        mBtnImport.apply {
+            x = width - btnSize
+            y = 0f
+            this.width = btnSize
+            this.height = btnSize
+        }
+
+        mBtnPlaceMesh.apply {
+            x = (width - btnSize) * 0.5f
+            y = height - btnSize
+            this.width = btnSize
+            this.height = btnSize
+        }
+
+        mBtnSwitchDrawMode.apply {
+            x = width - btnSize
+            y = height - btnSize
+            this.width = btnSize
+            this.height = btnSize
+        }
+
+        mBtnTriggerDrawFlag.apply {
+            x = 0f
+            y = height - btnSize
+            this.width = btnSize
+            this.height = btnSize
+        }
+
+        layerEditor.layout(
+            0f,
+            0f,
+            width,
+            height
         )
     }
 

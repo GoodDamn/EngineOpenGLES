@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.MotionEvent
 import good.damn.logic.process.LGManagerProcessTime
 import good.damn.wrapper.hud.APHud
-import good.damn.wrapper.renderer.APRendererEditor
 import good.damn.wrapper.renderer.APRendererHandler
 
 @SuppressLint("ViewConstructor")
@@ -52,6 +51,20 @@ class APViewGlHandler(
             unregisterAll()
         }
         super.onDetachedFromWindow()
+    }
+
+    override fun onLayout(
+        changed: Boolean,
+        left: Int, top: Int,
+        right: Int, bottom: Int
+    ) {
+        super.onLayout(
+            changed,
+            left, top,
+            right, bottom
+        )
+
+
     }
 
     override fun onTouchEvent(
