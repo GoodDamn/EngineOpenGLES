@@ -36,11 +36,13 @@ class MGDrawModeOpaque(
         // Geometry pass
         drawers.drawerFramebuffer.bind()
         geometry.draw()
-        shaders.wireframe.apply {
-            use()
-            volumes.draw(
-                this
-            )
+        if (parameters.canDrawTriggers) {
+            shaders.wireframe.apply {
+                use()
+                drawers.drawerVolumes.draw(
+                    this
+                )
+            }
         }
 
         drawers.drawerFramebuffer.unbind(

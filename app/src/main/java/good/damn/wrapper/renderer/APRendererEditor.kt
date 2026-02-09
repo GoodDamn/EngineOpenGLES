@@ -50,7 +50,6 @@ import good.damn.engine2.models.MGMParameters
 import good.damn.engine2.opengl.drawmodes.MGDrawModeOpaque
 import good.damn.engine2.opengl.drawmodes.MGDrawModeTexture
 import good.damn.engine2.opengl.MGMGeometry
-import good.damn.engine2.opengl.MGMVolume
 import good.damn.engine2.opengl.MGSky
 import good.damn.engine2.opengl.drawmodes.MGDrawModesDefault
 import good.damn.engine2.opengl.drawmodes.MGRunglCycleDrawerModes
@@ -97,10 +96,6 @@ class APRendererEditor(
         )
     )
 
-    private val mDrawerBox10 = GLDrawerVertexArray(
-        mVerticesBox10
-    )
-
     private val mBufferUniformCamera = GLBufferUniformCamera(
         GLBuffer(
             GL_UNIFORM_BUFFER
@@ -126,25 +121,11 @@ class APRendererEditor(
         )
     }
 
-    private val managerFrustrum = COManagerFrustrum(
-        mCameraFree.projection,
-        COMArrayVertexManager(
-            verticesBox10Raw
-        )
-    )
-
     private val mFramebufferG = GLFrameBufferG(
         GLFramebuffer()
     )
 
-    private val mDrawerVolumes = GLDrawerVolumes(
-        mDrawerBox10,
-        managerFrustrum
-    )
 
-    private val mDrawerSphere = GLDrawerVertexArray(
-        mVerticesSphere
-    )
 
     private val mInformatorShader = MGMInformatorShader(
         MGShaderSource(
@@ -204,6 +185,21 @@ class APRendererEditor(
         null
     )
 
+    private val managerFrustrum = COManagerFrustrum(
+        mCameraFree.projection,
+        COMArrayVertexManager(
+            verticesBox10Raw
+        )
+    )
+
+    private val mDrawerBox10 = GLDrawerVertexArray(
+        mVerticesBox10
+    )
+
+    private val mDrawerSphere = GLDrawerVertexArray(
+        mVerticesSphere
+    )
+
     val providerModel = MGMProviderGL(
         geometry = MGMGeometry(
             ConcurrentLinkedQueue(),
@@ -250,16 +246,16 @@ class APRendererEditor(
         shaders = mInformatorShader,
         mParameters,
         mCameraFree.camera,
-        MGMVolume(
-            mDrawerVolumes,
-            mParameters
-        ),
         handlerGl,
         drawers = MGMDrawers(
             GLDrawerFramebufferG(
                 mFramebufferG
             ),
-            GLDrawerLightDirectional()
+            GLDrawerLightDirectional(),
+            GLDrawerVolumes(
+                mDrawerBox10,
+                managerFrustrum
+            )
         )
     )
 

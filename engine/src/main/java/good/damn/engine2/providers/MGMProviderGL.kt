@@ -7,7 +7,6 @@ import good.damn.engine2.models.MGMInformatorShader
 import good.damn.engine2.models.MGMManagers
 import good.damn.engine2.models.MGMParameters
 import good.damn.engine2.opengl.MGMGeometry
-import good.damn.engine2.opengl.MGMVolume
 import good.damn.engine2.opengl.pools.MGMPools
 
 data class MGMProviderGL(
@@ -17,7 +16,6 @@ data class MGMProviderGL(
     val shaders: MGMInformatorShader,
     val parameters: MGMParameters,
     val camera: COICameraFree,
-    val volumes: MGMVolume,
     val glHandler: COHandlerGl,
     val drawers: MGMDrawers
 )
