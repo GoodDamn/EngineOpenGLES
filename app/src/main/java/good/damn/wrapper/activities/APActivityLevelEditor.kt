@@ -16,8 +16,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import good.damn.common.COHandlerGl
 import good.damn.common.COHandlerGlExecutor
+import good.damn.common.utils.COUtilsFile
+import good.damn.engine2.providers.MGMProviderGL
+import good.damn.engine2.providers.MGProviderGL
 import good.damn.engine2.sensors.MGManagerSensor
 import good.damn.engine2.sensors.MGSensorGyroscope
+import good.damn.script.SCScriptLightPlacement
 import good.damn.wrapper.interfaces.APIListenerOnGetUserContent
 import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.wrapper.models.APMUserContent
@@ -246,6 +250,10 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
             sensors
         )
 
+        loadScripts(
+            renderer.providerModel
+        )
+
         setContentView(
             APViewGlHandler(
                 this,
@@ -254,5 +262,19 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
                 hud
             )
         )
+    }
+
+    private inline fun loadScripts(
+        providerModel: MGMProviderGL
+    ) {
+        val scriptLightPlacement = SCScriptLightPlacement(
+            COUtilsFile.getPublicFile(
+                "scripts"
+            ),
+            providerModel.managers.managerProcessTime,
+            providerModel.managers.managerLight,
+            providerModel.managers.managerFrustrum
+        )
+        scriptLightPlacement.execute()
     }
 }

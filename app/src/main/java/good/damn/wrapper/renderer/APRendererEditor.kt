@@ -261,18 +261,6 @@ class APRendererEditor(
         get() = mDefaultDrawModes.switcherDrawMode
 
 
-    init {
-        val scriptLightPlacement = SCScriptLightPlacement(
-            COUtilsFile.getPublicFile(
-                "scripts"
-            ),
-            providerModel.managers.managerProcessTime,
-            providerModel.managers.managerLight,
-            providerModel.managers.managerFrustrum
-        )
-        scriptLightPlacement.execute()
-    }
-
     override fun run(
         width: Int,
         height: Int
