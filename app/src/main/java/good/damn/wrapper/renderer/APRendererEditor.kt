@@ -18,7 +18,6 @@ import good.damn.apigl.drawers.GLDrawerLights
 import good.damn.apigl.drawers.GLDrawerVertexArray
 import good.damn.apigl.drawers.GLDrawerVolumes
 import good.damn.apigl.enums.GLEnumArrayVertexConfiguration
-import good.damn.apigl.enums.GLEnumDrawMode
 import good.damn.apigl.framebuffer.GLFrameBufferG
 import good.damn.apigl.framebuffer.GLFramebuffer
 import good.damn.apigl.shaders.GLShaderGeometryPassModel
@@ -28,7 +27,6 @@ import good.damn.apigl.shaders.creators.GLShaderCreatorGeomPassInstanced
 import good.damn.apigl.shaders.creators.GLShaderCreatorGeomPassModel
 import good.damn.apigl.shaders.lightpass.GLShaderLightPass
 import good.damn.apigl.shaders.lightpass.GLShaderLightPassPointLight
-import good.damn.apigl.textures.GLTexture
 import good.damn.common.COHandlerGl
 import good.damn.common.COIRunnableBounds
 import good.damn.common.camera.COCameraFree
@@ -47,8 +45,6 @@ import good.damn.engine2.models.MGMDrawers
 import good.damn.engine2.models.MGMInformatorShader
 import good.damn.engine2.models.MGMManagers
 import good.damn.engine2.models.MGMParameters
-import good.damn.engine2.opengl.drawmodes.MGDrawModeOpaque
-import good.damn.engine2.opengl.drawmodes.MGDrawModeTexture
 import good.damn.engine2.opengl.MGMGeometry
 import good.damn.engine2.opengl.MGSky
 import good.damn.engine2.opengl.drawmodes.MGDrawModesDefault
@@ -125,9 +121,7 @@ class APRendererEditor(
         GLFramebuffer()
     )
 
-
-
-    private val mInformatorShader = MGMInformatorShader(
+    private val mShaders = MGMInformatorShader(
         MGShaderSource(
             "opaque",
             mBuffer
@@ -192,23 +186,11 @@ class APRendererEditor(
         )
     )
 
-    private val mDrawerBox10 = GLDrawerVertexArray(
-        mVerticesBox10
-    )
-
-    private val mDrawerSphere = GLDrawerVertexArray(
-        mVerticesSphere
-    )
-
     val providerModel = MGMProviderGL(
         geometry = MGMGeometry(
             ConcurrentLinkedQueue(),
             ConcurrentLinkedQueue(),
-            MGSky(),
-            GLDrawerVertexArray(
-                mVerticesQuad
-            ),
-            mDrawerSphere
+            MGSky()
         ),
         pools = MGPoolTextures(
             MGLoaderTextureAsync(
@@ -218,7 +200,7 @@ class APRendererEditor(
             MGMPools(
                 MGPoolMaterials(
                     this,
-                    mInformatorShader
+                    mShaders
                 ),
                 MGPoolMeshesStatic(
                     handlerGl
@@ -237,13 +219,15 @@ class APRendererEditor(
                         mFramebufferG.textureAttachmentMisc.texture,
                         mFramebufferG.textureAttachmentDepth.texture,
                     ),
-                    mDrawerSphere
+                    GLDrawerVertexArray(
+                        mVerticesSphere
+                    )
                 )
             ),
             managerFrustrum,
             LGManagerTriggerMesh()
         ),
-        shaders = mInformatorShader,
+        mShaders,
         mParameters,
         mCameraFree.camera,
         handlerGl,
@@ -253,8 +237,13 @@ class APRendererEditor(
             ),
             GLDrawerLightDirectional(),
             GLDrawerVolumes(
-                mDrawerBox10,
+                GLDrawerVertexArray(
+                    mVerticesBox10
+                ),
                 managerFrustrum
+            ),
+            GLDrawerVertexArray(
+                mVerticesQuad
             )
         )
     )

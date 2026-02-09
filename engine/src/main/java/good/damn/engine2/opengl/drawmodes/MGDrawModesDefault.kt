@@ -22,7 +22,7 @@ class MGDrawModesDefault(
                     framebufferG.textureAttachmentMisc.texture,
                     framebufferG.textureAttachmentDepth.texture
                 ),
-                providerModel.geometry.drawerQuad
+                providerModel.drawers.drawerQuad
             ),
             providerModel.shaders.lightPasses[
                 GLEnumDrawMode.OPAQUE.ordinal
@@ -58,7 +58,7 @@ class MGDrawModesDefault(
             arrayOf(
                 texture
             ),
-            providerModel.geometry.drawerQuad
+            providerModel.drawers.drawerQuad
         ),
         providerModel.shaders.lightPasses[
             drawMode.ordinal

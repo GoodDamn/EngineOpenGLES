@@ -22,9 +22,7 @@ data class MGMGeometry(
             GLDrawerMeshInstanced
             >
     >,
-    val meshSky: MGSky,
-    val drawerQuad: GLDrawerVertexArray,
-    val drawerSphere: GLDrawerVertexArray
+    val meshSky: MGSky
 ) {
 
     inline fun drawMeshes() {
