@@ -88,34 +88,21 @@ class APHud(
 
     private val mBtnImport = UIButton(
         APClickImport(
-            requesterUserContent
-        ).apply {
-            imports.add(
-                mImportImage
-            )
-
-            imports.add(
-                mImportLight
-            )
-
-            imports.add(
+            requesterUserContent,
+            arrayOf(
+                mImportImage,
+                mImportLight,
                 APImportImplTempFile(
                     mImportTempLevel
-                )
-            )
-
-            imports.add(
+                ),
                 APImportImplTempFile(
                     mImportTempModel
-                )
-            )
-
-            imports.add(
+                ),
                 APImportImplTempFile(
                     mImportTempA3d
                 )
             )
-        }
+        )
     )
 
     private val mBtnPlaceMesh = UIButton(

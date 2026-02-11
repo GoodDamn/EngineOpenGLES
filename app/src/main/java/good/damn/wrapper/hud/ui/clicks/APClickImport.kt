@@ -8,11 +8,10 @@ import good.damn.hud.UIIClick
 import java.util.LinkedList
 
 class APClickImport(
-    private val requester: APIRequestUserContent
+    private val requester: APIRequestUserContent,
+    private val imports: Array<APIImport>
 ): UIIClick,
 APIListenerOnGetUserContent {
-
-    val imports = LinkedList<APIImport>()
 
     override fun onClick() {
         requester.requestUserContent(
