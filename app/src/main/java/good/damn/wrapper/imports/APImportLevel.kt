@@ -23,13 +23,13 @@ APIProcessTempFile {
     final override fun onProcessTempFile(
         file: File
     ) {
-        misc.handler.post(
+        Thread(
             APRunnableMap(
                 file,
                 misc,
                 glProvider
             )
-        )
+        ).start()
     }
 
     private class APRunnableMap(
@@ -39,33 +39,28 @@ APIProcessTempFile {
     ): Runnable {
 
         override fun run() {
-            Thread {
-                MGStreamLevel.readBin(
-                    MGFlowLevel {
-                        provider.geometry.meshesInstanced.add(
-                            MGMMeshDrawer(
-                                it.shader,
-                                GLDrawerMeshInstanced(
-                                    it.enableCullFace,
-                                    it.vertexArray,
-                                    it.material
-                                )
+            MGStreamLevel.readBin(
+                MGFlowLevel {
+                    provider.geometry.meshesInstanced.add(
+                        MGMMeshDrawer(
+                            it.shader,
+                            GLDrawerMeshInstanced(
+                                it.enableCullFace,
+                                it.vertexArray,
+                                it.material
                             )
                         )
-                    },
-                    FileInputStream(
-                        file
-                    ),
-                    misc.buffer,
-                    provider.pools,
-                    provider.shaders,
-                    provider.glHandler,
-                    provider.geometry,
-                    provider.managers
-                )
+                    )
+                },
+                FileInputStream(
+                    file
+                ),
+                misc.buffer,
+                provider
+            )
 
-                file.delete()
-            }.start()
+            file.delete()
+
         }
 
     }

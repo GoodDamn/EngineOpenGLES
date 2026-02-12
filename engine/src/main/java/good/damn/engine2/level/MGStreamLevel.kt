@@ -33,6 +33,7 @@ import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine2.logic.MGMGeometryFrustrumMesh
 import good.damn.engine2.logic.MGVolumeTriggerMesh
+import good.damn.engine2.providers.MGMProviderGL
 import good.damn.engine2.utils.MGUtilsJson
 import good.damn.engine2.utils.MGUtilsVector3
 import good.damn.logic.triggers.LGTriggerMesh
@@ -50,11 +51,7 @@ object MGStreamLevel {
         flow: MGFlowLevel<MGMInstanceMesh>,
         input: InputStream,
         bufferMap: ByteArray,
-        pools: MGMPools,
-        shaders: MGMInformatorShader,
-        glHandler: COHandlerGl,
-        geometry: MGMGeometry,
-        managers: MGMManagers
+        glProvider: MGMProviderGL
     ) {
         val stream = DataInputStream(
             input
@@ -73,22 +70,18 @@ object MGStreamLevel {
         processSpawnPoints(
             map,
             localPathDir,
-            pools,
-            shaders,
-            geometry,
-            managers
+            glProvider
         )
 
         val loaderLib = MGLoaderLevelLibrary(
             localPathLibTextures,
             "$localPathDir/library.txt",
             "$localPathDir/culling.txt",
-            pools.materials,
-            shaders
+            glProvider
         )
 
         val loaderTextures = MGLoaderLevelTextures(
-            pools.textures,
+            glProvider.pools.textures,
             localPathLibTextures
         )
 
@@ -111,7 +104,7 @@ object MGStreamLevel {
 
         val loaderMeshes = MGLoaderLevelMeshA3D(
             localPathLibObj,
-            glHandler,
+            glProvider.glHandler,
             bufferMap
         )
 
@@ -158,10 +151,7 @@ object MGStreamLevel {
     private inline fun processSpawnPoints(
         map: MIMMap,
         localPathDir: String,
-        pools: MGMPools,
-        shaders: MGMInformatorShader,
-        geometry: MGMGeometry,
-        managers: MGMManagers
+        glProvider: MGMProviderGL
     ) {
         val json = MGMLevelSpawnInfo.createFromJson(
             MGUtilsJson.createFromFile(
@@ -171,7 +161,7 @@ object MGStreamLevel {
             )
         )
 
-        val poolMesh = pools.meshes.loadOrGetFromCache(
+        val poolMesh = glProvider.pools.meshes.loadOrGetFromCache(
             json.mesh
         ) ?: return
 
@@ -188,11 +178,14 @@ object MGStreamLevel {
             .bindNormal()
             .build()
 
+        val shaders = glProvider.shaders
+        val managers = glProvider.managers
+
         val pointsInfo = Array(
             json.info.size
         ) {
             val info = json.info[it]
-            val material = pools.materials.loadOrGetFromCache(
+            val material = glProvider.pools.materials.loadOrGetFromCache(
                 info.texture,
                 "textures/${info.texture}"
             )
@@ -326,7 +319,7 @@ object MGStreamLevel {
                 frustrumMesh
             )
 
-            geometry.meshes.add(
+            glProvider.geometry.meshes.add(
                 MGMMeshDrawer(
                     pointInfo.second,
                     frustrumMesh

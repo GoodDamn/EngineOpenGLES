@@ -9,6 +9,7 @@ import good.damn.engine2.models.json.MGMLevelInfoMesh
 import good.damn.apigl.shaders.base.GLBinderAttribute
 import good.damn.engine2.models.MGMInformatorShader
 import good.damn.engine2.opengl.pools.MGPoolMaterials
+import good.damn.engine2.providers.MGMProviderGL
 import good.damn.engine2.utils.MGUtilsJson
 import org.json.JSONArray
 import java.util.LinkedList
@@ -17,8 +18,7 @@ class MGLoaderLevelLibrary(
     private val localPathLibTextures: String,
     localPath: String,
     localPathCullFaceList: String,
-    private val poolMaterials: MGPoolMaterials,
-    private val shaders: MGMInformatorShader
+    private val glProvider: MGMProviderGL
 ) {
 
     private val mFile = COUtilsFile.getPublicFile(
@@ -112,7 +112,7 @@ class MGLoaderLevelLibrary(
         val diffuse = textures[0].diffuseMapName
         val controlMapName = textures[0].controlMapName
 
-        val materialShader = poolMaterials.loadOrGetFromCache(
+        val materialShader = glProvider.pools.materials.loadOrGetFromCache(
             diffuse,
             localPathLibTextures
         )
@@ -133,6 +133,7 @@ class MGLoaderLevelLibrary(
                 )
             )
         )
+        val shaders = glProvider.shaders
 
         val shader = shaders.cacheGeometryPassInstanced.loadOrGetFromCache(
             materialShader.srcCodeMaterial,
