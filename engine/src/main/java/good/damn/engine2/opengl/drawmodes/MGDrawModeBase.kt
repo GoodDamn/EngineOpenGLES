@@ -8,9 +8,9 @@ import good.damn.engine2.providers.MGProviderGL
 
 abstract class MGDrawModeBase(
     val lightPassDrawer: GLDrawerLightPass,
-    val lightPassShader: GLShaderLightPass
+    private val drawModeMesh: GLEnumDrawModeMesh
 ): MGProviderGL(), MGIDrawMode {
     override fun applyDrawMode() {
-        GLRenderVars.drawModeMesh = GLEnumDrawModeMesh.TRIANGLES
+        GLRenderVars.drawModeMesh = drawModeMesh
     }
 }

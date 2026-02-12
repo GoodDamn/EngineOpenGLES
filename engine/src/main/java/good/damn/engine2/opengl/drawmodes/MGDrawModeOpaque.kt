@@ -11,10 +11,10 @@ import good.damn.engine2.providers.MGProviderGL
 
 class MGDrawModeOpaque(
     lightPassDrawer: GLDrawerLightPass,
-    lightPassShader: GLShaderLightPass
+    private val lightPassShader: GLShaderLightPass
 ): MGDrawModeBase(
     lightPassDrawer,
-    lightPassShader
+    GLEnumDrawModeMesh.TRIANGLES
 ) {
 
     override fun draw(

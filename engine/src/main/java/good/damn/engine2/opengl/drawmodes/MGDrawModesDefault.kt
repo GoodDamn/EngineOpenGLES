@@ -2,8 +2,10 @@ package good.damn.engine2.opengl.drawmodes
 
 import good.damn.apigl.drawers.GLDrawerLightPass
 import good.damn.apigl.enums.GLEnumDrawMode
+import good.damn.apigl.enums.GLEnumDrawModeMesh
 import good.damn.apigl.framebuffer.GLFrameBufferG
 import good.damn.apigl.textures.GLTexture
+import good.damn.apigl.textures.GLTextureAttachment
 import good.damn.engine2.providers.MGIProviderGLRegister
 import good.damn.engine2.providers.MGMProviderGL
 
@@ -29,19 +31,28 @@ class MGDrawModesDefault(
             ].shader
         ),
         createTextureDrawMode(
-            framebufferG.textureAttachmentColorSpec.texture,
+            framebufferG.textureAttachmentColorSpec,
             GLEnumDrawMode.DIFFUSE,
-            providerModel
+            providerModel,
+            GLEnumDrawModeMesh.TRIANGLES
         ),
         createTextureDrawMode(
-            framebufferG.textureAttachmentDepth.texture,
+            framebufferG.textureAttachmentDepth,
             GLEnumDrawMode.DEPTH,
-            providerModel
+            providerModel,
+            GLEnumDrawModeMesh.TRIANGLES
         ),
         createTextureDrawMode(
-            framebufferG.textureAttachmentNormal.texture,
+            framebufferG.textureAttachmentNormal,
             GLEnumDrawMode.NORMAL,
-            providerModel
+            providerModel,
+            GLEnumDrawModeMesh.TRIANGLES
+        ),
+        createTextureDrawMode(
+            framebufferG.textureAttachmentColorSpec,
+            GLEnumDrawMode.DIFFUSE,
+            providerModel,
+            GLEnumDrawModeMesh.LINES
         )
     )
 
@@ -50,16 +61,18 @@ class MGDrawModesDefault(
     )
 
     private inline fun createTextureDrawMode(
-        texture: GLTexture,
+        texture: GLTextureAttachment,
         drawMode: GLEnumDrawMode,
-        providerModel: MGMProviderGL
+        providerModel: MGMProviderGL,
+        drawModeMesh: GLEnumDrawModeMesh
     ) = MGDrawModeTexture(
         GLDrawerLightPass(
             arrayOf(
-                texture
+                texture.texture
             ),
             providerModel.drawers.drawerQuad
         ),
+        drawModeMesh,
         providerModel.shaders.lightPasses[
             drawMode.ordinal
         ].shader

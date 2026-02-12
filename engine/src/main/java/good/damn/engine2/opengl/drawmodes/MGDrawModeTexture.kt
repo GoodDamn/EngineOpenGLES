@@ -8,10 +8,11 @@ import good.damn.engine2.providers.MGProviderGL
 
 class MGDrawModeTexture(
     lightPassDrawer: GLDrawerLightPass,
-    lightPassShader: GLShaderLightPass
+    drawModeMesh: GLEnumDrawModeMesh,
+    private val lightPassShader: GLShaderLightPass
 ): MGDrawModeBase(
     lightPassDrawer,
-    lightPassShader
+    drawModeMesh
 ) {
 
     override fun draw(
