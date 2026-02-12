@@ -1,12 +1,10 @@
 package good.damn.engine2.opengl.drawmodes
 
 import good.damn.apigl.drawers.GLDrawerLightPass
-import good.damn.apigl.enums.GLEnumDrawMode
+import good.damn.apigl.enums.GLEnumLightPass
 import good.damn.apigl.enums.GLEnumDrawModeMesh
 import good.damn.apigl.framebuffer.GLFrameBufferG
-import good.damn.apigl.textures.GLTexture
 import good.damn.apigl.textures.GLTextureAttachment
-import good.damn.engine2.providers.MGIProviderGLRegister
 import good.damn.engine2.providers.MGMProviderGL
 
 class MGDrawModesDefault(
@@ -27,30 +25,30 @@ class MGDrawModesDefault(
                 providerModel.drawers.drawerQuad
             ),
             providerModel.shaders.lightPasses[
-                GLEnumDrawMode.OPAQUE.ordinal
+                GLEnumLightPass.OPAQUE.ordinal
             ].shader
         ),
         createTextureDrawMode(
             framebufferG.textureAttachmentColorSpec,
-            GLEnumDrawMode.DIFFUSE,
+            GLEnumLightPass.DIFFUSE,
             providerModel,
             GLEnumDrawModeMesh.TRIANGLES
         ),
         createTextureDrawMode(
             framebufferG.textureAttachmentDepth,
-            GLEnumDrawMode.DEPTH,
+            GLEnumLightPass.DEPTH,
             providerModel,
             GLEnumDrawModeMesh.TRIANGLES
         ),
         createTextureDrawMode(
             framebufferG.textureAttachmentNormal,
-            GLEnumDrawMode.NORMAL,
+            GLEnumLightPass.NORMAL,
             providerModel,
             GLEnumDrawModeMesh.TRIANGLES
         ),
         createTextureDrawMode(
             framebufferG.textureAttachmentColorSpec,
-            GLEnumDrawMode.DIFFUSE,
+            GLEnumLightPass.DIFFUSE,
             providerModel,
             GLEnumDrawModeMesh.LINES
         )
@@ -62,7 +60,7 @@ class MGDrawModesDefault(
 
     private inline fun createTextureDrawMode(
         texture: GLTextureAttachment,
-        drawMode: GLEnumDrawMode,
+        drawMode: GLEnumLightPass,
         providerModel: MGMProviderGL,
         drawModeMesh: GLEnumDrawModeMesh
     ) = MGDrawModeTexture(
