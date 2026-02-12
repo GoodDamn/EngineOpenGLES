@@ -25,7 +25,6 @@ import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.apigl.shaders.base.GLBinderAttribute
 import good.damn.apigl.shaders.creators.GLShaderCreatorGeomPassInstanced
 import good.damn.apigl.shaders.creators.GLShaderCreatorGeomPassModel
-import good.damn.apigl.shaders.lightpass.GLShaderLightPass
 import good.damn.apigl.shaders.lightpass.GLShaderLightPassPointLight
 import good.damn.common.COHandlerGl
 import good.damn.common.COIRunnableBounds
@@ -33,7 +32,6 @@ import good.damn.common.camera.COCameraFree
 import good.damn.common.camera.COCameraProjection
 import good.damn.common.camera.COMCamera
 import good.damn.common.matrices.COMatrixTranslate
-import good.damn.common.utils.COUtilsFile
 import good.damn.common.vertex.COMArrayVertexManager
 import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.ASObject3d
@@ -49,7 +47,6 @@ import good.damn.engine2.opengl.MGMGeometry
 import good.damn.engine2.opengl.MGSky
 import good.damn.engine2.opengl.drawmodes.MGDrawModesDefault
 import good.damn.engine2.opengl.drawmodes.MGRunglCycleDrawerModes
-import good.damn.engine2.opengl.models.MGMLightPass
 import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.engine2.opengl.pools.MGPoolMaterials
 import good.damn.engine2.opengl.pools.MGPoolMeshesStatic
@@ -60,9 +57,9 @@ import good.damn.engine2.utils.MGUtilsVertIndices
 import good.damn.logic.process.LGManagerProcessTime
 import good.damn.logic.triggers.managers.LGManagerTriggerMesh
 import good.damn.script.SCLoaderScripts
-import good.damn.script.SCScriptLightPlacement
-import good.damn.wrapper.files.APFile
+import good.damn.engine2.files.MGFile
 import good.damn.engine2.providers.MGMProviderGL
+import good.damn.engine2.managers.MGStorageLightPass
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class APRendererEditor(
@@ -139,35 +136,8 @@ class APRendererEditor(
         wireframe = GLShaderGeometryPassModel(
             GLShaderMaterial.empty
         ),
-        lightPasses = arrayOf(
-            MGMLightPass(
-                GLShaderLightPass.Builder()
-                    .attachAll()
-                    .build(),
-                "shaders/lightPass/vert.glsl",
-                "shaders/opaque/defer/frag_defer_light_dir.glsl",
-            ),
-            MGMLightPass(
-                GLShaderLightPass.Builder()
-                    .attachColorSpec()
-                    .build(),
-                "shaders/lightPass/vert.glsl",
-                "shaders/lightPass/frag_defer.glsl"
-            ),
-            MGMLightPass(
-                GLShaderLightPass.Builder()
-                    .attachDepth()
-                    .build(),
-                "shaders/lightPass/vert.glsl",
-                "shaders/lightPass/frag_defer_depth.glsl"
-            ),
-            MGMLightPass(
-                GLShaderLightPass.Builder()
-                    .attachNormal()
-                    .build(),
-                "shaders/lightPass/vert.glsl",
-                "shaders/lightPass/frag_defer_normal.glsl"
-            )
+        lightPasses = MGStorageLightPass(
+            mFramebufferG
         ),
         GLShaderLightPassPointLight.Builder()
             .attachAll()
@@ -249,7 +219,6 @@ class APRendererEditor(
     )
 
     private val mDefaultDrawModes = MGDrawModesDefault(
-        mFramebufferG,
         providerModel
     ).apply {
         switcherDrawMode.registerGlProvider(
@@ -295,10 +264,10 @@ class APRendererEditor(
 
         shaders.wireframe.setup(
             mBuffer,
-            APFile(
+            MGFile(
                 "shaders/opaque/vert.glsl"
             ),
-            APFile(
+            MGFile(
                 "shaders/wireframe/frag_defer.glsl"
             ),
             GLBinderAttribute.Builder()
@@ -310,25 +279,17 @@ class APRendererEditor(
             .bindPosition()
             .bindTextureCoordinates()
             .build().apply {
-                shaders.lightPasses.forEach {
-                    it.shader.setup(
-                        mBuffer,
-                        APFile(
-                            it.vertPath
-                        ),
-                        APFile(
-                            it.fragPath
-                        ),
-                        this
-                    )
-                }
+                shaders.lightPasses.glSetupShaders(
+                    mBuffer,
+                    this
+                )
 
                 shaders.lightPassPointLight.setup(
                     mBuffer,
-                    APFile(
+                    MGFile(
                         "shaders/lightPass/vert_pointLight.glsl"
                     ),
-                    APFile(
+                    MGFile(
                         "shaders/opaque/defer/frag_defer_light_point.glsl"
                     ),
                     this

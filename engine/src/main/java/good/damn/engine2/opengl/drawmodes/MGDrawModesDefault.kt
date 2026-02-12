@@ -8,46 +8,37 @@ import good.damn.apigl.textures.GLTextureAttachment
 import good.damn.engine2.providers.MGMProviderGL
 
 class MGDrawModesDefault(
-    framebufferG: GLFrameBufferG,
     providerModel: MGMProviderGL
 ) {
 
     private val mDrawModes = arrayOf(
-        MGDrawModeOpaque(
-            GLDrawerLightPass(
-                arrayOf(
-                    framebufferG.textureAttachmentPosition.texture,
-                    framebufferG.textureAttachmentNormal.texture,
-                    framebufferG.textureAttachmentColorSpec.texture,
-                    framebufferG.textureAttachmentMisc.texture,
-                    framebufferG.textureAttachmentDepth.texture
+        providerModel.shaders.lightPasses[
+            GLEnumLightPass.OPAQUE
+        ].run {
+            MGDrawModeOpaque(
+                GLDrawerLightPass(
+                    inputTextures,
+                    providerModel.drawers.drawerQuad
                 ),
-                providerModel.drawers.drawerQuad
-            ),
-            providerModel.shaders.lightPasses[
-                GLEnumLightPass.OPAQUE.ordinal
-            ].shader
-        ),
+                shader
+            )
+        },
         createTextureDrawMode(
-            framebufferG.textureAttachmentColorSpec,
             GLEnumLightPass.DIFFUSE,
             providerModel,
             GLEnumDrawModeMesh.TRIANGLES
         ),
         createTextureDrawMode(
-            framebufferG.textureAttachmentDepth,
             GLEnumLightPass.DEPTH,
             providerModel,
             GLEnumDrawModeMesh.TRIANGLES
         ),
         createTextureDrawMode(
-            framebufferG.textureAttachmentNormal,
             GLEnumLightPass.NORMAL,
             providerModel,
             GLEnumDrawModeMesh.TRIANGLES
         ),
         createTextureDrawMode(
-            framebufferG.textureAttachmentColorSpec,
             GLEnumLightPass.DIFFUSE,
             providerModel,
             GLEnumDrawModeMesh.LINES
@@ -59,21 +50,20 @@ class MGDrawModesDefault(
     )
 
     private inline fun createTextureDrawMode(
-        texture: GLTextureAttachment,
-        drawMode: GLEnumLightPass,
+        typeLightPass: GLEnumLightPass,
         providerModel: MGMProviderGL,
         drawModeMesh: GLEnumDrawModeMesh
-    ) = MGDrawModeTexture(
-        GLDrawerLightPass(
-            arrayOf(
-                texture.texture
+    ) = providerModel.shaders.lightPasses[
+        typeLightPass
+    ].run {
+        MGDrawModeTexture(
+            GLDrawerLightPass(
+                inputTextures,
+                providerModel.drawers.drawerQuad
             ),
-            providerModel.drawers.drawerQuad
-        ),
-        drawModeMesh,
-        providerModel.shaders.lightPasses[
-            drawMode.ordinal
-        ].shader
-    )
+            drawModeMesh,
+            shader
+        )
+    }
 
 }
