@@ -64,7 +64,10 @@ class APViewGlHandler(
             right, bottom
         )
 
-
+        mHud.layout(
+            width,
+            height
+        )
     }
 
     override fun onTouchEvent(

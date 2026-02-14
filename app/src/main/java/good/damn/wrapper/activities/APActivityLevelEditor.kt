@@ -227,10 +227,6 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
         )
 
         glHandler.post(
-            hud
-        )
-
-        glHandler.post(
             renderer
         )
 

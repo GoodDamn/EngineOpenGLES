@@ -33,7 +33,7 @@ import kotlin.times
 class APHud(
     switcherDrawMode: MGRunglCycleDrawerModes,
     requesterUserContent: APIRequestUserContent
-): MGIProviderGLRegister, COIRunnableBounds {
+): MGIProviderGLRegister {
 
     private val mBridgeMatrix = APBridgeRayIntersect()
 
@@ -161,7 +161,7 @@ class APHud(
         )
     }
 
-    override fun run(
+    fun layout(
         w: Int,
         h: Int
     ) {
