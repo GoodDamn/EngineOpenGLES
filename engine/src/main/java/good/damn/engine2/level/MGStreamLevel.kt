@@ -3,7 +3,7 @@ package good.damn.engine2.level
 import good.damn.apigl.drawers.GLDrawerLightPoint
 import good.damn.apigl.drawers.GLDrawerMaterialTexture
 import good.damn.apigl.drawers.GLDrawerMesh
-import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
+import good.damn.apigl.drawers.GLDrawerMeshMaterial
 import good.damn.apigl.drawers.GLDrawerMeshMaterialNormals
 import good.damn.apigl.drawers.GLDrawerNormalMatrix
 import good.damn.apigl.drawers.GLDrawerPositionEntity
@@ -289,7 +289,7 @@ object MGStreamLevel {
             )
 
             val drawerMesh = GLDrawerMeshMaterialNormals(
-                GLDrawerMeshMaterialMutable(
+                GLDrawerMeshMaterial(
                     arrayOf(
                         GLMaterial(
                             GLDrawerMaterialTexture(

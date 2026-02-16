@@ -1,10 +1,9 @@
 package good.damn.engine2.opengl
 
 import good.damn.apigl.drawers.GLDrawerMeshInstanced
-import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
+import good.damn.apigl.drawers.GLDrawerMeshMaterial
 import good.damn.apigl.drawers.GLDrawerMeshMaterialNormals
 import good.damn.apigl.drawers.GLDrawerNormalMatrix
-import good.damn.apigl.drawers.GLDrawerVertexArray
 import good.damn.apigl.shaders.GLShaderGeometryPassInstanced
 import good.damn.apigl.shaders.GLShaderGeometryPassModel
 import good.damn.engine2.logic.MGMGeometryFrustrumMesh
@@ -16,7 +15,7 @@ data class MGMGeometry(
         MGMMeshDrawer<
             GLShaderGeometryPassModel,
             MGMGeometryFrustrumMesh<
-                GLDrawerMeshMaterialMutable
+                GLDrawerMeshMaterial
             >
         >
     >,
@@ -46,7 +45,7 @@ data class MGMGeometry(
 
             it.shader.apply {
                 use()
-                GLDrawerMeshMaterialMutable.draw(
+                GLDrawerMeshMaterial.draw(
                     it.drawer.drawer,
                     materials,
                     this
@@ -68,8 +67,8 @@ data class MGMGeometry(
                     this
                 )
 
-                GLDrawerMeshMaterialMutable.draw(
-                    it.drawer.drawer.material,
+                GLDrawerMeshMaterial.draw(
+                    it.drawer.drawer.meshMaterial,
                     materials,
                     this
                 )

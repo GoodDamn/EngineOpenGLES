@@ -1,17 +1,16 @@
 package good.damn.apigl.drawers
 
 import good.damn.apigl.shaders.GLIShaderModel
-import good.damn.apigl.shaders.GLIShaderNormal
 import good.damn.apigl.shaders.GLShaderMaterial
 
-data class GLDrawerMeshMaterialMutable(
+data class GLDrawerMeshMaterial(
     var material: Array<GLMaterial>,
-    var drawerMesh: GLDrawerMesh
+    var mesh: GLDrawerMesh
 ) {
     companion object {
         @JvmStatic
         fun draw(
-            drawer: GLDrawerMeshMaterialMutable,
+            drawer: GLDrawerMeshMaterial,
             shaderMaterial: Array<GLShaderMaterial>,
             shaderModel: GLIShaderModel
         ) {
@@ -22,7 +21,7 @@ data class GLDrawerMeshMaterialMutable(
             }
 
             GLDrawerMesh.draw(
-                drawer.drawerMesh,
+                drawer.mesh,
                 shaderModel
             )
 

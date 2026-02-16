@@ -1,11 +1,10 @@
 package good.damn.engine2.opengl
 
-import android.opengl.GLES30
 import good.damn.apigl.arrays.GLArrayVertexConfigurator
 import good.damn.apigl.arrays.pointers.GLPointerAttribute
 import good.damn.apigl.drawers.GLDrawerMaterialTexture
 import good.damn.apigl.drawers.GLDrawerMesh
-import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
+import good.damn.apigl.drawers.GLDrawerMeshMaterial
 import good.damn.apigl.drawers.GLDrawerPositionEntity
 import good.damn.apigl.drawers.GLDrawerVertexArray
 import good.damn.apigl.drawers.GLMaterial
@@ -24,7 +23,7 @@ import good.damn.engine2.shader.generators.MGMMaterialShader
 class MGSky {
     private lateinit var meshMaterial: MGMMeshDrawer<
         GLShaderGeometryPassModel,
-        GLDrawerMeshMaterialMutable
+        GLDrawerMeshMaterial
         >
 
     fun configure(
@@ -79,7 +78,7 @@ class MGSky {
 
         meshMaterial = MGMMeshDrawer(
             shader,
-            GLDrawerMeshMaterialMutable(
+            GLDrawerMeshMaterial(
                 arrayOf(
                     GLMaterial(
                         GLDrawerMaterialTexture(
@@ -110,7 +109,7 @@ class MGSky {
     fun draw() {
         meshMaterial.shader.apply {
             use()
-            GLDrawerMeshMaterialMutable.draw(
+            GLDrawerMeshMaterial.draw(
                 meshMaterial.drawer,
                 materials,
                 this

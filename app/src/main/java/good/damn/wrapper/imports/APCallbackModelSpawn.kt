@@ -2,7 +2,7 @@ package good.damn.wrapper.imports
 
 import good.damn.apigl.drawers.GLDrawerMaterialTexture
 import good.damn.apigl.drawers.GLDrawerMesh
-import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
+import good.damn.apigl.drawers.GLDrawerMeshMaterial
 import good.damn.apigl.drawers.GLDrawerMeshMaterialNormals
 import good.damn.apigl.drawers.GLDrawerNormalMatrix
 import good.damn.apigl.drawers.GLDrawerPositionEntity
@@ -150,7 +150,7 @@ class APCallbackModelSpawn(
         drawerVertexArray: GLDrawerVertexArray
     ) {
         val drawerMesh = GLDrawerMeshMaterialNormals(
-            GLDrawerMeshMaterialMutable(
+            GLDrawerMeshMaterial(
                 arrayOf(
                     GLMaterial(
                         GLDrawerMaterialTexture(
