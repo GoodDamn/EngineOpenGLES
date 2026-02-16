@@ -5,25 +5,23 @@ import good.damn.apigl.enums.GLEnumFaceOrder
 import good.damn.apigl.shaders.GLIShaderNormal
 import good.damn.common.matrices.COMatrixNormal
 
-class GLDrawerMeshNormals(
-    vertexArray: GLDrawerVertexArray,
-    drawEntity: GLDrawerPositionEntity,
-    frontFace: GLEnumFaceOrder,
-    private val matrixNormal: COMatrixNormal
-): GLDrawerMesh(
-    vertexArray,
-    drawEntity,
-    frontFace
+data class GLDrawerMeshNormals(
+    var drawerMesh: GLDrawerMesh,
+    var matrixNormal: COMatrixNormal
 ) {
-    override fun drawNormals(
-        shader: GLIShaderNormal
-    ) {
-        GLES30.glUniformMatrix4fv(
-            shader.uniformNormalMatrix,
-            1,
-            false,
-            matrixNormal.normalMatrix,
-            0
-        )
+    companion object {
+        @JvmStatic
+        fun draw(
+            drawerNormal: GLDrawerMeshNormals,
+            shader: GLIShaderNormal
+        ) {
+            GLES30.glUniformMatrix4fv(
+                shader.uniformNormalMatrix,
+                1,
+                false,
+                drawerNormal.matrixNormal.normalMatrix,
+                0
+            )
+        }
     }
 }
