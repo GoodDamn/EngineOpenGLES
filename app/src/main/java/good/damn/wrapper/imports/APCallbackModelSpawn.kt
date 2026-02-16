@@ -1,8 +1,10 @@
 package good.damn.wrapper.imports
 
 import good.damn.apigl.drawers.GLDrawerMaterialTexture
+import good.damn.apigl.drawers.GLDrawerMesh
 import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
-import good.damn.apigl.drawers.GLDrawerMeshNormals
+import good.damn.apigl.drawers.GLDrawerMeshMaterialNormals
+import good.damn.apigl.drawers.GLDrawerNormalMatrix
 import good.damn.apigl.drawers.GLDrawerPositionEntity
 import good.damn.apigl.drawers.GLDrawerVertexArray
 import good.damn.apigl.drawers.GLMaterial
@@ -147,20 +149,24 @@ class APCallbackModelSpawn(
         mesh: LGTriggerMesh,
         drawerVertexArray: GLDrawerVertexArray
     ) {
-        val drawerMesh = GLDrawerMeshMaterialMutable(
-            arrayOf(
-                GLMaterial(
-                    GLDrawerMaterialTexture(
-                        material.textures
+        val drawerMesh = GLDrawerMeshMaterialNormals(
+            GLDrawerMeshMaterialMutable(
+                arrayOf(
+                    GLMaterial(
+                        GLDrawerMaterialTexture(
+                            material.textures
+                        )
                     )
+                ),
+                GLDrawerMesh(
+                    drawerVertexArray,
+                    GLDrawerPositionEntity(
+                        mesh.matrix.matrixMesh.model
+                    ),
+                    GLEnumFaceOrder.COUNTER_CLOCK_WISE
                 )
             ),
-            GLDrawerMeshNormals(
-                drawerVertexArray,
-                GLDrawerPositionEntity(
-                    mesh.matrix.matrixMesh.model
-                ),
-                GLEnumFaceOrder.COUNTER_CLOCK_WISE,
+            GLDrawerNormalMatrix(
                 mesh.matrix.matrixMesh.normal
             )
         )
@@ -182,7 +188,7 @@ class APCallbackModelSpawn(
 
         glProvider.apply {
             parameters.currentEditMesh = meshMaterial
-            geometry.meshes.add(
+            geometry.meshesNormals.add(
                 meshMaterial
             )
 

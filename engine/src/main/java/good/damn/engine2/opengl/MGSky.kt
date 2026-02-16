@@ -110,7 +110,8 @@ class MGSky {
     fun draw() {
         meshMaterial.shader.apply {
             use()
-            meshMaterial.drawer.drawMaterials(
+            GLDrawerMeshMaterialMutable.draw(
+                meshMaterial.drawer,
                 materials,
                 this
             )

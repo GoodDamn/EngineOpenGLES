@@ -160,6 +160,7 @@ class APRendererEditor(
         geometry = MGMGeometry(
             ConcurrentLinkedQueue(),
             ConcurrentLinkedQueue(),
+            ConcurrentLinkedQueue(),
             MGSky()
         ),
         pools = MGPoolTextures(

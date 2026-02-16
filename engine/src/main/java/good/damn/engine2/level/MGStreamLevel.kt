@@ -2,15 +2,16 @@ package good.damn.engine2.level
 
 import good.damn.apigl.drawers.GLDrawerLightPoint
 import good.damn.apigl.drawers.GLDrawerMaterialTexture
+import good.damn.apigl.drawers.GLDrawerMesh
 import good.damn.apigl.drawers.GLDrawerMeshMaterialMutable
-import good.damn.apigl.drawers.GLDrawerMeshNormals
+import good.damn.apigl.drawers.GLDrawerMeshMaterialNormals
+import good.damn.apigl.drawers.GLDrawerNormalMatrix
 import good.damn.apigl.drawers.GLDrawerPositionEntity
 import good.damn.apigl.drawers.GLMaterial
 import good.damn.apigl.drawers.GLVolumeLight
 import good.damn.apigl.enums.GLEnumFaceOrder
 import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.apigl.shaders.base.GLBinderAttribute
-import good.damn.common.COHandlerGl
 import good.damn.engine2.flow.MGFlowLevel
 import good.damn.engine2.loaders.MGLoaderLevelLibrary
 import good.damn.engine2.loaders.MGLoaderLevelMatrices
@@ -24,11 +25,7 @@ import good.damn.engine2.models.json.spawn.MGMLevelSpawnLight
 import good.damn.common.matrices.COMatrixScaleRotation
 import good.damn.common.matrices.COMatrixTransformationNormal
 import good.damn.common.utils.COUtilsFile
-import good.damn.engine2.models.MGMInformatorShader
-import good.damn.engine2.models.MGMManagers
-import good.damn.engine2.opengl.MGMGeometry
 import good.damn.engine2.opengl.models.MGMMeshDrawer
-import good.damn.engine2.opengl.pools.MGMPools
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine2.logic.MGMGeometryFrustrumMesh
@@ -291,20 +288,24 @@ object MGStreamLevel {
                 triggerMatrix
             )
 
-            val drawerMesh = GLDrawerMeshMaterialMutable(
-                arrayOf(
-                    GLMaterial(
-                        GLDrawerMaterialTexture(
-                            pointInfo.first.first.textures
+            val drawerMesh = GLDrawerMeshMaterialNormals(
+                GLDrawerMeshMaterialMutable(
+                    arrayOf(
+                        GLMaterial(
+                            GLDrawerMaterialTexture(
+                                pointInfo.first.first.textures
+                            )
                         )
+                    ),
+                    GLDrawerMesh(
+                        poolMesh[0].drawerVertexArray,
+                        GLDrawerPositionEntity(
+                            triggerMesh.matrix.matrixMesh.model
+                        ),
+                        GLEnumFaceOrder.COUNTER_CLOCK_WISE
                     )
                 ),
-                GLDrawerMeshNormals(
-                    poolMesh[0].drawerVertexArray,
-                    GLDrawerPositionEntity(
-                        triggerMesh.matrix.matrixMesh.model
-                    ),
-                    GLEnumFaceOrder.COUNTER_CLOCK_WISE,
+                GLDrawerNormalMatrix(
                     triggerMesh.matrix.matrixMesh.normal
                 )
             )
@@ -319,7 +320,7 @@ object MGStreamLevel {
                 frustrumMesh
             )
 
-            glProvider.geometry.meshes.add(
+            glProvider.geometry.meshesNormals.add(
                 MGMMeshDrawer(
                     pointInfo.second,
                     frustrumMesh

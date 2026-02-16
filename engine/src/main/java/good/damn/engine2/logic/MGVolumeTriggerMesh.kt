@@ -6,7 +6,7 @@ import good.damn.logic.triggers.LGITrigger
 
 data class MGVolumeTriggerMesh(
     override val modelMatrix: COMatrixScaleRotation,
-    val geometryFrustrum: MGMGeometryFrustrumMesh
+    val geometryFrustrum: MGIGeometryFrustrum
 ): LGITrigger,
 COIVolume {
 

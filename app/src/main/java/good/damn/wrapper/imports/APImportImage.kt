@@ -82,7 +82,7 @@ APIImport {
     ) {
         // attach material to model
         glProvider.parameters.currentEditMesh?.apply {
-            drawer.drawer.material = arrayOf(
+            drawer.drawer.material.material = arrayOf(
                 GLMaterial(
                     GLDrawerMaterialTexture(
                         materialShader.textures
