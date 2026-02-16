@@ -21,9 +21,10 @@ class GLDrawerLights(
         textures: Array<GLShaderTexture>
     ) {
         mLights.forEach {
-            it.draw(
+            GLDrawerLightPoint.draw(
                 shader,
-                shaderModel
+                shaderModel,
+                it
             )
             drawerLightPass.draw(
                 textures

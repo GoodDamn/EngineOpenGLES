@@ -22,8 +22,9 @@ data class GLDrawerMesh(
                 drawer.frontFace.v
             )
 
-            drawer.drawEntity.draw(
-                shader
+            GLDrawerPositionEntity.draw(
+                shader,
+                drawer.drawEntity.modelMatrix
             )
 
             drawer.vertexArray.draw(

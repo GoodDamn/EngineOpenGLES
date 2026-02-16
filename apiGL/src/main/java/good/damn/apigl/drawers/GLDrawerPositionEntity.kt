@@ -4,11 +4,11 @@ import android.opengl.GLES30.*
 import good.damn.apigl.shaders.GLIShaderModel
 import good.damn.common.matrices.COMatrixModel
 
-class GLDrawerPositionEntity(
+data class GLDrawerPositionEntity(
     var modelMatrix: COMatrixModel
-): GLIDrawerShader<GLIShaderModel> {
-
+) {
     companion object {
+        @JvmStatic
         fun draw(
             shader: GLIShaderModel,
             modelMatrix: COMatrixModel
@@ -22,21 +22,4 @@ class GLDrawerPositionEntity(
             )
         }
     }
-
-    override fun draw(
-        shader: GLIShaderModel
-    ) {
-        synchronized(
-            modelMatrix.model
-        ) {
-            glUniformMatrix4fv(
-                shader.uniformModelView,
-                1,
-                false,
-                modelMatrix.model,
-                0
-            )
-        }
-    }
-
 }
