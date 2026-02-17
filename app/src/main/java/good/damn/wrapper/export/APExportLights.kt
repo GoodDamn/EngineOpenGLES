@@ -2,27 +2,101 @@ package good.damn.wrapper.export
 
 import android.util.Log
 import androidx.collection.SparseArrayCompat
+import good.damn.apigl.drawers.GLDrawerLightPoint
 import good.damn.common.matrices.COMatrixTranslate
+import good.damn.engine.sdk.SDVector3
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine2.providers.MGProviderGL
+import good.damn.wrapper.imports.APIImport
+import good.damn.wrapper.models.APMUserContent
+import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
 class APExportLights
 : MGProviderGL(),
-APIExport {
+APIExport,
+APIImport {
 
     companion object {
         private const val TAG = "APExportLights"
+        private const val EXTENSION = ".slights"
+    }
+
+    override fun isValidExtension(
+        fileName: String
+    ) = fileName.contains(
+        EXTENSION
+    )
+
+    override fun processUserContent(
+        userContent: APMUserContent
+    ) {
+        val inp = DataInputStream(
+            userContent.stream
+        )
+
+        val countInterpolations = inp.readUnsignedShort()
+        val countLights = inp.readUnsignedShort()
+        val countPositions = inp.readUnsignedShort()
+
+        val arrInterpolations = Array(
+            countInterpolations
+        ) {
+            SDMLightPointInterpolation(
+                inp.readFloat(),
+                inp.readFloat(),
+                0f,
+                inp.readFloat()
+            )
+        }
+
+        val arrLights = Array(
+            countLights
+        ) {
+            val interpolation = arrInterpolations[
+                inp.readUnsignedShort()
+            ]
+
+            SDMLightPoint(
+                SDVector3(
+                    inp.readFloat(),
+                    inp.readFloat(),
+                    inp.readFloat()
+                ),
+                interpolation,
+                inp.readFloat()
+            )
+        }
+
+        (0 until countPositions).forEach { _ ->
+            val light = arrLights[
+                inp.readUnsignedShort()
+            ]
+
+            glProvider.managers.managerLight.lights.add(
+                GLDrawerLightPoint(
+                    COMatrixTranslate().apply {
+                        setPosition(
+                            inp.readFloat(),
+                            inp.readFloat(),
+                            inp.readFloat()
+                        )
+                        invalidatePosition()
+                    },
+                    light
+                )
+            )
+        }
     }
 
     override fun export(
         file: File
     ) {
         val outFile = File(
-            "${file.path}.slights"
+            file.path + EXTENSION
         ).apply {
             if (!exists() && createNewFile()) {
                 Log.d(TAG, "export: exported $name is created")
@@ -140,10 +214,6 @@ APIExport {
     ) {
         outStream.apply {
             writeByte(
-                (light.alpha * 255).toInt()
-            )
-
-            writeByte(
                 (light.color.x * 255).toInt()
             )
 
@@ -153,6 +223,10 @@ APIExport {
 
             writeByte(
                 (light.color.z * 255).toInt()
+            )
+
+            writeByte(
+                (light.alpha * 255).toInt()
             )
         }
     }
