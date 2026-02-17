@@ -1,10 +1,10 @@
 package good.damn.wrapper.export
 
 import android.util.Log
-import android.util.SparseArray
 import androidx.collection.SparseArrayCompat
 import good.damn.common.matrices.COMatrixTranslate
 import good.damn.engine.sdk.models.SDMLightPoint
+import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine2.providers.MGProviderGL
 import java.io.DataOutputStream
 import java.io.File
@@ -40,10 +40,6 @@ APIExport {
                 size / 2
             )
 
-            outStream.writeShort(
-                size
-            )
-
             forEach {
                 val keyHash = it.light.hashCode()
                 if (!mapLight.containsKey(
@@ -54,9 +50,68 @@ APIExport {
                         it.light
                     )
                 }
+            }
 
+            val mapInterpolations = SparseArrayCompat<
+                SDMLightPointInterpolation
+            >(mapLight.size() / 2)
+
+            mapLight.forEach {
+                val keyHash = it.interpolation.hashCode()
+                if (!mapInterpolations.containsKey(
+                    keyHash
+                )) {
+                    mapInterpolations.put(
+                        keyHash,
+                        it.interpolation
+                    )
+                }
+            }
+
+            outStream.writeShort(
+                mapInterpolations.size()
+            )
+
+            outStream.writeShort(
+                mapLight.size()
+            )
+
+            outStream.writeShort(
+                size
+            )
+
+            mapInterpolations.forEach {
+                outStream.writeFloat(
+                    it.constant
+                )
+
+                outStream.writeFloat(
+                    it.linear
+                )
+
+                outStream.writeFloat(
+                    it.radius
+                )
+            }
+
+            mapLight.forEach {
                 outStream.writeShort(
-                    mapLight.indexOfKey(keyHash)
+                    mapInterpolations.indexOfKey(
+                        it.interpolation.hashCode()
+                    )
+                )
+
+                writeLight(
+                    outStream,
+                    it
+                )
+            }
+
+            forEach {
+                outStream.writeShort(
+                    mapLight.indexOfKey(
+                        it.light.hashCode()
+                    )
                 )
 
                 writePosition(
@@ -64,24 +119,19 @@ APIExport {
                     it.modelMatrix
                 )
             }
-
-            outStream.writeShort(
-                mapLight.size()
-            )
-
-            for (i in 0 until mapLight.size()) {
-                mapLight.get(
-                    mapLight.keyAt(i)
-                )?.let {
-                    writeLight(
-                        outStream,
-                        it
-                    )
-                }
-            }
         }
 
         outStream.close()
+    }
+
+    private inline fun <T> SparseArrayCompat<T>.forEach(
+        action: ((T) -> Unit)
+    ) {
+        for (i in 0 until size()) {
+            get(keyAt(i))?.let {
+                action(it)
+            }
+        }
     }
 
     private inline fun writeLight(
@@ -91,18 +141,6 @@ APIExport {
         outStream.apply {
             writeByte(
                 (light.alpha * 255).toInt()
-            )
-
-            writeFloat(
-                light.radius
-            )
-
-            writeFloat(
-                light.interpolation.constant
-            )
-
-            writeFloat(
-                light.interpolation.linear
             )
 
             writeByte(
