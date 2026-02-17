@@ -72,7 +72,7 @@ APIImport {
             triggerLight.light
         )
 
-        glProvider.managers.managerLight.register(
+        glProvider.managers.managerLight.lights.add(
             drawerLightPoint
         )
 

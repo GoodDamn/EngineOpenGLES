@@ -71,7 +71,7 @@ class SCScriptLightPlacement(
                         it.light
                     )
 
-                    managerLight.register(
+                    managerLight.lights.add(
                         drawerLightPoint
                     )
 
