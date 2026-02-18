@@ -272,7 +272,7 @@ object MGStreamLevel {
                     light
                 )
 
-                managers.managerLight.register(
+                managers.managerLight.lights.add(
                     drawerLightPoint
                 )
 
