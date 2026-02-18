@@ -48,7 +48,8 @@ object MGStreamLevel {
         flow: MGFlowLevel<MGMInstanceMesh>,
         input: InputStream,
         bufferMap: ByteArray,
-        glProvider: MGMProviderGL
+        glProvider: MGMProviderGL,
+        additionalImports: Array<MGIProviderMapImport>?
     ) {
         val stream = DataInputStream(
             input
@@ -64,11 +65,12 @@ object MGStreamLevel {
         val localPathLibTextures = "textures/$libName"
         val localPathLibObj = "objs/$libName"
 
-        processSpawnPoints(
-            map,
-            localPathDir,
-            glProvider
-        )
+        additionalImports?.forEach {
+            it.import(
+                map,
+                localPathDir
+            )
+        }
 
         val loaderLib = MGLoaderLevelLibrary(
             localPathLibTextures,
@@ -143,198 +145,6 @@ object MGStreamLevel {
             }
         //}
 
-    }
-
-    private inline fun processSpawnPoints(
-        map: MIMMap,
-        localPathDir: String,
-        glProvider: MGMProviderGL
-    ) {
-        val json = MGMLevelSpawnInfo.createFromJson(
-            MGUtilsJson.createFromFile(
-                COUtilsFile.getPublicFile(
-                    "$localPathDir/spawnpoints.txt"
-                )
-            )
-        )
-
-        val poolMesh = glProvider.pools.meshes.loadOrGetFromCache(
-            json.mesh
-        ) ?: return
-
-        val lightInterpolation = SDMLightPointInterpolation(
-            json.lightConstant,
-            json.lightLinear,
-            0f,
-            json.lightRadius
-        )
-
-        val binderAttr = GLBinderAttribute.Builder()
-            .bindPosition()
-            .bindTextureCoordinates()
-            .bindNormal()
-            .build()
-
-        val shaders = glProvider.shaders
-        val managers = glProvider.managers
-
-        val pointsInfo = Array(
-            json.info.size
-        ) {
-            val info = json.info[it]
-            val material = glProvider.pools.materials.loadOrGetFromCache(
-                info.texture,
-                "textures/${info.texture}"
-            )
-
-            val lightJson = MGMLevelSpawnLight.createFromJson(
-                MGUtilsJson.createFromFile(
-                    COUtilsFile.getPublicFile(
-                        "lights/${info.light}.light"
-                    )
-                )
-            )
-
-            return@Array Pair(
-                Pair(
-                    material,
-                    SDMLightPoint(
-                        MGUtilsVector3.createFromColorInt(
-                            lightJson.color
-                        ),
-                        lightInterpolation,
-                        1.0f
-                    )
-                ),
-                shaders.cacheGeometryPass.loadOrGetFromCache(
-                    material.srcCodeMaterial,
-                    shaders.source.vert,
-                    binderAttr,
-                    arrayOf(
-                        GLShaderMaterial(
-                            material.shaderTextures
-                        )
-                    )
-                )
-            )
-        }
-
-        map.spawnPoints.forEachIndexed { i, it ->
-            val triggerMatrix = LGTriggerMesh.createTriggerPointMatrix(
-                poolMesh[0].triggerPoint
-            )
-
-            val pointInfo = pointsInfo[
-                i % pointsInfo.size
-            ]
-
-            val light = pointInfo.first.second
-
-            val posX = it.position.x
-            val posY = it.position.z+json.positionYDt
-            val posZ = it.position.y
-
-            triggerMatrix.apply {
-                setPosition(
-                    posX,
-                    posY,
-                    posZ
-                )
-                addRotation(
-                    it.rotation.x+json.rotX,
-                    it.rotation.z,
-                    it.rotation.y,
-                )
-                invalidateScaleRotation()
-                invalidatePosition()
-
-                calculateInvertTrigger()
-                calculateNormals()
-            }
-
-            LGTriggerStateableLight.createFromLight(
-                light
-            ).let { triggerLight ->
-                triggerLight.modelMatrix.run {
-                    setPosition(
-                        posX,
-                        posY,
-                        posZ
-                    )
-                    radius = light.interpolation.radius
-                    invalidatePosition()
-                    invalidateRadius()
-                    calculateInvertTrigger()
-                }
-
-                val drawerLightPoint = GLDrawerLightPoint(
-                    triggerLight.modelMatrix.matrixTrigger.model,
-                    light
-                )
-
-                managers.managerLight.lights.add(
-                    drawerLightPoint
-                )
-
-                managers.managerFrustrum.volumes.add(
-                    GLVolumeLight(
-                        drawerLightPoint,
-                        triggerLight.modelMatrix.matrixTrigger.model
-                    )
-                )
-            }
-
-            val triggerMesh = LGTriggerMesh.createFromMatrix(
-                triggerMatrix
-            )
-
-            val drawerMesh = GLDrawerMeshMaterialNormals(
-                GLDrawerMeshMaterial(
-                    arrayOf(
-                        GLMaterial(
-                            GLDrawerMaterialTexture(
-                                pointInfo.first.first.textures
-                            )
-                        )
-                    ),
-                    GLDrawerMesh(
-                        poolMesh[0].drawerVertexArray,
-                        GLDrawerPositionEntity(
-                            triggerMesh.matrix.matrixMesh.model
-                        ),
-                        GLEnumFaceOrder.COUNTER_CLOCK_WISE
-                    )
-                ),
-                GLDrawerNormalMatrix(
-                    triggerMesh.matrix.matrixMesh.normal
-                )
-            )
-
-            val frustrumMesh = MGMGeometryFrustrumMesh(
-                false,
-                drawerMesh
-            )
-
-            val volume = MGVolumeTriggerMesh(
-                triggerMesh.matrix.matrixTrigger.model,
-                frustrumMesh
-            )
-
-            glProvider.geometry.meshesNormals.add(
-                MGMMeshDrawer(
-                    pointInfo.second,
-                    frustrumMesh
-                )
-            )
-
-            managers.managerFrustrum.volumes.add(
-                volume
-            )
-
-            managers.managerTrigger.addTrigger(
-                volume
-            )
-        }
     }
 
     private fun loadLandscape(
