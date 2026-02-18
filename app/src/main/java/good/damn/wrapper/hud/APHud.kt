@@ -26,6 +26,8 @@ import good.damn.wrapper.imports.APImportImplTempFile
 import good.damn.wrapper.imports.APMImportMisc
 import good.damn.engine2.providers.MGMProviderGL
 import good.damn.engine2.providers.MGIProviderGLRegister
+import good.damn.wrapper.export.APExportLights
+import good.damn.wrapper.hud.ui.clicks.APClickExport
 import java.util.LinkedList
 import kotlin.math.min
 import kotlin.times
@@ -80,6 +82,8 @@ class APHud(
         misc
     )
 
+    private val mImportExportSceneLights = APExportLights()
+
     private val mClickSwitchDrawMode = APClickSwitchDrawMode(
         switcherDrawMode
     )
@@ -100,8 +104,15 @@ class APHud(
                 ),
                 APImportImplTempFile(
                     mImportTempA3d
-                )
+                ),
+                mImportExportSceneLights
             )
+        )
+    )
+
+    private val mBtnExport = UIButton(
+        APClickExport(
+            mImportExportSceneLights
         )
     )
 
@@ -136,6 +147,10 @@ class APHud(
 
         buttons.add(
             mBtnTriggerDrawFlag
+        )
+
+        buttons.add(
+            mBtnExport
         )
 
         setListenerTouchMove(
@@ -200,6 +215,13 @@ class APHud(
             this.height = btnSize
         }
 
+        mBtnExport.apply {
+            x = width - btnSize
+            y = (height - btnSize) * 0.5f
+            this.width = btnSize
+            this.height = btnSize
+        }
+
         layerEditor.layout(
             0f,
             0f,
@@ -218,5 +240,6 @@ class APHud(
         mImportTempLevel.glProvider = provider
         mClickSwitchDrawMode.glProvider = provider
         mClickTriggerDrawingFlag.glProvider = provider
+        mImportExportSceneLights.glProvider = provider
     }
 }
