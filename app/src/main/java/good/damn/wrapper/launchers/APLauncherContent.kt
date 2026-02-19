@@ -6,14 +6,15 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import good.damn.wrapper.contracts.APContractActivityGetContent
+import good.damn.wrapper.contracts.APContractActivityGetMultipleContent
 
 class APLauncherContent(
     activity: AppCompatActivity,
-    callback: ActivityResultCallback<Uri?>
+    callback: ActivityResultCallback<Array<Uri>?>
 ): ActivityResultLauncher<Array<String>>(){
 
     private val mContentBrowser = activity.registerForActivityResult(
-        APContractActivityGetContent(),
+        APContractActivityGetMultipleContent(),
         callback
     )
 
@@ -28,6 +29,6 @@ class APLauncherContent(
         mContentBrowser.unregister()
     }
 
-    override fun getContract() = APContractActivityGetContent()
+    override fun getContract() = APContractActivityGetMultipleContent()
 
 }

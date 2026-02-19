@@ -37,7 +37,8 @@ import good.damn.wrapper.views.APViewGlHandler
 
 class APActivityLevelEditor
 : AppCompatActivity(),
-ActivityResultCallback<Uri?>, APIRequestUserContent {
+ActivityResultCallback<Array<Uri>?>,
+APIRequestUserContent {
 
     private val mContentLauncher = APLauncherContent(
         this,
@@ -144,44 +145,20 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
     }
 
     override fun onActivityResult(
-        result: Uri?
+        result: Array<Uri>?
     ) {
         if (result == null) {
             return
         }
 
-        val mimeType = contentResolver.getType(
-            result
-        ) ?: return
-
-        val fileName = contentResolver.query(
-            result,
-            null,
-            null,
-            null,
-            null
-        )?.run {
-            val nameIndex = getColumnIndex(
-                OpenableColumns.DISPLAY_NAME
-            )
-            moveToFirst()
-            val name = getString(
-                nameIndex
-            )
-            close()
-            return@run name
-        } ?: return
-
-        val stream = contentResolver.openInputStream(
-            result
-        ) ?: return
+        val userContent = Array(
+            result.size
+        ) { generateUserContentModel(
+            result[it]
+        ) }
 
         mCallbackRequestUserContent?.onGetUserContent(
-            APMUserContent(
-                fileName,
-                mimeType,
-                stream
-            )
+            userContent
         )
         mCallbackRequestUserContent = null
     }
@@ -257,6 +234,42 @@ ActivityResultCallback<Uri?>, APIRequestUserContent {
                 handler,
                 hud
             )
+        )
+    }
+
+    private inline fun generateUserContentModel(
+        result: Uri
+    ): APMUserContent? {
+        val mimeType = contentResolver.getType(
+            result
+        ) ?: return null
+
+        val fileName = contentResolver.query(
+            result,
+            null,
+            null,
+            null,
+            null
+        )?.run {
+            val nameIndex = getColumnIndex(
+                OpenableColumns.DISPLAY_NAME
+            )
+            moveToFirst()
+            val name = getString(
+                nameIndex
+            )
+            close()
+            return@run name
+        } ?: return null
+
+        val stream = contentResolver.openInputStream(
+            result
+        ) ?: return null
+
+        return APMUserContent(
+            fileName,
+            mimeType,
+            stream
         )
     }
 

@@ -4,6 +4,6 @@ import good.damn.wrapper.models.APMUserContent
 
 interface APIListenerOnGetUserContent {
     fun onGetUserContent(
-        userContent: APMUserContent
+        userContent: Array<APMUserContent?>
     )
 }

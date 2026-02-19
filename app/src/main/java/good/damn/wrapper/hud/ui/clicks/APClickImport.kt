@@ -25,8 +25,11 @@ APIListenerOnGetUserContent {
     }
 
     override fun onGetUserContent(
-        userContent: APMUserContent
+        userContents: Array<APMUserContent?>
     ) {
+        val userContent = userContents[0]
+            ?: return
+
         for (it in imports) {
             if (it.isValidExtension(
                 userContent.fileName

@@ -3,6 +3,7 @@ package good.damn.wrapper.export
 import android.util.Log
 import androidx.collection.SparseArrayCompat
 import good.damn.apigl.drawers.GLDrawerLightPoint
+import good.damn.apigl.drawers.GLVolumeLight
 import good.damn.common.matrices.COMatrixTranslate
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine.sdk.models.SDMLightPoint
@@ -62,12 +63,12 @@ APIImport {
 
             SDMLightPoint(
                 SDVector3(
-                    inp.readFloat(),
-                    inp.readFloat(),
-                    inp.readFloat()
+                    inp.readByte() / 255f,
+                    inp.readByte() / 255f,
+                    inp.readByte() / 255f
                 ),
                 interpolation,
-                inp.readFloat()
+                inp.readByte() / 255f
             )
         }
 
@@ -76,17 +77,28 @@ APIImport {
                 inp.readUnsignedShort()
             ]
 
+            val matrix = COMatrixTranslate().apply {
+                setPosition(
+                    inp.readFloat(),
+                    inp.readFloat(),
+                    inp.readFloat()
+                )
+                invalidatePosition()
+            }
+
+            val drawer = GLDrawerLightPoint(
+                matrix,
+                light
+            )
+
             glProvider.managers.managerLight.lights.add(
-                GLDrawerLightPoint(
-                    COMatrixTranslate().apply {
-                        setPosition(
-                            inp.readFloat(),
-                            inp.readFloat(),
-                            inp.readFloat()
-                        )
-                        invalidatePosition()
-                    },
-                    light
+                drawer
+            )
+
+            glProvider.managers.managerFrustrum.volumes.add(
+                GLVolumeLight(
+                    drawer,
+                    matrix
                 )
             )
         }
