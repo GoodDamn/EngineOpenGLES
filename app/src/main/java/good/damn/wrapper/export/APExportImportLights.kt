@@ -9,6 +9,7 @@ import good.damn.engine.sdk.SDVector3
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine2.providers.MGProviderGL
+import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import good.damn.wrapper.imports.APIImport
 import good.damn.wrapper.models.APMUserContent
 import java.io.DataInputStream
@@ -16,7 +17,7 @@ import java.io.DataOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
-class APExportLights
+class APExportImportLights
 : MGProviderGL(),
 APIExport,
 APIImport {
@@ -77,7 +78,7 @@ APIImport {
                 inp.readUnsignedShort()
             ]
 
-            val matrix = COMatrixTranslate().apply {
+            val modelMatrix = COMatrixTranslate().apply {
                 setPosition(
                     inp.readFloat(),
                     inp.readFloat(),
@@ -87,19 +88,35 @@ APIImport {
             }
 
             val drawer = GLDrawerLightPoint(
-                matrix,
+                modelMatrix,
                 light
             )
 
-            glProvider.managers.managerLight.lights.add(
-                drawer
+            val triggerLight = LGTriggerStateableLight.createFromLight(
+                light
             )
+
+            triggerLight.modelMatrix.apply {
+                setPosition(
+                    modelMatrix.x,
+                    modelMatrix.y,
+                    modelMatrix.z
+                )
+                radius = light.interpolation.radius
+                invalidatePosition()
+                invalidateRadius()
+                calculateInvertTrigger()
+            }
 
             glProvider.managers.managerFrustrum.volumes.add(
                 GLVolumeLight(
                     drawer,
-                    matrix
+                    triggerLight.modelMatrix.matrixTrigger.model
                 )
+            )
+
+            glProvider.managers.managerLight.lights.add(
+                drawer
             )
         }
     }
