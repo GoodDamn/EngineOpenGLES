@@ -28,8 +28,16 @@ import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import good.damn.mapimporter.models.MIMMap
 
 class MGLevelSpawnPoints
-: MGProviderGL(),
-MGIProviderMapImport {
+: MGImportLevelAdditional() {
+
+    companion object {
+        private const val FILENAME = "spawnpoints.txt"
+        private const val DIVISOR = "/"
+    }
+
+    override fun hasValidExtension(
+        fileName: String
+    ) = fileName == FILENAME
 
     override fun import(
         map: MIMMap,
@@ -38,7 +46,7 @@ MGIProviderMapImport {
         val json = MGMLevelSpawnInfo.createFromJson(
             MGUtilsJson.createFromFile(
                 COUtilsFile.getPublicFile(
-                    "$localPathDir/spawnpoints.txt"
+                    localPathDir + DIVISOR + FILENAME
                 )
             )
         )

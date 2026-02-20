@@ -51,8 +51,10 @@ extends ActivityResultContract<
         final ClipData clipData = intent.getClipData();
 
         int totalCount = 0;
+        int offsetData = 0;
         if (data != null) {
             totalCount++;
+            offsetData++;
         }
 
         if (clipData != null) {
@@ -70,7 +72,7 @@ extends ActivityResultContract<
         if (clipData != null) {
             final int count = clipData.getItemCount();
             for (int i = 0; i < count; i++) {
-                output[i+1] = clipData.getItemAt(
+                output[offsetData++] = clipData.getItemAt(
                     i
                 ).getUri();
             }

@@ -21,7 +21,7 @@ class APImportImplTempFile(
         val contextTempFiles = Array(
             contextUserContents.size - offsetContextUserContents
         ) {
-            contextUserContents[it]?.run {
+            contextUserContents[it + offsetContextUserContents]?.run {
                 createTempFile(
                     this
                 )

@@ -2,7 +2,8 @@ package good.damn.wrapper.imports
 
 import good.damn.apigl.drawers.GLDrawerMeshInstanced
 import good.damn.engine2.flow.MGFlowLevel
-import good.damn.engine2.level.MGIProviderMapImport
+import good.damn.engine2.level.MGIImportMapAdditional
+import good.damn.engine2.level.MGImportLevelAdditional
 import good.damn.engine2.level.MGLevelSpawnPoints
 import good.damn.engine2.level.MGStreamLevel
 import good.damn.engine2.opengl.models.MGMMeshDrawer
@@ -10,18 +11,29 @@ import good.damn.engine2.providers.MGMProviderGL
 import good.damn.engine2.providers.MGProviderGL
 import java.io.File
 import java.io.FileInputStream
-import java.util.LinkedList
 
 class APImportLevel(
     private val misc: APMImportMisc
 ): MGProviderGL(),
 APIProcessTempFile {
 
+    private val mImportsAdditional: Array<
+        MGImportLevelAdditional
+    > = arrayOf(
+        MGLevelSpawnPoints()
+    )
+
     override fun isValidExtension(
         fileName: String
     ) = fileName.contains(
         ".map"
     )
+
+    override fun onSetProviderGl() {
+        mImportsAdditional.forEach {
+            it.glProvider = glProvider
+        }
+    }
 
     final override fun onProcessTempFile(
         rootFile: File,
@@ -31,7 +43,9 @@ APIProcessTempFile {
             APRunnableMap(
                 rootFile,
                 misc,
-                glProvider
+                glProvider,
+                contextFiles,
+                mImportsAdditional
             )
         ).start()
     }
@@ -39,7 +53,9 @@ APIProcessTempFile {
     private class APRunnableMap(
         private val file: File,
         private val misc: APMImportMisc,
-        private val provider: MGMProviderGL
+        private val provider: MGMProviderGL,
+        private val contextFiles: Array<File?>,
+        private val additionalImports: Array<MGImportLevelAdditional>
     ): Runnable {
 
         override fun run() {
@@ -61,11 +77,14 @@ APIProcessTempFile {
                 ),
                 misc.buffer,
                 provider,
-                arrayOf(
-                    MGLevelSpawnPoints().apply {
-                        glProvider = provider
-                    }
-                )
+                additionalImports.filter { ai ->
+                    contextFiles.find {
+                        it ?: return@find false
+                        ai.hasValidExtension(
+                            it.name
+                        )
+                    } != null
+                }
             )
 
             file.delete()

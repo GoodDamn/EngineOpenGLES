@@ -1,17 +1,5 @@
 package good.damn.engine2.level
 
-import good.damn.apigl.drawers.GLDrawerLightPoint
-import good.damn.apigl.drawers.GLDrawerMaterialTexture
-import good.damn.apigl.drawers.GLDrawerMesh
-import good.damn.apigl.drawers.GLDrawerMeshMaterial
-import good.damn.apigl.drawers.GLDrawerMeshMaterialNormals
-import good.damn.apigl.drawers.GLDrawerNormalMatrix
-import good.damn.apigl.drawers.GLDrawerPositionEntity
-import good.damn.apigl.drawers.GLMaterial
-import good.damn.apigl.drawers.GLVolumeLight
-import good.damn.apigl.enums.GLEnumFaceOrder
-import good.damn.apigl.shaders.GLShaderMaterial
-import good.damn.apigl.shaders.base.GLBinderAttribute
 import good.damn.engine2.flow.MGFlowLevel
 import good.damn.engine2.loaders.MGLoaderLevelLibrary
 import good.damn.engine2.loaders.MGLoaderLevelMatrices
@@ -20,28 +8,23 @@ import good.damn.engine2.loaders.mesh.MGLoaderLevelMeshA3D
 import good.damn.engine2.loaders.MGLoaderLevelTextures
 import good.damn.engine2.models.MGMInstanceMesh
 import good.damn.engine2.models.json.MGMLevelInfoMesh
-import good.damn.engine2.models.json.spawn.MGMLevelSpawnInfo
-import good.damn.engine2.models.json.spawn.MGMLevelSpawnLight
 import good.damn.common.matrices.COMatrixScaleRotation
 import good.damn.common.matrices.COMatrixTransformationNormal
-import good.damn.common.utils.COUtilsFile
-import good.damn.engine2.opengl.models.MGMMeshDrawer
-import good.damn.engine.sdk.models.SDMLightPoint
-import good.damn.engine.sdk.models.SDMLightPointInterpolation
-import good.damn.engine2.logic.MGMGeometryFrustrumMesh
-import good.damn.engine2.logic.MGVolumeTriggerMesh
 import good.damn.engine2.providers.MGMProviderGL
-import good.damn.engine2.utils.MGUtilsJson
-import good.damn.engine2.utils.MGUtilsVector3
-import good.damn.logic.triggers.LGTriggerMesh
-import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import good.damn.mapimporter.MIImportMap
-import good.damn.mapimporter.models.MIMMap
 import good.damn.mapimporter.models.MIMProp
 import java.io.DataInputStream
 import java.io.InputStream
 
 object MGStreamLevel {
+
+    private const val SLEVELS = "levels"
+    private const val STEXTURES = "textures"
+    private const val SOBJECTS = "objs"
+    private const val SDIVISOR = "/"
+    private const val FILENAME_LIBRARY = "library.txt"
+    private const val FILENAME_CULLING = "culling.txt"
+    private const val FILE_EXTENSION_A3D = ".a3d"
 
     @JvmStatic
     fun readBin(
@@ -49,7 +32,7 @@ object MGStreamLevel {
         input: InputStream,
         bufferMap: ByteArray,
         glProvider: MGMProviderGL,
-        additionalImports: Array<MGIProviderMapImport?>?
+        additionalImports: List<MGIImportMapAdditional>?
     ) {
         val stream = DataInputStream(
             input
@@ -61,12 +44,12 @@ object MGStreamLevel {
         )
 
         val libName = map.atlases[0].rects[0].libraryName
-        val localPathDir = "levels/$libName"
-        val localPathLibTextures = "textures/$libName"
-        val localPathLibObj = "objs/$libName"
+        val localPathDir = SLEVELS + SDIVISOR + libName
+        val localPathLibTextures = STEXTURES + SDIVISOR + libName
+        val localPathLibObj = SOBJECTS + SDIVISOR + libName
 
         additionalImports?.forEach {
-            it?.import(
+            it.import(
                 map,
                 localPathDir
             )
@@ -74,8 +57,8 @@ object MGStreamLevel {
 
         val loaderLib = MGLoaderLevelLibrary(
             localPathLibTextures,
-            "$localPathDir/library.txt",
-            "$localPathDir/culling.txt",
+            localPathDir + SDIVISOR + FILENAME_LIBRARY,
+            localPathDir + SDIVISOR + FILENAME_CULLING,
             glProvider
         )
 
@@ -154,7 +137,7 @@ object MGStreamLevel {
         mapProp: MIMProp?,
     ): MGMInstanceMesh? {
         val instanceArray = loaderMesh.loadInstanceArray(
-            "${landscape.a3dMesh}.a3d",
+            landscape.a3dMesh + FILE_EXTENSION_A3D,
             arrayListOf(
                 COMatrixTransformationNormal(
                     COMatrixScaleRotation()
