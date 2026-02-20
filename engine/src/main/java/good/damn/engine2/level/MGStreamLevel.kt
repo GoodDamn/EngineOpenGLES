@@ -49,7 +49,7 @@ object MGStreamLevel {
         input: InputStream,
         bufferMap: ByteArray,
         glProvider: MGMProviderGL,
-        additionalImports: Array<MGIProviderMapImport>?
+        additionalImports: Array<MGIProviderMapImport?>?
     ) {
         val stream = DataInputStream(
             input
@@ -66,7 +66,7 @@ object MGStreamLevel {
         val localPathLibObj = "objs/$libName"
 
         additionalImports?.forEach {
-            it.import(
+            it?.import(
                 map,
                 localPathDir
             )

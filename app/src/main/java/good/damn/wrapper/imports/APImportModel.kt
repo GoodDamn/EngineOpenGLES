@@ -18,12 +18,13 @@ class APImportModel(
     )
 
     override fun onProcessTempFile(
-        file: File
+        rootFile: File,
+        contextFiles: Array<File?>
     ) {
         misc.handler.post(
             MGRunnableLoadModel(
                 misc.modelsCallback,
-                file
+                rootFile
             )
         )
     }

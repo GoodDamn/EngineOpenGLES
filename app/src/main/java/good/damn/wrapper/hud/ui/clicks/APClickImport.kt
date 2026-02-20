@@ -5,7 +5,6 @@ import good.damn.wrapper.interfaces.APIListenerOnGetUserContent
 import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.wrapper.models.APMUserContent
 import good.damn.hud.UIIClick
-import java.util.LinkedList
 
 class APClickImport(
     private val requester: APIRequestUserContent,
@@ -27,18 +26,23 @@ APIListenerOnGetUserContent {
     override fun onGetUserContent(
         userContents: Array<APMUserContent?>
     ) {
-        val userContent = userContents[0]
+        // It works in case if we have
+        // only one root uri
+        if (userContents.isEmpty()) {
+            return
+        }
+
+        val rootContent = userContents[0]
             ?: return
 
-        for (it in imports) {
-            if (it.isValidExtension(
-                userContent.fileName
-            )) {
-                it.processUserContent(
-                    userContent
-                )
-                return
-            }
-        }
+        imports.find {
+            it.isValidExtension(
+                rootContent.fileName
+            )
+        }?.processUserContent(
+            rootContent,
+            userContents,
+            1
+        )
     }
 }

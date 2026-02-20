@@ -34,7 +34,9 @@ APIImport {
     )
 
     override fun processUserContent(
-        userContent: APMUserContent
+        userContent: APMUserContent,
+        contextUserContents: Array<APMUserContent?>,
+        offsetContextUserContents: Int
     ) {
         val inp = DataInputStream(
             userContent.stream

@@ -25,7 +25,9 @@ APIImport {
     )
 
     override fun processUserContent(
-        userContent: APMUserContent
+        userContent: APMUserContent,
+        contextUserContents: Array<APMUserContent?>,
+        offsetContextUserContents: Int
     ) {
         val json = try {
             MGUtilsJson.createFromStream(

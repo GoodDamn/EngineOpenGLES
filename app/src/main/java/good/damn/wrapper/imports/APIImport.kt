@@ -8,6 +8,8 @@ interface APIImport {
     ): Boolean
 
     fun processUserContent(
-        userContent: APMUserContent
+        userContent: APMUserContent,
+        contextUserContents: Array<APMUserContent?>,
+        offsetContextUserContents: Int
     )
 }

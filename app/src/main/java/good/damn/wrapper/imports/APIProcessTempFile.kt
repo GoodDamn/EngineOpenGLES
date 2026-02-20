@@ -8,6 +8,7 @@ interface APIProcessTempFile {
     ): Boolean
 
     fun onProcessTempFile(
-        file: File
+        rootFile: File,
+        contextFiles: Array<File?>
     )
 }

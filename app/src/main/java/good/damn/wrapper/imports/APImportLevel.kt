@@ -2,6 +2,7 @@ package good.damn.wrapper.imports
 
 import good.damn.apigl.drawers.GLDrawerMeshInstanced
 import good.damn.engine2.flow.MGFlowLevel
+import good.damn.engine2.level.MGIProviderMapImport
 import good.damn.engine2.level.MGLevelSpawnPoints
 import good.damn.engine2.level.MGStreamLevel
 import good.damn.engine2.opengl.models.MGMMeshDrawer
@@ -9,6 +10,7 @@ import good.damn.engine2.providers.MGMProviderGL
 import good.damn.engine2.providers.MGProviderGL
 import java.io.File
 import java.io.FileInputStream
+import java.util.LinkedList
 
 class APImportLevel(
     private val misc: APMImportMisc
@@ -22,11 +24,12 @@ APIProcessTempFile {
     )
 
     final override fun onProcessTempFile(
-        file: File
+        rootFile: File,
+        contextFiles: Array<File?>
     ) {
         Thread(
             APRunnableMap(
-                file,
+                rootFile,
                 misc,
                 glProvider
             )

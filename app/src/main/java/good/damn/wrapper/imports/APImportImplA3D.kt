@@ -18,11 +18,12 @@ class APImportImplA3D(
     )
 
     override fun onProcessTempFile(
-        file: File
+        rootFile: File,
+        contextFiles: Array<File?>
     ) {
         misc.handler.post(
             MGRunnableA3D(
-                file,
+                rootFile,
                 misc
             )
         )

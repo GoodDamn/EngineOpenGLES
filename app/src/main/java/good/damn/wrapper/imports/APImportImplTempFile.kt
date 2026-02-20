@@ -9,16 +9,29 @@ class APImportImplTempFile(
     private val processTempFile: APIProcessTempFile
 ): APIImport {
 
-    final override fun processUserContent(
-        userContent: APMUserContent
+    override fun processUserContent(
+        userContent: APMUserContent,
+        contextUserContents: Array<APMUserContent?>,
+        offsetContextUserContents: Int
     ) {
-        createTempFile(
+        val tempFile = createTempFile(
             userContent
-        )?.apply {
-            processTempFile.onProcessTempFile(
-                this
-            )
+        ) ?: return
+
+        val contextTempFiles = Array(
+            contextUserContents.size - offsetContextUserContents
+        ) {
+            contextUserContents[it]?.run {
+                createTempFile(
+                    this
+                )
+            }
         }
+
+        processTempFile.onProcessTempFile(
+            tempFile,
+            contextTempFiles
+        )
     }
 
     override fun isValidExtension(
