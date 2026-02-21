@@ -60,66 +60,55 @@ APIImport {
         val arrLights = Array(
             countLights
         ) {
-            val interpolation = arrInterpolations[
-                inp.readUnsignedShort()
-            ]
-
             SDMLightPoint(
                 SDVector3(
-                    inp.readByte() / 255f,
-                    inp.readByte() / 255f,
-                    inp.readByte() / 255f
+                    inp.readUnsignedByte() / 255f,
+                    inp.readUnsignedByte() / 255f,
+                    inp.readUnsignedByte() / 255f
                 ),
-                interpolation,
-                inp.readByte() / 255f
+                arrInterpolations[
+                    inp.readUnsignedShort()
+                ],
+                inp.readUnsignedByte() / 255f
             )
         }
 
         (0 until countPositions).forEach { _ ->
-            val light = arrLights[
-                inp.readUnsignedShort()
-            ]
+            val triggerLight = LGTriggerStateableLight.createFromLight(
+                arrLights[
+                    inp.readUnsignedShort()
+                ]
+            )
 
-            val modelMatrix = COMatrixTranslate().apply {
+            triggerLight.modelMatrix.apply {
                 setPosition(
                     inp.readFloat(),
                     inp.readFloat(),
                     inp.readFloat()
                 )
-                invalidatePosition()
-            }
-
-            val drawer = GLDrawerLightPoint(
-                modelMatrix,
-                light
-            )
-
-            val triggerLight = LGTriggerStateableLight.createFromLight(
-                light
-            )
-
-            triggerLight.modelMatrix.apply {
-                setPosition(
-                    modelMatrix.x,
-                    modelMatrix.y,
-                    modelMatrix.z
-                )
-                radius = light.interpolation.radius
+                radius = triggerLight.light.interpolation.radius
                 invalidatePosition()
                 invalidateRadius()
                 calculateInvertTrigger()
             }
 
-            glProvider.managers.managerFrustrum.volumes.add(
-                GLVolumeLight(
-                    drawer,
-                    triggerLight.modelMatrix.matrixTrigger.model
-                )
+            val drawer = GLDrawerLightPoint(
+                triggerLight.modelMatrix.matrixTrigger.model,
+                triggerLight.light
             )
 
-            glProvider.managers.managerLight.lights.add(
-                drawer
-            )
+            glProvider.managers.apply {
+                managerFrustrum.volumes.add(
+                    GLVolumeLight(
+                        drawer,
+                        triggerLight.modelMatrix.matrixTrigger.model
+                    )
+                )
+
+                managerLight.lights.add(
+                    drawer
+                )
+            }
         }
     }
 
