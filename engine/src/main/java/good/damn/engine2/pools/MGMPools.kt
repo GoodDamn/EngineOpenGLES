@@ -1,4 +1,4 @@
-package good.damn.engine2.opengl.pools
+package good.damn.engine2.pools
 
 data class MGMPools(
     val materials: MGPoolMaterials,

@@ -6,8 +6,8 @@ import good.damn.engine2.models.MGMDrawers
 import good.damn.engine2.models.MGMInformatorShader
 import good.damn.engine2.models.MGMManagers
 import good.damn.engine2.models.MGMParameters
-import good.damn.engine2.opengl.MGMGeometry
-import good.damn.engine2.opengl.pools.MGMPools
+import good.damn.engine2.models.MGMGeometry
+import good.damn.engine2.pools.MGMPools
 
 data class MGMProviderGL(
     val geometry: MGMGeometry,

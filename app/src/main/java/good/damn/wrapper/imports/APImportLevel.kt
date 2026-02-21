@@ -2,11 +2,10 @@ package good.damn.wrapper.imports
 
 import good.damn.apigl.drawers.GLDrawerMeshInstanced
 import good.damn.engine2.flow.MGFlowLevel
-import good.damn.engine2.level.MGIImportMapAdditional
 import good.damn.engine2.level.MGImportLevelAdditional
 import good.damn.engine2.level.MGLevelSpawnPoints
 import good.damn.engine2.level.MGStreamLevel
-import good.damn.engine2.opengl.models.MGMMeshDrawer
+import good.damn.engine2.models.MGMMeshDrawer
 import good.damn.engine2.providers.MGMProviderGL
 import good.damn.engine2.providers.MGProviderGL
 import java.io.File

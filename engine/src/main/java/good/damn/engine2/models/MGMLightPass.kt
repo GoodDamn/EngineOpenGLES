@@ -1,4 +1,4 @@
-package good.damn.engine2.opengl.models
+package good.damn.engine2.models
 
 import good.damn.apigl.shaders.lightpass.GLShaderLightPass
 import good.damn.apigl.textures.GLTexture

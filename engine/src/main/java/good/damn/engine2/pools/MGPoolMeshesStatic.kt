@@ -1,4 +1,4 @@
-package good.damn.engine2.opengl.pools
+package good.damn.engine2.pools
 
 import android.util.SparseArray
 import good.damn.apigl.arrays.GLArrayVertexConfigurator

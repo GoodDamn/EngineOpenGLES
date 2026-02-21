@@ -19,8 +19,7 @@ import good.damn.engine2.logic.MGMGeometryFrustrumMesh
 import good.damn.engine2.logic.MGVolumeTriggerMesh
 import good.damn.engine2.models.json.spawn.MGMLevelSpawnInfo
 import good.damn.engine2.models.json.spawn.MGMLevelSpawnLight
-import good.damn.engine2.opengl.models.MGMMeshDrawer
-import good.damn.engine2.providers.MGProviderGL
+import good.damn.engine2.models.MGMMeshDrawer
 import good.damn.engine2.utils.MGUtilsJson
 import good.damn.engine2.utils.MGUtilsVector3
 import good.damn.logic.triggers.LGTriggerMesh

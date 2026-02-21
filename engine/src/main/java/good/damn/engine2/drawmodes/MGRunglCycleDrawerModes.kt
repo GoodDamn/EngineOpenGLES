@@ -1,9 +1,8 @@
-package good.damn.engine2.opengl.drawmodes
+package good.damn.engine2.drawmodes
 
 import good.damn.common.COIRunnableBounds
 import good.damn.engine2.providers.MGIProviderGLRegister
 import good.damn.engine2.providers.MGMProviderGL
-import good.damn.engine2.providers.MGProviderGL
 
 class MGRunglCycleDrawerModes(
     private val drawModes: Array<MGDrawModeBase>

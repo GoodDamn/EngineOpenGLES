@@ -1,4 +1,4 @@
-package good.damn.engine2.opengl.models
+package good.damn.engine2.models
 
 data class MGMMeshDrawer<
     SHADER,

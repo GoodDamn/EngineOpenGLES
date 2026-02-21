@@ -1,4 +1,4 @@
-package good.damn.engine2.opengl.drawmodes
+package good.damn.engine2.drawmodes
 
 import good.damn.apigl.drawers.GLIDrawer
 

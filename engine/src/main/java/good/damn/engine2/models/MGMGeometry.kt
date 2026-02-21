@@ -1,4 +1,4 @@
-package good.damn.engine2.opengl
+package good.damn.engine2.models
 
 import good.damn.apigl.drawers.GLDrawerMeshInstanced
 import good.damn.apigl.drawers.GLDrawerMeshMaterial
@@ -7,7 +7,7 @@ import good.damn.apigl.drawers.GLDrawerNormalMatrix
 import good.damn.apigl.shaders.GLShaderGeometryPassInstanced
 import good.damn.apigl.shaders.GLShaderGeometryPassModel
 import good.damn.engine2.logic.MGMGeometryFrustrumMesh
-import good.damn.engine2.opengl.models.MGMMeshDrawer
+import good.damn.engine2.models.MGSky
 import java.util.concurrent.ConcurrentLinkedQueue
 
 data class MGMGeometry(
@@ -16,23 +16,23 @@ data class MGMGeometry(
             GLShaderGeometryPassModel,
             MGMGeometryFrustrumMesh<
                 GLDrawerMeshMaterial
+                >
             >
-        >
-    >,
+        >,
     val meshesNormals: ConcurrentLinkedQueue<
         MGMMeshDrawer<
             GLShaderGeometryPassModel,
             MGMGeometryFrustrumMesh<
                 GLDrawerMeshMaterialNormals
+                >
             >
-        >
-    >,
+        >,
     val meshesInstanced: ConcurrentLinkedQueue<
         MGMMeshDrawer<
             GLShaderGeometryPassInstanced,
             GLDrawerMeshInstanced
             >
-    >,
+        >,
     val meshSky: MGSky
 ) {
 
@@ -45,7 +45,7 @@ data class MGMGeometry(
 
             it.shader.apply {
                 use()
-                GLDrawerMeshMaterial.draw(
+                GLDrawerMeshMaterial.Companion.draw(
                     it.drawer.drawer,
                     materials,
                     this
@@ -62,12 +62,12 @@ data class MGMGeometry(
             it.shader.apply {
                 use()
 
-                GLDrawerNormalMatrix.draw(
+                GLDrawerNormalMatrix.Companion.draw(
                     it.drawer.drawer.normals,
                     this
                 )
 
-                GLDrawerMeshMaterial.draw(
+                GLDrawerMeshMaterial.Companion.draw(
                     it.drawer.drawer.meshMaterial,
                     materials,
                     this

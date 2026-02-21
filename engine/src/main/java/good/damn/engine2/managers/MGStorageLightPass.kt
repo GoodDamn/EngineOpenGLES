@@ -5,7 +5,7 @@ import good.damn.apigl.framebuffer.GLFrameBufferG
 import good.damn.apigl.shaders.base.GLBinderAttribute
 import good.damn.apigl.shaders.lightpass.GLShaderLightPass
 import good.damn.engine2.files.MGFile
-import good.damn.engine2.opengl.models.MGMLightPass
+import good.damn.engine2.models.MGMLightPass
 
 class MGStorageLightPass(
     framebufferG: GLFrameBufferG

@@ -5,7 +5,6 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
-import good.damn.wrapper.contracts.APContractActivityGetContent
 import good.damn.wrapper.contracts.APContractActivityGetMultipleContent
 
 class APLauncherContent(

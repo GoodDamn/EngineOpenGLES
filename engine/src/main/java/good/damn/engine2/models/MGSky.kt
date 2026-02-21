@@ -1,4 +1,4 @@
-package good.damn.engine2.opengl
+package good.damn.engine2.models
 
 import good.damn.apigl.arrays.GLArrayVertexConfigurator
 import good.damn.apigl.arrays.pointers.GLPointerAttribute
@@ -14,10 +14,8 @@ import good.damn.apigl.shaders.GLShaderGeometryPassModel
 import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.apigl.shaders.base.GLBinderAttribute
 import good.damn.common.matrices.COMatrixScale
-import good.damn.engine2.opengl.models.MGMMeshDrawer
 import good.damn.engine.ASObject3d
-import good.damn.engine2.models.MGMInformatorShader
-import good.damn.engine2.opengl.pools.MGPoolTextures
+import good.damn.engine2.pools.MGPoolTextures
 import good.damn.engine2.shader.generators.MGMMaterialShader
 
 class MGSky {
@@ -109,7 +107,7 @@ class MGSky {
     fun draw() {
         meshMaterial.shader.apply {
             use()
-            GLDrawerMeshMaterial.draw(
+            GLDrawerMeshMaterial.Companion.draw(
                 meshMaterial.drawer,
                 materials,
                 this

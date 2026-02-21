@@ -1,4 +1,4 @@
-package good.damn.engine2.opengl.pools
+package good.damn.engine2.pools
 
 import good.damn.apigl.drawers.GLDrawerVertexArray
 import good.damn.logic.models.LGTriggerPoint

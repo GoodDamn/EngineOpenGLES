@@ -1,17 +1,13 @@
 package good.damn.engine2.shader
 
 import good.damn.common.utils.COUtilsFile
-import good.damn.engine2.opengl.models.MGMShaderSourceFragDefer
+import good.damn.engine2.models.MGMShaderSourceFragDefer
 import good.damn.apigl.utils.GLUtilsShader
 
 class MGShaderSource(
     localPath: String,
     buffer: ByteArray
 ) {
-    companion object {
-        private const val FOLDER = "shaders"
-    }
-
     val fragDefer1: String
     val fragDeferMain: String
 
@@ -26,7 +22,7 @@ class MGShaderSource(
     val vert: String
 
     init {
-        val localFullPath = "$FOLDER/$localPath"
+        val localFullPath = "shaders/$localPath"
         val deferPath = "$localFullPath/defer"
         fragDefer1 = loadSourceCode(
             "$deferPath/frag1.glsl",

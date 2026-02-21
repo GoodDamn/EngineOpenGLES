@@ -1,10 +1,8 @@
-package good.damn.engine2.opengl.drawmodes
+package good.damn.engine2.drawmodes
 
 import good.damn.apigl.drawers.GLDrawerLightPass
 import good.damn.apigl.enums.GLEnumLightPass
 import good.damn.apigl.enums.GLEnumDrawModeMesh
-import good.damn.apigl.framebuffer.GLFrameBufferG
-import good.damn.apigl.textures.GLTextureAttachment
 import good.damn.engine2.providers.MGMProviderGL
 
 class MGDrawModesDefault(

@@ -7,8 +7,6 @@ import good.damn.common.utils.COUtilsFile
 import good.damn.engine2.models.MGProp
 import good.damn.engine2.models.json.MGMLevelInfoMesh
 import good.damn.apigl.shaders.base.GLBinderAttribute
-import good.damn.engine2.models.MGMInformatorShader
-import good.damn.engine2.opengl.pools.MGPoolMaterials
 import good.damn.engine2.providers.MGMProviderGL
 import good.damn.engine2.utils.MGUtilsJson
 import org.json.JSONArray

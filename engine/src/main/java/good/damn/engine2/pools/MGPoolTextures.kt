@@ -1,4 +1,4 @@
-package good.damn.engine2.opengl.pools
+package good.damn.engine2.pools
 
 import good.damn.apigl.textures.GLTexture
 import good.damn.apigl.textures.GLTextureActive
