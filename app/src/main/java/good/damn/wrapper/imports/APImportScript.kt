@@ -2,21 +2,18 @@ package good.damn.wrapper.imports
 
 import android.util.SparseArray
 import androidx.collection.SparseArrayCompat
+import good.damn.engine2.files.MGFile
 import good.damn.script.SCIScript
+import good.damn.script.SCManagerScripts
 import good.damn.script.SCScriptLightPlacement
 import good.damn.wrapper.models.APMUserContent
 
-class APImportScript
-: APIImport {
+class APImportScript(
+    private val managerScripts: SCManagerScripts
+): APIImport {
 
     private companion object {
         private const val EXTENSION = ".jar"
-    }
-
-    private val mScriptLoaders = SparseArrayCompat<
-        SCIScript
-    >().apply {
-
     }
 
     private var mIndexSubstring = -1
@@ -44,8 +41,14 @@ class APImportScript
             mIndexSubstring
         )
 
+        managerScripts.load(
+            scriptName,
+            MGFile(
+                "scripts/${userContent.fileName}"
+            )
+        )
 
-
+        userContent.stream.close()
     }
 
 }
