@@ -2,6 +2,7 @@ package good.damn.logic.process
 
 import android.os.Handler
 import android.os.Looper
+import good.damn.engine.sdk.managers.SDManagerProcessTime
 import good.damn.engine.sdk.process.SDIProcessTime
 import java.util.LinkedList
 
@@ -54,5 +55,9 @@ class LGManagerProcessTime {
             mRunnable
         )
     }
+
+    fun toSdManager() = SDManagerProcessTime(
+        mLoopRunnables
+    )
 
 }
