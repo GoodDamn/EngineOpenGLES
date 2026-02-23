@@ -6,6 +6,8 @@ import good.damn.engine.sdk.managers.SDManagerLights
 import good.damn.engine.sdk.managers.SDManagerProcessTime
 import good.damn.engine.sdk.models.SDMLightPointEntity
 import good.damn.engine.sdk.models.provider.SDMProvider
+import good.damn.engine.sdk.models.provider.SDMProviderComponents
+import good.damn.engine.sdk.models.provider.SDMProviderManagers
 import good.damn.engine.sdk.process.SDIProcessTime
 import good.damn.engine2.providers.MGProviderGL
 import good.damn.logic.triggers.stateables.LGTriggerStateableLight
@@ -30,14 +32,20 @@ class MGManagerScriptsAssociate(
         managerScripts.load(
             scriptName,
             SDMProvider(
-                SDManagerProcessTime(
-                    runnablesLoop
+                SDMProviderManagers(
+                    SDManagerProcessTime(
+                        runnablesLoop
+                    ),
+                    SDManagerLights(
+                        lights
+                    )
                 ),
-                SDManagerLights(
-                    lights
+                SDMProviderComponents(
+                    glProvider.drawers.drawerLightDirectional.info
                 )
             )
         )
+
 
         associateProvider(
             runnablesLoop,

@@ -56,7 +56,6 @@ import good.damn.engine2.shader.MGShaderSource
 import good.damn.engine2.utils.MGUtilsVertIndices
 import good.damn.logic.process.LGManagerProcessTime
 import good.damn.logic.triggers.managers.LGManagerTriggerMesh
-import good.damn.script.SCLoaderScripts
 import good.damn.engine2.files.MGFile
 import good.damn.engine2.providers.MGMProviderGL
 import good.damn.engine2.managers.MGStorageLightPass
@@ -344,10 +343,6 @@ class APRendererEditor(
             )
             modelMatrix.invalidatePosition()
         }
-
-        SCLoaderScripts.executeDirLight(
-            providerModel.drawers.drawerLightDirectional
-        )
 
         glDepthFunc(
             GL_LESS

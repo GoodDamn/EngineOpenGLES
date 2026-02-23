@@ -21,7 +21,6 @@ import good.damn.engine2.providers.MGMProviderGL
 import good.damn.engine2.providers.MGProviderGL
 import good.damn.engine2.sensors.MGManagerSensor
 import good.damn.engine2.sensors.MGSensorGyroscope
-import good.damn.script.SCScriptLightPlacement
 import good.damn.wrapper.interfaces.APIListenerOnGetUserContent
 import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.wrapper.models.APMUserContent
@@ -271,19 +270,5 @@ APIRequestUserContent {
             mimeType,
             stream
         )
-    }
-
-    private inline fun loadScripts(
-        providerModel: MGMProviderGL
-    ) {
-        val scriptLightPlacement = SCScriptLightPlacement(
-            COUtilsFile.getPublicFile(
-                "scripts"
-            ),
-            providerModel.managers.managerProcessTime,
-            providerModel.managers.managerLight,
-            providerModel.managers.managerFrustrum
-        )
-        scriptLightPlacement.execute()
     }
 }

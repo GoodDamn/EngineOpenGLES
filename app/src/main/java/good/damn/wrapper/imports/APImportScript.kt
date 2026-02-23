@@ -9,7 +9,6 @@ import good.damn.engine2.providers.MGIProviderGLRegister
 import good.damn.engine2.providers.MGMProviderGL
 import good.damn.script.SCIScript
 import good.damn.script.SCManagerScripts
-import good.damn.script.SCScriptLightPlacement
 import good.damn.wrapper.models.APMUserContent
 import java.io.IOException
 
