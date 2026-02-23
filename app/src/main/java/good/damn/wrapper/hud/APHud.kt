@@ -6,6 +6,7 @@ import good.damn.wrapper.imports.APImportImage
 import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.engine2.drawmodes.MGRunglCycleDrawerModes
 import good.damn.engine2.files.MGFile
+import good.damn.engine2.managers.MGManagerScriptsAssociate
 import good.damn.hud.UIButton
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.callbacks.APCallbackOnCameraMovement
@@ -58,6 +59,14 @@ class APHud(
         mBridgeMatrix
     )
 
+    private val managerScripts = MGManagerScriptsAssociate(
+        SCManagerScripts(
+            MGFile(
+                "scripts"
+            )
+        )
+    )
+
     private val misc = APMImportMisc(
         Handler(
             Looper.getMainLooper()
@@ -69,11 +78,7 @@ class APHud(
     private val mImportImage = APImportImage()
 
     private val mImportScript = APImportScript(
-        SCManagerScripts(
-            MGFile(
-                "scripts"
-            )
-        )
+        managerScripts
     )
 
     private val mImportTempLevel = APImportLevel(
@@ -252,5 +257,6 @@ class APHud(
         mClickSwitchDrawMode.glProvider = provider
         mClickTriggerDrawingFlag.glProvider = provider
         mImportExportSceneLights.glProvider = provider
+        managerScripts.glProvider = provider
     }
 }
