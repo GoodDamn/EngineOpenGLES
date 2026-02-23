@@ -1,5 +1,6 @@
 package good.damn.wrapper.imports
 
+import android.util.Log
 import android.util.SparseArray
 import androidx.collection.SparseArrayCompat
 import good.damn.engine2.files.MGFile
@@ -7,6 +8,7 @@ import good.damn.script.SCIScript
 import good.damn.script.SCManagerScripts
 import good.damn.script.SCScriptLightPlacement
 import good.damn.wrapper.models.APMUserContent
+import java.io.IOException
 
 class APImportScript(
     private val managerScripts: SCManagerScripts
@@ -33,7 +35,7 @@ class APImportScript(
         contextUserContents: Array<APMUserContent?>,
         offsetContextUserContents: Int
     ) {
-        if (mIndexSubstring > 0) {
+        if (mIndexSubstring <= 0) {
             return
         }
 
@@ -41,12 +43,13 @@ class APImportScript(
             mIndexSubstring
         )
 
-        managerScripts.load(
-            scriptName,
-            MGFile(
-                "scripts/${userContent.fileName}"
+        try {
+            managerScripts.load(
+                scriptName
             )
-        )
+        } catch (e: IOException) {
+            Log.d("APImportScript", "processUserContent: ${e.message}")
+        }
 
         userContent.stream.close()
     }

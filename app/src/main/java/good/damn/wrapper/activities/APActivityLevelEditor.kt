@@ -223,9 +223,9 @@ APIRequestUserContent {
             sensors
         )
 
-        loadScripts(
+        /*loadScripts(
             renderer.providerModel
-        )
+        )*/
 
         setContentView(
             APViewGlHandler(

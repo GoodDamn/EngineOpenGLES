@@ -5,6 +5,7 @@ import android.os.Looper
 import good.damn.wrapper.imports.APImportImage
 import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.engine2.drawmodes.MGRunglCycleDrawerModes
+import good.damn.engine2.files.MGFile
 import good.damn.hud.UIButton
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.callbacks.APCallbackOnCameraMovement
@@ -25,8 +26,11 @@ import good.damn.wrapper.imports.APImportImplTempFile
 import good.damn.wrapper.imports.APMImportMisc
 import good.damn.engine2.providers.MGMProviderGL
 import good.damn.engine2.providers.MGIProviderGLRegister
+import good.damn.script.SCManagerScripts
+import good.damn.wrapper.APApp
 import good.damn.wrapper.export.APExportImportLights
 import good.damn.wrapper.hud.ui.clicks.APClickExport
+import good.damn.wrapper.imports.APImportScript
 import kotlin.math.min
 
 class APHud(
@@ -63,6 +67,15 @@ class APHud(
     )
 
     private val mImportImage = APImportImage()
+
+    private val mImportScript = APImportScript(
+        SCManagerScripts(
+            MGFile(
+                "scripts"
+            )
+        )
+    )
+
     private val mImportTempLevel = APImportLevel(
         misc
     )
@@ -102,7 +115,8 @@ class APHud(
                 APImportImplTempFile(
                     mImportTempA3d
                 ),
-                mImportExportSceneLights
+                mImportExportSceneLights,
+                mImportScript
             )
         )
     )

@@ -6,17 +6,14 @@ class SDManagerLights(
     private val lights: MutableList<
         SDMLightPointEntity
     >
-): Iterable<
-    SDMLightPointEntity
-> {
-
+) {
     fun add(
         light: SDMLightPointEntity
     ) = lights.add(
         light
     )
 
-    override fun iterator() = lights.iterator()
+    fun iterator() = lights.iterator()
 
     fun remove(
         light: SDMLightPointEntity
