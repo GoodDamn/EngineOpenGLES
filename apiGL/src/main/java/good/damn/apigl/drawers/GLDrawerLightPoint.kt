@@ -4,7 +4,6 @@ import android.opengl.GLES30
 import good.damn.apigl.shaders.GLIShaderModel
 import good.damn.apigl.shaders.GLShaderLightPoint
 import good.damn.common.matrices.COMatrixTranslate
-import good.damn.engine.sdk.models.SDMLight
 import good.damn.engine.sdk.models.SDMLightPoint
 
 class GLDrawerLightPoint(

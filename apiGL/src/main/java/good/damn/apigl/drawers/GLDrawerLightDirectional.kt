@@ -3,12 +3,12 @@ package good.damn.apigl.drawers
 import android.opengl.GLES30.glUniform3f
 import good.damn.apigl.shaders.GLShaderLightDirectional
 import good.damn.engine.sdk.SDVector3
-import good.damn.engine.sdk.models.SDMLight
+import good.damn.engine.sdk.models.SDMLightDirectional
 
 class GLDrawerLightDirectional
 : GLIDrawerShader<GLShaderLightDirectional> {
 
-    val info = SDMLight(
+    val info = SDMLightDirectional(
         SDVector3(
             0.1f,
             0.1f,
