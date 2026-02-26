@@ -4,7 +4,7 @@ import good.damn.apigl.shaders.GLShaderGeometryPassInstanced
 import good.damn.apigl.shaders.GLShaderGeometryPassModel
 import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.apigl.shaders.lightpass.GLShaderLightPassPointLight
-import good.damn.engine2.opengl.models.MGMLightPass
+import good.damn.engine2.managers.MGStorageLightPass
 import good.damn.engine2.shader.MGShaderCache
 import good.damn.engine2.shader.MGShaderSource
 
@@ -22,6 +22,6 @@ data class MGMInformatorShader(
 
     val wireframe: GLShaderGeometryPassModel,
 
-    val lightPasses: Array<MGMLightPass>,
+    val lightPasses: MGStorageLightPass,
     val lightPassPointLight: GLShaderLightPassPointLight
 )

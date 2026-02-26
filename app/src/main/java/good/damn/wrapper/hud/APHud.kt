@@ -2,122 +2,173 @@ package good.damn.wrapper.hud
 
 import android.os.Handler
 import android.os.Looper
-import android.view.MotionEvent
-import good.damn.common.COHandlerGl
-import good.damn.common.camera.COICameraFree
-import good.damn.engine2.models.MGMInformatorShader
-import good.damn.engine2.models.MGMManagers
-import good.damn.engine2.models.MGMParameters
-import good.damn.engine2.opengl.MGMGeometry
-import good.damn.wrapper.imports.MGImportImage
-import good.damn.wrapper.imports.MGImportImplLight
-import good.damn.wrapper.interfaces.MGIRequestUserContent
-import good.damn.engine2.opengl.MGSwitcherDrawMode
-import good.damn.engine2.opengl.pools.MGMPools
+import good.damn.wrapper.imports.APImportImage
+import good.damn.wrapper.interfaces.APIRequestUserContent
+import good.damn.engine2.drawmodes.MGRunglCycleDrawerModes
+import good.damn.engine2.files.MGFile
+import good.damn.engine2.managers.MGManagerScriptsAssociate
+import good.damn.hud.UIButton
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
-import good.damn.wrapper.hud.callbacks.MGCallbackOnCameraMovement
-import good.damn.wrapper.hud.callbacks.MGCallbackOnDeltaInteract
-import good.damn.wrapper.hud.callbacks.MGCallbackOnIntersectPosition
-import good.damn.wrapper.hud.callbacks.MGCallbackOnScale
-import good.damn.wrapper.imports.MGCallbackModelSpawn
+import good.damn.wrapper.hud.callbacks.APCallbackOnCameraMovement
+import good.damn.wrapper.hud.callbacks.APCallbackOnDeltaInteract
+import good.damn.wrapper.hud.callbacks.APCallbackOnIntersectPosition
+import good.damn.wrapper.hud.callbacks.APCallbackOnScale
+import good.damn.wrapper.imports.APCallbackModelSpawn
 import good.damn.wrapper.hud.ui.APUILayerEditor
 import good.damn.wrapper.hud.ui.clicks.APClickImport
 import good.damn.wrapper.hud.ui.clicks.APClickPlaceMesh
 import good.damn.wrapper.hud.ui.clicks.APClickSwitchDrawMode
 import good.damn.wrapper.hud.ui.clicks.APClickTriggerDrawingFlag
-import good.damn.wrapper.imports.MGImportImplA3D
-import good.damn.wrapper.imports.MGImportImplLevel
-import good.damn.wrapper.imports.MGImportImplModel
-import good.damn.wrapper.imports.MGMImportMisc
+import good.damn.wrapper.imports.APImportImplA3D
+import good.damn.wrapper.imports.APImportLight
+import good.damn.wrapper.imports.APImportLevel
+import good.damn.wrapper.imports.APImportModel
+import good.damn.wrapper.imports.APImportImplTempFile
+import good.damn.wrapper.imports.APMImportMisc
+import good.damn.engine2.providers.MGMProviderGL
+import good.damn.engine2.providers.MGIProviderGLRegister
+import good.damn.script.SCManagerScripts
+import good.damn.wrapper.APApp
+import good.damn.wrapper.export.APExportImportLights
+import good.damn.wrapper.hud.ui.clicks.APClickExport
+import good.damn.wrapper.imports.APImportScript
+import kotlin.math.min
 
 class APHud(
-    camera: COICameraFree,
-    requesterUserContent: MGIRequestUserContent,
-    switcherDrawMode: MGSwitcherDrawMode,
-    parameters: MGMParameters,
-    pools: MGMPools,
-    shaders: MGMInformatorShader,
-    managers: MGMManagers,
-    geometry: MGMGeometry,
-    glHandler: COHandlerGl
-) {
+    switcherDrawMode: MGRunglCycleDrawerModes,
+    requesterUserContent: APIRequestUserContent
+): MGIProviderGLRegister {
 
     private val mBridgeMatrix = APBridgeRayIntersect()
 
-    private val mCallbackOnDeltaInteract = MGCallbackOnDeltaInteract(
+    private val mCallbackOnDeltaInteract = APCallbackOnDeltaInteract(
         mBridgeMatrix
     )
 
-    private val mCallbackOnCameraMove = MGCallbackOnCameraMovement(
-        camera,
+    private val mCallbackOnCameraMove = APCallbackOnCameraMovement(
         mBridgeMatrix
     ).apply {
         setListenerIntersection(
-            MGCallbackOnIntersectPosition(
+            APCallbackOnIntersectPosition(
                 mBridgeMatrix
             )
         )
     }
 
-    private val mCallbackModelSpawn = MGCallbackModelSpawn(
-        mBridgeMatrix,
-        pools.meshes,
-        shaders,
-        geometry,
-        parameters,
-        managers.managerTrigger,
-        managers.managerFrustrum
+    private val mCallbackModelSpawn = APCallbackModelSpawn(
+        mBridgeMatrix
     )
 
-    private val mLayerEditor = APUILayerEditor(
-        clickLoadUserContent = MGMImportMisc(
-            Handler(
-                Looper.getMainLooper()
-            ),
-            mCallbackModelSpawn,
-            ByteArray(1024)
-        ).run {
-            APClickImport(
-                arrayOf(
-                    MGImportImplModel(
-                        this
-                    ),
-                    MGImportImplLevel(
-                        this,
-                        geometry,
-                        pools,
-                        shaders,
-                        glHandler,
-                        managers
-                    ),
-                    MGImportImplA3D(
-                        this
-                    ),
-                    MGImportImage(
-                        pools,
-                        shaders,
-                        parameters
-                    ),
-                    MGImportImplLight(
-                        mBridgeMatrix,
-                        managers
-                    )
-                ),
-                requesterUserContent
+    private val managerScripts = MGManagerScriptsAssociate(
+        SCManagerScripts(
+            MGFile(
+                "scripts"
             )
-        },
-        clickPlaceMesh = APClickPlaceMesh(
+        )
+    )
+
+    private val misc = APMImportMisc(
+        Handler(
+            Looper.getMainLooper()
+        ),
+        mCallbackModelSpawn,
+        ByteArray(1024)
+    )
+
+    private val mImportImage = APImportImage()
+
+    private val mImportScript = APImportScript(
+        managerScripts
+    )
+
+    private val mImportTempLevel = APImportLevel(
+        misc
+    )
+
+    private val mImportTempModel = APImportModel(
+        misc
+    )
+
+    private val mImportLight = APImportLight(
+        mBridgeMatrix
+    )
+
+    private val mImportTempA3d = APImportImplA3D(
+        misc
+    )
+
+    private val mImportExportSceneLights = APExportImportLights()
+
+    private val mClickSwitchDrawMode = APClickSwitchDrawMode(
+        switcherDrawMode
+    )
+
+    private val mClickTriggerDrawingFlag = APClickTriggerDrawingFlag()
+
+    private val mBtnImport = UIButton(
+        APClickImport(
+            requesterUserContent,
+            arrayOf(
+                mImportImage,
+                mImportLight,
+                APImportImplTempFile(
+                    mImportTempLevel
+                ),
+                APImportImplTempFile(
+                    mImportTempModel
+                ),
+                APImportImplTempFile(
+                    mImportTempA3d
+                ),
+                mImportExportSceneLights,
+                mImportScript
+            )
+        )
+    )
+
+    private val mBtnExport = UIButton(
+        APClickExport(
+            mImportExportSceneLights
+        )
+    )
+
+    private val mBtnPlaceMesh = UIButton(
+        APClickPlaceMesh(
             mBridgeMatrix
-        ),
-        clickSwitchDrawerMode = APClickSwitchDrawMode(
-            glHandler,
-            switcherDrawMode
-        ),
-        clickTriggerDrawing = APClickTriggerDrawingFlag(
-            parameters
-        ),
+        )
+    )
+
+    private val mBtnSwitchDrawMode = UIButton(
+        mClickSwitchDrawMode
+    )
+
+    private val mBtnTriggerDrawFlag = UIButton(
+        mClickTriggerDrawingFlag
+    )
+
+    val layerEditor = APUILayerEditor(
         bridgeMatrix = mBridgeMatrix
     ).apply {
+        buttons.add(
+            mBtnImport
+        )
+
+        buttons.add(
+            mBtnPlaceMesh
+        )
+
+        buttons.add(
+            mBtnSwitchDrawMode
+        )
+
+        buttons.add(
+            mBtnTriggerDrawFlag
+        )
+
+        buttons.add(
+            mBtnExport
+        )
+
         setListenerTouchMove(
             mCallbackOnCameraMove
         )
@@ -131,7 +182,7 @@ class APHud(
         )
 
         setListenerTouchScaleInteract(
-            MGCallbackOnScale(
+            APCallbackOnScale(
                 mBridgeMatrix
             )
         )
@@ -142,18 +193,70 @@ class APHud(
     }
 
     fun layout(
-        width: Float,
-        height: Float
+        w: Int,
+        h: Int
     ) {
-        mLayerEditor.layout(
-            0f, 0f,
+        val width = w.toFloat()
+        val height = h.toFloat()
+
+        val btnSize = min(
             width, height
+        ) * 0.1f
+
+        mBtnImport.apply {
+            x = width - btnSize
+            y = 0f
+            this.width = btnSize
+            this.height = btnSize
+        }
+
+        mBtnPlaceMesh.apply {
+            x = (width - btnSize) * 0.5f
+            y = height - btnSize
+            this.width = btnSize
+            this.height = btnSize
+        }
+
+        mBtnSwitchDrawMode.apply {
+            x = width - btnSize
+            y = height - btnSize
+            this.width = btnSize
+            this.height = btnSize
+        }
+
+        mBtnTriggerDrawFlag.apply {
+            x = 0f
+            y = height - btnSize
+            this.width = btnSize
+            this.height = btnSize
+        }
+
+        mBtnExport.apply {
+            x = width - btnSize
+            y = (height - btnSize) * 0.5f
+            this.width = btnSize
+            this.height = btnSize
+        }
+
+        layerEditor.layout(
+            0f,
+            0f,
+            width,
+            height
         )
     }
 
-    fun touchEvent(
-        event: MotionEvent
-    ) = mLayerEditor.onTouchEvent(
-        event
-    )
+    override fun registerGlProvider(
+        provider: MGMProviderGL
+    ) {
+        mCallbackModelSpawn.glProvider = provider
+        mCallbackOnCameraMove.glProvider = provider
+        mImportImage.glProvider = provider
+        mImportLight.glProvider = provider
+        mImportTempLevel.glProvider = provider
+        mClickSwitchDrawMode.glProvider = provider
+        mClickTriggerDrawingFlag.glProvider = provider
+        mImportExportSceneLights.glProvider = provider
+        managerScripts.glProvider = provider
+    }
 }

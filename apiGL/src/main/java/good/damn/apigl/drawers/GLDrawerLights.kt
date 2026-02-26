@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class GLDrawerLights(
     private val drawerLightPass: GLDrawerLightPass
 ) {
-    private val mLights = ConcurrentLinkedQueue<
+    val lights = ConcurrentLinkedQueue<
         GLDrawerLightPoint
     >()
 
@@ -20,22 +20,15 @@ class GLDrawerLights(
         shaderModel: GLIShaderModel,
         textures: Array<GLShaderTexture>
     ) {
-        mLights.forEach {
-            it.draw(
+        lights.forEach {
+            GLDrawerLightPoint.draw(
                 shader,
-                shaderModel
+                shaderModel,
+                it
             )
             drawerLightPass.draw(
                 textures
             )
         }
-    }
-
-    fun register(
-        drawer: GLDrawerLightPoint
-    ) {
-        mLights.add(
-            drawer
-        )
     }
 }

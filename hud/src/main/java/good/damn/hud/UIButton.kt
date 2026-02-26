@@ -1,33 +1,23 @@
 package good.damn.hud
 
 class UIButton(
-    private var mX: Float = 0f,
-    private var mY: Float = 0f,
-    private var mWidth: Float = 0f,
-    private var mHeight: Float = 0f,
     private val click: UIIClick
 ) {
-    fun bounds(
-        x: Float,
-        y: Float,
-        width: Float,
-        height: Float
-    ) {
-        mX = x
-        mY = y
-        mWidth = width
-        mHeight = height
-    }
+
+    var x = 0f
+    var y = 0f
+    var width = 0f
+    var height = 0f
 
     fun intercept(
         x: Float,
         y: Float
     ): Boolean {
-        if (mX > x || x > mX + mWidth) {
+        if (this.x > x || x > this.x + width) {
             return false
         }
 
-        if (mY > y || y > mY + mHeight) {
+        if (this.y > y || y > this.y + height) {
             return false
         }
 

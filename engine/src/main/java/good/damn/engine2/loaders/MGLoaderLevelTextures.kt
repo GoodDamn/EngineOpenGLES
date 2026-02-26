@@ -1,6 +1,6 @@
 package good.damn.engine2.loaders
 
-import good.damn.engine2.opengl.pools.MGPoolTextures
+import good.damn.engine2.pools.MGPoolTextures
 import good.damn.mapimporter.models.MIMAtlasRect
 import good.damn.mapimporter.models.MIMMap
 

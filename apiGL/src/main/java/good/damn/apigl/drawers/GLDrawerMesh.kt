@@ -6,29 +6,30 @@ import good.damn.apigl.enums.GLEnumFaceOrder
 import good.damn.apigl.shaders.GLIShaderModel
 import good.damn.apigl.shaders.GLIShaderNormal
 
-open class GLDrawerMesh(
-    private val vertexArray: GLDrawerVertexArray,
-    private val drawEntity: GLDrawerPositionEntity,
-    private val frontFace: GLEnumFaceOrder,
-): GLIDrawerShader<GLIShaderModel> {
+data class GLDrawerMesh(
+    var vertexArray: GLDrawerVertexArray,
+    var drawEntity: GLDrawerPositionEntity,
+    var frontFace: GLEnumFaceOrder
+) {
 
-    open fun drawNormals(
-        shader: GLIShaderNormal
-    ) = Unit
+    companion object {
+        @JvmStatic
+        fun draw(
+            drawer: GLDrawerMesh,
+            shader: GLIShaderModel
+        ) {
+            glFrontFace(
+                drawer.frontFace.v
+            )
 
-    override fun draw(
-        shader: GLIShaderModel
-    ) {
-        glFrontFace(
-            frontFace.v
-        )
+            GLDrawerPositionEntity.draw(
+                shader,
+                drawer.drawEntity.modelMatrix
+            )
 
-        drawEntity.draw(
-            shader
-        )
-
-        vertexArray.draw(
-            GLRenderVars.drawModeMesh.v
-        )
+            drawer.vertexArray.draw(
+                GLRenderVars.drawModeMesh.v
+            )
+        }
     }
 }

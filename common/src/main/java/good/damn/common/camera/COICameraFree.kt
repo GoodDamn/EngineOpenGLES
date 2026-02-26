@@ -17,7 +17,8 @@ interface COICameraFree
 
     fun addRotation(
         yaw: Float,
-        pitch: Float
+        pitch: Float,
+        roll: Float
     )
 
 }

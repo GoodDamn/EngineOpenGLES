@@ -6,8 +6,8 @@ import good.damn.apigl.shaders.GLShaderTexture
 import good.damn.apigl.textures.GLMTexturePart
 import good.damn.apigl.textures.GLTextureActive
 import good.damn.common.utils.COUtilsFile
-import good.damn.engine2.opengl.models.MGMShaderSourceFragDefer
-import good.damn.engine2.opengl.pools.MGPoolTextures
+import good.damn.engine2.models.MGMShaderSourceFragDefer
+import good.damn.engine2.pools.MGPoolTextures
 import good.damn.engine2.shader.MGShaderSource
 import java.util.LinkedList
 

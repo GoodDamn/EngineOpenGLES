@@ -60,6 +60,13 @@ dependencies {
     implementation(
         project(":logic")
     )
-    implementation(project(":iassimp"))
+
+    implementation(
+        project(":script")
+    )
+
+    implementation(
+        project(":iassimp")
+    )
 
 }

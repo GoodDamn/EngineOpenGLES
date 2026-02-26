@@ -11,34 +11,17 @@ import good.damn.hud.touch.UIITouchable
 import good.damn.hud.touch.MGTouchFreeMove
 import good.damn.hud.touch.UITouchScale
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
+import java.util.LinkedList
 import kotlin.math.min
 
 class APUILayerEditor(
-    private val bridgeMatrix: APBridgeRayIntersect,
-    clickLoadUserContent: UIIClick,
-    clickSwitchDrawerMode: UIIClick,
-    clickPlaceMesh: UIIClick,
-    clickTriggerDrawing: UIIClick
+    private val bridgeMatrix: APBridgeRayIntersect
 ): UIITouchable {
-
-    private val mBtnLoadUserContent = UIButton(
-        click = clickLoadUserContent
-    )
-
-    private val mBtnSwitchWireframe = UIButton(
-        click = clickSwitchDrawerMode
-    )
-
-    private val mBtnPlaceMesh = UIButton(
-        click = clickPlaceMesh
-    )
-
-    private val mBtnTriggerDrawing = UIButton(
-        click = clickTriggerDrawing
-    )
 
     private val mTouchMove = MGTouchFreeMove()
     private val mTouchScale = UITouchScale()
+
+    val buttons = LinkedList<UIButton>()
 
     fun setListenerTouchMove(
         v: UIIListenerMove?
@@ -73,48 +56,12 @@ class APUILayerEditor(
             height
         )
 
-        val targetLen = min(
-            width,
-            height
-        )
-
-        val btnLen = targetLen * 0.1f
-
         mTouchMove.setBoundsDelta(
             width * 0.5f,
             0f,
             width,
             height
         )
-
-        mBtnSwitchWireframe.bounds(
-            width - btnLen,
-            height - btnLen,
-            btnLen,
-            btnLen
-        )
-
-        mBtnLoadUserContent.bounds(
-            width - btnLen,
-            0f,
-            btnLen,
-            btnLen
-        )
-
-        mBtnPlaceMesh.bounds(
-            (width - btnLen) * 0.5f,
-            height - btnLen,
-            btnLen,
-            btnLen
-        )
-
-        mBtnTriggerDrawing.bounds(
-            0f,
-            height - btnLen,
-            btnLen,
-            btnLen
-        )
-
         val btnLen2 = min(
             width,
             height
@@ -143,10 +90,9 @@ class APUILayerEditor(
                 index
             )
 
-            mBtnLoadUserContent.intercept(x,y)
-            mBtnSwitchWireframe.intercept(x,y)
-            mBtnPlaceMesh.intercept(x,y)
-            mBtnTriggerDrawing.intercept(x,y)
+            buttons.forEach {
+                it.intercept(x, y)
+            }
 
             if (bridgeMatrix.intersectUpdate != null && mTouchScale.onTouchEvent(
                 event
