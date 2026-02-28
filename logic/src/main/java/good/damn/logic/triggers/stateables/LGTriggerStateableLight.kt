@@ -4,7 +4,6 @@ import good.damn.common.matrices.COMatrixScale
 import good.damn.common.matrices.COMatrixTransformationInvert
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.logic.triggers.LGMatrixTriggerLight
-import good.damn.logic.triggers.callbacks.LGManagerTriggerState
 import good.damn.logic.triggers.methods.LGTriggerMethodSphere
 
 data class LGTriggerStateableLight(

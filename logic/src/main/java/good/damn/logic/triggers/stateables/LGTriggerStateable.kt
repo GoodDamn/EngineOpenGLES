@@ -1,9 +1,9 @@
-package good.damn.logic.triggers.callbacks
+package good.damn.logic.triggers.stateables
 
 import good.damn.logic.triggers.enums.LGEnumStateTrigger
 import good.damn.logic.triggers.methods.LGITriggerMethod
 
-class LGManagerTriggerState(
+class LGTriggerStateable(
     private val triggerMethod: LGITriggerMethod
 ) {
     private var mIsInside = false
