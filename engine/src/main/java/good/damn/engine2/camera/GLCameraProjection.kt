@@ -4,7 +4,7 @@ import good.damn.apigl.buffers.GLBufferUniformCamera
 import good.damn.common.COHandlerGl
 import good.damn.common.camera.COCameraProjection
 import good.damn.common.camera.COICameraProjection
-import good.damn.common.matrices.COMatrixTranslate
+import good.damn.engine.sdk.matrices.COMatrixTranslate
 import good.damn.engine.ASUtilsBuffer
 
 class GLCameraProjection(

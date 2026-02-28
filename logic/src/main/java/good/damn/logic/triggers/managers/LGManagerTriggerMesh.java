@@ -2,7 +2,7 @@ package good.damn.logic.triggers.managers;
 
 import androidx.annotation.NonNull;
 
-import good.damn.common.matrices.COMatrixScaleRotation;
+import good.damn.engine.sdk.matrices.COMatrixScaleRotation;
 import good.damn.logic.triggers.LGITrigger;
 
 public final class LGManagerTriggerMesh

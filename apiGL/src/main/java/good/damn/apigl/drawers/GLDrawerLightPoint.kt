@@ -3,7 +3,7 @@ package good.damn.apigl.drawers
 import android.opengl.GLES30
 import good.damn.apigl.shaders.GLIShaderModel
 import good.damn.apigl.shaders.GLShaderLightPoint
-import good.damn.common.matrices.COMatrixTranslate
+import good.damn.engine.sdk.matrices.COMatrixTranslate
 import good.damn.engine.sdk.models.SDMLightPoint
 
 class GLDrawerLightPoint(

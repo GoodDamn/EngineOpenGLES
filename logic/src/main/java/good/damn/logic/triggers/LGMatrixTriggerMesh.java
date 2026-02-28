@@ -3,9 +3,9 @@ package good.damn.logic.triggers;
 import androidx.annotation.NonNull;
 
 import good.damn.engine.sdk.SDVector3;
-import good.damn.common.matrices.COMatrixScaleRotation;
-import good.damn.common.matrices.COMatrixTransformationInvert;
-import good.damn.common.matrices.COMatrixTransformationNormal;
+import good.damn.engine.sdk.matrices.COMatrixScaleRotation;
+import good.damn.engine.sdk.matrices.COMatrixTransformationInvert;
+import good.damn.engine.sdk.matrices.COMatrixTransformationNormal;
 
 public final class LGMatrixTriggerMesh
 implements LGIMatrixTrigger {

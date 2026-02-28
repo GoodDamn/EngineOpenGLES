@@ -2,7 +2,7 @@ package good.damn.apigl.drawers
 
 import android.opengl.GLES30.*
 import good.damn.apigl.shaders.GLIShaderModel
-import good.damn.common.matrices.COMatrixModel
+import good.damn.engine.sdk.matrices.COMatrixModel
 
 data class GLDrawerPositionEntity(
     var modelMatrix: COMatrixModel

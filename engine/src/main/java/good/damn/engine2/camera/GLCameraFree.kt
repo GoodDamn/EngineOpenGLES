@@ -3,7 +3,7 @@ package good.damn.engine2.camera
 import good.damn.apigl.buffers.GLBufferUniformCamera
 import good.damn.common.COHandlerGl
 import good.damn.common.camera.COICameraFree
-import good.damn.common.matrices.COMatrixTranslate
+import good.damn.engine.sdk.matrices.COMatrixTranslate
 import good.damn.engine.ASUtilsBuffer
 import good.damn.engine.sdk.SDVector3
 

@@ -1,6 +1,6 @@
 package good.damn.apigl.drawers
 
-import good.damn.common.matrices.COMatrixModel
+import good.damn.engine.sdk.matrices.COMatrixModel
 import good.damn.common.volume.COIVolume
 
 class GLVolumeLight(

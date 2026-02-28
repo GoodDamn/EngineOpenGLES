@@ -1,4 +1,4 @@
-package good.damn.common.matrices;
+package good.damn.engine.sdk.matrices;
 
 public final class COMatrixScale
 extends COMatrixTranslate {

@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.collection.SparseArrayCompat
 import good.damn.apigl.drawers.GLDrawerLightPoint
 import good.damn.apigl.drawers.GLVolumeLight
-import good.damn.common.matrices.COMatrixTranslate
+import good.damn.engine.sdk.matrices.COMatrixTranslate
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation

@@ -1,4 +1,4 @@
-package good.damn.common.matrices;
+package good.damn.engine.sdk.matrices;
 
 import android.opengl.Matrix;
 

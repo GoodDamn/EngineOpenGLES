@@ -1,10 +1,9 @@
 package good.damn.logic.triggers.stateables
 
-import good.damn.common.matrices.COMatrixScale
-import good.damn.common.matrices.COMatrixTransformationInvert
+import good.damn.engine.sdk.matrices.COMatrixScale
+import good.damn.engine.sdk.matrices.COMatrixTransformationInvert
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.logic.triggers.LGMatrixTriggerLight
-import good.damn.logic.triggers.methods.LGTriggerMethodSphere
 
 data class LGTriggerStateableLight(
     val light: SDMLightPoint,

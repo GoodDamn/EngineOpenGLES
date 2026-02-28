@@ -2,8 +2,8 @@ package good.damn.logic.triggers;
 
 import androidx.annotation.NonNull;
 
-import good.damn.common.matrices.COMatrixScale;
-import good.damn.common.matrices.COMatrixTransformationInvert;
+import good.damn.engine.sdk.matrices.COMatrixScale;
+import good.damn.engine.sdk.matrices.COMatrixTransformationInvert;
 import good.damn.engine.sdk.SDVector3;
 
 public final class LGMatrixTriggerLight {

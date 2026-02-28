@@ -2,8 +2,8 @@ package good.damn.engine2.loaders.mesh
 
 import good.damn.common.COHandlerGl
 import good.damn.engine2.models.MGMInstanceArray
-import good.damn.common.matrices.COMatrixScaleRotation
-import good.damn.common.matrices.COMatrixTransformationNormal
+import good.damn.engine.sdk.matrices.COMatrixScaleRotation
+import good.damn.engine.sdk.matrices.COMatrixTransformationNormal
 import good.damn.common.utils.COUtilsFile
 import good.damn.engine2.utils.MGUtilsA3D
 import good.damn.engine2.utils.MGUtilsInstancedMesh

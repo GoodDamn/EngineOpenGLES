@@ -4,7 +4,7 @@ import android.opengl.Matrix;
 
 import androidx.annotation.NonNull;
 
-import good.damn.common.matrices.COMatrixInvert;
+import good.damn.engine.sdk.matrices.COMatrixInvert;
 
 public abstract class LGTriggerMethodInvert
 implements LGITriggerMethod {

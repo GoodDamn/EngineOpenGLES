@@ -4,9 +4,9 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import good.damn.common.matrices.COMatrixScaleRotation;
-import good.damn.common.matrices.COMatrixTransformationInvert;
-import good.damn.common.matrices.COMatrixTransformationNormal;
+import good.damn.engine.sdk.matrices.COMatrixScaleRotation;
+import good.damn.engine.sdk.matrices.COMatrixTransformationInvert;
+import good.damn.engine.sdk.matrices.COMatrixTransformationNormal;
 import good.damn.common.vertex.COMArrayVertexManager;
 import good.damn.engine.ASObject3d;
 import good.damn.engine.sdk.SDVector3;

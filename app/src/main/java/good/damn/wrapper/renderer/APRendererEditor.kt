@@ -31,7 +31,7 @@ import good.damn.common.COIRunnableBounds
 import good.damn.common.camera.COCameraFree
 import good.damn.common.camera.COCameraProjection
 import good.damn.common.camera.COMCamera
-import good.damn.common.matrices.COMatrixTranslate
+import good.damn.engine.sdk.matrices.COMatrixTranslate
 import good.damn.common.vertex.COMArrayVertexManager
 import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.ASObject3d

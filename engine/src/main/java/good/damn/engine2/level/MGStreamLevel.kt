@@ -8,8 +8,8 @@ import good.damn.engine2.loaders.mesh.MGLoaderLevelMeshA3D
 import good.damn.engine2.loaders.MGLoaderLevelTextures
 import good.damn.engine2.models.MGMInstanceMesh
 import good.damn.engine2.models.json.MGMLevelInfoMesh
-import good.damn.common.matrices.COMatrixScaleRotation
-import good.damn.common.matrices.COMatrixTransformationNormal
+import good.damn.engine.sdk.matrices.COMatrixScaleRotation
+import good.damn.engine.sdk.matrices.COMatrixTransformationNormal
 import good.damn.engine2.providers.MGMProviderGL
 import good.damn.mapimporter.MIImportMap
 import good.damn.mapimporter.models.MIMProp

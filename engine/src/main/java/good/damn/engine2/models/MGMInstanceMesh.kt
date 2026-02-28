@@ -3,8 +3,8 @@ package good.damn.engine2.models
 import good.damn.apigl.arrays.GLArrayVertexInstanced
 import good.damn.apigl.drawers.GLMaterial
 import good.damn.apigl.shaders.GLShaderGeometryPassInstanced
-import good.damn.common.matrices.COMatrixScaleRotation
-import good.damn.common.matrices.COMatrixTransformationNormal
+import good.damn.engine.sdk.matrices.COMatrixScaleRotation
+import good.damn.engine.sdk.matrices.COMatrixTransformationNormal
 
 data class MGMInstanceMesh(
     val shader: GLShaderGeometryPassInstanced,

@@ -1,6 +1,6 @@
 package good.damn.logic.triggers
 
-import good.damn.common.matrices.COMatrixScaleRotation
+import good.damn.engine.sdk.matrices.COMatrixScaleRotation
 
 interface LGITrigger {
     val modelMatrix: COMatrixScaleRotation

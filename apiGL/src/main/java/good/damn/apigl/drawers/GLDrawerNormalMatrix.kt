@@ -2,7 +2,7 @@ package good.damn.apigl.drawers
 
 import android.opengl.GLES30
 import good.damn.apigl.shaders.GLIShaderNormal
-import good.damn.common.matrices.COMatrixNormal
+import good.damn.engine.sdk.matrices.COMatrixNormal
 
 data class GLDrawerNormalMatrix(
     var matrixNormal: COMatrixNormal

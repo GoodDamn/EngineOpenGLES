@@ -5,8 +5,8 @@ import good.damn.apigl.arrays.GLArrayVertexInstanced
 import good.damn.apigl.enums.GLEnumArrayVertexConfiguration
 import good.damn.common.COHandlerGl
 import good.damn.engine2.models.MGMInstanceArray
-import good.damn.common.matrices.COMatrixScaleRotation
-import good.damn.common.matrices.COMatrixTransformationNormal
+import good.damn.engine.sdk.matrices.COMatrixScaleRotation
+import good.damn.engine.sdk.matrices.COMatrixTransformationNormal
 import good.damn.engine.ASUtilsBuffer
 import java.nio.Buffer
 import java.nio.FloatBuffer

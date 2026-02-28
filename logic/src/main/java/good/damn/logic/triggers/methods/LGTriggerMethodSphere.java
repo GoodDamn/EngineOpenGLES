@@ -2,7 +2,7 @@ package good.damn.logic.triggers.methods;
 
 import androidx.annotation.NonNull;
 
-import good.damn.common.matrices.COMatrixInvert;
+import good.damn.engine.sdk.matrices.COMatrixInvert;
 
 public final class LGTriggerMethodSphere
 extends LGTriggerMethodInvert {

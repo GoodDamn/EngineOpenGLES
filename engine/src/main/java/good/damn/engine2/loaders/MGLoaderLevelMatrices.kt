@@ -1,8 +1,8 @@
 package good.damn.engine2.loaders
 
 import good.damn.engine2.models.MGProp
-import good.damn.common.matrices.COMatrixScaleRotation
-import good.damn.common.matrices.COMatrixTransformationNormal
+import good.damn.engine.sdk.matrices.COMatrixScaleRotation
+import good.damn.engine.sdk.matrices.COMatrixTransformationNormal
 import good.damn.mapimporter.models.MIMMap
 import good.damn.mapimporter.models.MIMProp
 
