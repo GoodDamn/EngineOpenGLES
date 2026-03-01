@@ -1,7 +1,8 @@
-package good.damn.logic.triggers.stateables
+package good.damn.engine.sdk.trigger.stateables
 
-import good.damn.logic.triggers.enums.LGEnumStateTrigger
-import good.damn.logic.triggers.methods.LGITriggerMethod
+import good.damn.engine.sdk.trigger.enums.LGEnumStateTrigger
+import good.damn.engine.sdk.trigger.methods.LGITriggerMethod
+
 
 class LGTriggerStateable(
     private val triggerMethod: LGITriggerMethod

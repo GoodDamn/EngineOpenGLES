@@ -23,7 +23,7 @@ import good.damn.engine2.models.MGMMeshDrawer
 import good.damn.engine2.utils.MGUtilsJson
 import good.damn.engine2.utils.MGUtilsVector3
 import good.damn.logic.utils.LGUtilsTrigger
-import good.damn.logic.triggers.stateables.LGTriggerStateableLight
+import good.damn.engine.sdk.trigger.stateables.LGTriggerStateableLight
 import good.damn.mapimporter.models.MIMMap
 
 class MGLevelSpawnPoints

@@ -1,4 +1,4 @@
-package good.damn.logic.triggers;
+package good.damn.engine.sdk.trigger.matrices;
 
 import androidx.annotation.NonNull;
 
@@ -12,16 +12,16 @@ public final class LGMatrixTriggerLight {
 
     @NonNull
     public final SDMatrixTransformationInvert<
-            SDMatrixScale
-            > matrixTrigger;
+        SDMatrixScale
+    > matrixTrigger;
 
     @NonNull
     private final SDVector3 mLightPosition;
 
     public LGMatrixTriggerLight(
         @NonNull final SDMatrixTransformationInvert<
-                    SDMatrixScale
-                        > matrixTrigger
+            SDMatrixScale
+        > matrixTrigger
     ) {
         this.matrixTrigger = matrixTrigger;
 

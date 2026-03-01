@@ -1,4 +1,4 @@
-package good.damn.logic.triggers
+package good.damn.engine.sdk.trigger
 
 import good.damn.engine.sdk.matrices.SDMatrixScaleRotation
 

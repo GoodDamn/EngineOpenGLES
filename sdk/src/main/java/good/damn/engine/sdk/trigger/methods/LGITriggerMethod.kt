@@ -1,4 +1,4 @@
-package good.damn.logic.triggers.methods
+package good.damn.engine.sdk.trigger.methods
 
 interface LGITriggerMethod {
     fun canTrigger(

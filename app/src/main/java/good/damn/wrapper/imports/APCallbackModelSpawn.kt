@@ -17,7 +17,7 @@ import good.damn.apigl.shaders.base.GLBinderAttribute
 import good.damn.engine2.logic.MGMGeometryFrustrumMesh
 import good.damn.engine2.logic.MGVolumeTriggerMesh
 import good.damn.engine2.shader.generators.MGMMaterialShader
-import good.damn.logic.triggers.LGMatrixTriggerMesh
+import good.damn.engine.sdk.trigger.matrices.LGMatrixTriggerMesh
 import good.damn.logic.utils.LGUtilsTrigger
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.bridges.APRayIntersectImplModel

@@ -11,7 +11,7 @@ import good.damn.common.vertex.COMArrayVertexManager;
 import good.damn.engine.ASObject3d;
 import good.damn.engine.sdk.SDVector3;
 import good.damn.logic.models.LGTriggerPoint;
-import good.damn.logic.triggers.LGMatrixTriggerMesh;
+import good.damn.engine.sdk.trigger.matrices.LGMatrixTriggerMesh;
 
 public final class LGUtilsTrigger {
     @NonNull

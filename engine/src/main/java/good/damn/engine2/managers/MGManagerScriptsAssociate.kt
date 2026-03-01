@@ -10,7 +10,7 @@ import good.damn.engine.sdk.models.provider.SDMProviderComponents
 import good.damn.engine.sdk.models.provider.SDMProviderManagers
 import good.damn.engine.sdk.process.SDIProcessTime
 import good.damn.engine2.providers.MGProviderGL
-import good.damn.logic.triggers.stateables.LGTriggerStateableLight
+import good.damn.engine.sdk.trigger.stateables.LGTriggerStateableLight
 import good.damn.script.SCManagerScripts
 import java.util.LinkedList
 

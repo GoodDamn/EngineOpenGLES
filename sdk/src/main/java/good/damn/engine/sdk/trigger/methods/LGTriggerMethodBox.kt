@@ -1,4 +1,4 @@
-package good.damn.logic.triggers.methods
+package good.damn.engine.sdk.trigger.methods
 
 import good.damn.engine.sdk.SDVector3
 import good.damn.engine.sdk.matrices.SDMatrixInvert
