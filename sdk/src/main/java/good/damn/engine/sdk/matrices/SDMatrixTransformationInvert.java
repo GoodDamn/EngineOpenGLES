@@ -2,16 +2,16 @@ package good.damn.engine.sdk.matrices;
 
 import androidx.annotation.NonNull;
 
-public final class COMatrixTransformationInvert<
-  T extends COMatrixTranslate
+public final class SDMatrixTransformationInvert<
+  T extends SDMatrixTranslate
 > {
     @NonNull public final T model;
-    @NonNull public final COMatrixInvert invert;
-    public COMatrixTransformationInvert(
+    @NonNull public final SDMatrixInvert invert;
+    public SDMatrixTransformationInvert(
         @NonNull T model
     ) {
         this.model = model;
-        invert = new COMatrixInvert(
+        invert = new SDMatrixInvert(
             model.model
         );
     }

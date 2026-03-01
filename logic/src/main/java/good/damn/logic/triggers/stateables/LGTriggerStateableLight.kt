@@ -1,7 +1,7 @@
 package good.damn.logic.triggers.stateables
 
-import good.damn.engine.sdk.matrices.COMatrixScale
-import good.damn.engine.sdk.matrices.COMatrixTransformationInvert
+import good.damn.engine.sdk.matrices.SDMatrixScale
+import good.damn.engine.sdk.matrices.SDMatrixTransformationInvert
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.logic.triggers.LGMatrixTriggerLight
 
@@ -16,8 +16,8 @@ data class LGTriggerStateableLight(
         ) = LGTriggerStateableLight(
             light,
             LGMatrixTriggerLight(
-                COMatrixTransformationInvert(
-                    COMatrixScale()
+                SDMatrixTransformationInvert(
+                    SDMatrixScale()
                 )
             )
         )

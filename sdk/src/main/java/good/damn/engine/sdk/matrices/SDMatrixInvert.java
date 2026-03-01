@@ -4,14 +4,14 @@ import android.opengl.Matrix;
 
 import androidx.annotation.NonNull;
 
-public class COMatrixInvert {
+public class SDMatrixInvert {
 
     public final float[] modelInverted = new float[16];
 
     @NonNull
     private final float[] model;
 
-    public COMatrixInvert(
+    public SDMatrixInvert(
         @NonNull final float[] model
     ) {
         this.model = model;

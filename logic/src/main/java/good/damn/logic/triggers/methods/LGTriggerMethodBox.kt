@@ -1,10 +1,10 @@
 package good.damn.logic.triggers.methods
 
 import good.damn.engine.sdk.SDVector3
-import good.damn.engine.sdk.matrices.COMatrixInvert
+import good.damn.engine.sdk.matrices.SDMatrixInvert
 
 class LGTriggerMethodBox(
-    modelMatrix: COMatrixInvert
+    modelMatrix: SDMatrixInvert
 ): LGTriggerMethodInvert(
     modelMatrix
 ) {

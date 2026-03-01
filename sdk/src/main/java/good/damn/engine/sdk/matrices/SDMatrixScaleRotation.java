@@ -1,7 +1,7 @@
 package good.damn.engine.sdk.matrices;
 
-public final class COMatrixScaleRotation
-extends COMatrixTranslate {
+public final class SDMatrixScaleRotation
+extends SDMatrixTranslate {
 
     public float msx = 1f;
     public float msy = 1f;

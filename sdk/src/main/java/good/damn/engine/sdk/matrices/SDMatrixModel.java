@@ -2,10 +2,10 @@ package good.damn.engine.sdk.matrices;
 
 import android.opengl.Matrix;
 
-public class COMatrixModel {
+public class SDMatrixModel {
     public final float[] model = new float[16];
 
-    public COMatrixModel() {
+    public SDMatrixModel() {
         Matrix.setIdentityM(
             model, 0
         );

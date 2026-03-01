@@ -2,14 +2,14 @@ package good.damn.common.camera
 
 import android.opengl.Matrix
 import android.opengl.Matrix.setLookAtM
-import good.damn.engine.sdk.matrices.COMatrixTranslate
+import good.damn.engine.sdk.matrices.SDMatrixTranslate
 import good.damn.engine.sdk.SDVector3
 import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.sin
 
 class COCameraFree(
-    override val modelMatrix: COMatrixTranslate
+    override val modelMatrix: SDMatrixTranslate
 ): COICameraFree {
 
     companion object {

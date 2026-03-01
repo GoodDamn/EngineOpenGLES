@@ -8,8 +8,8 @@ import good.damn.engine2.loaders.mesh.MGLoaderLevelMeshA3D
 import good.damn.engine2.loaders.MGLoaderLevelTextures
 import good.damn.engine2.models.MGMInstanceMesh
 import good.damn.engine2.models.json.MGMLevelInfoMesh
-import good.damn.engine.sdk.matrices.COMatrixScaleRotation
-import good.damn.engine.sdk.matrices.COMatrixTransformationNormal
+import good.damn.engine.sdk.matrices.SDMatrixScaleRotation
+import good.damn.engine.sdk.matrices.SDMatrixTransformationNormal
 import good.damn.engine2.providers.MGMProviderGL
 import good.damn.mapimporter.MIImportMap
 import good.damn.mapimporter.models.MIMProp
@@ -139,8 +139,8 @@ object MGStreamLevel {
         val instanceArray = loaderMesh.loadInstanceArray(
             landscape.a3dMesh + FILE_EXTENSION_A3D,
             arrayListOf(
-                COMatrixTransformationNormal(
-                    COMatrixScaleRotation()
+                SDMatrixTransformationNormal(
+                    SDMatrixScaleRotation()
                 ).apply {
                     mapProp ?: return@apply
                     fillModelMatrix(

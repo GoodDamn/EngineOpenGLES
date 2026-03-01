@@ -4,9 +4,9 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import good.damn.engine.sdk.matrices.COMatrixScaleRotation;
-import good.damn.engine.sdk.matrices.COMatrixTransformationInvert;
-import good.damn.engine.sdk.matrices.COMatrixTransformationNormal;
+import good.damn.engine.sdk.matrices.SDMatrixScaleRotation;
+import good.damn.engine.sdk.matrices.SDMatrixTransformationInvert;
+import good.damn.engine.sdk.matrices.SDMatrixTransformationNormal;
 import good.damn.common.vertex.COMArrayVertexManager;
 import good.damn.engine.ASObject3d;
 import good.damn.engine.sdk.SDVector3;
@@ -61,11 +61,11 @@ public final class LGUtilsTrigger {
 
         @NonNull
         final LGMatrixTriggerMesh matrix = new LGMatrixTriggerMesh(
-            new COMatrixTransformationInvert<>(
-                new COMatrixScaleRotation()
+            new SDMatrixTransformationInvert<>(
+                new SDMatrixScaleRotation()
             ),
-            new COMatrixTransformationNormal<>(
-                new COMatrixScaleRotation()
+            new SDMatrixTransformationNormal<>(
+                new SDMatrixScaleRotation()
             ),
             pointMinMax.first,
             pointMinMax.second

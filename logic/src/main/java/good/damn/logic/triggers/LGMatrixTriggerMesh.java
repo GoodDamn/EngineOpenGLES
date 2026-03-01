@@ -3,33 +3,33 @@ package good.damn.logic.triggers;
 import androidx.annotation.NonNull;
 
 import good.damn.engine.sdk.SDVector3;
-import good.damn.engine.sdk.matrices.COMatrixScaleRotation;
-import good.damn.engine.sdk.matrices.COMatrixTransformationInvert;
-import good.damn.engine.sdk.matrices.COMatrixTransformationNormal;
+import good.damn.engine.sdk.matrices.SDMatrixScaleRotation;
+import good.damn.engine.sdk.matrices.SDMatrixTransformationInvert;
+import good.damn.engine.sdk.matrices.SDMatrixTransformationNormal;
 
 public final class LGMatrixTriggerMesh
 implements LGIMatrixTrigger {
 
     @NonNull
-    public final COMatrixTransformationInvert<
-            COMatrixScaleRotation
-        > matrixTrigger;
+    public final SDMatrixTransformationInvert<
+            SDMatrixScaleRotation
+            > matrixTrigger;
 
     @NonNull
-    public final COMatrixTransformationNormal<
-            COMatrixScaleRotation
-        > matrixMesh;
+    public final SDMatrixTransformationNormal<
+            SDMatrixScaleRotation
+            > matrixMesh;
 
     @NonNull
     private final SDVector3 mTriggerScale;
 
     public LGMatrixTriggerMesh(
-        @NonNull final COMatrixTransformationInvert<
-                    COMatrixScaleRotation
-                > matrixTrigger,
-        @NonNull final COMatrixTransformationNormal<
-                    COMatrixScaleRotation
-                > matrixMesh,
+        @NonNull final SDMatrixTransformationInvert<
+                    SDMatrixScaleRotation
+                        > matrixTrigger,
+        @NonNull final SDMatrixTransformationNormal<
+                    SDMatrixScaleRotation
+                        > matrixMesh,
         @NonNull final SDVector3 min,
         @NonNull final SDVector3 max
     ) {

@@ -3,11 +3,11 @@ package good.damn.apigl.drawers
 import android.opengl.GLES30
 import good.damn.apigl.shaders.GLIShaderModel
 import good.damn.apigl.shaders.GLShaderLightPoint
-import good.damn.engine.sdk.matrices.COMatrixTranslate
+import good.damn.engine.sdk.matrices.SDMatrixTranslate
 import good.damn.engine.sdk.models.SDMLightPoint
 
 class GLDrawerLightPoint(
-    var modelMatrix: COMatrixTranslate,
+    var modelMatrix: SDMatrixTranslate,
     var light: SDMLightPoint
 ) {
     var isActive = false

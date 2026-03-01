@@ -1,7 +1,7 @@
 package good.damn.engine.sdk.matrices;
 
-public class COMatrixTranslate
-extends COMatrixModel {
+public class SDMatrixTranslate
+extends SDMatrixModel {
 
     private static final int INDEX_X = 12;
     private static final int INDEX_Y = 13;
