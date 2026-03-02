@@ -1,7 +1,7 @@
 package good.damn.wrapper.hud.bridges
 
 import good.damn.engine.sdk.SDVector3
-import good.damn.engine.sdk.trigger.matrices.LGMatrixTriggerMesh
+import good.damn.logic.triggers.matrices.LGMatrixTriggerMesh
 
 class APRayIntersectImplModel(
     private val modelMatrix: LGMatrixTriggerMesh

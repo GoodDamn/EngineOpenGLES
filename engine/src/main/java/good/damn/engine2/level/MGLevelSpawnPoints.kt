@@ -23,7 +23,7 @@ import good.damn.engine2.models.MGMMeshDrawer
 import good.damn.engine2.utils.MGUtilsJson
 import good.damn.engine2.utils.MGUtilsVector3
 import good.damn.logic.utils.LGUtilsTrigger
-import good.damn.engine.sdk.trigger.stateables.LGTriggerStateableLight
+import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import good.damn.mapimporter.models.MIMMap
 
 class MGLevelSpawnPoints
@@ -37,6 +37,10 @@ class MGLevelSpawnPoints
     override fun hasValidExtension(
         fileName: String
     ) = fileName == FILENAME
+
+    override fun onSetProviderGl() {
+
+    }
 
     override fun import(
         map: MIMMap,

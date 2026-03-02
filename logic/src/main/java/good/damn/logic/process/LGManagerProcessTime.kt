@@ -2,6 +2,8 @@ package good.damn.logic.process
 
 import android.os.Handler
 import android.os.Looper
+import android.util.SparseArray
+import androidx.collection.SparseArrayCompat
 import good.damn.engine.sdk.managers.SDManagerProcessTime
 import good.damn.engine.sdk.process.SDIProcessTime
 import java.util.LinkedList
@@ -12,8 +14,8 @@ class LGManagerProcessTime {
         Looper.getMainLooper()
     )
 
-    private val mLoopRunnables = LinkedList<
-        SDIProcessTime
+    private val mLoopRunnables = SparseArray<
+        List<SDIProcessTime>
     >()
 
     private val mRunnable = LGRunnableProcessTimeLoop(
@@ -23,9 +25,10 @@ class LGManagerProcessTime {
     )
 
     fun registerLoopProcessTime(
-        processTime: SDIProcessTime
+        processTime: List<SDIProcessTime>
     ) {
-        mLoopRunnables.add(
+        mLoopRunnables.put(
+            processTime.hashCode(),
             processTime
         )
     }
@@ -35,10 +38,10 @@ class LGManagerProcessTime {
     }
 
     fun unregisterLoopProcessTime(
-        processTime: SDIProcessTime
+        processTime: List<SDIProcessTime>
     ) {
         mLoopRunnables.remove(
-            processTime
+            processTime.hashCode()
         )
     }
 
@@ -55,9 +58,4 @@ class LGManagerProcessTime {
             mRunnable
         )
     }
-
-    fun toSdManager() = SDManagerProcessTime(
-        mLoopRunnables
-    )
-
 }

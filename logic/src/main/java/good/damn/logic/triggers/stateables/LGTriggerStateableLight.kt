@@ -1,9 +1,9 @@
-package good.damn.engine.sdk.trigger.stateables
+package good.damn.logic.triggers.stateables
 
 import good.damn.engine.sdk.matrices.SDMatrixScale
 import good.damn.engine.sdk.matrices.SDMatrixTransformationInvert
 import good.damn.engine.sdk.models.SDMLightPoint
-import good.damn.engine.sdk.trigger.matrices.LGMatrixTriggerLight
+import good.damn.logic.triggers.matrices.LGMatrixTriggerLight
 
 data class LGTriggerStateableLight(
     val light: SDMLightPoint,

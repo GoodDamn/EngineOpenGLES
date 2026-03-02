@@ -9,7 +9,7 @@ import good.damn.engine.sdk.SDVector3
 import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine2.providers.MGProviderGL
-import good.damn.engine.sdk.trigger.stateables.LGTriggerStateableLight
+import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import good.damn.wrapper.imports.APIImport
 import good.damn.wrapper.models.APMUserContent
 import java.io.DataInputStream

@@ -8,7 +8,7 @@ import good.damn.engine.sdk.models.SDMLightPoint
 import good.damn.engine.sdk.models.SDMLightPointInterpolation
 import good.damn.engine2.utils.MGUtilsJson
 import good.damn.engine2.utils.MGUtilsVector3
-import good.damn.engine.sdk.trigger.stateables.LGTriggerStateableLight
+import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.bridges.APRayIntersectImplLight
 import good.damn.engine2.providers.MGProviderGL

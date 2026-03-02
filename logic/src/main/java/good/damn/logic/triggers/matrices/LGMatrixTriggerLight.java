@@ -1,4 +1,4 @@
-package good.damn.engine.sdk.trigger.matrices;
+package good.damn.logic.triggers.matrices;
 
 import androidx.annotation.NonNull;
 
