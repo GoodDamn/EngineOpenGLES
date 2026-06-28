@@ -2,10 +2,10 @@ package good.damn.apigl.drawers
 
 import android.opengl.GLES30
 import good.damn.apigl.shaders.GLIShaderNormal
-import good.damn.common.matrices.COMatrixNormal
+import good.damn.engine.sdk.matrices.SDMatrixNormal
 
 data class GLDrawerNormalMatrix(
-    var matrixNormal: COMatrixNormal
+    var matrixNormal: SDMatrixNormal
 ) {
     companion object {
         @JvmStatic

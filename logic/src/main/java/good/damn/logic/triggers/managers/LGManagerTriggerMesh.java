@@ -2,8 +2,8 @@ package good.damn.logic.triggers.managers;
 
 import androidx.annotation.NonNull;
 
-import good.damn.common.matrices.COMatrixScaleRotation;
-import good.damn.logic.triggers.LGITrigger;
+import good.damn.engine.sdk.matrices.SDMatrixScaleRotation;
+import good.damn.engine.sdk.trigger.LGITrigger;
 
 public final class LGManagerTriggerMesh
 extends LGManagerTrigger<
@@ -16,7 +16,7 @@ extends LGManagerTrigger<
         float checkZ
     ) {
         @NonNull
-        COMatrixScaleRotation matrix;
+        SDMatrixScaleRotation matrix;
 
         for (
             @NonNull

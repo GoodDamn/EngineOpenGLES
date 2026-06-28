@@ -5,8 +5,8 @@ import good.damn.apigl.arrays.GLArrayVertexInstanced
 import good.damn.apigl.enums.GLEnumArrayVertexConfiguration
 import good.damn.common.COHandlerGl
 import good.damn.engine2.models.MGMInstanceArray
-import good.damn.common.matrices.COMatrixScaleRotation
-import good.damn.common.matrices.COMatrixTransformationNormal
+import good.damn.engine.sdk.matrices.SDMatrixScaleRotation
+import good.damn.engine.sdk.matrices.SDMatrixTransformationNormal
 import good.damn.engine.ASUtilsBuffer
 import java.nio.Buffer
 import java.nio.FloatBuffer
@@ -19,8 +19,8 @@ object MGUtilsInstancedMesh {
         bufferVertices: FloatBuffer,
         bufferIndices: Buffer,
         modelMatrices: List<
-            COMatrixTransformationNormal<
-                COMatrixScaleRotation
+            SDMatrixTransformationNormal<
+                SDMatrixScaleRotation
                 >
             >,
         handlerGl: COHandlerGl
@@ -57,8 +57,8 @@ object MGUtilsInstancedMesh {
 
     private inline fun convertMatricesToBuffer(
         v: List<
-            COMatrixTransformationNormal<
-                COMatrixScaleRotation
+            SDMatrixTransformationNormal<
+                SDMatrixScaleRotation
                 >
             >
     ): MGMatrixBuffer {

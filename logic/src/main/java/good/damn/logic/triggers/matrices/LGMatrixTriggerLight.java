@@ -1,9 +1,9 @@
-package good.damn.logic.triggers;
+package good.damn.logic.triggers.matrices;
 
 import androidx.annotation.NonNull;
 
-import good.damn.common.matrices.COMatrixScale;
-import good.damn.common.matrices.COMatrixTransformationInvert;
+import good.damn.engine.sdk.matrices.SDMatrixScale;
+import good.damn.engine.sdk.matrices.SDMatrixTransformationInvert;
 import good.damn.engine.sdk.SDVector3;
 
 public final class LGMatrixTriggerLight {
@@ -11,17 +11,17 @@ public final class LGMatrixTriggerLight {
     private static final float SCALE_DT = 2f;
 
     @NonNull
-    public final COMatrixTransformationInvert<
-            COMatrixScale
-        > matrixTrigger;
+    public final SDMatrixTransformationInvert<
+        SDMatrixScale
+    > matrixTrigger;
 
     @NonNull
     private final SDVector3 mLightPosition;
 
     public LGMatrixTriggerLight(
-        @NonNull final COMatrixTransformationInvert<
-                    COMatrixScale
-                > matrixTrigger
+        @NonNull final SDMatrixTransformationInvert<
+            SDMatrixScale
+        > matrixTrigger
     ) {
         this.matrixTrigger = matrixTrigger;
 

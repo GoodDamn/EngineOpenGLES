@@ -7,7 +7,7 @@ import good.damn.apigl.drawers.GLDrawerVertexArray
 import good.damn.apigl.runnables.GLRunglConfigVertexArray
 import good.damn.common.COHandlerGl
 import good.damn.engine.ASObject3d
-import good.damn.logic.triggers.LGTriggerMesh
+import good.damn.logic.utils.LGUtilsTrigger
 
 class MGPoolMeshesStatic(
     private val glHandler: COHandlerGl
@@ -38,7 +38,7 @@ class MGPoolMeshesStatic(
 
         val obj = objs[0]
 
-        val triggerPoint = LGTriggerMesh.createTriggerPoint(
+        val triggerPoint = LGUtilsTrigger.createTriggerPoint(
             obj
         )
 

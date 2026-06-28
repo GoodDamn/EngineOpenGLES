@@ -3,7 +3,7 @@ package good.damn.engine2.camera
 import good.damn.apigl.buffers.GLBufferUniformCamera
 import good.damn.common.COHandlerGl
 import good.damn.common.camera.COICameraFree
-import good.damn.common.matrices.COMatrixTranslate
+import good.damn.engine.sdk.matrices.SDMatrixTranslate
 import good.damn.engine.ASUtilsBuffer
 import good.damn.engine.sdk.SDVector3
 
@@ -25,7 +25,7 @@ class GLCameraFree(
     override val direction: SDVector3
         get() = cameraFree.direction
 
-    override val modelMatrix: COMatrixTranslate
+    override val modelMatrix: SDMatrixTranslate
         get() = cameraFree.modelMatrix
 
     override fun invalidatePosition() {

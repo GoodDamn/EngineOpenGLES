@@ -1,11 +1,11 @@
 package good.damn.engine2.logic
 
-import good.damn.common.matrices.COMatrixScaleRotation
+import good.damn.engine.sdk.matrices.SDMatrixScaleRotation
 import good.damn.common.volume.COIVolume
-import good.damn.logic.triggers.LGITrigger
+import good.damn.engine.sdk.trigger.LGITrigger
 
 data class MGVolumeTriggerMesh(
-    override val modelMatrix: COMatrixScaleRotation,
+    override val modelMatrix: SDMatrixScaleRotation,
     val geometryFrustrum: MGIGeometryFrustrum
 ): LGITrigger,
 COIVolume {

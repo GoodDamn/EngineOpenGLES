@@ -17,8 +17,8 @@ import good.damn.apigl.shaders.base.GLBinderAttribute
 import good.damn.engine2.logic.MGMGeometryFrustrumMesh
 import good.damn.engine2.logic.MGVolumeTriggerMesh
 import good.damn.engine2.shader.generators.MGMMaterialShader
-import good.damn.logic.triggers.LGMatrixTriggerMesh
-import good.damn.logic.triggers.LGTriggerMesh
+import good.damn.logic.triggers.matrices.LGMatrixTriggerMesh
+import good.damn.logic.utils.LGUtilsTrigger
 import good.damn.wrapper.hud.bridges.APBridgeRayIntersect
 import good.damn.wrapper.hud.bridges.APRayIntersectImplModel
 import good.damn.engine2.providers.MGProviderGL
@@ -47,7 +47,7 @@ class APCallbackModelSpawn(
                 fileName
             ) ?: return
 
-            val triggerMatrix = LGTriggerMesh.createTriggerPointMatrix(
+            val triggerMatrix = LGUtilsTrigger.createTriggerPointMatrix(
                 poolMesh[0].triggerPoint
             )
 
@@ -55,9 +55,7 @@ class APCallbackModelSpawn(
                 MGMMaterialShader.getDefault(
                     glProvider.shaders.source
                 ),
-                LGTriggerMesh.createFromMatrix(
-                    triggerMatrix
-                ),
+                triggerMatrix,
                 poolMesh[0].drawerVertexArray
             )
 
@@ -86,7 +84,7 @@ class APCallbackModelSpawn(
 
     private inline fun processMesh(
         material: MGMMaterialShader,
-        mesh: LGTriggerMesh,
+        matrix: LGMatrixTriggerMesh,
         drawerVertexArray: GLDrawerVertexArray
     ) {
         addMesh(
@@ -101,12 +99,12 @@ class APCallbackModelSpawn(
                 )
             ),
             material,
-            mesh,
+            matrix,
             drawerVertexArray
         )
 
         setupMatrix(
-            mesh.matrix
+            matrix
         )
     }
 
@@ -146,7 +144,7 @@ class APCallbackModelSpawn(
     private inline fun addMesh(
         shader: GLShaderGeometryPassModel,
         material: MGMMaterialShader,
-        mesh: LGTriggerMesh,
+        triggerMatrix: LGMatrixTriggerMesh,
         drawerVertexArray: GLDrawerVertexArray
     ) {
         val drawerMesh = GLDrawerMeshMaterialNormals(
@@ -161,13 +159,13 @@ class APCallbackModelSpawn(
                 GLDrawerMesh(
                     drawerVertexArray,
                     GLDrawerPositionEntity(
-                        mesh.matrix.matrixMesh.model
+                        triggerMatrix.matrixMesh.model
                     ),
                     GLEnumFaceOrder.COUNTER_CLOCK_WISE
                 )
             ),
             GLDrawerNormalMatrix(
-                mesh.matrix.matrixMesh.normal
+                triggerMatrix.matrixMesh.normal
             )
         )
 
@@ -182,7 +180,7 @@ class APCallbackModelSpawn(
         )
 
         val volume = MGVolumeTriggerMesh(
-            mesh.matrix.matrixTrigger.model,
+            triggerMatrix.matrixTrigger.model,
             frustrumMesh
         )
 

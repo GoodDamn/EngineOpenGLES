@@ -1,18 +1,18 @@
-package good.damn.logic.triggers.methods;
+package good.damn.engine.sdk.trigger.methods;
 
 import android.opengl.Matrix;
 
 import androidx.annotation.NonNull;
 
-import good.damn.common.matrices.COMatrixInvert;
+import good.damn.engine.sdk.matrices.SDMatrixInvert;
 
 public abstract class LGTriggerMethodInvert
 implements LGITriggerMethod {
 
-    @NonNull private final COMatrixInvert matrixInvert;
+    @NonNull private final SDMatrixInvert matrixInvert;
 
     public LGTriggerMethodInvert(
-        @NonNull final COMatrixInvert matrix
+        @NonNull final SDMatrixInvert matrix
     ) {
         matrixInvert = matrix;
     }

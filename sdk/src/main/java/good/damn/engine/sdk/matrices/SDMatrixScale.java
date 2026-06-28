@@ -1,7 +1,7 @@
-package good.damn.common.matrices;
+package good.damn.engine.sdk.matrices;
 
-public final class COMatrixScale
-extends COMatrixTranslate {
+public final class SDMatrixScale
+extends SDMatrixTranslate {
 
     private static final int INDEX_SX = 0;
     private static final int INDEX_SY = 5;

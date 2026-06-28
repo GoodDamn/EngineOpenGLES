@@ -1,8 +1,8 @@
 package good.damn.engine2.loaders
 
 import good.damn.engine2.models.MGProp
-import good.damn.common.matrices.COMatrixScaleRotation
-import good.damn.common.matrices.COMatrixTransformationNormal
+import good.damn.engine.sdk.matrices.SDMatrixScaleRotation
+import good.damn.engine.sdk.matrices.SDMatrixTransformationNormal
 import good.damn.mapimporter.models.MIMMap
 import good.damn.mapimporter.models.MIMProp
 
@@ -11,7 +11,7 @@ class MGLoaderLevelMatrices {
     companion object {
         @JvmStatic
         fun fillModelMatrix(
-            model: COMatrixScaleRotation,
+            model: SDMatrixScaleRotation,
             prop: MIMProp
         ) {
             var roll = 0f
@@ -63,8 +63,8 @@ class MGLoaderLevelMatrices {
             ] ?: continue
 
             mesh.matrices.add(
-                COMatrixTransformationNormal(
-                    COMatrixScaleRotation()
+                SDMatrixTransformationNormal(
+                    SDMatrixScaleRotation()
                 ).apply {
                     fillModelMatrix(
                         model,

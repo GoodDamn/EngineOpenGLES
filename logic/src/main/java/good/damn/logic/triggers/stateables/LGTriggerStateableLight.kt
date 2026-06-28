@@ -1,11 +1,9 @@
 package good.damn.logic.triggers.stateables
 
-import good.damn.common.matrices.COMatrixScale
-import good.damn.common.matrices.COMatrixTransformationInvert
+import good.damn.engine.sdk.matrices.SDMatrixScale
+import good.damn.engine.sdk.matrices.SDMatrixTransformationInvert
 import good.damn.engine.sdk.models.SDMLightPoint
-import good.damn.logic.triggers.LGMatrixTriggerLight
-import good.damn.logic.triggers.callbacks.LGManagerTriggerState
-import good.damn.logic.triggers.methods.LGTriggerMethodSphere
+import good.damn.logic.triggers.matrices.LGMatrixTriggerLight
 
 data class LGTriggerStateableLight(
     val light: SDMLightPoint,
@@ -18,8 +16,8 @@ data class LGTriggerStateableLight(
         ) = LGTriggerStateableLight(
             light,
             LGMatrixTriggerLight(
-                COMatrixTransformationInvert(
-                    COMatrixScale()
+                SDMatrixTransformationInvert(
+                    SDMatrixScale()
                 )
             )
         )

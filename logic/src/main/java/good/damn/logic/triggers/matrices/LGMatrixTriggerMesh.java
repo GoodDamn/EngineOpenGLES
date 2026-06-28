@@ -1,35 +1,34 @@
-package good.damn.logic.triggers;
+package good.damn.logic.triggers.matrices;
 
 import androidx.annotation.NonNull;
 
 import good.damn.engine.sdk.SDVector3;
-import good.damn.common.matrices.COMatrixScaleRotation;
-import good.damn.common.matrices.COMatrixTransformationInvert;
-import good.damn.common.matrices.COMatrixTransformationNormal;
+import good.damn.engine.sdk.matrices.SDMatrixScaleRotation;
+import good.damn.engine.sdk.matrices.SDMatrixTransformationInvert;
+import good.damn.engine.sdk.matrices.SDMatrixTransformationNormal;
 
-public final class LGMatrixTriggerMesh
-implements LGIMatrixTrigger {
-
-    @NonNull
-    public final COMatrixTransformationInvert<
-            COMatrixScaleRotation
-        > matrixTrigger;
+public final class LGMatrixTriggerMesh {
 
     @NonNull
-    public final COMatrixTransformationNormal<
-            COMatrixScaleRotation
-        > matrixMesh;
+    public final SDMatrixTransformationInvert<
+        SDMatrixScaleRotation
+    > matrixTrigger;
+
+    @NonNull
+    public final SDMatrixTransformationNormal<
+        SDMatrixScaleRotation
+    > matrixMesh;
 
     @NonNull
     private final SDVector3 mTriggerScale;
 
     public LGMatrixTriggerMesh(
-        @NonNull final COMatrixTransformationInvert<
-                    COMatrixScaleRotation
-                > matrixTrigger,
-        @NonNull final COMatrixTransformationNormal<
-                    COMatrixScaleRotation
-                > matrixMesh,
+        @NonNull final SDMatrixTransformationInvert<
+            SDMatrixScaleRotation
+        > matrixTrigger,
+        @NonNull final SDMatrixTransformationNormal<
+            SDMatrixScaleRotation
+        > matrixMesh,
         @NonNull final SDVector3 min,
         @NonNull final SDVector3 max
     ) {
@@ -49,30 +48,25 @@ implements LGIMatrixTrigger {
         );
     }
 
-    @Override
     public final void invalidateScaleRotation() {
         matrixTrigger.model.invalidateScaleRotation();
         matrixMesh.model.invalidateScaleRotation();
     }
 
-    @Override
     public final void invalidatePosition() {
         matrixTrigger.model.invalidatePosition();
         matrixMesh.model.invalidatePosition();
     }
 
-    @Override
     public final void calculateInvertTrigger() {
         matrixTrigger.invert.calculateInvertModel();
     }
 
-    @Override
     public final void calculateNormals() {
         matrixMesh.normal.calculateInvertModel();
         matrixMesh.normal.calculateNormalMatrix();
     }
 
-    @Override
     public final void setScale(
         final float x,
         final float y,
@@ -89,7 +83,6 @@ implements LGIMatrixTrigger {
         );
     }
 
-    @Override
     public void subtractScale(
         float x,
         float y,
@@ -106,7 +99,6 @@ implements LGIMatrixTrigger {
         );
     }
 
-    @Override
     public void addScale(
         float x,
         float y,
@@ -123,7 +115,6 @@ implements LGIMatrixTrigger {
         );
     }
 
-    @Override
     public final void addPosition(
         final float x,
         final float y,
@@ -138,7 +129,6 @@ implements LGIMatrixTrigger {
         );
     }
 
-    @Override
     public final void setPosition(
         final float x,
         final float y,
@@ -153,7 +143,6 @@ implements LGIMatrixTrigger {
         );
     }
 
-    @Override
     public final void addRotation(
         final float x,
         final float y,

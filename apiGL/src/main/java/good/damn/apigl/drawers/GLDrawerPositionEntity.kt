@@ -2,16 +2,16 @@ package good.damn.apigl.drawers
 
 import android.opengl.GLES30.*
 import good.damn.apigl.shaders.GLIShaderModel
-import good.damn.common.matrices.COMatrixModel
+import good.damn.engine.sdk.matrices.SDMatrixModel
 
 data class GLDrawerPositionEntity(
-    var modelMatrix: COMatrixModel
+    var modelMatrix: SDMatrixModel
 ) {
     companion object {
         @JvmStatic
         fun draw(
             shader: GLIShaderModel,
-            modelMatrix: COMatrixModel
+            modelMatrix: SDMatrixModel
         ) {
             glUniformMatrix4fv(
                 shader.uniformModelView,

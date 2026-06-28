@@ -1,15 +1,15 @@
-package good.damn.common.matrices;
+package good.damn.engine.sdk.matrices;
 
 import android.opengl.Matrix;
 
 import androidx.annotation.NonNull;
 
-public final class COMatrixNormal
-extends COMatrixInvert {
+public final class SDMatrixNormal
+extends SDMatrixInvert {
 
     public final float[] normalMatrix = new float[16];
 
-    public COMatrixNormal(
+    public SDMatrixNormal(
         @NonNull final float[] model
     ) {
         super(model);

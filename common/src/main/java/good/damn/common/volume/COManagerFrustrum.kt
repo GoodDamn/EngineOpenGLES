@@ -1,6 +1,8 @@
 package good.damn.common.volume
 
 import android.opengl.Matrix
+import android.util.SparseArray
+import androidx.core.util.forEach
 import good.damn.common.camera.COICameraProjection
 import good.damn.common.vertex.COMArrayVertexManager
 import good.damn.engine.sdk.process.SDIProcessTime
@@ -10,8 +12,8 @@ class COManagerFrustrum(
     private val camera: COICameraProjection,
     vertices: COMArrayVertexManager
 ): SDIProcessTime {
-    val volumes = ConcurrentLinkedQueue<
-        COIVolume
+    val volumes = SparseArray<
+        ConcurrentLinkedQueue<COIVolume>
     >()
 
     private val matrixClipSpace = FloatArray(16)
@@ -35,55 +37,57 @@ class COManagerFrustrum(
     override fun onProcessTime(
         dt: Float
     ) {
-        for (volume in volumes) {
-            var isOnFrustrum = false
-            for (position in mPositions) {
-                Matrix.multiplyMM(
-                    matrixViewSpace,
-                    0,
-                    camera.modelMatrix.model,
-                    0,
-                    volume.modelMatrix.model,
-                    0
-                )
+        volumes.forEach { _, v ->
+            for (volume in v) {
+                var isOnFrustrum = false
+                for (position in mPositions) {
+                    Matrix.multiplyMM(
+                        matrixViewSpace,
+                        0,
+                        camera.modelMatrix.model,
+                        0,
+                        volume.modelMatrix.model,
+                        0
+                    )
 
-                Matrix.multiplyMM(
-                    matrixClipSpace,
-                    0,
-                    camera.projection,
-                    0,
-                    matrixViewSpace,
-                    0
-                )
+                    Matrix.multiplyMM(
+                        matrixClipSpace,
+                        0,
+                        camera.projection,
+                        0,
+                        matrixViewSpace,
+                        0
+                    )
 
-                Matrix.multiplyMV(
-                    mVector4Clip,
-                    0,
-                    matrixClipSpace,
-                    0,
-                    position,
-                    0
-                )
+                    Matrix.multiplyMV(
+                        mVector4Clip,
+                        0,
+                        matrixClipSpace,
+                        0,
+                        position,
+                        0
+                    )
 
-                if (!isNotOnAxis(mVector4Clip, 0)) {
-                    isOnFrustrum = true
-                    break
+                    if (!isNotOnAxis(mVector4Clip, 0)) {
+                        isOnFrustrum = true
+                        break
+                    }
+
+                    if (!isNotOnAxis(mVector4Clip, 1)) {
+                        isOnFrustrum = true
+                        break
+                    }
+
+                    if (!isNotOnAxis(mVector4Clip, 2)) {
+                        isOnFrustrum = true
+                        break
+                    }
                 }
 
-                if (!isNotOnAxis(mVector4Clip, 1)) {
-                    isOnFrustrum = true
-                    break
-                }
-
-                if (!isNotOnAxis(mVector4Clip, 2)) {
-                    isOnFrustrum = true
-                    break
-                }
+                volume.isOnFrustrum(
+                    isOnFrustrum
+                )
             }
-
-            volume.isOnFrustrum(
-                isOnFrustrum
-            )
         }
     }
 

@@ -1,15 +1,15 @@
-package good.damn.logic.triggers.methods;
+package good.damn.engine.sdk.trigger.methods;
 
 import androidx.annotation.NonNull;
 
-import good.damn.common.matrices.COMatrixInvert;
+import good.damn.engine.sdk.matrices.SDMatrixInvert;
 
 public final class LGTriggerMethodSphere
 extends LGTriggerMethodInvert {
     private static final float RADIUS = 1f;
 
     public LGTriggerMethodSphere(
-        @NonNull COMatrixInvert matrix
+        @NonNull SDMatrixInvert matrix
     ) { super(matrix); }
 
     @Override

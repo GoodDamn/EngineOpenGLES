@@ -24,44 +24,25 @@ public final class ASObject3d {
     @NonNull
     public final GLEnumArrayVertexConfiguration config;
 
-    @Nullable
-    public final String[] texturesDiffuseFileName;
-
-    @Nullable
-    public final String[] texturesMetallicFileName;
-
-    @Nullable
-    public final String[] texturesEmissiveFileName;
-
     public ASObject3d(
         @NonNull final FloatBuffer vertices,
         @NonNull final Buffer indices,
-        @NonNull final GLEnumArrayVertexConfiguration config,
-        @Nullable final String[] texturesDiffuseFileName,
-        @Nullable final String[] texturesMetallicFileName,
-        @Nullable final String[] texturesEmissiveFileName
+        @NonNull final GLEnumArrayVertexConfiguration config
     ) {
         this.vertices = vertices;
         this.indices = indices;
         this.config = config;
-
-        this.texturesDiffuseFileName = texturesDiffuseFileName;
-        this.texturesMetallicFileName = texturesMetallicFileName;
-        this.texturesEmissiveFileName = texturesEmissiveFileName;
     }
 
     public ASObject3d(
         @NonNull final float[] vertices,
-        @NonNull final int[] indices,
-        @Nullable final String[] texturesDiffuseFileName,
-        @Nullable final String[] texturesMetallicFileName,
-        @Nullable final String[] texturesEmissiveFileName
+        @NonNull final int[] indices
     ) {
         this.vertices = ASUtilsBuffer.createFloat(
             vertices
         );
 
-        @Nullable final Pair<
+        @NonNull final Pair<
             GLEnumArrayVertexConfiguration,
             Buffer
         > pair = ASUtilsBuffer.createBufferIndicesDynamic(
@@ -71,15 +52,11 @@ public final class ASObject3d {
 
         this.indices = pair.second;
         config = pair.first;
-
-        this.texturesDiffuseFileName = texturesDiffuseFileName;
-        this.texturesMetallicFileName = texturesMetallicFileName;
-        this.texturesEmissiveFileName = texturesEmissiveFileName;
     }
 
     static {
         System.loadLibrary(
-            "engine"
+            "assimpWrap"
         );
     }
 

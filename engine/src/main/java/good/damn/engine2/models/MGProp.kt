@@ -2,8 +2,8 @@ package good.damn.engine2.models
 
 import good.damn.apigl.drawers.GLMaterial
 import good.damn.apigl.shaders.GLShaderGeometryPassInstanced
-import good.damn.common.matrices.COMatrixScaleRotation
-import good.damn.common.matrices.COMatrixTransformationNormal
+import good.damn.engine.sdk.matrices.SDMatrixScaleRotation
+import good.damn.engine.sdk.matrices.SDMatrixTransformationNormal
 import java.util.LinkedList
 
 data class MGProp(
@@ -12,8 +12,8 @@ data class MGProp(
     val shaderOpaque: GLShaderGeometryPassInstanced,
     val enableCullFace: Boolean,
     val matrices: LinkedList<
-        COMatrixTransformationNormal<
-            COMatrixScaleRotation
+        SDMatrixTransformationNormal<
+            SDMatrixScaleRotation
             >
         >
 )

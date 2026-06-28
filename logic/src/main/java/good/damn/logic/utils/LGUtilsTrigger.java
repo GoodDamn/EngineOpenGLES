@@ -1,30 +1,19 @@
-package good.damn.logic.triggers;
+package good.damn.logic.utils;
 
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import good.damn.common.matrices.COMatrixScaleRotation;
-import good.damn.common.matrices.COMatrixTransformationInvert;
-import good.damn.common.matrices.COMatrixTransformationNormal;
+import good.damn.engine.sdk.matrices.SDMatrixScaleRotation;
+import good.damn.engine.sdk.matrices.SDMatrixTransformationInvert;
+import good.damn.engine.sdk.matrices.SDMatrixTransformationNormal;
 import good.damn.common.vertex.COMArrayVertexManager;
 import good.damn.engine.ASObject3d;
 import good.damn.engine.sdk.SDVector3;
 import good.damn.logic.models.LGTriggerPoint;
-import good.damn.logic.triggers.methods.LGTriggerMethodBox;
-import good.damn.logic.utils.LGUtilsAlgo;
+import good.damn.logic.triggers.matrices.LGMatrixTriggerMesh;
 
-public final class LGTriggerMesh {
-
-    @NonNull
-    public final LGMatrixTriggerMesh matrix;
-
-    private LGTriggerMesh(
-        @NonNull final LGMatrixTriggerMesh matrix
-    ) {
-        this.matrix = matrix;
-    }
-
+public final class LGUtilsTrigger {
     @NonNull
     public static LGTriggerPoint createTriggerPoint(
         @NonNull final ASObject3d obj
@@ -65,18 +54,18 @@ public final class LGTriggerMesh {
     ) {
         @NonNull final Pair<
             SDVector3, SDVector3
-            > pointMinMax = triggerPoint.getPointMinMax();
+        > pointMinMax = triggerPoint.getPointMinMax();
 
         @NonNull final SDVector3 pointMiddle = triggerPoint
             .getPointMiddle();
 
         @NonNull
         final LGMatrixTriggerMesh matrix = new LGMatrixTriggerMesh(
-            new COMatrixTransformationInvert<>(
-                new COMatrixScaleRotation()
+            new SDMatrixTransformationInvert<>(
+                new SDMatrixScaleRotation()
             ),
-            new COMatrixTransformationNormal<>(
-                new COMatrixScaleRotation()
+            new SDMatrixTransformationNormal<>(
+                new SDMatrixScaleRotation()
             ),
             pointMinMax.first,
             pointMinMax.second
@@ -94,14 +83,5 @@ public final class LGTriggerMesh {
         matrix.calculateNormals();
 
         return matrix;
-    }
-
-    @NonNull
-    public static LGTriggerMesh createFromMatrix(
-        @NonNull final LGMatrixTriggerMesh matrix
-    ) {
-        return new LGTriggerMesh(
-            matrix
-        );
     }
 }

@@ -1,4 +1,4 @@
-package good.damn.logic.triggers.enums
+package good.damn.engine.sdk.trigger.enums
 
 enum class LGEnumStateTrigger {
     BEGIN,

@@ -22,7 +22,7 @@ import good.damn.engine2.models.json.spawn.MGMLevelSpawnLight
 import good.damn.engine2.models.MGMMeshDrawer
 import good.damn.engine2.utils.MGUtilsJson
 import good.damn.engine2.utils.MGUtilsVector3
-import good.damn.logic.triggers.LGTriggerMesh
+import good.damn.logic.utils.LGUtilsTrigger
 import good.damn.logic.triggers.stateables.LGTriggerStateableLight
 import good.damn.mapimporter.models.MIMMap
 
@@ -37,6 +37,10 @@ class MGLevelSpawnPoints
     override fun hasValidExtension(
         fileName: String
     ) = fileName == FILENAME
+
+    override fun onSetProviderGl() {
+
+    }
 
     override fun import(
         map: MIMMap,
@@ -112,7 +116,7 @@ class MGLevelSpawnPoints
         }
 
         map.spawnPoints.forEachIndexed { i, it ->
-            val triggerMatrix = LGTriggerMesh.createTriggerPointMatrix(
+            val triggerMatrix = LGUtilsTrigger.createTriggerPointMatrix(
                 poolMesh[0].triggerPoint
             )
 
@@ -176,10 +180,6 @@ class MGLevelSpawnPoints
                 )
             }
 
-            val triggerMesh = LGTriggerMesh.createFromMatrix(
-                triggerMatrix
-            )
-
             val drawerMesh = GLDrawerMeshMaterialNormals(
                 GLDrawerMeshMaterial(
                     arrayOf(
@@ -192,13 +192,13 @@ class MGLevelSpawnPoints
                     GLDrawerMesh(
                         poolMesh[0].drawerVertexArray,
                         GLDrawerPositionEntity(
-                            triggerMesh.matrix.matrixMesh.model
+                            triggerMatrix.matrixMesh.model
                         ),
                         GLEnumFaceOrder.COUNTER_CLOCK_WISE
                     )
                 ),
                 GLDrawerNormalMatrix(
-                    triggerMesh.matrix.matrixMesh.normal
+                    triggerMatrix.matrixMesh.normal
                 )
             )
 
@@ -208,7 +208,7 @@ class MGLevelSpawnPoints
             )
 
             val volume = MGVolumeTriggerMesh(
-                triggerMesh.matrix.matrixTrigger.model,
+                triggerMatrix.matrixTrigger.model,
                 frustrumMesh
             )
 
