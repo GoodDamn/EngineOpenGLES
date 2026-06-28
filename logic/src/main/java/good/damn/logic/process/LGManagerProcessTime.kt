@@ -14,9 +14,7 @@ class LGManagerProcessTime {
         Looper.getMainLooper()
     )
 
-    private val mLoopRunnables = SparseArray<
-        List<SDIProcessTime>
-    >()
+    private val mLoopRunnables = LinkedList<SDIProcessTime>()
 
     private val mRunnable = LGRunnableProcessTimeLoop(
         mLoopRunnables,
@@ -25,10 +23,9 @@ class LGManagerProcessTime {
     )
 
     fun registerLoopProcessTime(
-        processTime: List<SDIProcessTime>
+        processTime: SDIProcessTime
     ) {
-        mLoopRunnables.put(
-            processTime.hashCode(),
+        mLoopRunnables.add(
             processTime
         )
     }
@@ -38,10 +35,10 @@ class LGManagerProcessTime {
     }
 
     fun unregisterLoopProcessTime(
-        processTime: List<SDIProcessTime>
+        processTime: SDIProcessTime
     ) {
         mLoopRunnables.remove(
-            processTime.hashCode()
+            processTime
         )
     }
 

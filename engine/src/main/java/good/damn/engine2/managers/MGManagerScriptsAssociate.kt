@@ -62,26 +62,16 @@ class MGManagerScriptsAssociate(
         lights: LinkedList<SDMLightPointEntity>,
     ) = glProvider.apply {
 
-        runnablesLoop.apply {
-            if (isNotEmpty()) {
-                managers.managerProcessTime.registerLoopProcessTime(
-                    runnablesLoop
-                )
-            }
+        runnablesLoop.forEach {
+            managers.managerProcessTime.registerLoopProcessTime(
+                it
+            )
         }
-
-        val volumes = ConcurrentLinkedQueue<
-            COIVolume
-        >()
 
         lights.apply {
             if (isEmpty()) {
                 return@apply
             }
-
-            val listLights = LinkedList<
-                GLDrawerLightPoint
-            >()
 
             forEach {
                 LGTriggerStateableLight.createFromLight(
@@ -102,30 +92,17 @@ class MGManagerScriptsAssociate(
                         it.light
                     )
 
-                    listLights.add(
+                    managers.managerLight.lights.add(
                         drawerLightPoint
                     )
 
-                    volumes.add(
+                    managers.managerFrustrum.volumes.add(
                         GLVolumeLight(
                             drawerLightPoint,
                             modelMatrix.matrixTrigger.model
                         )
                     )
                 }
-            }
-
-            managers.managerLight.lights.put(
-                listLights.hashCode(),
-                listLights
-            )
-        }
-
-        volumes.apply {
-            if (isNotEmpty()) {
-                managers.managerFrustrum.volumes[
-                    volumes.hashCode()
-                ] = volumes
             }
         }
 

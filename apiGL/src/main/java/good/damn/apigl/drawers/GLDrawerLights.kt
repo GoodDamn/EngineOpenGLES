@@ -14,26 +14,22 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class GLDrawerLights(
     private val drawerLightPass: GLDrawerLightPass
 ) {
-    val lights = SparseArray<
-        LinkedList<GLDrawerLightPoint>
-    >()
+    val lights = LinkedList<GLDrawerLightPoint>()
 
     fun draw(
         shader: GLShaderLightPoint,
         shaderModel: GLIShaderModel,
         textures: Array<GLShaderTexture>
     ) {
-        lights.forEach { _, v ->
-            v.forEach {
-                GLDrawerLightPoint.draw(
-                    shader,
-                    shaderModel,
-                    it
-                )
-                drawerLightPass.draw(
-                    textures
-                )
-            }
+        lights.forEach {
+            GLDrawerLightPoint.draw(
+                shader,
+                shaderModel,
+                it
+            )
+            drawerLightPass.draw(
+                textures
+            )
         }
     }
 }
