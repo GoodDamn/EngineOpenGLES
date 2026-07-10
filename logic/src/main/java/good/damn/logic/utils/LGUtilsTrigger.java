@@ -4,6 +4,8 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
+import java.nio.FloatBuffer;
+
 import good.damn.engine.sdk.matrices.SDMatrixScaleRotation;
 import good.damn.engine.sdk.matrices.SDMatrixTransformationInvert;
 import good.damn.engine.sdk.matrices.SDMatrixTransformationNormal;
@@ -14,20 +16,21 @@ import good.damn.logic.models.LGTriggerPoint;
 import good.damn.logic.triggers.matrices.LGMatrixTriggerMesh;
 
 public final class LGUtilsTrigger {
+
     @NonNull
     public static LGTriggerPoint createTriggerPoint(
-        @NonNull final ASObject3d obj
+        @NonNull final FloatBuffer vertices
     ) {
         @NonNull
         final COMArrayVertexManager manager = new COMArrayVertexManager(
-            obj.vertices
+            vertices
         );
 
         @NonNull
         final Pair<
             SDVector3,
             SDVector3
-        > pointMinMax = LGUtilsAlgo.findMinMaxPoints(
+            > pointMinMax = LGUtilsAlgo.findMinMaxPoints(
             manager
         );
 
@@ -45,6 +48,15 @@ public final class LGUtilsTrigger {
         return new LGTriggerPoint(
             pointMinMax,
             pointMiddle
+        );
+    }
+
+    @NonNull
+    public static LGTriggerPoint createTriggerPoint(
+        @NonNull final ASObject3d obj
+    ) {
+        return createTriggerPoint(
+            obj.vertices
         );
     }
 

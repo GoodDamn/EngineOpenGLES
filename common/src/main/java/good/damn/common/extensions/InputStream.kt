@@ -6,6 +6,16 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
+inline fun InputStream.readInt(
+    buffer: ByteArray,
+    index: Int = 0
+): Int {
+    read(buffer)
+    return buffer.extractInt(
+        index
+    )
+}
+
 fun InputStream.writeToFile(
     file: File
 ) {

@@ -3,6 +3,7 @@ package good.damn.engine2.utils
 import good.damn.apigl.arrays.GLArrayVertexConfigurator
 import good.damn.apigl.arrays.GLArrayVertexInstanced
 import good.damn.apigl.enums.GLEnumArrayVertexConfiguration
+import good.damn.apigl.runnables.GLRunglGenVertexArrayInstanced
 import good.damn.common.COHandlerGl
 import good.damn.engine2.models.MGMInstanceArray
 import good.damn.engine.sdk.matrices.SDMatrixScaleRotation
@@ -38,7 +39,7 @@ object MGUtilsInstancedMesh {
         )
 
         handlerGl.post(
-            good.damn.apigl.runnables.GLRunglGenVertexArrayInstanced(
+            GLRunglGenVertexArrayInstanced(
                 vertexArray,
                 configurator,
                 bufferVertices,

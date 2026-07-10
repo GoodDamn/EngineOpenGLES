@@ -32,6 +32,7 @@ import good.damn.wrapper.APApp
 import good.damn.wrapper.export.APExportImportLights
 import good.damn.wrapper.hud.ui.clicks.APClickExport
 import good.damn.wrapper.imports.APImportScript
+import good.damn.wrapper.imports.APImportSlMap
 import kotlin.math.min
 
 class APHud(
@@ -85,6 +86,8 @@ class APHud(
         misc
     )
 
+    private val mImportSlMap = APImportSlMap()
+
     private val mImportTempModel = APImportModel(
         misc
     )
@@ -111,6 +114,9 @@ class APHud(
             arrayOf(
                 mImportImage,
                 mImportLight,
+                APImportImplTempFile(
+                    mImportSlMap
+                ),
                 APImportImplTempFile(
                     mImportTempLevel
                 ),
@@ -258,5 +264,6 @@ class APHud(
         mClickTriggerDrawingFlag.glProvider = provider
         mImportExportSceneLights.glProvider = provider
         managerScripts.glProvider = provider
+        mImportSlMap.glProvider = provider
     }
 }

@@ -1,14 +1,16 @@
 package good.damn.apigl.runnables
 
+import good.damn.apigl.arrays.GLArrayVertexConfigurator
+import good.damn.apigl.arrays.pointers.GLPointerAttribute
 import good.damn.common.COIRunnableBounds
 import java.nio.Buffer
 import java.nio.FloatBuffer
 
 class GLRunglConfigVertexArray(
-    private val arrayVertex: good.damn.apigl.arrays.GLArrayVertexConfigurator,
+    private val arrayVertex: GLArrayVertexConfigurator,
     private val vertexBuffer: FloatBuffer,
     private val indicesBuffer: Buffer,
-    private val pointerAttribute: good.damn.apigl.arrays.pointers.GLPointerAttribute
+    private val pointerAttribute: GLPointerAttribute
 ): COIRunnableBounds {
 
     override fun run(

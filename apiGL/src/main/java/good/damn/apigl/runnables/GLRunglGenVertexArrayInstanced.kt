@@ -2,6 +2,7 @@ package good.damn.apigl.runnables
 
 import good.damn.apigl.arrays.GLArrayVertexConfigurator
 import good.damn.apigl.arrays.GLArrayVertexInstanced
+import good.damn.apigl.arrays.pointers.GLPointerAttribute
 import good.damn.common.COIRunnableBounds
 import java.nio.Buffer
 import java.nio.FloatBuffer
@@ -13,7 +14,7 @@ class GLRunglGenVertexArrayInstanced(
     private val bufferIndices: Buffer,
     private val matrixModel: FloatBuffer,
     private val matrixRotation: FloatBuffer,
-    private val matrixSize: Int
+    private val matrixSize: Int,
 ): COIRunnableBounds {
 
     override fun run(
@@ -23,7 +24,7 @@ class GLRunglGenVertexArrayInstanced(
         configurator.configure(
             bufferVertices,
             bufferIndices,
-            good.damn.apigl.arrays.pointers.GLPointerAttribute.default32
+            GLPointerAttribute.default32
         )
 
         vertexArray.setupMatrixBuffer(
@@ -33,13 +34,13 @@ class GLRunglGenVertexArrayInstanced(
         )
 
         vertexArray.setupInstanceDrawing(
-            good.damn.apigl.arrays.GLArrayVertexInstanced.INDEX_ATTRIB_INSTANCE_MODEL,
-            good.damn.apigl.arrays.GLArrayVertexInstanced.INDEX_BUFFER_MODEL
+            GLArrayVertexInstanced.INDEX_ATTRIB_INSTANCE_MODEL,
+            GLArrayVertexInstanced.INDEX_BUFFER_MODEL
         )
 
         vertexArray.setupInstanceDrawing(
-            good.damn.apigl.arrays.GLArrayVertexInstanced.INDEX_ATTRIB_INSTANCE_ROTATION,
-            good.damn.apigl.arrays.GLArrayVertexInstanced.INDEX_BUFFER_ROTATION
+            GLArrayVertexInstanced.INDEX_ATTRIB_INSTANCE_ROTATION,
+            GLArrayVertexInstanced.INDEX_BUFFER_ROTATION
         )
     }
 }
