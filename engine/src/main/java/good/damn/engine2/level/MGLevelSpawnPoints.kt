@@ -55,7 +55,9 @@ class MGLevelSpawnPoints
         )
 
         val poolMesh = glProvider.pools.meshes.loadOrGetFromCache(
-            json.mesh
+            COUtilsFile.getPublicFile(
+                "objs/${json.mesh}"
+            )
         ) ?: return
 
         val lightInterpolation = SDMLightPointInterpolation(

@@ -8,6 +8,7 @@ import good.damn.apigl.runnables.GLRunglConfigVertexArray
 import good.damn.common.COHandlerGl
 import good.damn.engine.ASObject3d
 import good.damn.logic.utils.LGUtilsTrigger
+import java.io.File
 
 class MGPoolMeshesStatic(
     private val glHandler: COHandlerGl
@@ -26,20 +27,20 @@ class MGPoolMeshesStatic(
     }
 
     fun loadOrGetFromCache(
-        fileNameModel: String,
+        file: File,
     ): Array<MGMPoolMesh>? {
-        get(fileNameModel)?.run {
+        get(file.path)?.run {
             return this
         }
 
-        val objs = ASObject3d.createFromAssets(
-            "objs/$fileNameModel"
+        val objs = ASObject3d.createFromFile(
+            file
         ) ?: return null
 
         val obj = objs[0]
 
         val triggerPoint = LGUtilsTrigger.createTriggerPoint(
-            obj
+            obj.vertices
         )
 
         val configurator = GLArrayVertexConfigurator(
@@ -65,7 +66,7 @@ class MGPoolMeshesStatic(
         )
 
         set(
-            fileNameModel,
+            file.path,
             poolMesh
         )
 

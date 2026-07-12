@@ -8,6 +8,38 @@ object MGUtilsArray {
     private const val PUNTB = 11
 
     @JvmStatic
+    fun swapIndexValues(
+        vertices: FloatBuffer,
+        indexSwap: Int,
+        indexOn: Int,
+        vertexValueCount: Int
+    ) {
+        val valuesCount = vertices.remaining()
+        var swapValue: Float
+        var currentIndexSwap = indexSwap
+        var currentIndexOn = indexOn
+
+        while (currentIndexSwap < valuesCount) {
+            swapValue = vertices[
+                currentIndexSwap
+            ]
+
+            vertices.put(
+                currentIndexSwap,
+                vertices[currentIndexOn]
+            )
+
+            vertices.put(
+                currentIndexOn,
+                swapValue
+            )
+
+            currentIndexSwap += vertexValueCount
+            currentIndexOn += vertexValueCount
+        }
+    }
+
+    @JvmStatic
     fun createMergedVertexBuffer(
         position: FloatArray,
         uv: FloatArray,

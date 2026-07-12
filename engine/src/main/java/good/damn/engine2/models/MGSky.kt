@@ -13,6 +13,7 @@ import good.damn.apigl.enums.GLEnumFaceOrder
 import good.damn.apigl.shaders.GLShaderGeometryPassModel
 import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.apigl.shaders.base.GLBinderAttribute
+import good.damn.common.utils.COUtilsFile
 import good.damn.engine.sdk.matrices.SDMatrixScale
 import good.damn.engine.ASObject3d
 import good.damn.engine2.pools.MGPoolTextures
@@ -32,8 +33,10 @@ class MGSky {
             GLEnumArrayVertexConfiguration.SHORT
         )
 
-        ASObject3d.createFromAssets(
-            "objs/semi_sphere.obj"
+        ASObject3d.createFromFile(
+            COUtilsFile.getPublicFile(
+                "objs/semi_sphere.obj"
+            )
         )?.get(0)?.apply {
             verticesSky.configure(
                 vertices,

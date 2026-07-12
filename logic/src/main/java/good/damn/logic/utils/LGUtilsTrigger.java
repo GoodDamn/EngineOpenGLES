@@ -19,18 +19,13 @@ public final class LGUtilsTrigger {
 
     @NonNull
     public static LGTriggerPoint createTriggerPoint(
-        @NonNull final FloatBuffer vertices
+        @NonNull final COMArrayVertexManager manager
     ) {
-        @NonNull
-        final COMArrayVertexManager manager = new COMArrayVertexManager(
-            vertices
-        );
-
         @NonNull
         final Pair<
             SDVector3,
             SDVector3
-            > pointMinMax = LGUtilsAlgo.findMinMaxPoints(
+        > pointMinMax = LGUtilsAlgo.findMinMaxPoints(
             manager
         );
 
@@ -38,11 +33,6 @@ public final class LGUtilsTrigger {
         final SDVector3 pointMiddle = pointMinMax.first.interpolate(
             pointMinMax.second,
             0.5f
-        );
-
-        LGUtilsAlgo.offsetAnchorPoint(
-            manager,
-            pointMiddle
         );
 
         return new LGTriggerPoint(
@@ -53,10 +43,12 @@ public final class LGUtilsTrigger {
 
     @NonNull
     public static LGTriggerPoint createTriggerPoint(
-        @NonNull final ASObject3d obj
+        @NonNull final FloatBuffer vertices
     ) {
         return createTriggerPoint(
-            obj.vertices
+            new COMArrayVertexManager(
+                vertices
+            )
         );
     }
 

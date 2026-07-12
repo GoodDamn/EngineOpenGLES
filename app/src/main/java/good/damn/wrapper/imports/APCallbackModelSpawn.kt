@@ -14,6 +14,7 @@ import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.engine2.models.MGMMeshDrawer
 import good.damn.engine.ASObject3d
 import good.damn.apigl.shaders.base.GLBinderAttribute
+import good.damn.common.utils.COUtilsFile
 import good.damn.engine2.logic.MGMGeometryFrustrumMesh
 import good.damn.engine2.logic.MGVolumeTriggerMesh
 import good.damn.engine2.shader.generators.MGMMaterialShader
@@ -44,7 +45,9 @@ class APCallbackModelSpawn(
 
         if (objs.size == 1) {
             val poolMesh = glProvider.pools.meshes.loadOrGetFromCache(
-                fileName
+                COUtilsFile.getPublicFile(
+                    "objs/$fileName"
+                )
             ) ?: return
 
             val triggerMatrix = LGUtilsTrigger.createTriggerPointMatrix(

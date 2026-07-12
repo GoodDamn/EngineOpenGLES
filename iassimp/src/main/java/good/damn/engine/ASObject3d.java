@@ -61,28 +61,11 @@ public final class ASObject3d {
     }
 
     @Nullable
-    public static ASObject3d[] createFromAssets(
-        @NonNull final String localPath
-    ) throws Exception {
-        @NonNull final File filePub = COUtilsFile.getPublicFile(
-            localPath
-        );
-
-        if (!filePub.exists()) {
-            throw new Exception("No such file: " + filePub.getPath());
-        }
-
-        return createFromPath(
-            filePub.getPath()
-        );
-    }
-
-    @Nullable
-    public static ASObject3d[] createFromPath(
-        @NonNull String path
+    public static ASObject3d[] createFromFile(
+        @NonNull final File file
     ) {
         return createFromPath(
-            path.getBytes(
+            file.getPath().getBytes(
                 StandardCharsets.UTF_8
             )
         );

@@ -31,6 +31,7 @@ import good.damn.common.COIRunnableBounds
 import good.damn.common.camera.COCameraFree
 import good.damn.common.camera.COCameraProjection
 import good.damn.common.camera.COMCamera
+import good.damn.common.utils.COUtilsFile
 import good.damn.engine.sdk.matrices.SDMatrixTranslate
 import good.damn.common.vertex.COMArrayVertexManager
 import good.damn.common.volume.COManagerFrustrum
@@ -305,8 +306,10 @@ class APRendererEditor(
             .pointPosition()
             .build()
 
-        ASObject3d.createFromAssets(
-            "objs/sphere.fbx"
+        ASObject3d.createFromFile(
+            COUtilsFile.getPublicFile(
+                "objs/sphere.fbx"
+            )
         )?.get(0)?.let {
             mVerticesSphere.configure(
                 it.vertices,

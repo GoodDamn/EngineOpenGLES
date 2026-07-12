@@ -34,8 +34,8 @@ class APImportModel(
         private val file: File
     ): Runnable {
         override fun run() {
-            val arrModels = ASObject3d.createFromPath(
-                file.path
+            val arrModels = ASObject3d.createFromFile(
+                file
             )
 
             modelsCallback.processObjects(

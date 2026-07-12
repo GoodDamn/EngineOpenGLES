@@ -5,38 +5,26 @@ import good.damn.apigl.arrays.GLArrayVertexConfigurator
 import good.damn.apigl.arrays.pointers.GLPointerAttribute
 import good.damn.apigl.drawers.GLDrawerMaterialTexture
 import good.damn.apigl.drawers.GLDrawerMesh
-import good.damn.apigl.drawers.GLDrawerMeshInstanced
 import good.damn.apigl.drawers.GLDrawerMeshMaterial
 import good.damn.apigl.drawers.GLDrawerMeshMaterialNormals
 import good.damn.apigl.drawers.GLDrawerNormalMatrix
 import good.damn.apigl.drawers.GLDrawerPositionEntity
 import good.damn.apigl.drawers.GLDrawerVertexArray
 import good.damn.apigl.drawers.GLMaterial
-import good.damn.apigl.enums.GLEnumArrayVertexConfiguration
 import good.damn.apigl.enums.GLEnumFaceOrder
 import good.damn.apigl.runnables.GLRunglConfigVertexArray
 import good.damn.apigl.shaders.GLShaderMaterial
 import good.damn.apigl.shaders.base.GLBinderAttribute
-import good.damn.common.extensions.readInt
 import good.damn.common.utils.COUtilsFile
 import good.damn.engine.ASObject3d
-import good.damn.engine.ASUtilsBuffer
-import good.damn.engine.sdk.matrices.SDMatrixScaleRotation
-import good.damn.engine.sdk.matrices.SDMatrixTransformationNormal
 import good.damn.engine2.logic.MGMGeometryFrustrumMesh
 import good.damn.engine2.logic.MGVolumeTriggerMesh
 import good.damn.engine2.models.MGMMeshDrawer
-import good.damn.engine2.pools.MGMPoolMesh
 import good.damn.engine2.providers.MGProviderGL
-import good.damn.engine2.shader.generators.MGMMaterialShader
-import good.damn.engine2.utils.MGUtilsInstancedMesh
-import good.damn.engine2.utils.MGUtilsVertIndices
-import good.damn.logic.models.LGTriggerPoint
 import good.damn.logic.utils.LGUtilsTrigger
 import java.io.DataInputStream
 import java.io.File
 import java.io.FileInputStream
-import java.util.LinkedList
 
 class APImportSlMap
 : MGProviderGL(),
@@ -102,8 +90,10 @@ APIProcessTempFile {
                 return@repeat
             }*/
 
-            val obj = ASObject3d.createFromAssets(
-                "objs/$objName.fbx"
+            val obj = ASObject3d.createFromFile(
+                COUtilsFile.getPublicFile(
+                    "objs/$objName.fbx"
+                )
             )?.get(0) ?: return@repeat
 
             
@@ -180,19 +170,24 @@ APIProcessTempFile {
 
             val triggerMatrix = LGUtilsTrigger.createTriggerPointMatrix(
                 triggerPoint
-            )
+            ).apply {
+                setPosition(
+                    positionX,
+                    positionZ,
+                    -positionY
+                )
 
-            triggerMatrix.setPosition(
-                positionX,
-                positionZ,
-                positionY
-            )
+                addRotation(
+                    90f,
+                    0f,
+                    0f
+                )
 
-            triggerMatrix.invalidateScaleRotation()
-            triggerMatrix.invalidatePosition()
-
-            triggerMatrix.calculateInvertTrigger()
-            triggerMatrix.calculateNormals()
+                invalidateScaleRotation()
+                invalidatePosition()
+                calculateInvertTrigger()
+                calculateNormals()
+            }
 
             val materialShader = provider.pools.materials.loadOrGetFromCache(
                 objName,
