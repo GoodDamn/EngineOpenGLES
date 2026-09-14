@@ -23,7 +23,7 @@
 
 #define JNI_METHOD(return_type, method_name) \
   JNIEXPORT return_type JNICALL              \
-      Java_com_google_cardboard_VrActivity_##method_name
+      Java_good_damn_wrapper_controllers_APControllerVr_##method_name
 
 namespace {
 
@@ -107,7 +107,7 @@ JNI_METHOD(void, nativeSetScreenParams)
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_google_cardboard_VrActivity_getPose(
+Java_good_damn_wrapper_controllers_APControllerVr_getPose(
     JNIEnv *env,
     jobject thiz,
     jlong native_app,
