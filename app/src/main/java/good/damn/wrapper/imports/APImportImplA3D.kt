@@ -58,10 +58,7 @@ class APImportImplA3D(
                         configIndices.buffer,
                         MGUtilsA3D.createConfigurationArrayVertex(
                             configIndices
-                        ),
-                        null,
-                        null,
-                        null
+                        )
                     )
                 )
             )

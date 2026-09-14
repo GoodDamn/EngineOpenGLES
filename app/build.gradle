@@ -15,6 +15,14 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+
+        externalNativeBuild.cmake {
+            arguments "-DANDROID_STL=c++_shared"
+        }
     }
 
     buildTypes {
@@ -29,6 +37,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    externalNativeBuild {
+        cmake {
+            path file('CMakeLists.txt')
+            version '3.22.1'
+        }
     }
 }
 
@@ -50,3 +64,58 @@ dependencies {
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 }
+
+// The dependencies for NDK builds live inside the .aar files so they need to
+// be extracted before NDK targets can link against.
+task extractNdk(type: Copy)  {
+    final String moduleName = "vr"
+    if (file("${project.rootDir}/$moduleName/build/outputs/aar/$moduleName-release.aar").exists()) {
+        copy {
+            from zipTree("${project.rootDir}/$moduleName/build/outputs/aar/$moduleName-release.aar")
+            into "libraries/"
+            include "jni/**/libGfxPluginCardboard.so"
+        }
+        copy {
+            from "${project.rootDir}/$moduleName/include/cardboard.h"
+            into "libraries/"
+        }
+        copy {
+            from "${project.rootDir}/$moduleName/include/device_params.h"
+            into "libraries/"
+        }
+        copy {
+            from "${project.rootDir}/$moduleName/include/distortion_mesh.h"
+            into "libraries/"
+        }
+        copy {
+            from "${project.rootDir}/$moduleName/include/distortion_mesh_matrix.h"
+            into "libraries/"
+        }
+        copy {
+            from "${project.rootDir}/$moduleName/include/matrix_4x4.h"
+            into "libraries/"
+        }
+        copy {
+            from "${project.rootDir}/$moduleName/include/polynomial_radial_distortion.h"
+            into "libraries/"
+        }
+        copy {
+            from "${project.rootDir}/$moduleName/include/viewport_params.h"
+            into "libraries/"
+        }
+    }
+}
+
+task deleteNdk(type: Delete) {
+    delete "libraries/jni"
+    delete "libraries/cardboard.h"
+    delete "libraries/device_params.h"
+    delete "libraries/distortion_mesh.h"
+    delete "libraries/distortion_mesh_matrix.h"
+    delete "libraries/matrix_4x4.h"
+    delete "libraries/polynomial_radial_distortion.h"
+    delete "libraries/viewport_params.h"
+}
+
+build.dependsOn(extractNdk)
+clean.dependsOn(deleteNdk)

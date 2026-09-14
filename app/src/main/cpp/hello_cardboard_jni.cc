@@ -1,0 +1,128 @@
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include <android/log.h>
+#include <jni.h>
+
+#include <memory>
+
+#include "hello_cardboard_app.h"
+
+#define JNI_METHOD(return_type, method_name) \
+  JNIEXPORT return_type JNICALL              \
+      Java_com_google_cardboard_VrActivity_##method_name
+
+namespace {
+
+inline jlong jptr(ndk_hello_cardboard::HelloCardboardApp* native_app) {
+  return reinterpret_cast<intptr_t>(native_app);
+}
+
+inline ndk_hello_cardboard::HelloCardboardApp* native(jlong ptr) {
+  return reinterpret_cast<ndk_hello_cardboard::HelloCardboardApp*>(ptr);
+}
+
+JavaVM* javaVm;
+
+}  // anonymous namespace
+
+extern "C" {
+
+JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/) {
+  javaVm = vm;
+  return JNI_VERSION_1_6;
+}
+
+JNI_METHOD(jlong, nativeOnCreate)
+(JNIEnv* /*env*/,
+    jobject obj,
+    jfloat interLensDistance,
+    jfloat trayToLensDistance,
+    jfloat screenToLensDistance,
+    jfloatArray fovHalfDegrees,
+    jfloatArray distortionCoeffs,
+    jobject instanceDrawer
+) {
+  return jptr(new ndk_hello_cardboard::HelloCardboardApp(
+      javaVm,
+      obj,
+      interLensDistance,
+      trayToLensDistance,
+      screenToLensDistance,
+      fovHalfDegrees,
+      distortionCoeffs,
+      instanceDrawer
+      ));
+}
+
+JNI_METHOD(void, nativeOnDestroy)
+(JNIEnv* /*env*/, jobject /*obj*/, jlong native_app) {
+  delete native(native_app);
+}
+
+JNI_METHOD(void, nativeOnDrawFrame)
+(JNIEnv* env, jobject /*obj*/, jlong native_app) {
+  native(native_app)->OnDrawFrame(
+      env
+  );
+}
+
+JNI_METHOD(void, nativeOnPause)
+(JNIEnv* /*env*/, jobject /*obj*/, jlong native_app) {
+  native(native_app)->OnPause();
+}
+
+JNI_METHOD(void, nativeOnResume)
+(JNIEnv* /*env*/, jobject /*obj*/, jlong native_app) {
+  native(native_app)->OnResume();
+}
+
+JNI_METHOD(void, nativeSetScreenParams)
+(JNIEnv* /*env*/, jobject /*obj*/,
+        jlong native_app,
+        jint width,
+        jint height,
+        jfloat xdpi,
+        jfloat ydpi
+) {
+  native(native_app)->SetScreenParams(
+          width, height, xdpi, ydpi
+          );
+}
+
+}  // extern "C"
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_google_cardboard_VrActivity_getPose(
+    JNIEnv *env,
+    jobject thiz,
+    jlong native_app,
+    jfloatArray model_matrix,
+    jint index_eye,
+    jfloat positionX,
+    jfloat positionY,
+    jfloat positionZ
+) {
+    native(native_app)->getPose(
+        env,
+        model_matrix,
+        index_eye,
+        positionX,
+        positionY,
+        positionZ
+    );
+}
