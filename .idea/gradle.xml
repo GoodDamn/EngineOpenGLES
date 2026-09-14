@@ -21,9 +21,9 @@
             <option value="$PROJECT_DIR$/logic" />
             <option value="$PROJECT_DIR$/script" />
             <option value="$PROJECT_DIR$/sdk" />
+            <option value="$PROJECT_DIR$/vr" />
           </set>
         </option>
-        <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

@@ -1,0 +1,471 @@
+/*
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * #gles3 - This file is only needed if OpenGL ES 3.0 support is desired. Delete
+ * the contents of this file if OpenGL ES 3.0 support is not needed.
+ */
+#include <array>
+#include <vector>
+
+#ifdef CARDBOARD_USE_CUSTOM_GL_BINDINGS
+// If required, add a configuration header file with the OpenGL ES 3.0 binding
+// customization.
+#include "opengl_es3_custom_bindings.h"
+#else
+#ifdef __ANDROID__
+#include <GLES3/gl3.h>
+#endif
+#ifdef __APPLE__
+#include <OpenGLES/ES3/gl.h>
+#endif
+#ifdef __ANDROID__
+#include <GLES2/gl2ext.h>
+#endif
+#endif  // CARDBOARD_USE_CUSTOM_GL_BINDINGS
+#include "distortion_renderer.h"
+#include "include/cardboard.h"
+#include "util/is_arg_null.h"
+#include "util/is_initialized.h"
+#include "util/logging.h"
+
+namespace {
+
+constexpr const char* kDistortionVertexShader =
+    R"glsl(#version 300 es
+    layout (location = 0) in vec2 a_Position;
+    layout (location = 1) in vec2 a_TexCoords;
+    out vec2 v_TexCoords;
+
+    void main() {
+      gl_Position = vec4(a_Position, 0, 1);
+      v_TexCoords = a_TexCoords;
+    })glsl";
+
+constexpr const char* kDistortionFragmentShaderTexture2D =
+    R"glsl(#version 300 es
+    precision mediump float;
+
+    uniform sampler2D u_Texture;
+    uniform vec2 u_Start;
+    uniform vec2 u_End;
+    in vec2 v_TexCoords;
+    out vec4 o_FragColor;
+
+    void main() {
+      vec2 coords = u_Start + v_TexCoords * (u_End - u_Start);
+      o_FragColor = texture(u_Texture, coords);
+    })glsl";
+
+#ifdef __ANDROID__
+constexpr const char* kDistortionFragmentShaderTextureExternalOes =
+    R"glsl(
+    #extension GL_OES_EGL_image_external : require
+    precision mediump float;
+
+    uniform samplerExternalOES u_Texture;
+    uniform vec2 u_Start;
+    uniform vec2 u_End;
+    varying vec2 v_TexCoords;
+
+    void main() {
+      vec2 coords = u_Start + v_TexCoords * (u_End - u_Start);
+      gl_FragColor = texture2D(u_Texture, coords);
+    })glsl";
+#endif
+
+void CheckGlError(const char* label) {
+  int gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR) {
+    CARDBOARD_LOGE("GL error %s: %d", label, gl_error);
+  }
+}
+
+GLuint LoadShader(GLenum shader_type, const char* source) {
+  GLuint shader = glCreateShader(shader_type);
+  glShaderSource(shader, 1, &source, nullptr);
+  glCompileShader(shader);
+  CheckGlError("glCompileShader");
+  GLint result = GL_FALSE;
+  glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
+  if (result == GL_FALSE) {
+    int log_length;
+    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);
+    if (log_length == 0) {
+      return 0;
+    }
+
+    std::vector<char> log_string(log_length);
+    glGetShaderInfoLog(shader, log_length, nullptr, log_string.data());
+    CARDBOARD_LOGE("Could not compile shader of type %d: %s", shader_type,
+                   log_string.data());
+
+    shader = 0;
+  }
+
+  return shader;
+}
+
+GLuint CreateProgram(const char* vertex, const char* fragment) {
+  GLuint vertex_shader = LoadShader(GL_VERTEX_SHADER, vertex);
+  if (vertex_shader == 0) {
+    return 0;
+  }
+
+  GLuint fragment_shader = LoadShader(GL_FRAGMENT_SHADER, fragment);
+  if (fragment_shader == 0) {
+    return 0;
+  }
+
+  GLuint program = glCreateProgram();
+
+  glAttachShader(program, vertex_shader);
+  glAttachShader(program, fragment_shader);
+  glLinkProgram(program);
+  CheckGlError("glLinkProgram");
+
+  GLint result = GL_FALSE;
+  glGetProgramiv(program, GL_LINK_STATUS, &result);
+  if (result == GL_FALSE) {
+    int log_length;
+    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_length);
+    if (log_length == 0) {
+      return 0;
+    }
+
+    std::vector<char> log_string(log_length);
+    glGetShaderInfoLog(program, log_length, nullptr, log_string.data());
+    CARDBOARD_LOGE("Could not compile program: %s", log_string.data());
+
+    return 0;
+  }
+
+  glDetachShader(program, vertex_shader);
+  glDetachShader(program, fragment_shader);
+  glDeleteShader(vertex_shader);
+  glDeleteShader(fragment_shader);
+  CheckGlError("GlCreateProgram");
+
+  return program;
+}
+
+}  // namespace
+
+namespace cardboard::rendering {
+
+// @brief OpenGL ES 3.0 concrete implementation of DistortionRenderer.
+class OpenGlEs3DistortionRenderer : public DistortionRenderer {
+
+private:
+    struct GLEye {
+        GLuint vertices_vbo_;
+        GLuint uvs_vbo_;
+        GLuint elements_vbo;
+        int elements_count;
+    };
+
+    std::array<GLEye, 2> mRenderEyes;
+
+    void generateBuffersEye(
+        GLEye* eye
+    ) {
+        glGenBuffers(1, &eye->vertices_vbo_);
+        glGenBuffers(1, &eye->uvs_vbo_);
+        glGenBuffers(1, &eye->elements_vbo);
+    }
+
+    void deleteBuffersEye(
+        GLEye* eye
+    ) {
+        glDeleteBuffers(1, &eye->vertices_vbo_);
+        glDeleteBuffers(1, &eye->uvs_vbo_);
+        glDeleteBuffers(1, &eye->elements_vbo);
+    }
+
+public:
+  OpenGlEs3DistortionRenderer(
+      const CardboardOpenGlEsDistortionRendererConfig* config
+  ): eye_texture_type_{GL_TEXTURE_2D} {
+
+    const char* fragment_shader;
+
+    switch (config->texture_type) {
+      case kGlTexture2D:
+        fragment_shader = kDistortionFragmentShaderTexture2D;
+        eye_texture_type_ = GL_TEXTURE_2D;
+        break;
+#ifdef __ANDROID__
+      case kGlTextureExternalOes:
+        fragment_shader = kDistortionFragmentShaderTextureExternalOes;
+        eye_texture_type_ = GL_TEXTURE_EXTERNAL_OES;
+        break;
+#endif
+      default:
+        CARDBOARD_LOGE(
+            "The Cardboard SDK does not support the selected texture type on "
+            "this platform. Setting GL_TEXTURE_2D as default.");
+
+        fragment_shader = kDistortionFragmentShaderTexture2D;
+        eye_texture_type_ = GL_TEXTURE_2D;
+        break;
+    }
+
+    program_ = CreateProgram(kDistortionVertexShader, fragment_shader);
+    attrib_pos_ = glGetAttribLocation(program_, "a_Position");
+    attrib_tex_ = glGetAttribLocation(program_, "a_TexCoords");
+    uniform_start_ = glGetUniformLocation(program_, "u_Start");
+    uniform_end_ = glGetUniformLocation(program_, "u_End");
+
+    // Gen buffers, one per eye.
+    for (auto & renderEye : mRenderEyes) {
+        generateBuffersEye(
+            &renderEye
+        );
+    }
+
+    CheckGlError("OpenGlEs3DistortionRendererSetUp");
+  }
+
+  ~OpenGlEs3DistortionRenderer() {
+      for (auto & renderEye : mRenderEyes) {
+          deleteBuffersEye(
+              &renderEye
+          );
+      }
+      CheckGlError("~OpenGlEs3DistortionRenderer");
+  }
+
+  /*
+   * Modifies the OpenGL global state. In particular:
+   *   - glGet(GL_ARRAY_BUFFER_BINDING)
+   *   - glGet(GL_ELEMENT_ARRAY_BUFFER_BINDING)
+   */
+  void SetMesh(
+      const CardboardMesh *mesh
+  ) override {
+      CARDBOARD_LOGD("SetMesh: ID: %i;;;;n_vertices: %i",mesh->id, mesh->n_vertices);
+      GLEye* eye = &mRenderEyes[mesh->id];
+
+      glBindBuffer(
+          GL_ARRAY_BUFFER,
+          eye->vertices_vbo_
+      );
+
+      glBufferData(
+          GL_ARRAY_BUFFER,
+          mesh->n_vertices * sizeof(float) * 2,  // Two components per vertex
+          mesh->vertices,
+          GL_STATIC_DRAW
+      );
+
+      glBindBuffer(
+          GL_ARRAY_BUFFER,
+          eye->uvs_vbo_
+      );
+
+      glBufferData(
+          GL_ARRAY_BUFFER,
+          mesh->n_vertices * sizeof(float) * 2,  // Two components per uv
+          mesh->uvs,
+          GL_STATIC_DRAW
+      );
+
+      glBindBuffer(
+          GL_ELEMENT_ARRAY_BUFFER,
+          eye->elements_vbo
+      );
+
+      glBufferData(
+          GL_ELEMENT_ARRAY_BUFFER,
+          mesh->n_indices * sizeof(int),
+          mesh->indices,
+          GL_STATIC_DRAW
+      );
+
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+      CheckGlError("OpenGlEs3DistortionRenderer::SetMesh");
+      eye->elements_count = mesh->n_indices;
+  }
+
+  /*
+   * Modifies the OpenGL global state. In particular:
+   *   - glGet(GL_VIEWPORT)
+   *   - glGet(GL_FRAMEBUFFER_BINDING)
+   *   - glIsEnabled(GL_SCISSOR_TEST)
+   *   - glIsEnabled(GL_CULL_FACE)
+   *   - glGet(GL_CLEAR_COLOR_VALUE)
+   *   - glGet(GL_CURRENT_PROGRAM)
+   *   - glGet(GL_SCISSOR_BOX)
+   *   - glGet(GL_ACTIVE_TEXTURE+i)
+   *   - glGet(GL_ARRAY_BUFFER_BINDING)
+   *   - glGet(GL_ELEMENT_ARRAY_BUFFER_BINDING)
+   */
+  void RenderEyeToDisplay(
+      uint64_t target,
+      int x,
+      int y,
+      int width,
+      int height,
+      const CardboardMesh *left_eye,
+      const CardboardMesh *right_eye
+  ) override {
+
+      for (auto & renderEye : mRenderEyes) {
+          if (renderEye.elements_count == 0) {
+              CARDBOARD_LOGE(
+                  "Distortion mesh is empty. OpenGlEs3DistortionRenderer::SetMesh was "
+                  "not called yet.");
+              return;
+          }
+      }
+
+      glViewport(x, y, width, height);
+      glBindFramebuffer(GL_FRAMEBUFFER, static_cast<GLuint>(target));
+      glDisable(GL_SCISSOR_TEST);
+      glDisable(GL_CULL_FACE);
+      glClearColor(.0f, .0f, .0f, 1.0f);
+      glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+      glUseProgram(program_);
+
+      glEnable(GL_SCISSOR_TEST);
+      glScissor(x, y, width / 2, height);
+      RenderDistortionMesh(
+          &mRenderEyes[left_eye->id],
+          left_eye
+      );
+
+      glScissor(x + width / 2, y, width / 2, height);
+      RenderDistortionMesh(
+          &mRenderEyes[right_eye->id],
+          right_eye
+      );
+
+      // Active GL_TEXTURE0 effectively enables the first texture that is
+      // deactiviated by the DistortionRenderer. Binding array buffer and element
+      // array buffer to the reserved value zero effectively unbinds the buffer
+      // objects that are previously bound by the DistortionRenderer.
+      glActiveTexture(GL_TEXTURE0);
+
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+      // Disable scissor test.
+      glDisable(GL_SCISSOR_TEST);
+      CheckGlError("OpenGlEs3DistortionRenderer::RenderEyeToDisplay");
+  }
+
+ private:
+  /*
+   * Modifies the OpenGL global state. In particular:
+   *   - glGet(GL_ARRAY_BUFFER_BINDING)
+   *   - glGet(GL_ELEMENT_ARRAY_BUFFER_BINDING)
+   *   - glGetVertexAttrib(i, GL_VERTEX_ATTRIB_*)
+   *   - glGetVertextAttrib(i, GL_VERTEX_ATTRIB_ARRAY_ENABLED)
+   *   - glGet(GL_ACTIVE_TEXTURE+i)
+   *   - glGet(GL_TEXTURE_BINDING_2D)
+   *   - glGetUniform(program, location)
+   *   - glGet(GL_ARRAY_BUFFER_BINDING)
+   *   - glGet(GL_ELEMENT_ARRAY_BUFFER_BINDING)
+   */
+  void RenderDistortionMesh(
+      const GLEye *eye,
+      const CardboardMesh* eyeMesh
+  ) const {
+      glBindBuffer(
+          GL_ARRAY_BUFFER,
+          eye->vertices_vbo_
+      );
+
+      glVertexAttribPointer(
+          attrib_pos_,
+          2,  // 2 components per vertex
+          GL_FLOAT, false,
+          0,  // Stride and offset 0, as we are using different vbos.
+          0
+      );
+
+      glEnableVertexAttribArray(
+          attrib_pos_
+      );
+
+      glBindBuffer(
+          GL_ARRAY_BUFFER,
+          eye->uvs_vbo_
+      );
+
+      glVertexAttribPointer(
+          attrib_tex_,
+          2,  // 2 components per uv
+          GL_FLOAT,
+          false,
+          0,
+          0
+      );
+
+      glEnableVertexAttribArray(
+          attrib_tex_
+      );
+
+      glActiveTexture(
+          GL_TEXTURE0
+      );
+
+      glBindTexture(
+          eye_texture_type_,
+          static_cast<GLuint>(eyeMesh->textureDescription.texture)
+      );
+
+      glUniform2f(
+          uniform_start_,
+          eyeMesh->textureDescription.left_u,
+          eyeMesh->textureDescription.bottom_v
+      );
+
+      glUniform2f(
+          uniform_end_,
+          eyeMesh->textureDescription.right_u,
+          eyeMesh->textureDescription.top_v
+      );
+
+      // Draw with indices
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eye->elements_vbo);
+      glDrawElements(GL_TRIANGLE_STRIP, eye->elements_count, GL_UNSIGNED_INT, 0);
+      CheckGlError("OpenGlEs3DistortionRenderer::RenderDistortionMesh");
+  }
+
+    GLuint program_;
+    GLuint attrib_pos_;
+    GLuint attrib_tex_;
+    GLuint uniform_start_;
+    GLuint uniform_end_;
+
+    GLenum eye_texture_type_;
+};
+
+}  // namespace cardboard::rendering
+
+extern "C" {
+
+CardboardDistortionRenderer* CardboardOpenGlEs3DistortionRenderer_create(
+    const CardboardOpenGlEsDistortionRendererConfig* config) {
+  if (CARDBOARD_IS_NOT_INITIALIZED() || CARDBOARD_IS_ARG_NULL(config)) {
+    return nullptr;
+  }
+  return reinterpret_cast<CardboardDistortionRenderer*>(
+      new cardboard::rendering::OpenGlEs3DistortionRenderer(config));
+}
+
+}  // extern "C"
