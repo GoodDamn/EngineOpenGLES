@@ -19,18 +19,16 @@ inline void getCompileStatus(
 
 GLuint APIOpengl::createShader(
     GLenum type,
-    std::string& src
+    const char* src
 ) {
     GLuint shader = glCreateShader(
         type
     );
     
-    const char* cStr = src.c_str();
-    
     glShaderSource(
         shader,
         1,
-        &cStr,
+        &src,
         nullptr
     );
     
@@ -42,8 +40,8 @@ GLuint APIOpengl::createShader(
 }
 
 GLuint APIOpengl::createProgram(
-    std::string& srcVertex,
-    std::string& srcFragment
+    const char* srcVertex,
+    const char* srcFragment
 ) {
     GLuint shaderFragment = createShader(
         GL_FRAGMENT_SHADER,
@@ -87,4 +85,26 @@ GLuint APIOpengl::createProgram(
     );
     
     return program;
+}
+
+void APIOpengl::drawMesh(
+    GLuint vertexArray,
+    GLenum mode,
+    GLenum typeIndices,
+    GLsizei indicesCount
+) {
+    glBindVertexArray(
+        vertexArray
+    );
+    
+    glDrawElements(
+        mode,
+        indicesCount,
+        typeIndices,
+        nullptr
+    );
+    
+    glBindVertexArray(
+        0
+    );
 }

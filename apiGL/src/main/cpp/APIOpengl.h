@@ -13,15 +13,20 @@ public:
 
     static GLuint createShader(
         GLenum type,
-        std::string& src
+        const char* src
     );
     
     GLuint createProgram(
-        std::string& srcVertex,
-        std::string& srcFragment
+        const char* srcVertex,
+        const char* srcFragment
     );
     
-    
+    void drawMesh(
+        GLuint vertexArray,
+        GLenum mode,
+        GLenum typeIndices,
+        GLsizei indicesCount
+    );
 
 };
 
