@@ -10,7 +10,7 @@ import java.io.File
 abstract class GLShaderBase
 : GLIShader {
     companion object {
-        private const val TAG = "MGShaderBase"
+        private const val TAG = "GLShaderBase"
     }
 
     private var mProgram = 0

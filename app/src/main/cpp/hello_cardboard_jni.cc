@@ -111,18 +111,20 @@ Java_good_damn_wrapper_controllers_APControllerVr_getPose(
     JNIEnv *env,
     jobject thiz,
     jlong native_app,
-    jfloatArray model_matrix,
+    jfloatArray matrixPoseOut,
+    jfloatArray matrixProjectionOut,
     jint index_eye,
     jfloat positionX,
     jfloat positionY,
     jfloat positionZ
 ) {
     native(native_app)->getPose(
-        env,
-        model_matrix,
-        index_eye,
-        positionX,
-        positionY,
-        positionZ
+            env,
+            matrixPoseOut,
+            matrixProjectionOut,
+            index_eye,
+            positionX,
+            positionY,
+            positionZ
     );
 }

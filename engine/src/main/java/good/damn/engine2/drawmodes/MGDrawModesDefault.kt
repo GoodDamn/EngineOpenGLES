@@ -9,8 +9,8 @@ class MGDrawModesDefault(
     providerModel: MGMProviderGL
 ) {
 
-    private val mDrawModes = arrayOf(
-        providerModel.shaders.lightPasses[
+    private val mDrawModes: Array<MGDrawModeBase> = arrayOf(
+        /*providerModel.shaders.lightPasses[
             GLEnumLightPass.OPAQUE
         ].run {
             MGDrawModeOpaque(
@@ -20,7 +20,7 @@ class MGDrawModesDefault(
                 ),
                 shader
             )
-        },
+        },*/
         createTextureDrawMode(
             GLEnumLightPass.DIFFUSE,
             providerModel,

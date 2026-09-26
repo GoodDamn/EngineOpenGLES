@@ -1,5 +1,6 @@
 package good.damn.engine2.models
 
+import android.util.Log
 import good.damn.apigl.arrays.GLArrayVertexConfigurator
 import good.damn.apigl.arrays.pointers.GLPointerAttribute
 import good.damn.apigl.drawers.GLDrawerMaterialTexture
@@ -20,6 +21,9 @@ import good.damn.engine2.pools.MGPoolTextures
 import good.damn.engine2.shader.generators.MGMMaterialShader
 
 class MGSky {
+    companion object {
+        private const val TAG = "MGSky"
+    }
     private lateinit var meshMaterial: MGMMeshDrawer<
         GLShaderGeometryPassModel,
         GLDrawerMeshMaterial
@@ -110,6 +114,7 @@ class MGSky {
     fun draw() {
         meshMaterial.shader.apply {
             use()
+            Log.d(TAG, "draw: ")
             GLDrawerMeshMaterial.Companion.draw(
                 meshMaterial.drawer,
                 materials,

@@ -10,6 +10,91 @@ public final class APControllerVr {
         );
     }
 
+    private long mRef = 0;
+
+    private int mWidth;
+    private int mHeight;
+
+    public final int getWidth() {
+        return mWidth;
+    }
+
+    public final int getHeight() {
+        return mHeight;
+    }
+
+    public final void create(
+        @NonNull final APIDrawer drawer
+    ) {
+        mRef = nativeOnCreate(
+            0.060f,
+            0.035f,
+            0.042f,
+            new float[]{40.0f, 40.0f, 40.0f, 40.0f},
+            new float[]{0.441f, 0.156f},
+            drawer
+        );
+    }
+
+    public final void resume() {
+        nativeOnResume(
+            mRef
+        );
+    }
+
+    public final void draw() {
+        nativeOnDrawFrame(
+            mRef
+        );
+    }
+
+    public final void destroy() {
+        nativeOnDestroy(
+            mRef
+        );
+    }
+
+    public final void pause() {
+        nativeOnPause(
+            mRef
+        );
+    }
+
+    public final void getPose(
+        @NonNull final float[] matrixPoseOut,
+        @NonNull final float[] matrixProjectionOut,
+        final int indexEye,
+        final float positionX,
+        final float positionY,
+        final float positionZ
+    ) {
+        getPose(
+            mRef,
+            matrixPoseOut,
+            matrixProjectionOut,
+            indexEye,
+            positionX,
+            positionY,
+            positionZ
+        );
+    }
+
+    public final void setScreenParams(
+        final int width,
+        final int height,
+        final float xdpi,
+        final float ydpi
+    ) {
+        mWidth = width;
+        mHeight = height;
+        nativeSetScreenParams(
+            mRef,
+            width,
+            height,
+            xdpi,
+            ydpi
+        );
+    }
 
     private native long nativeOnCreate(
         float interLensDistance,
@@ -22,7 +107,8 @@ public final class APControllerVr {
 
     private native void getPose(
         long nativeApp,
-        float[] modelMatrix,
+        float[] matrixPose,
+        float[] matrixProjection,
         int indexEye,
         float positionX,
         float positionY,

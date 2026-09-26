@@ -26,12 +26,12 @@ UIIListenerDistance {
         dy: Float
     ) {
         glProvider.apply {
-            camera.addRotation(
+            /*camera.addRotation(
                 dx * 0.001f,
                 dy * 0.001f,
                 0f
             )
-            camera.invalidatePosition()
+            camera.invalidatePosition()*/
             updateIntersection()
         }
     }
@@ -43,12 +43,12 @@ UIIListenerDistance {
         directionY: Float
     ) {
         glProvider.apply {
-            camera.addPosition(
+            /*camera.addPosition(
                 x, y,
                 directionX,
                 directionY
             )
-            camera.invalidatePosition()
+            camera.invalidatePosition()*/
             updateIntersection()
         }
     }
@@ -57,18 +57,18 @@ UIIListenerDistance {
         dst: Float
     ) {
         bridge.distance += dst
-        glProvider.camera.invalidatePosition()
+        //glProvider.camera.invalidatePosition()
         updateIntersection()
     }
 
     private inline fun updateIntersection() {
         glProvider.apply {
-            val direction = camera.direction
+            /*val direction = camera.direction
             bridge.outPointLead.apply {
                 x = camera.modelMatrix.x + direction.x * bridge.distance
                 y = camera.modelMatrix.y + direction.y * bridge.distance
                 z = camera.modelMatrix.z + direction.z * bridge.distance
-            }
+            }*/
 
             mListenerIntersect?.onIntersectPosition(
                 bridge.outPointLead

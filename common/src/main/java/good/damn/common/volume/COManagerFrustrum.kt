@@ -9,7 +9,6 @@ import good.damn.engine.sdk.process.SDIProcessTime
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class COManagerFrustrum(
-    private val camera: COICameraProjection,
     vertices: COMArrayVertexManager
 ): SDIProcessTime {
     val volumes = ConcurrentLinkedQueue<COIVolume>()
@@ -37,7 +36,7 @@ class COManagerFrustrum(
     ) {
         volumes.forEach { volume ->
             var isOnFrustrum = false
-            for (position in mPositions) {
+            /*for (position in mPositions) {
                 Matrix.multiplyMM(
                     matrixViewSpace,
                     0,
@@ -79,10 +78,10 @@ class COManagerFrustrum(
                     isOnFrustrum = true
                     break
                 }
-            }
+            }*/
 
             volume.isOnFrustrum(
-                isOnFrustrum
+                true
             )
         }
     }

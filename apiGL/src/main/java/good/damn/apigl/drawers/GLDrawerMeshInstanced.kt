@@ -1,6 +1,7 @@
 package good.damn.apigl.drawers
 
 import android.opengl.GLES30
+import android.util.Log
 import good.damn.apigl.GLRenderVars
 import good.damn.apigl.shaders.GLShaderMaterial
 
@@ -9,6 +10,10 @@ class GLDrawerMeshInstanced(
     private val vertexArray: good.damn.apigl.arrays.GLArrayVertexInstanced,
     private val materials: Array<GLMaterial>
 ) {
+
+    companion object {
+        private const val TAG = "GLDrawerMeshInstanced"
+    }
 
     fun drawVertices() {
         if (enableCullFace) {
@@ -34,6 +39,7 @@ class GLDrawerMeshInstanced(
             GLShaderMaterial
         >
     ) {
+        Log.d(TAG, "draw: ")
         for (i in materials.indices) {
             materials[i].draw(
                 shaderMaterial[i]

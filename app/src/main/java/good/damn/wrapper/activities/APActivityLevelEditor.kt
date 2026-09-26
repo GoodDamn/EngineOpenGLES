@@ -1,12 +1,13 @@
 package good.damn.wrapper.activities
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.hardware.SensorManager
 import android.net.Uri
+import android.opengl.GLES30
+import android.opengl.GLES30.GL_UNIFORM_BUFFER
 import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.util.Log
 import android.view.WindowManager
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -14,18 +15,18 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import good.damn.apigl.buffers.GLBuffer
+import good.damn.apigl.buffers.GLBufferUniformCamera
 import good.damn.common.COHandlerGl
 import good.damn.common.COHandlerGlExecutor
-import good.damn.common.utils.COUtilsFile
-import good.damn.engine2.providers.MGMProviderGL
-import good.damn.engine2.providers.MGProviderGL
-import good.damn.engine2.sensors.MGManagerSensor
-import good.damn.engine2.sensors.MGSensorGyroscope
+import good.damn.engine2.camera.GLCameraFree
+import good.damn.engine2.camera.GLCameraProjection
 import good.damn.wrapper.interfaces.APIListenerOnGetUserContent
 import good.damn.wrapper.interfaces.APIRequestUserContent
 import good.damn.wrapper.models.APMUserContent
 import good.damn.wrapper.callbacks.APCallbackResultAllFiles
 import good.damn.wrapper.callbacks.APCallbackResultAllFilesApi30
+import good.damn.wrapper.controllers.APControllerVr
 import good.damn.wrapper.hud.APHud
 import good.damn.wrapper.launchers.APLauncherContent
 import good.damn.wrapper.renderer.APRendererEditor
@@ -38,6 +39,10 @@ class APActivityLevelEditor
 : AppCompatActivity(),
 ActivityResultCallback<Array<Uri>?>,
 APIRequestUserContent {
+
+    companion object {
+        private const val TAG = "APActivityLevelEditor"
+    }
 
     private val mContentLauncher = APLauncherContent(
         this,
@@ -56,11 +61,14 @@ APIRequestUserContent {
         )
     )
 
-    private var managerSensor: MGManagerSensor? = null
-
-    private lateinit var managerSensorApi: SensorManager
+    private val mControllerVr = APControllerVr()
 
     private var mCallbackRequestUserContent: APIListenerOnGetUserContent? = null
+
+    override fun onResume() {
+        super.onResume()
+        mControllerVr.resume()
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(
@@ -69,10 +77,6 @@ APIRequestUserContent {
         super.onCreate(
             savedInstanceState
         )
-
-        managerSensorApi = getSystemService(
-            Context.SENSOR_SERVICE
-        ) as SensorManager
 
         val context = this
 
@@ -123,24 +127,16 @@ APIRequestUserContent {
         requestPermissionAllFiles()
     }
 
+    override fun onPause() {
+        super.onPause()
+        mControllerVr.pause()
+    }
+
     override fun onDestroy() {
+        mControllerVr.destroy()
         mContentLauncher.unregister()
         mViewModelAllFiles.unregisterLauncher()
         super.onDestroy()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        managerSensor?.register(
-            managerSensorApi
-        )
-    }
-
-    override fun onPause() {
-        super.onPause()
-        managerSensor?.unregister(
-            managerSensorApi
-        )
     }
 
     override fun onActivityResult(
@@ -186,15 +182,67 @@ APIRequestUserContent {
         )
 
         val handler = APRendererHandler(
-            handlerExecutor
+            handlerExecutor,
+            mControllerVr,
+            resources.displayMetrics
         )
+
+        val cameraMatrixPose = FloatArray(16)
+        val cameraMatrixProjection = FloatArray(16)
+
+        val cameraUniformBuffer = GLBufferUniformCamera(
+            GLBuffer(
+                GL_UNIFORM_BUFFER
+            )
+        )
+
+        val cameraPose = GLCameraFree(
+            cameraMatrixPose,
+            glHandler,
+            cameraUniformBuffer
+        )
+
+        val cameraProjection = GLCameraProjection(
+            cameraMatrixProjection,
+            glHandler,
+            cameraUniformBuffer
+        )
+
+        mControllerVr.create { indexEye ->
+
+            /*
+            * GLES30.glClear(
+                GLES30.GL_COLOR_BUFFER_BIT
+            )
+
+            GLES30.glClearColor(
+                1.0f,
+                0.0f,
+                0.0f,
+                1.0f
+            )*/
+
+            mControllerVr.getPose(
+                cameraMatrixPose,
+                cameraMatrixProjection,
+                indexEye,
+                0.0f,
+                -1.7f,
+                0.0f
+            )
+
+            cameraPose.invalidatePosition()
+            cameraProjection.invalidate()
+
+            handlerExecutor.runCycle(
+                mControllerVr.width,
+                mControllerVr.height
+            )
+        }
 
         val renderer = APRendererEditor(
-            glHandler
-        )
-
-        val sensors = arrayListOf(
-            MGSensorGyroscope()
+            glHandler,
+            cameraUniformBuffer
         )
 
         val hud = APHud(
@@ -210,16 +258,8 @@ APIRequestUserContent {
             renderer.switcherDrawMode
         )
 
-        sensors.forEach {
-            it.glProvider = renderer.providerModel
-        }
-
         hud.registerGlProvider(
             renderer.providerModel
-        )
-
-        managerSensor = MGManagerSensor(
-            sensors
         )
 
         /*loadScripts(

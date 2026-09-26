@@ -2,13 +2,15 @@ package good.damn.wrapper.renderer
 
 import android.opengl.GLES20.GL_BACK
 import android.opengl.GLES20.GL_LESS
+import android.opengl.GLES20.GL_NO_ERROR
 import android.opengl.GLES20.glCullFace
 import android.opengl.GLES20.glDepthFunc
-import android.opengl.GLES30.GL_UNIFORM_BUFFER
+import android.opengl.GLES20.glGetError
+import android.opengl.GLES30
+import android.util.Log
 import android.util.SparseArray
 import good.damn.apigl.arrays.GLArrayVertexConfigurator
 import good.damn.apigl.arrays.pointers.GLPointerAttribute
-import good.damn.apigl.buffers.GLBuffer
 import good.damn.apigl.buffers.GLBufferUniform
 import good.damn.apigl.buffers.GLBufferUniformCamera
 import good.damn.apigl.drawers.GLDrawerFramebufferG
@@ -28,17 +30,11 @@ import good.damn.apigl.shaders.creators.GLShaderCreatorGeomPassModel
 import good.damn.apigl.shaders.lightpass.GLShaderLightPassPointLight
 import good.damn.common.COHandlerGl
 import good.damn.common.COIRunnableBounds
-import good.damn.common.camera.COCameraFree
-import good.damn.common.camera.COCameraProjection
-import good.damn.common.camera.COMCamera
 import good.damn.common.utils.COUtilsFile
-import good.damn.engine.sdk.matrices.SDMatrixTranslate
 import good.damn.common.vertex.COMArrayVertexManager
 import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.ASObject3d
 import good.damn.engine.ASUtilsBuffer
-import good.damn.engine2.camera.GLCameraFree
-import good.damn.engine2.camera.GLCameraProjection
 import good.damn.engine2.loaders.texture.MGLoaderTextureAsync
 import good.damn.engine2.models.MGMDrawers
 import good.damn.engine2.models.MGMInformatorShader
@@ -63,7 +59,8 @@ import good.damn.engine2.managers.MGStorageLightPass
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class APRendererEditor(
-    private val handlerGl: COHandlerGl
+    private val handlerGl: COHandlerGl,
+    private val bufferUniformCamera: GLBufferUniformCamera
 ): COIRunnableBounds {
 
 
@@ -88,31 +85,6 @@ class APRendererEditor(
             0.5f
         )
     )
-
-    private val mBufferUniformCamera = GLBufferUniformCamera(
-        GLBuffer(
-            GL_UNIFORM_BUFFER
-        )
-    )
-
-    private val mCameraFree = SDMatrixTranslate().run {
-        COMCamera(
-            GLCameraFree(
-                COCameraFree(
-                    this
-                ),
-                handlerGl,
-                mBufferUniformCamera
-            ),
-            GLCameraProjection(
-                COCameraProjection(
-                    this
-                ),
-                handlerGl,
-                mBufferUniformCamera
-            )
-        )
-    }
 
     private val mFramebufferG = GLFrameBufferG(
         GLFramebuffer()
@@ -150,7 +122,7 @@ class APRendererEditor(
     )
 
     private val managerFrustrum = COManagerFrustrum(
-        mCameraFree.projection,
+        //mCameraFree.projection,
         COMArrayVertexManager(
             verticesBox10Raw
         )
@@ -200,7 +172,6 @@ class APRendererEditor(
         ),
         mShaders,
         mParameters,
-        mCameraFree.camera,
         handlerGl,
         drawers = MGMDrawers(
             GLDrawerFramebufferG(
@@ -235,11 +206,12 @@ class APRendererEditor(
         width: Int,
         height: Int
     ) {
+        catchError(0)
         mFramebufferG.generate(
             width, height
         )
 
-        mBufferUniformCamera.apply {
+        bufferUniformCamera.apply {
             buffer.generate()
             GLBufferUniform.setupBindingPoint(
                 0,
@@ -247,6 +219,7 @@ class APRendererEditor(
                 sizeBytes
             )
         }
+        catchError(1)
 
         mVerticesQuad.configure(
             ASUtilsBuffer.createFloat(
@@ -260,6 +233,7 @@ class APRendererEditor(
                 .pointTextureCoordinates()
                 .build()
         )
+        catchError(2)
 
         val shaders = providerModel.shaders
 
@@ -275,6 +249,8 @@ class APRendererEditor(
                 .bindPosition()
                 .build()
         )
+
+        catchError(3)
 
         GLBinderAttribute.Builder()
             .bindPosition()
@@ -297,6 +273,7 @@ class APRendererEditor(
                 )
             }
 
+        catchError(4)
         providerModel.geometry.meshSky.configure(
             shaders,
             providerModel.pools.textures
@@ -321,6 +298,7 @@ class APRendererEditor(
                     .build()
             )
         }
+        catchError(5)
 
         val indicesBox = ASUtilsBuffer.createByte(
             MGUtilsVertIndices.createCubeIndices2()
@@ -333,6 +311,8 @@ class APRendererEditor(
             pointPosition
         )
 
+        catchError(6)
+
         providerModel.managers.managerProcessTime.apply {
             registerLoopProcessTime(
                 managerFrustrum
@@ -340,12 +320,15 @@ class APRendererEditor(
             start()
         }
 
-        mCameraFree.projection.run {
+        catchError(7)
+
+
+        /*mCameraFree.projection.run {
             modelMatrix.setPosition(
                 0f, 0f, 0f
             )
             modelMatrix.invalidatePosition()
-        }
+        }*/
 
         glDepthFunc(
             GL_LESS
@@ -355,9 +338,21 @@ class APRendererEditor(
             GL_BACK
         )
 
-        mCameraFree.projection.setPerspective(
+        /*mCameraFree.projection.setPerspective(
             width,
             height
-        )
+        )*/
+    }
+
+    private inline fun catchError(
+        ind: Int
+    ) {
+        while (true) {
+            val i = glGetError()
+            if (i == GL_NO_ERROR) {
+                break
+            }
+            Log.d("APRendererEditor", "run: ERROR$ind: ${i.toString(16)}")
+        }
     }
 }

@@ -15,7 +15,6 @@ data class MGMProviderGL(
     val managers: MGMManagers,
     val shaders: MGMInformatorShader,
     val parameters: MGMParameters,
-    val camera: COICameraFree,
     val glHandler: COHandlerGl,
     val drawers: MGMDrawers
 )

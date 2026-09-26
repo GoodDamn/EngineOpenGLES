@@ -92,7 +92,8 @@ class HelloCardboardApp {
 
   void getPose(
       JNIEnv* env,
-      jfloatArray matrixOut,
+      jfloatArray matrixPoseOut,
+      jfloatArray matrixProjectionOut,
       jint index_eye,
       jfloat positionX,
       jfloat positionY,

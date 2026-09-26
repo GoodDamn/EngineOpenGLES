@@ -1,22 +1,23 @@
 package good.damn.wrapper.renderer
 
 import android.opengl.GLSurfaceView
+import android.util.DisplayMetrics
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.util.Log
 import good.damn.common.COHandlerGlExecutor
 import good.damn.engine2.utils.MGUtilsFile
+import good.damn.wrapper.controllers.APControllerVr
 
 class APRendererHandler(
-    private val handlerGlExecutor: COHandlerGlExecutor
+    private val handlerExecutor: COHandlerGlExecutor,
+    private val controllerVr: APControllerVr,
+    private val displayMetrics: DisplayMetrics
 ): GLSurfaceView.Renderer {
 
     companion object {
         private const val TAG = "MGRendererLevelEditor"
     }
-
-    private var mWidth = 0
-    private var mHeight = 0
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -31,20 +32,22 @@ class APRendererHandler(
         height: Int
     ) {
         Log.d(TAG, "onSurfaceChanged: ${Thread.currentThread().name}")
-
-        mWidth = width
-        mHeight = height
+        controllerVr.setScreenParams(
+            width,
+            height,
+            displayMetrics.xdpi,
+            displayMetrics.ydpi
+        )
     }
 
     override fun onDrawFrame(
         gl: GL10?
     ) {
-        handlerGlExecutor.runTasksBounds(
-            mWidth, mHeight
+        handlerExecutor.runTasksBounds(
+            controllerVr.width,
+            controllerVr.height
         )
 
-        handlerGlExecutor.runCycle(
-            mWidth, mHeight
-        )
+        controllerVr.draw()
     }
 }

@@ -23,10 +23,22 @@ import android.util.Log
 class GLTextureBitmap(
     val texture: GLTexture
 ) {
+    companion object {
+        private const val TAG = "GLTextureBitmap"
+    }
+
     fun glTextureSetup(
         bitmap: Bitmap,
         wrapMode: Int = GL_CLAMP_TO_EDGE
     ) {
+        while (true) {
+            val i = glGetError()
+            if (i == GL_NO_ERROR) {
+                break
+            }
+            Log.d(TAG, "setupTexture: ERROR11: ${i.toString(16)}")
+        }
+
         texture.bind()
         glTexParameteri(
             GL_TEXTURE_2D,
@@ -84,7 +96,7 @@ class GLTextureBitmap(
             0
         )
 
-        glGenerateMipmap(
+        /*glGenerateMipmap(
             GL_TEXTURE_2D
         )
 
@@ -104,11 +116,12 @@ class GLTextureBitmap(
             GL_TEXTURE_2D,
             GLES11Ext.GL_TEXTURE_MAX_ANISOTROPY_EXT,
             16
-        )
+        )*/
 
-        val error = glGetError()
-        if (error != GL_NO_ERROR) {
-            Log.d("MGTexture", "setupTexture: ERROR: ${error.toString(16)}")
+        glGetError().apply {
+            if (this != GL_NO_ERROR) {
+                Log.d(TAG, "setupTexture: ERROR22: ${toString(16)}")
+            }
         }
         texture.unbind()
     }

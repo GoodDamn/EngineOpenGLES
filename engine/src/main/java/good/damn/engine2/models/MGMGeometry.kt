@@ -1,5 +1,6 @@
 package good.damn.engine2.models
 
+import android.util.Log
 import good.damn.apigl.drawers.GLDrawerMeshInstanced
 import good.damn.apigl.drawers.GLDrawerMeshMaterial
 import good.damn.apigl.drawers.GLDrawerMeshMaterialNormals
@@ -35,12 +36,16 @@ data class MGMGeometry(
         >,
     val meshSky: MGSky
 ) {
+    companion object {
+        const val TAG = "MGMGeometry"
+    }
 
     inline fun drawMeshes() {
         // draw dynamic meshes without normal matrix
-        meshes.forEach {
+        meshes.forEachIndexed { index, it ->
+            Log.d(TAG, "drawMeshes: ${index}::${it.drawer.isOn}")
             if (!it.drawer.isOn) {
-                return@forEach
+                return@forEachIndexed
             }
 
             it.shader.apply {
@@ -54,9 +59,10 @@ data class MGMGeometry(
         }
 
         // draw dynamic meshes with normal matrix
-        meshesNormals.forEach {
+        meshesNormals.forEachIndexed { index, it ->
+            Log.d(TAG, "drawMeshes: NORMALS: $index:::${it.drawer.isOn}")
             if (!it.drawer.isOn) {
-                return@forEach
+                return@forEachIndexed
             }
 
             it.shader.apply {

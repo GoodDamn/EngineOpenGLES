@@ -267,7 +267,8 @@ namespace ndk_hello_cardboard {
 
     void HelloCardboardApp::getPose(
         JNIEnv* env,
-        jfloatArray matrixOut,
+        jfloatArray matrixPoseOut,
+        jfloatArray matrixProjectionOut,
         jint index_eye,
         jfloat positionX,
         jfloat positionY,
@@ -289,16 +290,25 @@ namespace ndk_hello_cardboard {
             mesh->projection_matrix
         );
 
-        Matrix4x4 b = projection_matrix *
-               eye_matrix *
-               matrixPose *
-               GetTranslationMatrix({positionX, positionY, positionZ});
+        Matrix4x4 view_matrix = eye_matrix *
+                matrixPose *
+                GetTranslationMatrix({positionX, positionY, positionZ});
+
+        /*Matrix4x4 b = projection_matrix *
+               view_matrix;*/
 
         env->SetFloatArrayRegion(
-            matrixOut,
-            0,
-            16,
-            b.m[0]
+                matrixPoseOut,
+                0,
+                16,
+                view_matrix.m[0]
+        );
+
+        env->SetFloatArrayRegion(
+                matrixProjectionOut,
+                0,
+                16,
+                projection_matrix.m[0]
         );
     }
 

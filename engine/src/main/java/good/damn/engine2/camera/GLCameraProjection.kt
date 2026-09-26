@@ -1,6 +1,7 @@
 package good.damn.engine2.camera
 
 import good.damn.apigl.buffers.GLBufferUniformCamera
+import good.damn.apigl.runnables.GLRunglSendDataProjection
 import good.damn.common.COHandlerGl
 import good.damn.common.camera.COCameraProjection
 import good.damn.common.camera.COICameraProjection
@@ -8,37 +9,23 @@ import good.damn.engine.sdk.matrices.SDMatrixTranslate
 import good.damn.engine.ASUtilsBuffer
 
 class GLCameraProjection(
-    private val camera: COCameraProjection,
+    private val matrixProjection: FloatArray,
     private val handler: COHandlerGl,
     private val uniformBufferCamera: GLBufferUniformCamera,
-): COICameraProjection {
+) {
 
     private val mProjectionBuffer = ASUtilsBuffer.allocateByte(
         16 * 4
     )
 
-    override val modelMatrix: SDMatrixTranslate
-        get() = camera.modelMatrix
-
-    override val projection: FloatArray
-        get() = camera.projection
-
-    override fun setPerspective(
-        width: Int,
-        height: Int
-    ) {
-        camera.setPerspective(
-            width,
-            height
-        )
-
+    fun invalidate() {
         mProjectionBuffer.asFloatBuffer().run {
-            put(camera.projection)
+            put(matrixProjection)
             position(0)
         }
 
         handler.post(
-            good.damn.apigl.runnables.GLRunglSendDataProjection(
+            GLRunglSendDataProjection(
                 mProjectionBuffer,
                 uniformBufferCamera
             )
