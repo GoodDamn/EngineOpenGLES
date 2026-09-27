@@ -7,6 +7,7 @@
 
 #include "GLES3/gl3.h"
 #include <string>
+#include "APIVertexAttribute.h"
 
 class APIOpengl {
 public:
@@ -27,7 +28,24 @@ public:
         GLenum typeIndices,
         GLsizei indicesCount
     );
+    
+    void setModelMatrix(
+        GLint uniformLocation,
+        float *model
+    );
+    
+    APIVertexAttribute* createVertexAttributes(
+        int* attrs,
+        char size
+    );
 
+    GLuint createVertexArray(
+        float* vertices,
+        unsigned int verticesSize,
+        unsigned int* indices,
+        unsigned int indicesCount,
+        APIVertexAttribute* vertexAttribute
+    );
 };
 
 

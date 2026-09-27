@@ -17,6 +17,32 @@ inline void getCompileStatus(
     );
 }
 
+inline GLuint createBuffer(
+    GLenum target,
+    void* data,
+    GLsizeiptr dataSize
+) {
+    GLuint buffer;
+    glGenBuffers(
+        1,
+        &buffer
+    );
+    
+    glBindBuffer(
+        target,
+        buffer
+    );
+    
+    glBufferData(
+        target,
+        dataSize,
+        data,
+        GL_STATIC_DRAW
+    );
+    
+    return buffer;
+}
+
 GLuint APIOpengl::createShader(
     GLenum type,
     const char* src
@@ -107,4 +133,83 @@ void APIOpengl::drawMesh(
     glBindVertexArray(
         0
     );
+}
+
+void APIOpengl::setModelMatrix(
+    GLint uniformLocation,
+    float *model
+) {
+    glUniformMatrix4fv(
+        uniformLocation,
+        1,
+        GL_FALSE,
+        model
+    );
+}
+
+APIVertexAttribute* APIOpengl::createVertexAttributes(
+    int* attrs,
+    char size
+) {
+    if (size < 1) {
+        return nullptr;
+    }
+    
+    APIVertexAttribute::Builder builder;
+    
+    for (char i = 0; i < size; i++) {
+        int attr = attrs[i];
+        
+        switch (attr) {
+            case 0:
+                builder.pointPosition();
+                continue;
+            case 1:
+                builder.pointTextureCoordinates();
+                continue;
+            case 2:
+                builder.pointNormal();
+                continue;
+        }
+    }
+    
+    return builder.build();
+}
+
+GLuint APIOpengl::createVertexArray(
+    float* vertices,
+    unsigned int verticesSize,
+    unsigned int* indices,
+    unsigned int indicesCount,
+    APIVertexAttribute* vertexAttribute
+) {
+    GLuint vertexArray;
+    glGenVertexArrays(
+        sizeof(vertexArray),
+        &vertexArray
+    );
+    
+    glBindVertexArray(
+        vertexArray
+    );
+    
+    GLuint bufferVertices = createBuffer(
+        GL_ARRAY_BUFFER,
+        vertices,
+        verticesSize * sizeof(float)
+    );
+    
+    GLuint bufferIndices = createBuffer(
+        GL_ELEMENT_ARRAY_BUFFER,
+        indices,
+        indicesCount * sizeof(int)
+    );
+    
+    vertexAttribute->bindPointers();
+    
+    glBindVertexArray(
+        0
+    );
+    
+    return vertexArray;
 }
