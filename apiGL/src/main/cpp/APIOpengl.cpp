@@ -179,7 +179,7 @@ APIVertexAttribute* APIOpengl::createVertexAttributes(
 GLuint APIOpengl::createVertexArray(
     float* vertices,
     unsigned int verticesSize,
-    unsigned int* indices,
+    int* indices,
     unsigned int indicesCount,
     APIVertexAttribute* vertexAttribute
 ) {

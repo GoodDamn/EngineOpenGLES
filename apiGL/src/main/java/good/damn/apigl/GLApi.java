@@ -41,8 +41,6 @@ public final class GLApi {
         long api,
         long vertexAttribute,
         float[] vertices,
-        int verticesSize,
-        int[] indices,
-        int indicesCount
+        int[] indices
     );
 }
