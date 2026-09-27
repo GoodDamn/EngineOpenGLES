@@ -8,6 +8,7 @@
 #include "GLES3/gl3.h"
 #include <string>
 #include "APIVertexAttribute.h"
+#include "APIBinderAttribute.h"
 
 class APIOpengl {
 public:
@@ -34,10 +35,20 @@ public:
         float *model
     );
     
+    void useProgram(
+        GLuint program
+    );
+    
     APIVertexAttribute* createVertexAttributes(
         int* attrs,
         char size
     );
+    
+    APIBinderAttribute* createBinderAttributes(
+        int* attrs,
+        char size
+    );
+    
 
     GLuint createVertexArray(
         float* vertices,

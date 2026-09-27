@@ -30,6 +30,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         jni.cpp
         APIOpengl.cpp
         APIVertexAttribute.cpp
+        APIBinderAttribute.cpp
 )
 
 # Specifies libraries CMake should link to your target library. You

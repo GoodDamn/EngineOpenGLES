@@ -24,6 +24,12 @@ public final class ASObject3d {
     @NonNull
     public final GLEnumArrayVertexConfiguration config;
 
+    @Nullable
+    public final float[] rawVertices;
+
+    @Nullable
+    public final int[] rawIndices;
+
     public ASObject3d(
         @NonNull final FloatBuffer vertices,
         @NonNull final Buffer indices,
@@ -32,12 +38,17 @@ public final class ASObject3d {
         this.vertices = vertices;
         this.indices = indices;
         this.config = config;
+        rawVertices = null;
+        rawIndices = null;
     }
 
     public ASObject3d(
         @NonNull final float[] vertices,
         @NonNull final int[] indices
     ) {
+        rawVertices = vertices;
+        rawIndices = indices;
+
         this.vertices = ASUtilsBuffer.createFloat(
             vertices
         );

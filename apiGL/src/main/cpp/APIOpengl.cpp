@@ -110,6 +110,10 @@ GLuint APIOpengl::createProgram(
         shaderVertex
     );
     
+    glLinkProgram(
+        program
+    );
+    
     return program;
 }
 
@@ -212,4 +216,41 @@ GLuint APIOpengl::createVertexArray(
     );
     
     return vertexArray;
+}
+
+void APIOpengl::useProgram(
+    GLuint program
+) {
+    glUseProgram(
+        program
+    );
+}
+
+APIBinderAttribute* APIOpengl::createBinderAttributes(
+    int *attrs,
+    char size
+) {
+    if (size < 1) {
+        return nullptr;
+    }
+    
+    APIBinderAttribute::Builder builder;
+    
+    for (char i = 0; i < size; i++) {
+        int attr = attrs[i];
+        
+        switch (attr) {
+            case 0:
+                builder.bindPosition();
+                continue;
+            case 1:
+                builder.bindTextureCoordinates();
+                continue;
+            case 2:
+                builder.bindNormal();
+                continue;
+        }
+    }
+    
+    return builder.build();
 }
