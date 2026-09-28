@@ -35,6 +35,11 @@ public:
         float *model
     );
     
+    GLint getUniformLocation(
+        GLuint program,
+        const char* name
+    );
+    
     void useProgram(
         GLuint program
     );

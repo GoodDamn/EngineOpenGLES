@@ -294,14 +294,14 @@ namespace ndk_hello_cardboard {
                 matrixPose *
                 GetTranslationMatrix({positionX, positionY, positionZ});
 
-        /*Matrix4x4 b = projection_matrix *
-               view_matrix;*/
+        Matrix4x4 b = projection_matrix *
+               view_matrix;
 
         env->SetFloatArrayRegion(
                 matrixPoseOut,
                 0,
                 16,
-                view_matrix.m[0]
+                b.m[0]
         );
 
         env->SetFloatArrayRegion(

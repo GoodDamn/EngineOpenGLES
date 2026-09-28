@@ -4,6 +4,7 @@
 
 #include "APIOpengl.h"
 #include "GLES3/gl3.h"
+#include "APIUtils.h"
 #include <string>
 
 inline void getCompileStatus(
@@ -19,7 +20,7 @@ inline void getCompileStatus(
 
 inline GLuint createBuffer(
     GLenum target,
-    void* data,
+    const void* data,
     GLsizeiptr dataSize
 ) {
     GLuint buffer;
@@ -32,6 +33,8 @@ inline GLuint createBuffer(
         target,
         buffer
     );
+    
+    LOGD("DATA_SIZE: %i,", dataSize);
     
     glBufferData(
         target,
@@ -81,6 +84,15 @@ GLuint APIOpengl::createProgram(
     );
     
     if (status == GL_FALSE) {
+        char log[255];
+        GLsizei length;
+        glGetShaderInfoLog(
+            shaderFragment,
+            sizeof(log),
+            &length,
+            log
+            );
+        LOGD("SHADER_ERROR_FRAGMENT: %s", log);
         return -1;
     }
     
@@ -95,6 +107,15 @@ GLuint APIOpengl::createProgram(
     );
     
     if (status == GL_FALSE) {
+        char log[255];
+        GLsizei length;
+        glGetShaderInfoLog(
+            shaderVertex,
+            sizeof(log),
+            &length,
+            log
+        );
+        LOGD("SHADER_ERROR_VERTEX: %s", log);
         return -1;
     }
     
@@ -189,7 +210,7 @@ GLuint APIOpengl::createVertexArray(
 ) {
     GLuint vertexArray;
     glGenVertexArrays(
-        sizeof(vertexArray),
+        1,
         &vertexArray
     );
     
@@ -197,11 +218,15 @@ GLuint APIOpengl::createVertexArray(
         vertexArray
     );
     
+    LOGD("createVertexArray: COUNT(V:::I): %i:::%i", verticesSize, indicesCount);
+    
     GLuint bufferVertices = createBuffer(
         GL_ARRAY_BUFFER,
         vertices,
         verticesSize * sizeof(float)
     );
+    
+    LOGD("createVertexArray: buffer_vertices");
     
     GLuint bufferIndices = createBuffer(
         GL_ELEMENT_ARRAY_BUFFER,
@@ -209,11 +234,18 @@ GLuint APIOpengl::createVertexArray(
         indicesCount * sizeof(int)
     );
     
+    
+    LOGD("createVertexArray: buffer_indices: vert_attr: %i", vertexAttribute);
     vertexAttribute->bindPointers();
+    
+    LOGD("bindPointers");
     
     glBindVertexArray(
         0
     );
+    
+    
+    LOGD("vertexArray: %i", vertexArray);
     
     return vertexArray;
 }
@@ -253,4 +285,14 @@ APIBinderAttribute* APIOpengl::createBinderAttributes(
     }
     
     return builder.build();
+}
+
+GLint APIOpengl::getUniformLocation(
+    GLuint program,
+    const char* name
+) {
+    return glGetUniformLocation(
+        program,
+        name
+    );
 }

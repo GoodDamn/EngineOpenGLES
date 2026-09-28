@@ -8,61 +8,17 @@ import android.opengl.GLES20.glDepthFunc
 import android.opengl.GLES20.glGetError
 import android.opengl.GLES30
 import android.util.Log
-import android.util.SparseArray
 import good.damn.apigl.GLApi
-import good.damn.apigl.arrays.GLArrayVertexConfigurator
-import good.damn.apigl.arrays.pointers.GLPointerAttribute
-import good.damn.apigl.buffers.GLBufferUniform
-import good.damn.apigl.buffers.GLBufferUniformCamera
-import good.damn.apigl.drawers.GLDrawerFramebufferG
-import good.damn.apigl.drawers.GLDrawerLightDirectional
-import good.damn.apigl.drawers.GLDrawerLightPass
-import good.damn.apigl.drawers.GLDrawerLights
-import good.damn.apigl.drawers.GLDrawerVertexArray
-import good.damn.apigl.drawers.GLDrawerVolumes
-import good.damn.apigl.enums.GLEnumArrayVertexConfiguration
-import good.damn.apigl.framebuffer.GLFrameBufferG
-import good.damn.apigl.framebuffer.GLFramebuffer
-import good.damn.apigl.shaders.GLShaderGeometryPassModel
-import good.damn.apigl.shaders.GLShaderMaterial
-import good.damn.apigl.shaders.base.GLBinderAttribute
-import good.damn.apigl.shaders.creators.GLShaderCreatorGeomPassInstanced
-import good.damn.apigl.shaders.creators.GLShaderCreatorGeomPassModel
-import good.damn.apigl.shaders.lightpass.GLShaderLightPassPointLight
 import good.damn.common.COHandlerGl
 import good.damn.common.COIRunnableBounds
 import good.damn.common.utils.COUtilsFile
-import good.damn.common.vertex.COMArrayVertexManager
-import good.damn.common.volume.COManagerFrustrum
 import good.damn.engine.ASObject3d
-import good.damn.engine.ASUtilsBuffer
-import good.damn.engine2.loaders.texture.MGLoaderTextureAsync
-import good.damn.engine2.models.MGMDrawers
-import good.damn.engine2.models.MGMInformatorShader
-import good.damn.engine2.models.MGMManagers
-import good.damn.engine2.models.MGMParameters
-import good.damn.engine2.models.MGMGeometry
-import good.damn.engine2.models.MGSky
-import good.damn.engine2.drawmodes.MGDrawModesDefault
-import good.damn.engine2.drawmodes.MGRunglCycleDrawerModes
-import good.damn.engine2.pools.MGMPools
-import good.damn.engine2.pools.MGPoolMaterials
-import good.damn.engine2.pools.MGPoolMeshesStatic
-import good.damn.engine2.pools.MGPoolTextures
-import good.damn.engine2.shader.MGShaderCache
-import good.damn.engine2.shader.MGShaderSource
-import good.damn.engine2.utils.MGUtilsVertIndices
-import good.damn.logic.process.LGManagerProcessTime
-import good.damn.logic.triggers.managers.LGManagerTriggerMesh
-import good.damn.engine2.files.MGFile
-import good.damn.engine2.providers.MGMProviderGL
-import good.damn.engine2.managers.MGStorageLightPass
-import java.util.concurrent.ConcurrentLinkedQueue
 
 class APRendererNew(
     private val glHandler: COHandlerGl,
     private val glApi: GLApi,
-    private val glApiRef: Long
+    private val glApiRef: Long,
+    private val matrix: FloatArray
 ): COIRunnableBounds {
 
 
@@ -70,34 +26,51 @@ class APRendererNew(
         width: Int,
         height: Int
     ) {
+        val attrs = intArrayOf(
+            0, // position
+            1, // texture coords
+            2, // normal
+        )
+
+        val binderAttribute = glApi.createBinderAttribute(
+            glApiRef,
+            attrs
+        )
 
         val program = glApi.createProgram(
             glApiRef,
             """
+                #version 310 es
                 uniform mat4 u_MVP;
-                attribute vec4 position;
-                attribute vec2 texCoord;
+                layout(location=0) in vec3 position;
+                layout(location=1) in vec2 texCoord;
+                layout(location=3) in vec3 normal;
                 
                 void main() {
-                    gl_Position = u_MVP * position;
+                    gl_Position = u_MVP * vec4(1.0, position);
                 }
                 
             """.trimIndent(),
             """
+                #version 310 es
                 precision mediump float;
+                out vec4 FragColor;
                 void main() {
-                    gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0);
+                    FragColor = vec4(0.8, 0.8, 0.8, 1.0);
                 }
-            """.trimIndent()
+            """.trimIndent(),
+            binderAttribute
         )
 
-
-        val descriptorAttributes = glApi.createVertexAttribute(
+        val uniformLocation = glApi.getUniformLocation(
             glApiRef,
-            intArrayOf(
-                0, // position
-                1 // texture coords
-            )
+            program,
+            "u_MVP"
+        )
+
+        val vertexAttribute = glApi.createVertexAttribute(
+            glApiRef,
+            attrs
         )
 
         ASObject3d.createFromFile(
@@ -107,7 +80,7 @@ class APRendererNew(
         )?.get(0)?.apply {
             val descriptorVertexArray = glApi.createVertexArray(
                 glApiRef,
-                descriptorAttributes,
+                vertexAttribute,
                 rawVertices,
                 rawIndices
             )
@@ -125,14 +98,16 @@ class APRendererNew(
                             1.0f
                         )
 
-                        GLES30.glUseProgram(
+                        glApi.useProgram(
+                            glApiRef,
                             program
                         )
 
-                        /*glApi.setModelMatrix(
+                        glApi.setModelMatrix(
                             glApiRef,
                             uniformLocation,
-                        )*/
+                            matrix
+                        )
 
                         glApi.drawMesh(
                             glApiRef,

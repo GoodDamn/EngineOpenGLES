@@ -34,7 +34,7 @@ void APIVertexAttribute::bindPointers() {
 
 APIVertexAttribute* APIVertexAttribute::Builder::build() {
     auto* attr = new APIVertexAttribute(
-        &mList,
+        mList,
         mOffset
     );
     
@@ -47,7 +47,7 @@ APIVertexAttribute::Builder* APIVertexAttribute::Builder::pointPosition() {
     attribute.offset = mOffset;
     attribute.size = 3;
     
-    mList.push_back(
+    mList->push_back(
         attribute
     );
     
@@ -61,7 +61,7 @@ APIVertexAttribute::Builder *APIVertexAttribute::Builder::pointTextureCoordinate
     attribute.offset = mOffset;
     attribute.size = 2;
     
-    mList.push_back(
+    mList->push_back(
         attribute
     );
     
@@ -75,7 +75,7 @@ APIVertexAttribute::Builder *APIVertexAttribute::Builder::pointNormal() {
     attribute.offset = mOffset;
     attribute.size = 3;
     
-    mList.push_back(
+    mList->push_back(
         attribute
     );
     

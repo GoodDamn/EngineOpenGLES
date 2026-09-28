@@ -15,7 +15,8 @@ public final class GLApi {
     public native int createProgram(
         long api,
         @NonNull final String srcVertex,
-        @NonNull final String srcFragment
+        @NonNull final String srcFragment,
+        long binderAttribute
     );
 
     public native void drawMesh(
@@ -35,6 +36,22 @@ public final class GLApi {
     public native long createVertexAttribute(
         long api,
         int[] attrs
+    );
+
+    public native long createBinderAttribute(
+        long api,
+        int[] attrs
+    );
+
+    public native void useProgram(
+        long api,
+        int program
+    );
+
+    public native int getUniformLocation(
+        long api,
+        int program,
+        @NonNull final String name
     );
 
     public native int createVertexArray(

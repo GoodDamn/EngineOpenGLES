@@ -33,7 +33,8 @@ Java_good_damn_apigl_GLApi_createProgram(
     jobject thiz,
     jlong api,
     jstring src_vertex,
-    jstring src_fragment
+    jstring src_fragment,
+    jlong binderAttribute
 ) {
     const char* srcVertex = env->GetStringUTFChars(
         src_vertex,
@@ -45,10 +46,28 @@ Java_good_damn_apigl_GLApi_createProgram(
         nullptr
     );
     
-    return extractApi(api)->createProgram(
+    GLuint program = extractApi(api)->createProgram(
         srcVertex,
         srcFragment
     );
+    
+    extractFromDescriptor<APIBinderAttribute>(
+        binderAttribute
+    )->bindAttributes(
+        program
+    );
+    
+    env->ReleaseStringUTFChars(
+        src_vertex,
+        srcVertex
+    );
+    
+    env->ReleaseStringUTFChars(
+        src_fragment,
+        srcFragment
+    );
+    
+    return program;
 }
 extern "C"
 JNIEXPORT void JNICALL
@@ -131,6 +150,7 @@ Java_good_damn_apigl_GLApi_createVertexAttribute(
         attributes
     );
 }
+
 extern "C"
 JNIEXPORT jint JNICALL
 Java_good_damn_apigl_GLApi_createVertexArray(
@@ -173,7 +193,7 @@ Java_good_damn_apigl_GLApi_createVertexArray(
         dataVertices,
         lengthVertices,
         dataIndices,
-        lengthVertices,
+        lengthIndices,
         attributes
     );
     
@@ -190,4 +210,74 @@ Java_good_damn_apigl_GLApi_createVertexArray(
     );
     
     return vertexArray;
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_good_damn_apigl_GLApi_getUniformLocation(
+    JNIEnv *env,
+    jobject thiz,
+    jlong api,
+    jint program,
+    jstring name
+) {
+    const char* data = env->GetStringUTFChars(
+        name,
+        nullptr
+    );
+    
+    GLint uniformLocation = extractApi(api)->getUniformLocation(
+        program,
+        data
+    );
+    
+    env->ReleaseStringUTFChars(
+        name,
+        data
+    );
+    
+    return uniformLocation;
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_good_damn_apigl_GLApi_useProgram(
+    JNIEnv *env,
+    jobject thiz,
+    jlong api,
+    jint program
+) {
+    extractApi(api)->useProgram(
+        program
+    );
+}
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_good_damn_apigl_GLApi_createBinderAttribute(
+    JNIEnv *env,
+    jobject thiz,
+    jlong api,
+    jintArray attrs
+) {
+    jint* data = env->GetIntArrayElements(
+        attrs,
+        nullptr
+    );
+    
+    APIBinderAttribute* attributes = extractApi(api)->createBinderAttributes(
+        data,
+        env->GetArrayLength(
+            attrs
+        )
+    );
+    
+    env->ReleaseIntArrayElements(
+        attrs,
+        data,
+        JNI_ABORT
+    );
+    
+    return descriptor(
+        attributes
+    );
 }

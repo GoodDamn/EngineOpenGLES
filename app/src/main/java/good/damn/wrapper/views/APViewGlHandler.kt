@@ -12,9 +12,9 @@ import good.damn.wrapper.renderer.APRendererHandler
 @SuppressLint("ViewConstructor")
 class APViewGlHandler(
     context: Context,
-    private val managerProcess: LGManagerProcessTime,
+    //private val managerProcess: LGManagerProcessTime,
     renderer: APRendererHandler,
-    private val mHud: APHud
+    //private val mHud: APHud
 ): GLSurfaceView(
     context
 ) {
@@ -46,10 +46,10 @@ class APViewGlHandler(
 
     override fun onDetachedFromWindow() {
         Log.d(TAG, "onDetachedFromWindow: ")
-        managerProcess.apply {
+        /*managerProcess.apply {
             stop()
             unregisterAll()
-        }
+        }*/
         super.onDetachedFromWindow()
     }
 
@@ -64,10 +64,10 @@ class APViewGlHandler(
             right, bottom
         )
 
-        mHud.layout(
+        /*mHud.layout(
             width,
             height
-        )
+        )*/
     }
 
     override fun onTouchEvent(
@@ -78,9 +78,9 @@ class APViewGlHandler(
             return false
         }
 
-        mHud.layerEditor.onTouchEvent(
+        /*mHud.layerEditor.onTouchEvent(
             event
-        )
+        )*/
 
         return true
     }

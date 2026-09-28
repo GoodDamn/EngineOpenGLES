@@ -6,12 +6,15 @@
 
 APIBinderAttribute::APIBinderAttribute(
     std::vector<APIAttributeBind> *attributes
-): mAttributes(attributes) {}
+) {
+    mAttributes = attributes;
+}
 
 void APIBinderAttribute::bindAttributes(
     GLuint program
 ) {
     for (auto& it: *mAttributes) {
+        LOGD("attr: %s:::%i", it.name, it.location);
         glBindAttribLocation(
             program,
             it.location,
@@ -26,7 +29,7 @@ APIBinderAttribute::Builder* APIBinderAttribute::Builder::bindPosition() {
     attr.location = 0;
     attr.name = "position";
     
-    mList.push_back(
+    mList->push_back(
         attr
     );
     
@@ -38,7 +41,7 @@ APIBinderAttribute::Builder* APIBinderAttribute::Builder::bindTextureCoordinates
     attr.location = 1;
     attr.name = "texCoord";
     
-    mList.push_back(
+    mList->push_back(
         attr
     );
     
@@ -50,7 +53,7 @@ APIBinderAttribute::Builder* APIBinderAttribute::Builder::bindNormal() {
     attr.location = 2;
     attr.name = "normal";
     
-    mList.push_back(
+    mList->push_back(
         attr
     );
     
@@ -59,6 +62,6 @@ APIBinderAttribute::Builder* APIBinderAttribute::Builder::bindNormal() {
 
 APIBinderAttribute* APIBinderAttribute::Builder::build() {
     return new APIBinderAttribute(
-        &mList
+        mList
     );
 }

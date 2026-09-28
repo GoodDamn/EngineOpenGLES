@@ -29,7 +29,7 @@ public:
     
     class Builder {
     private:
-        std::vector<APIAttribute> mList;
+        std::vector<APIAttribute>* mList = new std::vector<APIAttribute>();
         unsigned short mOffset = 0;
     public:
         

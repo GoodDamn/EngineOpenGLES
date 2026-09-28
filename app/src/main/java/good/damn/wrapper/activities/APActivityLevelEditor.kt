@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import good.damn.apigl.GLApi
 import good.damn.apigl.buffers.GLBuffer
 import good.damn.apigl.buffers.GLBufferUniformCamera
 import good.damn.common.COHandlerGl
@@ -31,6 +32,7 @@ import good.damn.wrapper.hud.APHud
 import good.damn.wrapper.launchers.APLauncherContent
 import good.damn.wrapper.renderer.APRendererEditor
 import good.damn.wrapper.renderer.APRendererHandler
+import good.damn.wrapper.renderer.APRendererNew
 import good.damn.wrapper.viewmodels.APViewModelFileAccessApi30
 import good.damn.wrapper.viewmodels.APViewModelFileAccessImpl
 import good.damn.wrapper.views.APViewGlHandler
@@ -190,7 +192,7 @@ APIRequestUserContent {
         val cameraMatrixPose = FloatArray(16)
         val cameraMatrixProjection = FloatArray(16)
 
-        val cameraUniformBuffer = GLBufferUniformCamera(
+        /*val cameraUniformBuffer = GLBufferUniformCamera(
             GLBuffer(
                 GL_UNIFORM_BUFFER
             )
@@ -206,21 +208,9 @@ APIRequestUserContent {
             cameraMatrixProjection,
             glHandler,
             cameraUniformBuffer
-        )
+        )*/
 
         mControllerVr.create { indexEye ->
-
-            /*
-            * GLES30.glClear(
-                GLES30.GL_COLOR_BUFFER_BIT
-            )
-
-            GLES30.glClearColor(
-                1.0f,
-                0.0f,
-                0.0f,
-                1.0f
-            )*/
 
             mControllerVr.getPose(
                 cameraMatrixPose,
@@ -231,28 +221,32 @@ APIRequestUserContent {
                 0.0f
             )
 
-            cameraPose.invalidatePosition()
-            cameraProjection.invalidate()
-
             handlerExecutor.runCycle(
                 mControllerVr.width,
                 mControllerVr.height
             )
         }
 
-        val renderer = APRendererEditor(
-            glHandler,
-            cameraUniformBuffer
-        )
+        val glApi = GLApi()
+        val glApiRef = glApi.create()
 
-        val hud = APHud(
-            renderer.switcherDrawMode,
-            this
+        val renderer = APRendererNew(
+            glHandler,
+            glApi,
+            glApiRef,
+            cameraMatrixPose
         )
 
         glHandler.post(
             renderer
         )
+
+        /*val hud = APHud(
+            renderer.switcherDrawMode,
+            this
+        )
+
+
 
         glHandler.registerCycleTask(
             renderer.switcherDrawMode
@@ -262,16 +256,16 @@ APIRequestUserContent {
             renderer.providerModel
         )
 
-        /*loadScripts(
+        loadScripts(
             renderer.providerModel
         )*/
 
         setContentView(
             APViewGlHandler(
                 this,
-                renderer.providerModel.managers.managerProcessTime,
-                handler,
-                hud
+                //renderer.providerModel.managers.managerProcessTime,
+                handler
+                //hud
             )
         )
     }

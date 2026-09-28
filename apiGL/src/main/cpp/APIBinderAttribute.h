@@ -28,7 +28,7 @@ public:
     
     class Builder {
     private:
-        std::vector<APIAttributeBind> mList;
+        std::vector<APIAttributeBind>* mList = new std::vector<APIAttributeBind>();
     public:
         
         Builder* bindPosition();
