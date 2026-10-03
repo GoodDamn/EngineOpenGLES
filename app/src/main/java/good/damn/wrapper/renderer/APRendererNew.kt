@@ -17,7 +17,6 @@ import good.damn.engine.ASObject3d
 class APRendererNew(
     private val glHandler: COHandlerGl,
     private val glApi: GLApi,
-    private val glApiRef: Long,
     private val matrix: FloatArray
 ): COIRunnableBounds {
 
@@ -33,12 +32,10 @@ class APRendererNew(
         )
 
         val binderAttribute = glApi.createBinderAttribute(
-            glApiRef,
             attrs
         )
 
         val program = glApi.createProgram(
-            glApiRef,
             """
                 #version 310 es
                 uniform mat4 u_MVP;
@@ -63,13 +60,11 @@ class APRendererNew(
         )
 
         val uniformLocation = glApi.getUniformLocation(
-            glApiRef,
             program,
             "u_MVP"
         )
 
         val vertexAttribute = glApi.createVertexAttribute(
-            glApiRef,
             attrs
         )
 
@@ -78,11 +73,16 @@ class APRendererNew(
                 "objs/sphere.fbx"
             )
         )?.get(0)?.apply {
+            val indices = rawIndices
+                ?: return
+
+            val vertices = rawVertices
+                ?: return
+
             val descriptorVertexArray = glApi.createVertexArray(
-                glApiRef,
                 vertexAttribute,
-                rawVertices,
-                rawIndices
+                vertices,
+                indices
             )
 
             glHandler.registerCycleTask(
@@ -99,22 +99,19 @@ class APRendererNew(
                         )
 
                         glApi.useProgram(
-                            glApiRef,
                             program
                         )
 
                         glApi.setModelMatrix(
-                            glApiRef,
                             uniformLocation,
                             matrix
                         )
 
                         glApi.drawMesh(
-                            glApiRef,
                             descriptorVertexArray,
                             GLES30.GL_TRIANGLES,
                             GLES30.GL_UNSIGNED_INT,
-                            rawIndices!!.size
+                            indices.size
                         )
                     }
 

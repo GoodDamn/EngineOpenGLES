@@ -14,7 +14,6 @@ void APIBinderAttribute::bindAttributes(
     GLuint program
 ) {
     for (auto& it: *mAttributes) {
-        LOGD("attr: %s:::%i", it.name, it.location);
         glBindAttribLocation(
             program,
             it.location,

@@ -10,16 +10,123 @@ public final class GLApi {
         );
     }
 
-    public native long create();
+    private final long mApiRef;
 
-    public native int createProgram(
+    public GLApi() {
+        mApiRef = create();
+    }
+
+    private native long create();
+
+    public final int createProgram(
+        @NonNull final String srcVertex,
+        @NonNull final String srcFragment,
+        final long binderAttribute
+    ) {
+        return createProgram(
+            mApiRef,
+            srcVertex,
+            srcFragment,
+            binderAttribute
+        );
+    }
+
+    public final void drawMesh(
+        int vertexArray,
+        int mode,
+        int typeIndices,
+        int indicesCount
+    ) {
+        drawMesh(
+            mApiRef,
+            vertexArray,
+            mode,
+            typeIndices,
+            indicesCount
+        );
+    }
+
+    public final void setModelMatrix(
+        int uniformLocation,
+        float[] model
+    ) {
+        setModelMatrix(
+            mApiRef,
+            uniformLocation,
+            model
+        );
+    }
+
+    public final long createVertexAttribute(
+        @NonNull final int[] attrs
+    ) {
+        return createVertexAttribute(
+            mApiRef,
+            attrs
+        );
+    }
+
+
+    public final long createBinderAttribute(
+        @NonNull final int[] attrs
+    ) {
+        return createBinderAttribute(
+            mApiRef,
+            attrs
+        );
+    }
+
+    public final void useProgram(
+        final int program
+    ) {
+        useProgram(
+            mApiRef,
+            program
+        );
+    }
+
+    public final int getUniformLocation(
+        final int program,
+        @NonNull final String name
+    ) {
+        return getUniformLocation(
+            mApiRef,
+            program,
+            name
+        );
+    }
+
+    public final int createVertexArray(
+        final long vertexAttribute,
+        @NonNull final float[] vertices,
+        @NonNull final int[] indices
+    ) {
+        return createVertexArray(
+            mApiRef,
+            vertexAttribute,
+            vertices,
+            indices
+        );
+    }
+
+
+
+
+
+
+
+
+
+
+
+    private native int createProgram(
         long api,
         @NonNull final String srcVertex,
         @NonNull final String srcFragment,
         long binderAttribute
     );
 
-    public native void drawMesh(
+    private native void drawMesh(
         long api,
         int vertexArray,
         int mode,
@@ -27,34 +134,36 @@ public final class GLApi {
         int indicesCount
     );
 
-    public native void setModelMatrix(
+
+    private native void setModelMatrix(
         long api,
         int uniformLocation,
         float[] model
     );
 
-    public native long createVertexAttribute(
+
+    private native long createVertexAttribute(
         long api,
         int[] attrs
     );
 
-    public native long createBinderAttribute(
+    private native long createBinderAttribute(
         long api,
         int[] attrs
     );
 
-    public native void useProgram(
+    private native void useProgram(
         long api,
         int program
     );
 
-    public native int getUniformLocation(
+    private native int getUniformLocation(
         long api,
         int program,
         @NonNull final String name
     );
 
-    public native int createVertexArray(
+    private native int createVertexArray(
         long api,
         long vertexAttribute,
         float[] vertices,

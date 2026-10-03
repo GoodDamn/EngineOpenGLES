@@ -228,12 +228,10 @@ APIRequestUserContent {
         }
 
         val glApi = GLApi()
-        val glApiRef = glApi.create()
 
         val renderer = APRendererNew(
             glHandler,
             glApi,
-            glApiRef,
             cameraMatrixPose
         )
 
