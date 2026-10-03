@@ -31,6 +31,12 @@ void APIVertexAttribute::bindPointers() {
     }
 }
 
+APIVertexAttribute::~APIVertexAttribute() {
+    mAttributes->clear();
+    delete mAttributes;
+    mAttributes = nullptr;
+}
+
 
 APIVertexAttribute* APIVertexAttribute::Builder::build() {
     auto* attr = new APIVertexAttribute(
@@ -81,4 +87,8 @@ APIVertexAttribute::Builder *APIVertexAttribute::Builder::pointNormal() {
     
     mOffset += 3 * 4;
     return nullptr;
+}
+
+APIVertexAttribute::Builder::~Builder() {
+    mList = nullptr;
 }

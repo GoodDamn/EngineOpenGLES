@@ -281,3 +281,27 @@ Java_good_damn_apigl_GLApi_createBinderAttribute(
         attributes
     );
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_good_damn_apigl_GLApi_releaseBinderAttribute(
+    JNIEnv *env,
+    jobject thiz,
+    jlong reference
+) {
+    delete extractFromDescriptor<APIBinderAttribute>(
+        reference
+    );
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_good_damn_apigl_GLApi_releaseVertexAttribute(
+    JNIEnv *env,
+    jobject thiz,
+    jlong reference
+) {
+    delete extractFromDescriptor<APIVertexAttribute>(
+        reference
+    );
+}

@@ -59,6 +59,10 @@ class APRendererNew(
             binderAttribute
         )
 
+        glApi.releaseBinderAttribute(
+            binderAttribute
+        );
+
         val uniformLocation = glApi.getUniformLocation(
             program,
             "u_MVP"
@@ -84,6 +88,10 @@ class APRendererNew(
                 vertices,
                 indices
             )
+
+            glApi.releaseVertexAttribute(
+                vertexAttribute
+            );
 
             glHandler.registerCycleTask(
                 object: COIRunnableBounds {

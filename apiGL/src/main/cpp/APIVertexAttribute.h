@@ -27,6 +27,8 @@ public:
     
     void bindPointers();
     
+    ~APIVertexAttribute();
+    
     class Builder {
     private:
         std::vector<APIAttribute>* mList = new std::vector<APIAttribute>();
@@ -36,6 +38,8 @@ public:
         Builder* pointPosition();
         Builder* pointTextureCoordinates();
         Builder* pointNormal();
+        
+        ~Builder();
         
         APIVertexAttribute* build();
     };

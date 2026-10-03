@@ -169,4 +169,12 @@ public final class GLApi {
         float[] vertices,
         int[] indices
     );
+
+    public native void releaseBinderAttribute(
+        long reference
+    );
+
+    public native void releaseVertexAttribute(
+        long reference
+    );
 }

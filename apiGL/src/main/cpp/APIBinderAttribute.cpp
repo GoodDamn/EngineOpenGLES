@@ -22,6 +22,12 @@ void APIBinderAttribute::bindAttributes(
     }
 }
 
+APIBinderAttribute::~APIBinderAttribute() {
+    mAttributes->clear();
+    delete mAttributes;
+    mAttributes = nullptr;
+}
+
 
 APIBinderAttribute::Builder* APIBinderAttribute::Builder::bindPosition() {
     APIAttributeBind attr;
@@ -63,4 +69,8 @@ APIBinderAttribute* APIBinderAttribute::Builder::build() {
     return new APIBinderAttribute(
         mList
     );
+}
+
+APIBinderAttribute::Builder::~Builder() {
+    mList = nullptr;
 }
