@@ -40,6 +40,7 @@ namespace ndk_hello_cardboard {
 class HelloCardboardApp {
     std::vector<CBMesh*> meshes;
     APParamsDeviceMutable mDeviceParams;
+    Matrix4x4 matrixTranslation;
  public:
   /**
    * Creates a HelloCardboardApp.
@@ -89,15 +90,17 @@ class HelloCardboardApp {
    * Resumes head tracking.
    */
   void OnResume();
+  
+  void setPosition(
+      float x,
+      float y,
+      float z
+  );
 
   void getPose(
       JNIEnv* env,
       jfloatArray matrixPoseOut,
-      jfloatArray matrixProjectionOut,
-      jint index_eye,
-      jfloat positionX,
-      jfloat positionY,
-      jfloat positionZ
+      jint index_eye
   );
 
   /**

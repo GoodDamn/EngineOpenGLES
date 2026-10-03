@@ -60,22 +60,25 @@ public final class APControllerVr {
         );
     }
 
+    public final void setPosition(
+        float x,
+        float y,
+        float z
+    ) {
+        setPosition(
+            mRef,
+            x, y, z
+        );
+    }
+
     public final void getPose(
         @NonNull final float[] matrixPoseOut,
-        @NonNull final float[] matrixProjectionOut,
-        final int indexEye,
-        final float positionX,
-        final float positionY,
-        final float positionZ
+        final int indexEye
     ) {
         getPose(
             mRef,
             matrixPoseOut,
-            matrixProjectionOut,
-            indexEye,
-            positionX,
-            positionY,
-            positionZ
+            indexEye
         );
     }
 
@@ -105,14 +108,17 @@ public final class APControllerVr {
         @NonNull final APIDrawer drawer
     );
 
+    private native void setPosition(
+        long nativeApp,
+        float x,
+        float y,
+        float z
+    );
+
     private native void getPose(
         long nativeApp,
         float[] matrixPose,
-        float[] matrixProjection,
-        int indexEye,
-        float positionX,
-        float positionY,
-        float positionZ
+        int indexEye
     );
 
     private native void nativeOnDestroy(long nativeApp);

@@ -45,9 +45,13 @@ class Matrix4x4 {
 
   // Multiplies a matrix with a vector.
   std::array<float, 4> operator*(const std::array<float, 4>& vec);
-
-  // Converts a matrix to an array of floats suitable for passing to OpenGL.
-  std::array<float, 16> ToGlArray();
+  
+  void setTranslation(
+      float x,
+      float y,
+      float z
+  );
+  
 };
 
 struct Quatf {
@@ -109,15 +113,6 @@ int64_t GetBootTimeNano();
 void CheckGlError(const char* file, int line, const char* label);
 
 #define CHECKGLERROR(label) CheckGlError(__FILE__, __LINE__, label)
-
-/**
- * Converts a string into an OpenGL ES shader.
- *
- * @param type The type of shader (GL_VERTEX_SHADER or GL_FRAGMENT_SHADER).
- * @param shader_source The source code of the shader.
- * @return The shader object handler, or 0 if there's an error.
- */
-GLuint LoadGLShader(GLenum type, const char* shader_source);
 
 }  // namespace ndk_hello_cardboard
 

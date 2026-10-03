@@ -82,11 +82,15 @@ namespace ndk_hello_cardboard {
         }
         return result;
     }
-
-    std::array<float, 16> Matrix4x4::ToGlArray() {
-        std::array<float, 16> result;
-        memcpy(&result[0], m, 16 * sizeof(float));
-        return result;
+    
+    void Matrix4x4::setTranslation(
+        float x,
+        float y,
+        float z
+    ) {
+        m[3][0] = x;
+        m[3][1] = y;
+        m[3][2] = z;
     }
 
     Matrix4x4 Quatf::ToMatrix() {

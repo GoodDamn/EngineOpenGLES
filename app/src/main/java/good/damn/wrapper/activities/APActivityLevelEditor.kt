@@ -33,6 +33,7 @@ import good.damn.wrapper.launchers.APLauncherContent
 import good.damn.wrapper.renderer.APRendererEditor
 import good.damn.wrapper.renderer.APRendererHandler
 import good.damn.wrapper.renderer.APRendererNew
+import good.damn.wrapper.runnables.APRunnableVr
 import good.damn.wrapper.viewmodels.APViewModelFileAccessApi30
 import good.damn.wrapper.viewmodels.APViewModelFileAccessImpl
 import good.damn.wrapper.views.APViewGlHandler
@@ -190,42 +191,14 @@ APIRequestUserContent {
         )
 
         val cameraMatrixPose = FloatArray(16)
-        val cameraMatrixProjection = FloatArray(16)
 
-        /*val cameraUniformBuffer = GLBufferUniformCamera(
-            GLBuffer(
-                GL_UNIFORM_BUFFER
-            )
-        )
-
-        val cameraPose = GLCameraFree(
-            cameraMatrixPose,
-            glHandler,
-            cameraUniformBuffer
-        )
-
-        val cameraProjection = GLCameraProjection(
-            cameraMatrixProjection,
-            glHandler,
-            cameraUniformBuffer
-        )*/
-
-        mControllerVr.create { indexEye ->
-
-            mControllerVr.getPose(
+        mControllerVr.create(
+            APRunnableVr(
+                mControllerVr,
                 cameraMatrixPose,
-                cameraMatrixProjection,
-                indexEye,
-                0.0f,
-                -1.7f,
-                0.0f
+                handlerExecutor
             )
-
-            handlerExecutor.runCycle(
-                mControllerVr.width,
-                mControllerVr.height
-            )
-        }
+        )
 
         val glApi = GLApi()
 

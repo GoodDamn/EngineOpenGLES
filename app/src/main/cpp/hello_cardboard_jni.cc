@@ -112,19 +112,25 @@ Java_good_damn_wrapper_controllers_APControllerVr_getPose(
     jobject thiz,
     jlong native_app,
     jfloatArray matrixPoseOut,
-    jfloatArray matrixProjectionOut,
-    jint index_eye,
-    jfloat positionX,
-    jfloat positionY,
-    jfloat positionZ
+    jint index_eye
 ) {
     native(native_app)->getPose(
             env,
             matrixPoseOut,
-            matrixProjectionOut,
-            index_eye,
-            positionX,
-            positionY,
-            positionZ
+            index_eye
+    );
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_good_damn_wrapper_controllers_APControllerVr_setPosition(
+    JNIEnv *env,
+    jobject thiz,
+    jlong native_app,
+    jfloat x,
+    jfloat y,
+    jfloat z
+) {
+    native(native_app)->setPosition(
+        x, y, z
     );
 }

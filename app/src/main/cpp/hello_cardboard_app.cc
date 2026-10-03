@@ -84,6 +84,8 @@ namespace ndk_hello_cardboard {
         JNIEnv *env;
         vm->GetEnv((void **) &env, JNI_VERSION_1_6);
 
+        matrixTranslation = GetTranslationMatrix({.0f, .0f, .0f});
+        
         instanceDrawer_ = env->NewGlobalRef(
             instanceDrawer
         );
@@ -265,14 +267,20 @@ namespace ndk_hello_cardboard {
 
     void HelloCardboardApp::OnPause() { CardboardHeadTracker_pause(head_tracker_); }
 
+    void HelloCardboardApp::setPosition(
+        float x,
+        float y,
+        float z
+    ) {
+        matrixTranslation.setTranslation(
+            x, y, z
+        );
+    }
+    
     void HelloCardboardApp::getPose(
         JNIEnv* env,
         jfloatArray matrixPoseOut,
-        jfloatArray matrixProjectionOut,
-        jint index_eye,
-        jfloat positionX,
-        jfloat positionY,
-        jfloat positionZ
+        jint index_eye
     ) {
         if (meshes.empty()) {
             return;
@@ -292,7 +300,7 @@ namespace ndk_hello_cardboard {
 
         Matrix4x4 view_matrix = eye_matrix *
                 matrixPose *
-                GetTranslationMatrix({positionX, positionY, positionZ});
+                matrixTranslation;
 
         Matrix4x4 b = projection_matrix *
                view_matrix;
@@ -302,13 +310,6 @@ namespace ndk_hello_cardboard {
                 0,
                 16,
                 b.m[0]
-        );
-
-        env->SetFloatArrayRegion(
-                matrixProjectionOut,
-                0,
-                16,
-                projection_matrix.m[0]
         );
     }
 
