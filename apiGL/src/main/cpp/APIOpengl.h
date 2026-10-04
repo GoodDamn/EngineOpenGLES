@@ -62,6 +62,10 @@ public:
         unsigned int indicesCount,
         APIVertexAttribute* vertexAttribute
     );
+    
+    GLuint createTexture(
+        int fileDescriptor
+    );
 };
 
 

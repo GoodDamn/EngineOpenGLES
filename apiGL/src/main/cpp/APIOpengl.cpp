@@ -3,9 +3,10 @@
 //
 
 #include "APIOpengl.h"
-#include "GLES3/gl3.h"
+#include "GLES2/gl2ext.h"
 #include "APIUtils.h"
 #include <string>
+#include "APIImage.h"
 
 inline void getCompileStatus(
     GLuint shader,
@@ -295,4 +296,80 @@ GLint APIOpengl::getUniformLocation(
         program,
         name
     );
+}
+
+GLuint APIOpengl::createTexture(
+    int fileDescriptor
+) {
+    APIImage* image = APIImage()
+        .setSource(fileDescriptor)
+        ->load();
+    
+    if (image == nullptr) {
+        return -1;
+    }
+    
+    GLuint texture;
+    glGenTextures(
+        1,
+        &texture
+    );
+    
+    glBindTexture(
+        GL_TEXTURE_2D,
+        texture
+    );
+    
+    glTexParameteri(
+        GL_TEXTURE_2D,
+        GL_TEXTURE_MIN_FILTER,
+        GL_NEAREST
+    );
+    
+    glTexParameteri(
+        GL_TEXTURE_2D,
+        GL_TEXTURE_MAG_FILTER,
+        GL_LINEAR
+    );
+    
+    glTexParameteri(
+        GL_TEXTURE_2D,
+        GL_TEXTURE_WRAP_S,
+        GL_CLAMP_TO_EDGE
+    );
+    
+    glTexParameteri(
+        GL_TEXTURE_2D,
+        GL_TEXTURE_WRAP_T,
+        GL_CLAMP_TO_EDGE
+    );
+    
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGBA,
+        image->getWidth(),
+        image->getHeight(),
+        0,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        image->getPixels()
+    );
+    
+    glGenerateMipmap(
+        GL_TEXTURE_2D
+    );
+    
+    glTexParameteri(
+        GL_TEXTURE_2D,
+        GL_TEXTURE_MAX_ANISOTROPY_EXT,
+        16.0f
+    );
+    
+    glBindTexture(
+        GL_TEXTURE_2D,
+        0
+    );
+    
+    return texture;
 }
