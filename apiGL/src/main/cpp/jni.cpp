@@ -305,3 +305,15 @@ Java_good_damn_apigl_GLApi_releaseVertexAttribute(
         reference
     );
 }
+extern "C"
+JNIEXPORT jint JNICALL
+Java_good_damn_apigl_GLApi_createTexture(
+    JNIEnv *env,
+    jobject thiz,
+    jlong api,
+    jint file_descriptor
+) {
+    return extractApi(api)->createTexture(
+        file_descriptor
+    );
+}

@@ -109,7 +109,14 @@ public final class GLApi {
         );
     }
 
-
+    public final int createTexture(
+        final int fileDescriptor
+    ) {
+        return createTexture(
+            mApiRef,
+            fileDescriptor
+        );
+    }
 
 
 
@@ -168,6 +175,11 @@ public final class GLApi {
         long vertexAttribute,
         float[] vertices,
         int[] indices
+    );
+
+    private native int createTexture(
+        long api,
+        int fileDescriptor
     );
 
     public native void releaseBinderAttribute(
