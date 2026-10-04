@@ -306,6 +306,7 @@ GLuint APIOpengl::createTexture(
         ->load();
     
     if (image == nullptr) {
+        LOGD("createTexture: NULL");
         return -1;
     }
     
@@ -323,7 +324,7 @@ GLuint APIOpengl::createTexture(
     glTexParameteri(
         GL_TEXTURE_2D,
         GL_TEXTURE_MIN_FILTER,
-        GL_NEAREST
+        GL_LINEAR_MIPMAP_NEAREST
     );
     
     glTexParameteri(
@@ -360,16 +361,11 @@ GLuint APIOpengl::createTexture(
         GL_TEXTURE_2D
     );
     
-    glTexParameteri(
+    /*glTexParameteri(
         GL_TEXTURE_2D,
         GL_TEXTURE_MAX_ANISOTROPY_EXT,
         16.0f
-    );
-    
-    glBindTexture(
-        GL_TEXTURE_2D,
-        0
-    );
+    );*/
     
     return texture;
 }

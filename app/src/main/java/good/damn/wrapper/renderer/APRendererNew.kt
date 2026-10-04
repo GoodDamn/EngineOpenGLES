@@ -7,12 +7,18 @@ import android.opengl.GLES20.glCullFace
 import android.opengl.GLES20.glDepthFunc
 import android.opengl.GLES20.glGetError
 import android.opengl.GLES30
+import android.opengl.Matrix
+import android.os.ParcelFileDescriptor
 import android.util.Log
 import good.damn.apigl.GLApi
 import good.damn.common.COHandlerGl
 import good.damn.common.COIRunnableBounds
 import good.damn.common.utils.COUtilsFile
 import good.damn.engine.ASObject3d
+import good.damn.engine2.utils.MGUtilsBitmap
+import java.io.FileDescriptor
+import java.io.FileInputStream
+import kotlin.math.abs
 
 class APRendererNew(
     private val glHandler: COHandlerGl,
@@ -43,17 +49,24 @@ class APRendererNew(
                 layout(location=1) in vec2 texCoord;
                 layout(location=3) in vec3 normal;
                 
+                out vec2 textureCoord;
+                
                 void main() {
-                    gl_Position = u_MVP * vec4(1.0, position);
+                    textureCoord = texCoord;
+                    gl_Position = u_MVP * vec4(position, 1.0);
                 }
                 
             """.trimIndent(),
             """
                 #version 310 es
                 precision mediump float;
+                
+                uniform sampler2D uTexture;
+                
+                in vec2 textureCoord;
                 out vec4 FragColor;
                 void main() {
-                    FragColor = vec4(0.8, 0.8, 0.8, 1.0);
+                    FragColor = vec4(texture(uTexture, textureCoord).rgb, 1.0);
                 }
             """.trimIndent(),
             binderAttribute
@@ -68,8 +81,42 @@ class APRendererNew(
             "u_MVP"
         )
 
+        val uniformTexture = glApi.getUniformLocation(
+            program,
+            "uTexture"
+        )
+
         val vertexAttribute = glApi.createVertexAttribute(
             attrs
+        )
+
+        val file = ParcelFileDescriptor.open(
+            COUtilsFile.getPublicFile(
+                "textures/sky/sky.jpg"
+            ),
+            ParcelFileDescriptor.MODE_READ_ONLY
+        );
+
+        val texture = glApi.createTexture(
+            file.fd
+        )
+
+        file.close()
+
+        GLES30.glEnable(
+            GLES30.GL_DEPTH_TEST
+        );
+
+        GLES30.glEnable(
+            GLES30.GL_CULL_FACE
+        )
+
+        GLES30.glCullFace(
+            GLES30.GL_BACK
+        )
+
+        GLES30.glFrontFace(
+            GLES30.GL_CW
         )
 
         ASObject3d.createFromFile(
@@ -99,13 +146,6 @@ class APRendererNew(
                         width: Int,
                         height: Int
                     ) {
-                        GLES30.glClearColor(
-                            0.0f,
-                            1.0f,
-                            0.0f,
-                            1.0f
-                        )
-
                         glApi.useProgram(
                             program
                         )
@@ -115,11 +155,30 @@ class APRendererNew(
                             matrix
                         )
 
+                        GLES30.glBindTexture(
+                            GLES30.GL_TEXTURE_2D,
+                            texture
+                        )
+
+                        GLES30.glActiveTexture(
+                            GLES30.GL_TEXTURE0
+                        )
+
+                        GLES30.glUniform1i(
+                            uniformTexture,
+                            0
+                        )
+
                         glApi.drawMesh(
                             descriptorVertexArray,
                             GLES30.GL_TRIANGLES,
                             GLES30.GL_UNSIGNED_INT,
                             indices.size
+                        )
+
+                        GLES30.glBindTexture(
+                            GLES30.GL_TEXTURE_2D,
+                            0
                         )
                     }
 

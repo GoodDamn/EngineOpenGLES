@@ -7,6 +7,7 @@
 
 #include "android/imagedecoder.h"
 #include "malloc.h"
+#include "APIUtils.h"
 
 class APIImage {
 private:
@@ -28,14 +29,14 @@ public:
     
     APIImage* load();
     
-    ~APIImage() {
+    /*~APIImage() {
         if (mPixels == nullptr) {
             return;
         }
         
         free(mPixels);
         mPixels = nullptr;
-    }
+    }*/
 };
 
 

@@ -31,6 +31,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         APIOpengl.cpp
         APIVertexAttribute.cpp
         APIBinderAttribute.cpp
+        APIImage.cpp
 )
 
 # Specifies libraries CMake should link to your target library. You
@@ -39,5 +40,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
 target_link_libraries(${CMAKE_PROJECT_NAME}
     # List libraries link to the target library
     android
+    jnigraphics
     GLESv3
-    log)
+    log
+)
