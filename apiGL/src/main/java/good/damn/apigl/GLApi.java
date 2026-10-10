@@ -32,17 +32,13 @@ public final class GLApi {
     }
 
     public final void drawMesh(
-        int vertexArray,
-        int mode,
-        int typeIndices,
-        int indicesCount
+        long vertexArray,
+        int mode
     ) {
         drawMesh(
             mApiRef,
             vertexArray,
-            mode,
-            typeIndices,
-            indicesCount
+            mode
         );
     }
 
@@ -96,7 +92,7 @@ public final class GLApi {
         );
     }
 
-    public final int createVertexArray(
+    public final long createVertexArray(
         final long vertexAttribute,
         @NonNull final float[] vertices,
         @NonNull final int[] indices
@@ -149,10 +145,8 @@ public final class GLApi {
 
     private native void drawMesh(
         long api,
-        int vertexArray,
-        int mode,
-        int typeIndices,
-        int indicesCount
+        long vertexArray,
+        int mode
     );
 
 
@@ -184,7 +178,7 @@ public final class GLApi {
         @NonNull final String name
     );
 
-    private native int createVertexArray(
+    private native long createVertexArray(
         long api,
         long vertexAttribute,
         float[] vertices,

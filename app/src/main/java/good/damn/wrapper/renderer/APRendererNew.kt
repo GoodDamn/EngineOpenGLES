@@ -148,9 +148,7 @@ class APRendererNew(
 
                         glApi.drawMesh(
                             descriptorVertexArray,
-                            GLES30.GL_TRIANGLES,
-                            GLES30.GL_UNSIGNED_INT,
-                            indices.size
+                            GLES30.GL_TRIANGLES
                         )
                     }
 

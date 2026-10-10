@@ -140,19 +140,17 @@ GLuint APIOpengl::createProgram(
 }
 
 void APIOpengl::drawMesh(
-    GLuint vertexArray,
-    GLenum mode,
-    GLenum typeIndices,
-    GLsizei indicesCount
+    APIVertexArray* vertexArray,
+    GLenum mode
 ) {
     glBindVertexArray(
-        vertexArray
+        vertexArray->descriptor
     );
     
     glDrawElements(
         mode,
-        indicesCount,
-        typeIndices,
+        vertexArray->indicesCount,
+        vertexArray->typeIndices,
         nullptr
     );
     
@@ -202,21 +200,24 @@ APIVertexAttribute* APIOpengl::createVertexAttributes(
     return builder.build();
 }
 
-GLuint APIOpengl::createVertexArray(
+APIVertexArray* APIOpengl::createVertexArray(
     float* vertices,
     unsigned int verticesSize,
     int* indices,
     unsigned int indicesCount,
     APIVertexAttribute* vertexAttribute
 ) {
-    GLuint vertexArray;
+    auto* outVertexArray = new APIVertexArray;
+    outVertexArray->typeIndices = GL_UNSIGNED_INT;
+    outVertexArray->indicesCount = indicesCount;
+    
     glGenVertexArrays(
         1,
-        &vertexArray
+        &(outVertexArray->descriptor)
     );
     
     glBindVertexArray(
-        vertexArray
+        outVertexArray->descriptor
     );
     
     LOGD("createVertexArray: COUNT(V:::I): %i:::%i", verticesSize, indicesCount);
@@ -246,9 +247,9 @@ GLuint APIOpengl::createVertexArray(
     );
     
     
-    LOGD("vertexArray: %i", vertexArray);
+    LOGD("vertexArray: %i", outVertexArray->descriptor);
     
-    return vertexArray;
+    return outVertexArray;
 }
 
 void APIOpengl::useProgram(

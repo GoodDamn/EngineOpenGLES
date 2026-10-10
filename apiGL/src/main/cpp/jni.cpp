@@ -75,17 +75,22 @@ Java_good_damn_apigl_GLApi_drawMesh(
     JNIEnv *env,
     jobject thiz,
     jlong api,
-    jint vertex_array,
-    jint mode,
-    jint type_indices,
-    jint indices_count
+    jlong vertex_array,
+    jint mode
 ) {
-    extractApi(api)->drawMesh(
-        vertex_array,
-        mode,
-        type_indices,
-        indices_count
+    auto* vertexArray = extractFromDescriptor<APIVertexArray>(
+        vertex_array
     );
+    
+    if (vertexArray == nullptr) {
+        return;
+    }
+    
+    extractApi(api)->drawMesh(
+        vertexArray,
+        mode
+    );
+    
 }
 extern "C"
 JNIEXPORT void JNICALL
@@ -152,7 +157,7 @@ Java_good_damn_apigl_GLApi_createVertexAttribute(
 }
 
 extern "C"
-JNIEXPORT jint JNICALL
+JNIEXPORT jlong JNICALL
 Java_good_damn_apigl_GLApi_createVertexArray(
     JNIEnv *env,
     jobject thiz,
@@ -187,7 +192,7 @@ Java_good_damn_apigl_GLApi_createVertexArray(
         indices
     );
     
-    GLuint vertexArray = extractApi(
+    APIVertexArray* vertexArray = extractApi(
         api
     )->createVertexArray(
         dataVertices,
@@ -209,7 +214,13 @@ Java_good_damn_apigl_GLApi_createVertexArray(
         JNI_ABORT
     );
     
-    return vertexArray;
+    if (vertexArray == nullptr) {
+        return -1;
+    }
+    
+    return descriptor(
+        vertexArray
+    );
 }
 
 extern "C"

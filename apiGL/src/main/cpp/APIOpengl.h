@@ -10,6 +10,7 @@
 #include "APIVertexAttribute.h"
 #include "APIBinderAttribute.h"
 #include "APITexture.h"
+#include "APIVertexArray.h"
 
 class APIOpengl {
 public:
@@ -32,10 +33,8 @@ public:
     );
     
     void drawMesh(
-        GLuint vertexArray,
-        GLenum mode,
-        GLenum typeIndices,
-        GLsizei indicesCount
+        APIVertexArray* vertexArray,
+        GLenum mode
     );
     
     void setModelMatrix(
@@ -63,7 +62,7 @@ public:
     );
     
 
-    GLuint createVertexArray(
+    APIVertexArray* createVertexArray(
         float* vertices,
         unsigned int verticesSize,
         int* indices,
