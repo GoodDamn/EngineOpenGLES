@@ -211,6 +211,22 @@ APIVertexArray* APIOpengl::createVertexArray(
     outVertexArray->typeIndices = GL_UNSIGNED_INT;
     outVertexArray->indicesCount = indicesCount;
     
+    void* data = indices;
+    unsigned int dataSize = indicesCount * sizeof(int);
+    if (indicesCount < UINT8_MAX) {
+        outVertexArray->typeIndices = GL_UNSIGNED_BYTE;
+        dataSize = indicesCount;
+        auto* cc = new unsigned char[indicesCount];
+        copyByte(indices, cc, indicesCount);
+        data = cc;
+    } else if (indicesCount < UINT16_MAX) {
+        outVertexArray->typeIndices = GL_UNSIGNED_SHORT;
+        dataSize = indicesCount * sizeof(short);
+        auto* ss = new unsigned short[indicesCount];
+        copyShort(indices, ss, indicesCount);
+        data = ss;
+    }
+    
     glGenVertexArrays(
         1,
         &(outVertexArray->descriptor)
@@ -220,34 +236,23 @@ APIVertexArray* APIOpengl::createVertexArray(
         outVertexArray->descriptor
     );
     
-    LOGD("createVertexArray: COUNT(V:::I): %i:::%i", verticesSize, indicesCount);
-    
     GLuint bufferVertices = createBuffer(
         GL_ARRAY_BUFFER,
         vertices,
         verticesSize * sizeof(float)
     );
     
-    LOGD("createVertexArray: buffer_vertices");
-    
     GLuint bufferIndices = createBuffer(
         GL_ELEMENT_ARRAY_BUFFER,
-        indices,
-        indicesCount * sizeof(int)
+        data,
+        dataSize
     );
     
-    
-    LOGD("createVertexArray: buffer_indices: vert_attr: %i", vertexAttribute);
     vertexAttribute->bindPointers();
-    
-    LOGD("bindPointers");
     
     glBindVertexArray(
         0
     );
-    
-    
-    LOGD("vertexArray: %i", outVertexArray->descriptor);
     
     return outVertexArray;
 }
