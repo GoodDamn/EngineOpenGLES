@@ -317,3 +317,12 @@ Java_good_damn_apigl_GLApi_createTexture(
         file_descriptor
     );
 }
+extern "C"
+JNIEXPORT void JNICALL
+Java_good_damn_apigl_GLApi_setCullface(
+    JNIEnv *env,
+    jobject thiz,
+    jlong api
+) {
+    extractApi(api)->setCullface();
+}

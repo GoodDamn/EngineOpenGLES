@@ -118,6 +118,9 @@ public final class GLApi {
         );
     }
 
+    public final void setCullface() {
+        setCullface(mApiRef);
+    }
 
 
 
@@ -175,6 +178,10 @@ public final class GLApi {
         long vertexAttribute,
         float[] vertices,
         int[] indices
+    );
+
+    private native void setCullface(
+        long api
     );
 
     private native int createTexture(

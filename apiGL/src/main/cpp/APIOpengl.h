@@ -23,6 +23,8 @@ public:
         const char* srcFragment
     );
     
+    void setCullface();
+    
     void drawMesh(
         GLuint vertexArray,
         GLenum mode,

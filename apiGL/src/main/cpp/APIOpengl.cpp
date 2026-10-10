@@ -369,3 +369,17 @@ GLuint APIOpengl::createTexture(
     
     return texture;
 }
+
+void APIOpengl::setCullface() {
+    glEnable(
+        GL_CULL_FACE
+    );
+    
+    glCullFace(
+        GL_BACK
+    );
+    
+    glFrontFace(
+        GL_CW
+    );
+}

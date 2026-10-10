@@ -103,21 +103,7 @@ class APRendererNew(
 
         file.close()
 
-        GLES30.glEnable(
-            GLES30.GL_DEPTH_TEST
-        );
-
-        GLES30.glEnable(
-            GLES30.GL_CULL_FACE
-        )
-
-        GLES30.glCullFace(
-            GLES30.GL_BACK
-        )
-
-        GLES30.glFrontFace(
-            GLES30.GL_CW
-        )
+        glApi.setCullface();
 
         ASObject3d.createFromFile(
             COUtilsFile.getPublicFile(
