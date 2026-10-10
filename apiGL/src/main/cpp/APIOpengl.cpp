@@ -317,8 +317,7 @@ APITexture* APIOpengl::createTexture(
     }
     
     APITexture* outTexture = new APITexture;
-    
-    outTexture->activeSlot = GL_TEXTURE0;
+    outTexture->activeSlot = 0;
     
     glGenTextures(
         1,
@@ -403,7 +402,7 @@ void APIOpengl::putTexture(
     );
     
     glActiveTexture(
-        texture->activeSlot
+        texture->activeSlot + GL_TEXTURE0
     );
     
     glUniform1i(

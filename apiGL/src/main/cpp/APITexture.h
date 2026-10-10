@@ -8,7 +8,7 @@
 
 struct APITexture {
     GLuint descriptor = 0;
-    GLuint activeSlot = GL_TEXTURE0;
+    unsigned char activeSlot = 0;
 };
 
 #endif //ENGINEOPENGLES_APITEXTURE_H
