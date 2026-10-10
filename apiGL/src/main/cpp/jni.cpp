@@ -306,15 +306,23 @@ Java_good_damn_apigl_GLApi_releaseVertexAttribute(
     );
 }
 extern "C"
-JNIEXPORT jint JNICALL
+JNIEXPORT jlong JNICALL
 Java_good_damn_apigl_GLApi_createTexture(
     JNIEnv *env,
     jobject thiz,
     jlong api,
     jint file_descriptor
 ) {
-    return extractApi(api)->createTexture(
+    APITexture* texture = extractApi(api)->createTexture(
         file_descriptor
+    );
+    
+    if (texture == nullptr) {
+        return -1;
+    }
+    
+    return descriptor(
+        texture
     );
 }
 extern "C"
@@ -325,4 +333,28 @@ Java_good_damn_apigl_GLApi_setCullface(
     jlong api
 ) {
     extractApi(api)->setCullface();
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_good_damn_apigl_GLApi_putTexture(
+    JNIEnv *env,
+    jobject thiz,
+    jlong api,
+    jlong texture,
+    jint uniform_texture
+) {
+    auto* t = extractFromDescriptor<APITexture>(
+        texture
+    );
+    
+    if (t == nullptr) {
+        return;
+    }
+    
+    extractApi(
+        api
+    )->putTexture(
+        uniform_texture,
+        t
+    );
 }

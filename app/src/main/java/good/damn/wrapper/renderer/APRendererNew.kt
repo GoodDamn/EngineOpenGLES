@@ -141,18 +141,9 @@ class APRendererNew(
                             matrix
                         )
 
-                        GLES30.glBindTexture(
-                            GLES30.GL_TEXTURE_2D,
-                            texture
-                        )
-
-                        GLES30.glActiveTexture(
-                            GLES30.GL_TEXTURE0
-                        )
-
-                        GLES30.glUniform1i(
-                            uniformTexture,
-                            0
+                        glApi.putTexture(
+                            texture,
+                            uniformTexture
                         )
 
                         glApi.drawMesh(
@@ -160,11 +151,6 @@ class APRendererNew(
                             GLES30.GL_TRIANGLES,
                             GLES30.GL_UNSIGNED_INT,
                             indices.size
-                        )
-
-                        GLES30.glBindTexture(
-                            GLES30.GL_TEXTURE_2D,
-                            0
                         )
                     }
 

@@ -109,7 +109,7 @@ public final class GLApi {
         );
     }
 
-    public final int createTexture(
+    public final long createTexture(
         final int fileDescriptor
     ) {
         return createTexture(
@@ -120,6 +120,17 @@ public final class GLApi {
 
     public final void setCullface() {
         setCullface(mApiRef);
+    }
+
+    public final void putTexture(
+        long texture,
+        int uniformTexture
+    ) {
+        putTexture(
+            mApiRef,
+            texture,
+            uniformTexture
+        );
     }
 
 
@@ -184,9 +195,15 @@ public final class GLApi {
         long api
     );
 
-    private native int createTexture(
+    private native long createTexture(
         long api,
         int fileDescriptor
+    );
+
+    private native void putTexture(
+        long api,
+        long texture,
+        int uniformTexture
     );
 
     public native void releaseBinderAttribute(

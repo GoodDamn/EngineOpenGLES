@@ -9,6 +9,7 @@
 #include <string>
 #include "APIVertexAttribute.h"
 #include "APIBinderAttribute.h"
+#include "APITexture.h"
 
 class APIOpengl {
 public:
@@ -24,6 +25,11 @@ public:
     );
     
     void setCullface();
+    
+    void putTexture(
+        GLint uniformTexture,
+        APITexture* texture
+    );
     
     void drawMesh(
         GLuint vertexArray,
@@ -65,7 +71,7 @@ public:
         APIVertexAttribute* vertexAttribute
     );
     
-    GLuint createTexture(
+    APITexture* createTexture(
         int fileDescriptor
     );
 };

@@ -298,7 +298,7 @@ GLint APIOpengl::getUniformLocation(
     );
 }
 
-GLuint APIOpengl::createTexture(
+APITexture* APIOpengl::createTexture(
     int fileDescriptor
 ) {
     APIImage* image = APIImage()
@@ -307,18 +307,21 @@ GLuint APIOpengl::createTexture(
     
     if (image == nullptr) {
         LOGD("createTexture: NULL");
-        return -1;
+        return nullptr;
     }
     
-    GLuint texture;
+    APITexture* outTexture = new APITexture;
+    
+    outTexture->activeSlot = GL_TEXTURE0;
+    
     glGenTextures(
         1,
-        &texture
+        &(outTexture->descriptor)
     );
     
     glBindTexture(
         GL_TEXTURE_2D,
-        texture
+        outTexture->descriptor
     );
     
     glTexParameteri(
@@ -367,7 +370,7 @@ GLuint APIOpengl::createTexture(
         16.0f
     );*/
     
-    return texture;
+    return outTexture;
 }
 
 void APIOpengl::setCullface() {
@@ -381,5 +384,24 @@ void APIOpengl::setCullface() {
     
     glFrontFace(
         GL_CW
+    );
+}
+
+void APIOpengl::putTexture(
+    GLint uniformTexture,
+    APITexture* texture
+) {
+    glBindTexture(
+        GL_TEXTURE_2D,
+        texture->descriptor
+    );
+    
+    glActiveTexture(
+        texture->activeSlot
+    );
+    
+    glUniform1i(
+        uniformTexture,
+        texture->activeSlot
     );
 }
