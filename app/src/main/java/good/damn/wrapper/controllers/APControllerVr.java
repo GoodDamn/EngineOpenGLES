@@ -1,6 +1,9 @@
 package good.damn.wrapper.controllers;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import good.damn.wrapper.models.APMVrParams;
 
 public final class APControllerVr {
 
@@ -24,14 +27,27 @@ public final class APControllerVr {
     }
 
     public final void create(
-        @NonNull final APIDrawer drawer
+        @NonNull final APIDrawer drawer,
+        @Nullable final APMVrParams params
     ) {
+        if (params == null) {
+            mRef = nativeOnCreate(
+                0.060f,
+                0.035f,
+                0.042f,
+                new float[]{40.0f, 40.0f, 40.0f, 40.0f},
+                new float[]{0.441f, 0.156f},
+                drawer
+            );
+            return;
+        }
+
         mRef = nativeOnCreate(
-            0.060f,
-            0.035f,
-            0.042f,
-            new float[]{40.0f, 40.0f, 40.0f, 40.0f},
-            new float[]{0.441f, 0.156f},
+            params.getDistanceInterLens(),
+            params.getDistanceTrayToLens(),
+            params.getDistanceScreenToLens(),
+            params.getFov(),
+            params.getDistortionCoeffs(),
             drawer
         );
     }

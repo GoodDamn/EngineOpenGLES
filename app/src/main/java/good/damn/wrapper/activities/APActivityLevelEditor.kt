@@ -30,6 +30,7 @@ import good.damn.wrapper.callbacks.APCallbackResultAllFilesApi30
 import good.damn.wrapper.controllers.APControllerVr
 import good.damn.wrapper.hud.APHud
 import good.damn.wrapper.launchers.APLauncherContent
+import good.damn.wrapper.providers.VRProviderParams
 import good.damn.wrapper.renderer.APRendererEditor
 import good.damn.wrapper.renderer.APRendererHandler
 import good.damn.wrapper.renderer.APRendererNew
@@ -197,7 +198,14 @@ APIRequestUserContent {
                 mControllerVr,
                 cameraMatrixPose,
                 handlerExecutor
-            )
+            ),
+            try {
+                VRProviderParams.extractPublicParams(
+                    this
+                )
+            } catch (_: Exception) {
+                null
+            }
         )
 
         val glApi = GLApi()
