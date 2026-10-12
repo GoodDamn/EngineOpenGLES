@@ -7,7 +7,6 @@ import android.opengl.GLES20.glCullFace
 import android.opengl.GLES20.glDepthFunc
 import android.opengl.GLES20.glGetError
 import android.opengl.GLES30
-import android.opengl.Matrix
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import good.damn.apigl.GLApi
@@ -15,15 +14,11 @@ import good.damn.common.COHandlerGl
 import good.damn.common.COIRunnableBounds
 import good.damn.common.utils.COUtilsFile
 import good.damn.engine.ASObject3d
-import good.damn.engine2.utils.MGUtilsBitmap
-import java.io.FileDescriptor
-import java.io.FileInputStream
-import kotlin.math.abs
 
 class APRendererNew(
     private val glHandler: COHandlerGl,
     private val glApi: GLApi,
-    private val matrix: FloatArray
+    private val matrixPose: FloatArray
 ): COIRunnableBounds {
 
 
@@ -136,9 +131,15 @@ class APRendererNew(
                             program
                         )
 
+                        /*val mvp = controller.getMVPMatrix(
+                            descriptorMatrixProjection,
+                            descriptorMatrixView,
+                            descriptorMatrixModel
+                        )*/
+
                         glApi.setModelMatrix(
                             uniformLocation,
-                            matrix
+                            matrixPose
                         )
 
                         glApi.putTexture(

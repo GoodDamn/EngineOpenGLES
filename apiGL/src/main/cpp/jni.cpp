@@ -6,12 +6,12 @@ inline jlong descriptor(void* native_app) {
 }
 
 template<typename T>
-inline T* extractFromDescriptor(jlong ptr) {
+inline T* asPointer(jlong ptr) {
     return reinterpret_cast<T*>(ptr);
 }
 
 inline APIOpengl* extractApi(jlong ptr) {
-    return extractFromDescriptor<APIOpengl>(ptr);
+    return asPointer<APIOpengl>(ptr);
 }
 
 extern "C"
@@ -51,7 +51,7 @@ Java_good_damn_apigl_GLApi_createProgram(
         srcFragment
     );
     
-    extractFromDescriptor<APIBinderAttribute>(
+    asPointer<APIBinderAttribute>(
         binderAttribute
     )->bindAttributes(
         program
@@ -78,7 +78,7 @@ Java_good_damn_apigl_GLApi_drawMesh(
     jlong vertex_array,
     jint mode
 ) {
-    auto* vertexArray = extractFromDescriptor<APIVertexArray>(
+    auto* vertexArray = asPointer<APIVertexArray>(
         vertex_array
     );
     
@@ -166,7 +166,7 @@ Java_good_damn_apigl_GLApi_createVertexArray(
     jfloatArray vertices,
     jintArray indices
 ) {
-    auto* attributes = extractFromDescriptor<APIVertexAttribute>(
+    auto* attributes = asPointer<APIVertexAttribute>(
         vertex_attribute
     );
     
@@ -300,7 +300,7 @@ Java_good_damn_apigl_GLApi_releaseBinderAttribute(
     jobject thiz,
     jlong reference
 ) {
-    delete extractFromDescriptor<APIBinderAttribute>(
+    delete asPointer<APIBinderAttribute>(
         reference
     );
 }
@@ -312,7 +312,7 @@ Java_good_damn_apigl_GLApi_releaseVertexAttribute(
     jobject thiz,
     jlong reference
 ) {
-    delete extractFromDescriptor<APIVertexAttribute>(
+    delete asPointer<APIVertexAttribute>(
         reference
     );
 }
@@ -354,7 +354,7 @@ Java_good_damn_apigl_GLApi_putTexture(
     jlong texture,
     jint uniform_texture
 ) {
-    auto* t = extractFromDescriptor<APITexture>(
+    auto* t = asPointer<APITexture>(
         texture
     );
     

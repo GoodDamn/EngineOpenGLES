@@ -135,10 +135,13 @@ namespace ndk_hello_cardboard {
     }
 
     Matrix4x4 GetTranslationMatrix(const std::array<float, 3> &translation) {
-        return {{{1.0f, 0.0f, 0.0f, 0.0f},
+        return {
+            {{1.0f, 0.0f, 0.0f, 0.0f},
                  {0.0f, 1.0f, 0.0f, 0.0f},
                  {0.0f, 0.0f, 1.0f, 0.0f},
-                 {translation.at(0), translation.at(1), translation.at(2), 1.0f}}};
+                 {translation.at(0), translation.at(1), translation.at(2), 1.0f}
+            }
+        };
     }
 
     float AngleBetweenVectors(const std::array<float, 4> &vec1,
